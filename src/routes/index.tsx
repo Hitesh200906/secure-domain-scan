@@ -1,29 +1,85 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Hero } from "@/components/site/Hero";
+import { Stats } from "@/components/site/Stats";
+import { Features } from "@/components/site/Features";
+import { HowItWorks } from "@/components/site/HowItWorks";
+import { ReportShowcase } from "@/components/site/ReportShowcase";
+import { Testimonials } from "@/components/site/Testimonials";
+import { Pricing } from "@/components/site/Pricing";
+import { SectionHeader } from "@/components/site/Features";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "Nexus Security — AI-Powered Security Analysis" },
+      {
+        name: "description",
+        content:
+          "Detect vulnerabilities before attackers do. AI-powered security audits, pen test reports, and continuous monitoring for modern teams.",
+      },
     ],
   }),
-  component: Index,
+  component: Home,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function Home() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <>
+      <Hero />
+      <Stats />
+      <Features />
+      <HowItWorks />
+      <ReportShowcase />
+      <section className="relative py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-6">
+          <SectionHeader
+            eyebrow="Pricing"
+            title="Simple pricing, enterprise depth"
+            description="Start with a single scan or scale to continuous monitoring across your estate."
+          />
+          <div className="mt-16">
+            <Pricing compact />
+          </div>
+        </div>
+      </section>
+      <Testimonials />
+      <CTASection />
+    </>
+  );
+}
+
+function CTASection() {
+  return (
+    <section className="relative py-24 sm:py-32">
+      <div className="mx-auto max-w-5xl px-6">
+        <div className="relative rounded-3xl overflow-hidden p-px bg-gradient-to-b from-primary/40 via-secondary/20 to-transparent">
+          <div className="relative rounded-[calc(theme(borderRadius.3xl)-1px)] bg-[oklch(0.05_0.008_220)] p-12 sm:p-16 text-center overflow-hidden">
+            <div className="absolute inset-0 hero-gradient opacity-60" />
+            <div className="relative">
+              <h2 className="text-4xl sm:text-5xl font-semibold tracking-[-0.03em] text-gradient">
+                Ship faster. Sleep better.
+              </h2>
+              <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
+                Run your first AI-powered security scan in under 60 seconds.
+              </p>
+              <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+                <a
+                  href="/contact"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-white text-black px-6 py-3 text-sm font-medium hover:shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.7)] transition"
+                >
+                  Start Free Scan →
+                </a>
+                <a
+                  href="/pricing"
+                  className="inline-flex items-center justify-center gap-2 rounded-full glass px-6 py-3 text-sm font-medium text-white"
+                >
+                  Compare Plans
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
