@@ -14,7 +14,93 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          company: string | null
+          created_at: string
+          credits: number
+          full_name: string | null
+          id: string
+          plan: string
+          role_title: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          company?: string | null
+          created_at?: string
+          credits?: number
+          full_name?: string | null
+          id: string
+          plan?: string
+          role_title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          company?: string | null
+          created_at?: string
+          credits?: number
+          full_name?: string | null
+          id?: string
+          plan?: string
+          role_title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      scan_requests: {
+        Row: {
+          business_email: string | null
+          company: string | null
+          created_at: string
+          email: string
+          findings_count: number | null
+          full_name: string
+          id: string
+          plan: string
+          role_title: string | null
+          score: number | null
+          status: string
+          target_url: string
+          user_id: string
+          verification_method: string
+        }
+        Insert: {
+          business_email?: string | null
+          company?: string | null
+          created_at?: string
+          email: string
+          findings_count?: number | null
+          full_name: string
+          id?: string
+          plan?: string
+          role_title?: string | null
+          score?: number | null
+          status?: string
+          target_url: string
+          user_id: string
+          verification_method: string
+        }
+        Update: {
+          business_email?: string | null
+          company?: string | null
+          created_at?: string
+          email?: string
+          findings_count?: number | null
+          full_name?: string
+          id?: string
+          plan?: string
+          role_title?: string | null
+          score?: number | null
+          status?: string
+          target_url?: string
+          user_id?: string
+          verification_method?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
