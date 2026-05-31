@@ -15,9 +15,11 @@ const PLAN_INFO: Record<Plan, { name: string; credits: number }> = {
 };
 
 export const Route = createFileRoute("/_authenticated/scan/new")({
-  validateSearch: (s: Record<string, unknown>) => ({
-    plan: (s.plan as Plan) || "professional",
-  }),
+  validateSearch: (s: Record<string, unknown>): { plan: Plan } => {
+    const p = String(s.plan ?? "professional");
+    const plan: Plan = p === "starter" || p === "enterprise" ? p : "professional";
+    return { plan };
+  },
   head: () => ({ meta: [{ title: "New Scan — Nexus Security" }] }),
   component: ScanNewPage,
 });

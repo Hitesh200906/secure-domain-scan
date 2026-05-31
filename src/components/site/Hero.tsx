@@ -6,7 +6,19 @@ export function Hero() {
   return (
     <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
       <Globe />
-      <div className="absolute inset-0 grid-bg opacity-50 -z-10" />
+      <div className="absolute inset-0 grid-bg opacity-50 -z-10 animate-grid-pan" />
+      {/* Aurora blobs */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-1/4 -left-32 size-[480px] rounded-full bg-[oklch(0.86_0.16_200_/0.18)] blur-[100px] animate-aurora-1" />
+        <div className="absolute top-1/3 -right-40 size-[520px] rounded-full bg-[oklch(0.75_0.13_180_/0.18)] blur-[110px] animate-aurora-2" />
+        <div className="absolute bottom-0 left-1/3 size-[420px] rounded-full bg-[oklch(0.86_0.16_200_/0.14)] blur-[100px] animate-aurora-3" />
+      </div>
+      {/* Scanline sweep */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent animate-scanline" />
+      </div>
+
+
 
       <div className="relative mx-auto max-w-5xl px-6 text-center pt-32 pb-24">
         <motion.div
@@ -50,7 +62,7 @@ export function Hero() {
           className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3"
         >
           <Link
-            to="/contact"
+            to="/scan/new"
             className="group relative inline-flex items-center gap-2 rounded-full bg-white text-black px-6 py-3 text-sm font-medium hover:shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.7)] transition-all"
           >
             Start Security Scan

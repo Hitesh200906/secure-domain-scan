@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Navbar } from "../components/site/Navbar";
 import { Footer } from "../components/site/Footer";
+import { Toaster } from "sonner";
 
 function NotFoundComponent() {
   return (
@@ -127,7 +128,13 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isApp = pathname.startsWith("/dashboard") || pathname.startsWith("/report");
+  const isApp =
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/profile") ||
+    pathname.startsWith("/scan") ||
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname === "/reset-password";
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -137,6 +144,7 @@ function RootComponent() {
           <Outlet />
         </main>
         {!isApp && <Footer />}
+        <Toaster theme="dark" position="top-right" />
       </div>
     </QueryClientProvider>
   );

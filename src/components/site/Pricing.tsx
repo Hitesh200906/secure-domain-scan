@@ -10,7 +10,7 @@ const tiers = [
     desc: "For founders and indie hackers running their first audit.",
     features: ["Basic Scan", "PDF Report", "Email Support"],
     cta: "Get Started",
-    href: "/contact",
+    plan: "starter" as const,
     highlight: false,
   },
   {
@@ -18,14 +18,9 @@ const tiers = [
     price: "₹4,999",
     cadence: "/month",
     desc: "Everything growing teams need to stay continuously protected.",
-    features: [
-      "Full Security Audit",
-      "Priority Reports",
-      "AI Recommendations",
-      "API Analysis",
-    ],
+    features: ["Full Security Audit", "Priority Reports", "AI Recommendations", "API Analysis"],
     cta: "Most Popular",
-    href: "/contact",
+    plan: "professional" as const,
     highlight: true,
   },
   {
@@ -33,14 +28,9 @@ const tiers = [
     price: "Custom",
     cadence: "",
     desc: "Dedicated coverage for regulated environments and large estates.",
-    features: [
-      "Dedicated Security Team",
-      "Continuous Monitoring",
-      "Compliance Reports",
-      "Custom Integrations",
-    ],
+    features: ["Dedicated Security Team", "Continuous Monitoring", "Compliance Reports", "Custom Integrations"],
     cta: "Contact Sales",
-    href: "/contact",
+    plan: "enterprise" as const,
     highlight: false,
   },
 ];
@@ -97,7 +87,8 @@ export function Pricing({ compact = false }: { compact?: boolean }) {
                 </ul>
 
                 <Link
-                  to={t.href}
+                  to="/scan/new"
+                  search={{ plan: t.plan }}
                   className={`mt-8 inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-medium transition ${
                     t.highlight
                       ? "bg-white text-black hover:shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.7)]"
