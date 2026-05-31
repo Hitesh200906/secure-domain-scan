@@ -35,7 +35,7 @@ export function Footer() {
             links={[
               { label: "Features", to: "/" },
               { label: "Pricing", to: "/pricing" },
-              { label: "Reports", to: "/reports" },
+              { label: "New Scan", to: "/scan/new" },
               { label: "Dashboard", to: "/dashboard" },
             ]}
           />
