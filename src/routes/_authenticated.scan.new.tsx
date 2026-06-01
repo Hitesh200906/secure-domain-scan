@@ -25,7 +25,7 @@ export const Route = createFileRoute("/_authenticated/scan/new")({
 });
 
 function ScanNewPage() {
-  const { plan } = useSearch({ from: "/_authenticated/scan/new" });
+  const { plan } = useSearch({ from: "/_authenticated/scan/new" }) as { plan: Plan };
   const { user } = useAuth();
   const navigate = useNavigate();
   const info = PLAN_INFO[plan];
