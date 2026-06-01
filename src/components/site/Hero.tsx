@@ -16,6 +16,22 @@ export function Hero() {
       {/* Scanline sweep */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent animate-scanline" />
+        <div className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-secondary/40 to-transparent animate-scanline" style={{ animationDelay: "4s" }} />
+      </div>
+      {/* Orbiting rings */}
+      <div className="pointer-events-none absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2">
+        <div className="size-[640px] sm:size-[820px] rounded-full border border-primary/10 animate-orbit-slow" />
+        <div className="absolute inset-12 rounded-full border border-secondary/10 animate-orbit-rev" />
+        <div className="absolute inset-32 rounded-full border border-primary/[0.06]" />
+      </div>
+      {/* Corner radar ping */}
+      <div className="pointer-events-none absolute top-24 right-8 -z-10 hidden md:block">
+        <div className="relative size-32">
+          <div className="absolute inset-0 rounded-full border border-primary/20" />
+          <div className="absolute inset-4 rounded-full border border-primary/15" />
+          <div className="absolute inset-8 rounded-full border border-primary/10" />
+          <div className="absolute inset-0 rounded-full border-2 border-primary/40 animate-radar-ping" />
+        </div>
       </div>
 
 
