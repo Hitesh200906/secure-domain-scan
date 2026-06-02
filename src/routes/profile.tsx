@@ -22,12 +22,55 @@ type TMsg = { id: string; author_type: string; author_name: string | null; body:
 function ProfilePage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [tab, setTab] = useState<Tab>("general");
+  const search = Route.useSearch();
+  const [tab, setTab] = useState<Tab>(((search.tab as Tab) ?? "general"));
   const [profile, setProfile] = useState({
     full_name: "", role_title: "", company: "", plan: "starter", credits: 0,
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [activeTicket, setActiveTicket] = useState<Ticket | null>(null);
+  const [ticketMsgs, setTicketMsgs] = useState<TMsg[]>([]);
+  const [ticketReply, setTicketReply] = useState("");
+  const msgEndRef = useRef<HTMLDivElement>(null);
+
+  const loadTickets = async () => {
+    let q = supabase.from("support_tickets").select("*").order("created_at", { ascending: false });
+    if (user) q = q.or(`user_id.eq.${user.id},email.eq.${user.email}`);
+    else if (search.tab) return;
+    const { data } = await q;
+    setTickets((data ?? []) as Ticket[]);
+  };
+
+  useEffect(() => { loadTickets(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [user]);
+
+  useEffect(() => {
+    if (!activeTicket) return;
+    const load = () =>
+      supabase.from("ticket_messages").select("*").eq("ticket_id", activeTicket.id).order("created_at")
+        .then(({ data }) => {
+          setTicketMsgs((data ?? []) as TMsg[]);
+          setTimeout(() => msgEndRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
+        });
+    load();
+    const ch = supabase.channel(`tk-${activeTicket.id}`)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "ticket_messages", filter: `ticket_id=eq.${activeTicket.id}` }, load)
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [activeTicket]);
+
+  const sendTicketReply = async () => {
+    if (!activeTicket || !ticketReply.trim()) return;
+    const body = ticketReply.trim();
+    setTicketReply("");
+    await supabase.from("ticket_messages").insert({
+      ticket_id: activeTicket.id, author_type: "user",
+      author_name: profile.full_name || user?.email || activeTicket.name, body,
+    });
+    await supabase.from("support_tickets").update({ status: "open", updated_at: new Date().toISOString() }).eq("id", activeTicket.id);
+  };
+
 
   useEffect(() => {
     if (!user) {
