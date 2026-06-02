@@ -8,7 +8,7 @@ export async function logAudit(action: string, target?: { type: string; id: stri
       action,
       target_type: target?.type ?? null,
       target_id: target?.id ?? null,
-      metadata,
+      metadata: metadata as never,
     });
   } catch {
     // best-effort

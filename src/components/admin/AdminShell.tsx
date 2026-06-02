@@ -5,7 +5,8 @@ import {
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 
-const nav = [
+type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean };
+const nav: NavItem[] = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
   { to: "/admin/users", label: "Users", icon: Users },
   { to: "/admin/admins", label: "Admins", icon: ShieldCheck },
@@ -14,7 +15,7 @@ const nav = [
   { to: "/admin/reports", label: "Reports", icon: FileText },
   { to: "/admin/pricing", label: "Pricing", icon: Tags },
   { to: "/admin/logs", label: "Audit Logs", icon: ScrollText },
-] as const;
+];
 
 export function AdminShell({ title, description, actions, children }: { title: string; description?: string; actions?: ReactNode; children: ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
