@@ -194,6 +194,61 @@ function ProfilePage() {
             </motion.div>
           )}
 
+          {tab === "tickets" && (
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="grid lg:grid-cols-[340px_1fr] gap-4">
+              <Card title="Your tickets" desc={tickets.length ? `${tickets.length} conversation${tickets.length === 1 ? "" : "s"} with our team.` : "Submit a request from Contact to open a ticket."}>
+                <div className="space-y-2 max-h-[520px] overflow-y-auto -mx-2 px-2">
+                  {tickets.length === 0 && (
+                    <div className="text-center py-10">
+                      <LifeBuoy className="size-8 mx-auto text-muted-foreground" />
+                      <div className="mt-3 text-sm">No tickets yet</div>
+                      <Link to="/contact" className="mt-4 inline-flex rounded-full bg-white text-black px-4 py-2 text-xs font-medium">Open a ticket</Link>
+                    </div>
+                  )}
+                  {tickets.map((t) => (
+                    <button key={t.id} onClick={() => setActiveTicket(t)}
+                      className={`w-full text-left p-3 rounded-xl border transition ${activeTicket?.id === t.id ? "border-primary/40 bg-primary/5" : "border-white/5 hover:border-white/15"}`}>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-sm font-medium truncate">{t.subject}</span>
+                        <span className={`text-[9px] uppercase tracking-widest px-1.5 py-0.5 rounded-full ${t.status === "resolved" || t.status === "closed" ? "bg-emerald-400/10 text-emerald-300" : "bg-primary/10 text-primary"}`}>{t.status.replace("_", " ")}</span>
+                      </div>
+                      <div className="text-[11px] text-muted-foreground mt-1 line-clamp-2">{t.message}</div>
+                      <div className="text-[10px] text-muted-foreground/70 mt-1.5">{new Date(t.created_at).toLocaleString()}</div>
+                    </button>
+                  ))}
+                </div>
+              </Card>
+              <Card title={activeTicket ? activeTicket.subject : "Conversation"} desc={activeTicket ? `Ticket #${activeTicket.id.slice(0, 8)} · ${activeTicket.status.replace("_", " ")}` : "Pick a ticket to view the conversation with our security team."}>
+                {!activeTicket ? (
+                  <div className="text-center py-16 text-sm text-muted-foreground">
+                    <MessageSquare className="size-8 mx-auto mb-3 text-muted-foreground/50" />
+                    Select a ticket on the left.
+                  </div>
+                ) : (
+                  <div className="flex flex-col h-[520px]">
+                    <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+                      <ChatBubble side="user" who={activeTicket.name} when={activeTicket.created_at} body={activeTicket.message} />
+                      {ticketMsgs.map((m) => (
+                        <ChatBubble key={m.id} side={m.author_type === "admin" ? "admin" : "user"} who={m.author_name || m.author_type} when={m.created_at} body={m.body} />
+                      ))}
+                      <div ref={msgEndRef} />
+                    </div>
+                    <div className="flex gap-2 pt-3 mt-3 border-t border-white/5">
+                      <textarea value={ticketReply} onChange={(e) => setTicketReply(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendTicketReply(); } }}
+                        placeholder="Reply to our team…" rows={2}
+                        className="flex-1 bg-white/[0.04] border border-white/10 rounded-xl px-3 py-2 text-sm resize-none focus:outline-none focus:border-primary/40" />
+                      <button onClick={sendTicketReply} disabled={!ticketReply.trim()}
+                        className="self-end rounded-xl bg-primary text-primary-foreground px-4 py-2 text-sm font-medium inline-flex items-center gap-1.5 disabled:opacity-50">
+                        <Send className="size-3.5" /> Send
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </Card>
+            </motion.div>
+          )}
+
           {tab === "security" && (
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="grid lg:grid-cols-2 gap-4">
               <Card title="Password" desc="Change your password regularly to keep your account secure.">
