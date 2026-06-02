@@ -1,9 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHeader } from "@/components/site/PageHeader";
 import { useState } from "react";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { LifeBuoy, Mail, MapPin, Phone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/contact")({
 });
 
 function ContactPage() {
+  const { user } = useAuth();
   const [submitted, setSubmitted] = useState(false);
 
   return (
@@ -69,24 +71,42 @@ function ContactPage() {
                 message: `Website: ${fd.get("website") || "—"}\n\n${fd.get("message") || ""}`,
                 status: "open",
                 priority: "normal",
+                user_id: user?.id ?? null,
               };
               const { error } = await supabase.from("support_tickets").insert(payload);
               if (error) return toast.error(error.message);
-              toast.success("Ticket created");
+              toast.success("Request submitted — ticket opened in your profile");
               setSubmitted(true);
             }}
             className="glass-strong rounded-3xl p-8 sm:p-10 space-y-5"
           >
             {submitted ? (
-              <div className="text-center py-16">
-                <div className="size-12 mx-auto rounded-full grid place-items-center glass text-primary text-2xl">
-                  ✓
+              <div className="text-center py-12">
+                <div className="size-14 mx-auto rounded-full grid place-items-center glass text-primary">
+                  <LifeBuoy className="size-6" />
                 </div>
-                <h3 className="mt-5 text-xl font-medium">Request received</h3>
+                <h3 className="mt-5 text-xl font-medium">Your request has been submitted</h3>
                 <p className="mt-2 text-sm text-muted-foreground max-w-sm mx-auto">
-                  Our security team will reach out within one business day to schedule
-                  your audit.
+                  A ticket has been opened in your profile. Our team will contact you as
+                  soon as possible — you can track progress and chat with us directly
+                  from the Tickets section.
                 </p>
+                <div className="mt-6 flex flex-col sm:flex-row gap-2 justify-center">
+                  <Link
+                    to="/profile"
+                    search={{ tab: "tickets" }}
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white text-black px-5 py-2.5 text-sm font-medium hover:shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.7)] transition"
+                  >
+                    <LifeBuoy className="size-4" /> View ticket in profile
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setSubmitted(false)}
+                    className="inline-flex items-center justify-center gap-2 rounded-full glass px-5 py-2.5 text-sm font-medium"
+                  >
+                    Submit another request
+                  </button>
+                </div>
               </div>
             ) : (
               <>

@@ -1,9 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
-  Bell, Camera, CheckCircle2, Copy, CreditCard, Key, Loader2, LogOut,
-  Mail, Monitor, Shield, ShieldCheck, Smartphone, Sparkles, Trash2, Zap,
+  Bell, Camera, CheckCircle2, Copy, CreditCard, Key, LifeBuoy, Loader2, LogOut,
+  Mail, MessageSquare, Monitor, Send, Shield, ShieldCheck, Smartphone, Sparkles, Trash2, Zap,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,20 +11,66 @@ import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({ meta: [{ title: "Profile — Nexus Security" }] }),
+  validateSearch: (s: Record<string, unknown>) => ({ tab: (s.tab as string) || undefined }),
   component: ProfilePage,
 });
 
-type Tab = "general" | "security" | "billing" | "notifications" | "api";
+type Tab = "general" | "security" | "tickets" | "billing" | "notifications" | "api";
+type Ticket = { id: string; subject: string; status: string; priority: string; created_at: string; message: string; email: string; name: string };
+type TMsg = { id: string; author_type: string; author_name: string | null; body: string; created_at: string };
 
 function ProfilePage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [tab, setTab] = useState<Tab>("general");
+  const search = Route.useSearch();
+  const [tab, setTab] = useState<Tab>(((search.tab as Tab) ?? "general"));
   const [profile, setProfile] = useState({
     full_name: "", role_title: "", company: "", plan: "starter", credits: 0,
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [activeTicket, setActiveTicket] = useState<Ticket | null>(null);
+  const [ticketMsgs, setTicketMsgs] = useState<TMsg[]>([]);
+  const [ticketReply, setTicketReply] = useState("");
+  const msgEndRef = useRef<HTMLDivElement>(null);
+
+  const loadTickets = async () => {
+    let q = supabase.from("support_tickets").select("*").order("created_at", { ascending: false });
+    if (user) q = q.or(`user_id.eq.${user.id},email.eq.${user.email}`);
+    else if (search.tab) return;
+    const { data } = await q;
+    setTickets((data ?? []) as Ticket[]);
+  };
+
+  useEffect(() => { loadTickets(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [user]);
+
+  useEffect(() => {
+    if (!activeTicket) return;
+    const load = () =>
+      supabase.from("ticket_messages").select("*").eq("ticket_id", activeTicket.id).order("created_at")
+        .then(({ data }) => {
+          setTicketMsgs((data ?? []) as TMsg[]);
+          setTimeout(() => msgEndRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
+        });
+    load();
+    const ch = supabase.channel(`tk-${activeTicket.id}`)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "ticket_messages", filter: `ticket_id=eq.${activeTicket.id}` }, load)
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [activeTicket]);
+
+  const sendTicketReply = async () => {
+    if (!activeTicket || !ticketReply.trim()) return;
+    const body = ticketReply.trim();
+    setTicketReply("");
+    await supabase.from("ticket_messages").insert({
+      ticket_id: activeTicket.id, author_type: "user",
+      author_name: profile.full_name || user?.email || activeTicket.name, body,
+    });
+    await supabase.from("support_tickets").update({ status: "open", updated_at: new Date().toISOString() }).eq("id", activeTicket.id);
+  };
+
 
   useEffect(() => {
     if (!user) {
@@ -113,7 +159,8 @@ function ProfilePage() {
         {/* Tabs */}
         <div className="mt-6 flex items-center gap-1 border-b border-white/[0.06] overflow-x-auto">
           {([
-            ["general", "General"], ["security", "Security"], ["billing", "Billing"],
+            ["general", "General"], ["tickets", `Tickets${tickets.length ? ` · ${tickets.length}` : ""}`],
+            ["security", "Security"], ["billing", "Billing"],
             ["notifications", "Notifications"], ["api", "API Keys"],
           ] as [Tab, string][]).map(([k, l]) => (
             <button key={k} onClick={() => setTab(k)}
@@ -143,6 +190,61 @@ function ProfilePage() {
                 <Row label="User ID" value={`${user?.id.slice(0, 8)}…`} mono />
                 <Row label="Auth provider" value={user?.app_metadata?.provider ?? "email"} />
                 <Row label="Last sign-in" value={user?.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : "—"} />
+              </Card>
+            </motion.div>
+          )}
+
+          {tab === "tickets" && (
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="grid lg:grid-cols-[340px_1fr] gap-4">
+              <Card title="Your tickets" desc={tickets.length ? `${tickets.length} conversation${tickets.length === 1 ? "" : "s"} with our team.` : "Submit a request from Contact to open a ticket."}>
+                <div className="space-y-2 max-h-[520px] overflow-y-auto -mx-2 px-2">
+                  {tickets.length === 0 && (
+                    <div className="text-center py-10">
+                      <LifeBuoy className="size-8 mx-auto text-muted-foreground" />
+                      <div className="mt-3 text-sm">No tickets yet</div>
+                      <Link to="/contact" className="mt-4 inline-flex rounded-full bg-white text-black px-4 py-2 text-xs font-medium">Open a ticket</Link>
+                    </div>
+                  )}
+                  {tickets.map((t) => (
+                    <button key={t.id} onClick={() => setActiveTicket(t)}
+                      className={`w-full text-left p-3 rounded-xl border transition ${activeTicket?.id === t.id ? "border-primary/40 bg-primary/5" : "border-white/5 hover:border-white/15"}`}>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-sm font-medium truncate">{t.subject}</span>
+                        <span className={`text-[9px] uppercase tracking-widest px-1.5 py-0.5 rounded-full ${t.status === "resolved" || t.status === "closed" ? "bg-emerald-400/10 text-emerald-300" : "bg-primary/10 text-primary"}`}>{t.status.replace("_", " ")}</span>
+                      </div>
+                      <div className="text-[11px] text-muted-foreground mt-1 line-clamp-2">{t.message}</div>
+                      <div className="text-[10px] text-muted-foreground/70 mt-1.5">{new Date(t.created_at).toLocaleString()}</div>
+                    </button>
+                  ))}
+                </div>
+              </Card>
+              <Card title={activeTicket ? activeTicket.subject : "Conversation"} desc={activeTicket ? `Ticket #${activeTicket.id.slice(0, 8)} · ${activeTicket.status.replace("_", " ")}` : "Pick a ticket to view the conversation with our security team."}>
+                {!activeTicket ? (
+                  <div className="text-center py-16 text-sm text-muted-foreground">
+                    <MessageSquare className="size-8 mx-auto mb-3 text-muted-foreground/50" />
+                    Select a ticket on the left.
+                  </div>
+                ) : (
+                  <div className="flex flex-col h-[520px]">
+                    <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+                      <ChatBubble side="user" who={activeTicket.name} when={activeTicket.created_at} body={activeTicket.message} />
+                      {ticketMsgs.map((m) => (
+                        <ChatBubble key={m.id} side={m.author_type === "admin" ? "admin" : "user"} who={m.author_name || m.author_type} when={m.created_at} body={m.body} />
+                      ))}
+                      <div ref={msgEndRef} />
+                    </div>
+                    <div className="flex gap-2 pt-3 mt-3 border-t border-white/5">
+                      <textarea value={ticketReply} onChange={(e) => setTicketReply(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendTicketReply(); } }}
+                        placeholder="Reply to our team…" rows={2}
+                        className="flex-1 bg-white/[0.04] border border-white/10 rounded-xl px-3 py-2 text-sm resize-none focus:outline-none focus:border-primary/40" />
+                      <button onClick={sendTicketReply} disabled={!ticketReply.trim()}
+                        className="self-end rounded-xl bg-primary text-primary-foreground px-4 py-2 text-sm font-medium inline-flex items-center gap-1.5 disabled:opacity-50">
+                        <Send className="size-3.5" /> Send
+                      </button>
+                    </div>
+                  </div>
+                )}
               </Card>
             </motion.div>
           )}
@@ -295,6 +397,17 @@ function ProfilePage() {
             </button>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function ChatBubble({ side, who, when, body }: { side: "user" | "admin"; who: string; when: string; body: string }) {
+  return (
+    <div className={`flex ${side === "admin" ? "justify-start" : "justify-end"}`}>
+      <div className={`max-w-[85%] rounded-2xl px-4 py-3 ${side === "admin" ? "glass border-primary/20" : "bg-primary/15 border border-primary/30"}`}>
+        <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-1">{side === "admin" ? "Nexus Team" : who} · {new Date(when).toLocaleString()}</div>
+        <div className="text-sm whitespace-pre-wrap">{body}</div>
       </div>
     </div>
   );
