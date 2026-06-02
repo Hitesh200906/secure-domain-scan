@@ -402,6 +402,17 @@ function ProfilePage() {
   );
 }
 
+function ChatBubble({ side, who, when, body }: { side: "user" | "admin"; who: string; when: string; body: string }) {
+  return (
+    <div className={`flex ${side === "admin" ? "justify-start" : "justify-end"}`}>
+      <div className={`max-w-[85%] rounded-2xl px-4 py-3 ${side === "admin" ? "glass border-primary/20" : "bg-primary/15 border border-primary/30"}`}>
+        <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-1">{side === "admin" ? "Nexus Team" : who} · {new Date(when).toLocaleString()}</div>
+        <div className="text-sm whitespace-pre-wrap">{body}</div>
+      </div>
+    </div>
+  );
+}
+
 function Card({ title, desc, children, className = "" }: { title: string; desc?: string; children: React.ReactNode; className?: string }) {
   return (
     <div className={`glass-strong rounded-3xl p-6 space-y-4 ${className}`}>
