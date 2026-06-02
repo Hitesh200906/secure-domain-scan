@@ -1,9 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHeader } from "@/components/site/PageHeader";
 import { useState } from "react";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { LifeBuoy, Mail, MapPin, Phone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/contact")({
 });
 
 function ContactPage() {
+  const { user } = useAuth();
   const [submitted, setSubmitted] = useState(false);
 
   return (
