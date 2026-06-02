@@ -1,9 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
-  Bell, Camera, CheckCircle2, Copy, CreditCard, Key, Loader2, LogOut,
-  Mail, Monitor, Shield, ShieldCheck, Smartphone, Sparkles, Trash2, Zap,
+  Bell, Camera, CheckCircle2, Copy, CreditCard, Key, LifeBuoy, Loader2, LogOut,
+  Mail, MessageSquare, Monitor, Send, Shield, ShieldCheck, Smartphone, Sparkles, Trash2, Zap,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,10 +11,13 @@ import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({ meta: [{ title: "Profile — Nexus Security" }] }),
+  validateSearch: (s: Record<string, unknown>) => ({ tab: (s.tab as string) || undefined }),
   component: ProfilePage,
 });
 
-type Tab = "general" | "security" | "billing" | "notifications" | "api";
+type Tab = "general" | "security" | "tickets" | "billing" | "notifications" | "api";
+type Ticket = { id: string; subject: string; status: string; priority: string; created_at: string; message: string; email: string; name: string };
+type TMsg = { id: string; author_type: string; author_name: string | null; body: string; created_at: string };
 
 function ProfilePage() {
   const { user } = useAuth();
