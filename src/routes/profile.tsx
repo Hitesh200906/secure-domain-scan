@@ -159,7 +159,8 @@ function ProfilePage() {
         {/* Tabs */}
         <div className="mt-6 flex items-center gap-1 border-b border-white/[0.06] overflow-x-auto">
           {([
-            ["general", "General"], ["security", "Security"], ["billing", "Billing"],
+            ["general", "General"], ["tickets", `Tickets${tickets.length ? ` · ${tickets.length}` : ""}`],
+            ["security", "Security"], ["billing", "Billing"],
             ["notifications", "Notifications"], ["api", "API Keys"],
           ] as [Tab, string][]).map(([k, l]) => (
             <button key={k} onClick={() => setTab(k)}
