@@ -14,16 +14,168 @@ export type Database = {
   }
   public: {
     Tables: {
+      admins: {
+        Row: {
+          active: boolean
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          last_active_at: string | null
+          permissions: Json
+          role: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id?: string
+          last_active_at?: string | null
+          permissions?: Json
+          role?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          last_active_at?: string | null
+          permissions?: Json
+          role?: string
+        }
+        Relationships: []
+      }
+      audit_logs: {
+        Row: {
+          action: string
+          actor_email: string | null
+          actor_role: string | null
+          created_at: string
+          id: string
+          metadata: Json
+          target_id: string | null
+          target_type: string | null
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          actor_role?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          actor_role?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          link: string | null
+          read: boolean
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      pricing_plans: {
+        Row: {
+          active: boolean
+          created_at: string
+          credits: number
+          cta_label: string | null
+          description: string | null
+          features: Json
+          headline: string | null
+          id: string
+          name: string
+          popular: boolean
+          price_label: string | null
+          price_monthly: number
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          credits?: number
+          cta_label?: string | null
+          description?: string | null
+          features?: Json
+          headline?: string | null
+          id?: string
+          name: string
+          popular?: boolean
+          price_label?: string | null
+          price_monthly?: number
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          credits?: number
+          cta_label?: string | null
+          description?: string | null
+          features?: Json
+          headline?: string | null
+          id?: string
+          name?: string
+          popular?: boolean
+          price_label?: string | null
+          price_monthly?: number
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
           company: string | null
           created_at: string
           credits: number
+          email: string | null
           full_name: string | null
           id: string
           plan: string
           role_title: string | null
+          status: string
           updated_at: string
         }
         Insert: {
@@ -31,10 +183,12 @@ export type Database = {
           company?: string | null
           created_at?: string
           credits?: number
+          email?: string | null
           full_name?: string | null
           id: string
           plan?: string
           role_title?: string | null
+          status?: string
           updated_at?: string
         }
         Update: {
@@ -42,13 +196,59 @@ export type Database = {
           company?: string | null
           created_at?: string
           credits?: number
+          email?: string | null
           full_name?: string | null
           id?: string
           plan?: string
           role_title?: string | null
+          status?: string
           updated_at?: string
         }
         Relationships: []
+      }
+      reports: {
+        Row: {
+          created_at: string
+          file_url: string | null
+          findings: Json
+          id: string
+          scan_id: string | null
+          severity: string | null
+          summary: string | null
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          file_url?: string | null
+          findings?: Json
+          id?: string
+          scan_id?: string | null
+          severity?: string | null
+          summary?: string | null
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          file_url?: string | null
+          findings?: Json
+          id?: string
+          scan_id?: string | null
+          severity?: string | null
+          summary?: string | null
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_scan_id_fkey"
+            columns: ["scan_id"]
+            isOneToOne: false
+            referencedRelation: "scan_requests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       scan_requests: {
         Row: {
@@ -100,6 +300,86 @@ export type Database = {
           verification_method?: string
         }
         Relationships: []
+      }
+      support_tickets: {
+        Row: {
+          assigned_to: string | null
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          priority: string
+          status: string
+          subject: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          priority?: string
+          status?: string
+          subject: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          priority?: string
+          status?: string
+          subject?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      ticket_messages: {
+        Row: {
+          attachment_url: string | null
+          author_name: string | null
+          author_type: string
+          body: string
+          created_at: string
+          id: string
+          ticket_id: string
+        }
+        Insert: {
+          attachment_url?: string | null
+          author_name?: string | null
+          author_type?: string
+          body: string
+          created_at?: string
+          id?: string
+          ticket_id: string
+        }
+        Update: {
+          attachment_url?: string | null
+          author_name?: string | null
+          author_type?: string
+          body?: string
+          created_at?: string
+          id?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
