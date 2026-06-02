@@ -2,16 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/site/PageHeader";
 import { useState } from "react";
 import { Mail, MapPin, Phone } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact — Nexus Security" },
-      {
-        name: "description",
-        content:
-          "Talk to our security team. Request a custom audit or get answers about pricing, integrations, and compliance.",
-      },
+      { name: "description", content: "Talk to our security team. Request a custom audit or get answers about pricing, integrations, and compliance." },
     ],
   }),
   component: ContactPage,
@@ -61,8 +59,20 @@ function ContactPage() {
           </aside>
 
           <form
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
+              const fd = new FormData(e.currentTarget);
+              const payload = {
+                name: String(fd.get("name") || ""),
+                email: String(fd.get("email") || ""),
+                subject: `Audit request from ${fd.get("company") || fd.get("name")}`,
+                message: `Website: ${fd.get("website") || "—"}\n\n${fd.get("message") || ""}`,
+                status: "open",
+                priority: "normal",
+              };
+              const { error } = await supabase.from("support_tickets").insert(payload);
+              if (error) return toast.error(error.message);
+              toast.success("Ticket created");
               setSubmitted(true);
             }}
             className="glass-strong rounded-3xl p-8 sm:p-10 space-y-5"
