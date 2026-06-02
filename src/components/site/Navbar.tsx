@@ -7,6 +7,8 @@ import { supabase } from "@/integrations/supabase/client";
 const links = [
   { to: "/", label: "Features" },
   { to: "/pricing", label: "Pricing" },
+  { to: "/dashboard", label: "Dashboard" },
+  { to: "/profile", label: "Profile" },
   { to: "/contact", label: "Contact" },
   { to: "/admin", label: "Admin" },
 ] as const;

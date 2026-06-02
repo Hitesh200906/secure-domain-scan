@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 
-export const Route = createFileRoute("/_authenticated/profile")({
+export const Route = createFileRoute("/profile")({
   head: () => ({ meta: [{ title: "Profile — Nexus Security" }] }),
   component: ProfilePage,
 });
@@ -27,7 +27,18 @@ function ProfilePage() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      // Demo data when browsing without an account
+      setProfile({
+        full_name: "Demo Analyst",
+        role_title: "Security Engineer",
+        company: "Nexus Demo Co.",
+        plan: "professional",
+        credits: 12,
+      });
+      setLoading(false);
+      return;
+    }
     supabase.from("profiles").select("*").eq("id", user.id).maybeSingle().then(({ data }) => {
       if (data) setProfile({
         full_name: data.full_name ?? "",
