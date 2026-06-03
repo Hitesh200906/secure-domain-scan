@@ -147,7 +147,7 @@ function ProfilePage() {
               </div>
               <h1 className="mt-1 text-3xl font-semibold tracking-tight truncate">{profile.full_name || "Your profile"}</h1>
               <div className="text-sm text-muted-foreground mt-0.5">{profile.role_title || "—"}{profile.company && ` · ${profile.company}`}</div>
-              <div className="text-xs text-muted-foreground/70 mt-1 font-mono">{user?.email}</div>
+              <div className="text-xs text-muted-foreground/70 mt-1 font-mono">{user?.email || "demo@nexussecurity.com"}</div>
             </div>
             <div className="flex gap-2">
               <StatPill label="Plan" value={profile.plan.toUpperCase()} icon={ShieldCheck} />
