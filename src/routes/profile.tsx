@@ -179,11 +179,13 @@ function ProfilePage() {
                   <Field label="Full name" value={profile.full_name} onChange={(v) => setProfile({ ...profile, full_name: v })} />
                   <Field label="Role / Title" value={profile.role_title} onChange={(v) => setProfile({ ...profile, role_title: v })} />
                   <Field label="Company" value={profile.company} onChange={(v) => setProfile({ ...profile, company: v })} />
-                  <Field label="Email" value={user?.email ?? ""} readOnly />
+                  <Field label="Email" value={user?.email ?? "demo@nexussecurity.com"} readOnly />
                 </div>
-                <button onClick={save} disabled={saving} className="mt-2 rounded-full bg-white text-black px-5 py-2.5 text-sm font-medium inline-flex items-center gap-2 disabled:opacity-60 hover:shadow-[0_0_30px_-4px_oklch(0.86_0.16_200_/0.5)] transition">
-                  {saving && <Loader2 className="size-4 animate-spin" />} Save changes
-                </button>
+                {user && (
+                  <button onClick={save} disabled={saving} className="mt-2 rounded-full bg-white text-black px-5 py-2.5 text-sm font-medium inline-flex items-center gap-2 disabled:opacity-60 hover:shadow-[0_0_30px_-4px_oklch(0.86_0.16_200_/0.5)] transition">
+                    {saving && <Loader2 className="size-4 animate-spin" />} Save changes
+                  </button>
+                )}
               </Card>
               <Card title="Account">
                 <Row label="Member since" value={user ? new Date(user.created_at).toLocaleDateString() : "Jan 15, 2026"} />
