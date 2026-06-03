@@ -186,10 +186,10 @@ function ProfilePage() {
                 </button>
               </Card>
               <Card title="Account">
-                <Row label="Member since" value={new Date(user?.created_at ?? Date.now()).toLocaleDateString()} />
-                <Row label="User ID" value={`${user?.id.slice(0, 8)}…`} mono />
-                <Row label="Auth provider" value={user?.app_metadata?.provider ?? "email"} />
-                <Row label="Last sign-in" value={user?.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : "—"} />
+                <Row label="Member since" value={user ? new Date(user.created_at).toLocaleDateString() : "Jan 15, 2026"} />
+                <Row label="User ID" value={user ? `${user.id.slice(0, 8)}…` : "demo-user"} mono />
+                <Row label="Auth provider" value={user ? (user.app_metadata?.provider ?? "email") : "email"} />
+                <Row label="Last sign-in" value={user ? (user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : "—") : "Active now"} />
               </Card>
             </motion.div>
           )}
