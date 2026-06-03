@@ -147,7 +147,7 @@ function ProfilePage() {
               </div>
               <h1 className="mt-1 text-3xl font-semibold tracking-tight truncate">{profile.full_name || "Your profile"}</h1>
               <div className="text-sm text-muted-foreground mt-0.5">{profile.role_title || "—"}{profile.company && ` · ${profile.company}`}</div>
-              <div className="text-xs text-muted-foreground/70 mt-1 font-mono">{user?.email}</div>
+              <div className="text-xs text-muted-foreground/70 mt-1 font-mono">{user?.email || "demo@nexussecurity.com"}</div>
             </div>
             <div className="flex gap-2">
               <StatPill label="Plan" value={profile.plan.toUpperCase()} icon={ShieldCheck} />
@@ -179,17 +179,19 @@ function ProfilePage() {
                   <Field label="Full name" value={profile.full_name} onChange={(v) => setProfile({ ...profile, full_name: v })} />
                   <Field label="Role / Title" value={profile.role_title} onChange={(v) => setProfile({ ...profile, role_title: v })} />
                   <Field label="Company" value={profile.company} onChange={(v) => setProfile({ ...profile, company: v })} />
-                  <Field label="Email" value={user?.email ?? ""} readOnly />
+                  <Field label="Email" value={user?.email ?? "demo@nexussecurity.com"} readOnly />
                 </div>
-                <button onClick={save} disabled={saving} className="mt-2 rounded-full bg-white text-black px-5 py-2.5 text-sm font-medium inline-flex items-center gap-2 disabled:opacity-60 hover:shadow-[0_0_30px_-4px_oklch(0.86_0.16_200_/0.5)] transition">
-                  {saving && <Loader2 className="size-4 animate-spin" />} Save changes
-                </button>
+                {user && (
+                  <button onClick={save} disabled={saving} className="mt-2 rounded-full bg-white text-black px-5 py-2.5 text-sm font-medium inline-flex items-center gap-2 disabled:opacity-60 hover:shadow-[0_0_30px_-4px_oklch(0.86_0.16_200_/0.5)] transition">
+                    {saving && <Loader2 className="size-4 animate-spin" />} Save changes
+                  </button>
+                )}
               </Card>
               <Card title="Account">
-                <Row label="Member since" value={new Date(user?.created_at ?? Date.now()).toLocaleDateString()} />
-                <Row label="User ID" value={`${user?.id.slice(0, 8)}…`} mono />
-                <Row label="Auth provider" value={user?.app_metadata?.provider ?? "email"} />
-                <Row label="Last sign-in" value={user?.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : "—"} />
+                <Row label="Member since" value={user ? new Date(user.created_at).toLocaleDateString() : "Jan 15, 2026"} />
+                <Row label="User ID" value={user ? `${user.id.slice(0, 8)}…` : "demo-user"} mono />
+                <Row label="Auth provider" value={user ? (user.app_metadata?.provider ?? "email") : "email"} />
+                <Row label="Last sign-in" value={user ? (user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : "—") : "Active now"} />
               </Card>
             </motion.div>
           )}
@@ -389,12 +391,16 @@ function ProfilePage() {
             </div>
           </div>
           <div className="flex gap-2">
-            <button onClick={signOut} className="rounded-full glass px-4 py-2 text-sm inline-flex items-center gap-2 hover:border-white/20 transition">
-              <LogOut className="size-4" /> Sign out
-            </button>
-            <button className="rounded-full glass px-4 py-2 text-sm inline-flex items-center gap-2 hover:border-destructive/40 hover:text-destructive transition">
-              <Trash2 className="size-4" /> Delete account
-            </button>
+            {user && (
+              <button onClick={signOut} className="rounded-full glass px-4 py-2 text-sm inline-flex items-center gap-2 hover:border-white/20 transition">
+                <LogOut className="size-4" /> Sign out
+              </button>
+            )}
+            {user && (
+              <button className="rounded-full glass px-4 py-2 text-sm inline-flex items-center gap-2 hover:border-destructive/40 hover:text-destructive transition">
+                <Trash2 className="size-4" /> Delete account
+              </button>
+            )}
           </div>
         </div>
       </div>

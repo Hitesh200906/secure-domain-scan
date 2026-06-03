@@ -75,22 +75,24 @@ function Dashboard() {
           <SidebarLink to="/pricing" icon={CreditCard} label="Billing" />
           <SidebarLink to="/contact" icon={Settings} label="Support" />
         </nav>
-        <div className="p-3 border-t border-white/[0.06] space-y-2">
-          <div className="glass rounded-2xl p-4 relative overflow-hidden">
-            <div className="absolute inset-0 animate-shimmer opacity-40" />
-            <div className="relative">
-              <div className="text-[10px] uppercase tracking-widest text-primary">{profile?.plan ?? "starter"} Plan</div>
-              <div className="text-sm mt-1.5 font-medium">{profile?.credits ?? 0} credits left</div>
-              <div className="mt-2.5 h-1 rounded-full bg-white/10 overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-primary to-secondary" style={{ width: `${Math.min(100, ((profile?.credits ?? 0) / 15) * 100)}%` }} />
+          <div className="p-3 border-t border-white/[0.06] space-y-2">
+            <div className="glass rounded-2xl p-4 relative overflow-hidden">
+              <div className="absolute inset-0 animate-shimmer opacity-40" />
+              <div className="relative">
+                <div className="text-[10px] uppercase tracking-widest text-primary">{profile?.plan ?? "starter"} Plan</div>
+                <div className="text-sm mt-1.5 font-medium">{profile?.credits ?? 0} credits left</div>
+                <div className="mt-2.5 h-1 rounded-full bg-white/10 overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-primary to-secondary" style={{ width: `${Math.min(100, ((profile?.credits ?? 0) / 15) * 100)}%` }} />
+                </div>
+                <Link to="/pricing" className="mt-3 block text-[11px] text-primary hover:underline">Upgrade plan →</Link>
               </div>
-              <Link to="/pricing" className="mt-3 block text-[11px] text-primary hover:underline">Upgrade plan →</Link>
             </div>
+            {user && (
+              <button onClick={signOut} className="w-full text-left px-3 py-2 rounded-xl text-xs text-muted-foreground hover:text-white hover:bg-white/[0.03] inline-flex items-center gap-2">
+                <LogOut className="size-3.5" /> Sign out
+              </button>
+            )}
           </div>
-          <button onClick={signOut} className="w-full text-left px-3 py-2 rounded-xl text-xs text-muted-foreground hover:text-white hover:bg-white/[0.03] inline-flex items-center gap-2">
-            <LogOut className="size-3.5" /> Sign out
-          </button>
-        </div>
       </aside>
 
       <div className="flex-1 min-w-0 relative">
@@ -105,7 +107,7 @@ function Dashboard() {
                 </span>
                 All systems operational · {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
               </div>
-              <h1 className="text-2xl font-medium tracking-tight mt-1">Welcome back{profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}</h1>
+              <h1 className="text-2xl font-medium tracking-tight mt-1">{user ? `Welcome back${profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}` : "Security Dashboard"}</h1>
             </div>
             <div className="flex items-center gap-2">
               <div className="hidden md:flex items-center gap-2 rounded-full glass px-3.5 py-2 text-xs text-muted-foreground w-72">
