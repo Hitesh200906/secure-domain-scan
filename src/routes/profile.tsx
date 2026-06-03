@@ -389,12 +389,16 @@ function ProfilePage() {
             </div>
           </div>
           <div className="flex gap-2">
-            <button onClick={signOut} className="rounded-full glass px-4 py-2 text-sm inline-flex items-center gap-2 hover:border-white/20 transition">
-              <LogOut className="size-4" /> Sign out
-            </button>
-            <button className="rounded-full glass px-4 py-2 text-sm inline-flex items-center gap-2 hover:border-destructive/40 hover:text-destructive transition">
-              <Trash2 className="size-4" /> Delete account
-            </button>
+            {user && (
+              <button onClick={signOut} className="rounded-full glass px-4 py-2 text-sm inline-flex items-center gap-2 hover:border-white/20 transition">
+                <LogOut className="size-4" /> Sign out
+              </button>
+            )}
+            {user && (
+              <button className="rounded-full glass px-4 py-2 text-sm inline-flex items-center gap-2 hover:border-destructive/40 hover:text-destructive transition">
+                <Trash2 className="size-4" /> Delete account
+              </button>
+            )}
           </div>
         </div>
       </div>
