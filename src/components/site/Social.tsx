@@ -2,6 +2,7 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Instagram, Facebook, Twitter, ArrowUpRight } from "lucide-react";
 import { useRef } from "react";
 import { SectionHeader } from "./Features";
+import { Float3D, SectionBackdrop } from "./SectionFx";
 
 type Social = {
   name: string;
