@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import {
   Brain,
   ShieldCheck,
@@ -7,6 +7,8 @@ import {
   Cloud,
   Radar,
 } from "lucide-react";
+import { useRef } from "react";
+import featuresHero from "@/assets/features-hero.jpg";
 
 const features = [
   {
@@ -41,9 +43,64 @@ const features = [
   },
 ];
 
+function Tilt3DCard({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const sx = useSpring(x, { stiffness: 200, damping: 18 });
+  const sy = useSpring(y, { stiffness: 200, damping: 18 });
+  const rotateX = useTransform(sy, [-50, 50], [10, -10]);
+  const rotateY = useTransform(sx, [-50, 50], [-10, 10]);
+
+  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect) return;
+    x.set(e.clientX - rect.left - rect.width / 2);
+    y.set(e.clientY - rect.top - rect.height / 2);
+  };
+  const handleLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={handleMove}
+      onMouseLeave={handleLeave}
+      style={{ rotateX, rotateY, transformStyle: "preserve-3d", perspective: 1000 }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 export function Features() {
   return (
-    <section className="relative py-24 sm:py-32">
+    <section className="relative py-24 sm:py-32 overflow-hidden">
+      {/* Animated 3D hero visual */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <motion.img
+          src={featuresHero}
+          alt=""
+          aria-hidden
+          width={1920}
+          height={1080}
+          loading="lazy"
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[1100px] max-w-none opacity-25 mix-blend-screen"
+          animate={{ y: [0, -20, 0], rotateZ: [0, 1.5, 0] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/30 to-background" />
+      </div>
+
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
           eyebrow="Capabilities"
@@ -51,30 +108,45 @@ export function Features() {
           description="A complete platform that combines AI reasoning with battle-tested security methodology to keep your stack protected."
         />
 
-        <div className="mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/[0.06] rounded-3xl overflow-hidden border border-white/[0.06]">
+        <div
+          className="mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          style={{ perspective: 1200 }}
+        >
           {features.map((f, i) => (
             <motion.div
               key={f.title}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 20, rotateX: -8 }}
+              whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: i * 0.05 }}
-              className="group relative bg-background p-8 lg:p-10 transition hover:bg-white/[0.02]"
+              transition={{ duration: 0.6, delay: i * 0.07 }}
             >
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition pointer-events-none">
-                <div className="absolute -top-px left-8 right-8 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
-              </div>
-              <div className="relative">
-                <div className="inline-flex items-center justify-center size-11 rounded-xl glass text-primary group-hover:shadow-[0_0_30px_-4px_oklch(0.86_0.16_200_/0.6)] transition">
-                  <f.icon className="size-5" strokeWidth={1.6} />
+              <Tilt3DCard className="group relative h-full rounded-2xl glass p-8 lg:p-10 transition will-change-transform hover:border-primary/30">
+                <div
+                  className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition pointer-events-none"
+                  style={{
+                    background:
+                      "radial-gradient(600px circle at var(--x, 50%) var(--y, 50%), oklch(0.86 0.16 200 / 0.12), transparent 40%)",
+                  }}
+                />
+                <div
+                  className="relative"
+                  style={{ transform: "translateZ(40px)", transformStyle: "preserve-3d" }}
+                >
+                  <motion.div
+                    whileHover={{ rotateY: 360 }}
+                    transition={{ duration: 0.8 }}
+                    className="inline-flex items-center justify-center size-12 rounded-xl glass text-primary shadow-[0_0_30px_-6px_oklch(0.86_0.16_200_/0.5)]"
+                  >
+                    <f.icon className="size-5" strokeWidth={1.6} />
+                  </motion.div>
+                  <h3 className="mt-6 text-lg font-medium text-white tracking-tight">
+                    {f.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                    {f.desc}
+                  </p>
                 </div>
-                <h3 className="mt-6 text-lg font-medium text-white tracking-tight">
-                  {f.title}
-                </h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                  {f.desc}
-                </p>
-              </div>
+              </Tilt3DCard>
             </motion.div>
           ))}
         </div>
