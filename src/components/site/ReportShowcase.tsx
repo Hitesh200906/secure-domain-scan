@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight, Download, ShieldAlert } from "lucide-react";
 import { SectionHeader } from "./Features";
-import { Float3D, SectionBackdrop } from "./SectionFx";
+import { SectionBackdrop } from "./SectionFx";
 
 const buckets = [
   { label: "Critical", value: 3, color: "oklch(0.65 0.22 25)" },
@@ -14,8 +14,6 @@ export function ReportShowcase() {
   return (
     <section className="relative py-24 sm:py-32 overflow-hidden">
       <SectionBackdrop variant="grid" opacity={0.1} />
-      <Float3D shape="lock" className="top-10 left-[4%] w-28 sm:w-36 opacity-70" duration={11} />
-      <Float3D shape="hex" className="bottom-16 right-[4%] w-28 sm:w-40 opacity-60" rotate={[15, -15]} duration={13} />
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
           eyebrow="Reports"

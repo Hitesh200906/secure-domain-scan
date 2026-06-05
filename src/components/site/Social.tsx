@@ -2,7 +2,7 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Instagram, Facebook, Twitter, ArrowUpRight } from "lucide-react";
 import { useRef } from "react";
 import { SectionHeader } from "./Features";
-import { Float3D, SectionBackdrop } from "./SectionFx";
+import { SectionBackdrop } from "./SectionFx";
 
 type Social = {
   name: string;
@@ -22,9 +22,9 @@ const socials: Social[] = [
     href: "https://instagram.com",
     icon: Instagram,
     followers: "128K followers",
-    gradient: "from-[#feda75] via-[#fa7e1e] via-40% to-[#d62976]",
-    glow: "shadow-[0_0_60px_-10px_rgba(214,41,118,0.6)]",
-    ring: "ring-[#fa7e1e]/40",
+    gradient: "from-[#d62976]/40 via-[#fa7e1e]/20 to-transparent",
+    glow: "shadow-[0_0_40px_-12px_rgba(214,41,118,0.4)]",
+    ring: "ring-[#d62976]/30",
   },
   {
     name: "Facebook",
@@ -32,9 +32,9 @@ const socials: Social[] = [
     href: "https://facebook.com",
     icon: Facebook,
     followers: "94K followers",
-    gradient: "from-[#0866ff] via-[#1877f2] to-[#0a3d99]",
-    glow: "shadow-[0_0_60px_-10px_rgba(24,119,242,0.7)]",
-    ring: "ring-[#1877f2]/40",
+    gradient: "from-[#1877f2]/40 via-[#1877f2]/15 to-transparent",
+    glow: "shadow-[0_0_40px_-12px_rgba(24,119,242,0.4)]",
+    ring: "ring-[#1877f2]/30",
   },
   {
     name: "Twitter",
@@ -42,9 +42,9 @@ const socials: Social[] = [
     href: "https://twitter.com",
     icon: Twitter,
     followers: "212K followers",
-    gradient: "from-[#1da1f2] via-[#0d8fd8] to-[#0a4f7a]",
-    glow: "shadow-[0_0_60px_-10px_rgba(29,161,242,0.7)]",
-    ring: "ring-[#1da1f2]/40",
+    gradient: "from-[#1da1f2]/40 via-[#1da1f2]/15 to-transparent",
+    glow: "shadow-[0_0_40px_-12px_rgba(29,161,242,0.4)]",
+    ring: "ring-[#1da1f2]/30",
   },
 ];
 
@@ -83,23 +83,23 @@ function SocialCard({ s, index }: { s: Social; index: number }) {
           y.set(0);
         }}
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-        className={`relative block rounded-3xl p-px bg-gradient-to-br ${s.gradient} ${s.glow} transition-shadow duration-500 hover:shadow-[0_0_90px_-8px_rgba(255,255,255,0.25)]`}
+        className={`relative block rounded-3xl p-px bg-white/[0.08] ${s.glow} transition-shadow duration-500 hover:bg-white/15`}
       >
         <div
-          className="relative rounded-[calc(theme(borderRadius.3xl)-1px)] bg-[oklch(0.06_0.008_220)] p-8 overflow-hidden"
+          className={`relative rounded-[calc(theme(borderRadius.3xl)-1px)] bg-[oklch(0.05_0.008_220)] p-8 overflow-hidden bg-gradient-to-br ${s.gradient}`}
           style={{ transformStyle: "preserve-3d" }}
         >
-          {/* floating orbs */}
+          {/* subtle dark accent orbs */}
           <motion.div
             aria-hidden
-            className={`absolute -top-12 -right-12 size-40 rounded-full bg-gradient-to-br ${s.gradient} opacity-30 blur-2xl`}
+            className={`absolute -top-12 -right-12 size-40 rounded-full bg-gradient-to-br ${s.gradient} opacity-40 blur-3xl`}
             animate={{ scale: [1, 1.15, 1], rotate: [0, 90, 0] }}
             transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
             style={{ transform: "translateZ(20px)" }}
           />
           <motion.div
             aria-hidden
-            className={`absolute -bottom-16 -left-10 size-44 rounded-full bg-gradient-to-tr ${s.gradient} opacity-20 blur-2xl`}
+            className={`absolute -bottom-16 -left-10 size-44 rounded-full bg-gradient-to-tr ${s.gradient} opacity-25 blur-3xl`}
             animate={{ scale: [1.1, 1, 1.1], rotate: [0, -90, 0] }}
             transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
           />
@@ -108,7 +108,7 @@ function SocialCard({ s, index }: { s: Social; index: number }) {
             <motion.div
               whileHover={{ rotateY: 360, scale: 1.1 }}
               transition={{ duration: 0.8 }}
-              className={`size-16 rounded-2xl bg-gradient-to-br ${s.gradient} grid place-items-center ring-2 ${s.ring} ring-offset-2 ring-offset-black/60`}
+              className={`size-16 rounded-2xl bg-[oklch(0.1_0.01_220)] grid place-items-center ring-1 ${s.ring} border border-white/10`}
             >
               <s.icon className="size-8 text-white" strokeWidth={2} />
             </motion.div>
@@ -144,8 +144,6 @@ export function Social() {
   return (
     <section className="relative py-24 sm:py-32 overflow-hidden">
       <SectionBackdrop variant="grid" opacity={0.1} />
-      <Float3D shape="sphere" className="top-10 left-[3%] w-32 sm:w-44 opacity-65" duration={14} yRange={[0, -28]} />
-      <Float3D shape="cube" className="bottom-12 right-[4%] w-28 sm:w-36 opacity-70" rotate={[15, -15]} duration={11} />
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
           eyebrow="Community"
