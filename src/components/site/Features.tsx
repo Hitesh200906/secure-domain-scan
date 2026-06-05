@@ -9,6 +9,10 @@ import {
 } from "lucide-react";
 import { useRef } from "react";
 import featuresHero from "@/assets/features-hero.jpg";
+import cube3d from "@/assets/3d-cube.png";
+import hex3d from "@/assets/3d-hex.png";
+import sphere3d from "@/assets/3d-sphere.png";
+import lock3d from "@/assets/3d-lock.png";
 
 const features = [
   {
