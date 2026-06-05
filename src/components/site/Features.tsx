@@ -9,6 +9,10 @@ import {
 } from "lucide-react";
 import { useRef } from "react";
 import featuresHero from "@/assets/features-hero.jpg";
+import cube3d from "@/assets/3d-cube.png";
+import hex3d from "@/assets/3d-hex.png";
+import sphere3d from "@/assets/3d-sphere.png";
+import lock3d from "@/assets/3d-lock.png";
 
 const features = [
   {
@@ -82,6 +86,32 @@ function Tilt3DCard({
   );
 }
 
+function FloatingObject({
+  src,
+  className,
+  rotate,
+  duration,
+  yRange,
+}: {
+  src: string;
+  className?: string;
+  rotate: [number, number];
+  duration: number;
+  yRange: [number, number];
+}) {
+  return (
+    <motion.img
+      src={src}
+      alt=""
+      aria-hidden
+      loading="lazy"
+      className={`pointer-events-none absolute select-none drop-shadow-[0_0_30px_oklch(0.86_0.16_200_/0.5)] ${className ?? ""}`}
+      animate={{ y: yRange, rotate, scale: [1, 1.05, 1] }}
+      transition={{ duration, repeat: Infinity, ease: "easeInOut", repeatType: "reverse" }}
+    />
+  );
+}
+
 export function Features() {
   return (
     <section className="relative py-24 sm:py-32 overflow-hidden">
@@ -100,6 +130,44 @@ export function Features() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/30 to-background" />
       </div>
+
+      {/* Floating 3D objects scattered across the section */}
+      <FloatingObject
+        src={cube3d}
+        className="top-[8%] left-[3%] w-28 sm:w-36 opacity-70"
+        rotate={[-12, 12]}
+        duration={9}
+        yRange={[0, -28]}
+      />
+      <FloatingObject
+        src={hex3d}
+        className="top-[22%] right-[4%] w-32 sm:w-44 opacity-80"
+        rotate={[15, -15]}
+        duration={11}
+        yRange={[0, 22]}
+      />
+      <FloatingObject
+        src={sphere3d}
+        className="top-[58%] left-[2%] w-36 sm:w-48 opacity-60"
+        rotate={[-20, 20]}
+        duration={14}
+        yRange={[0, -34]}
+      />
+      <FloatingObject
+        src={lock3d}
+        className="bottom-[8%] right-[6%] w-28 sm:w-36 opacity-75"
+        rotate={[18, -10]}
+        duration={10}
+        yRange={[0, -22]}
+      />
+      <FloatingObject
+        src={hex3d}
+        className="bottom-[28%] left-[42%] w-20 sm:w-28 opacity-40"
+        rotate={[-25, 25]}
+        duration={16}
+        yRange={[0, 18]}
+      />
+
 
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
