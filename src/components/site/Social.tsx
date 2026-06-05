@@ -6,9 +6,9 @@ import { SectionBackdrop } from "./SectionFx";
 import bgIg from "@/assets/social-ig.jpg";
 import bgFb from "@/assets/social-fb.jpg";
 import bgTw from "@/assets/social-tw.jpg";
-import logoIg from "@/assets/logo-instagram.png";
-import logoFb from "@/assets/logo-facebook.png";
-import logoX from "@/assets/logo-x.png";
+import logoIg from "@/assets/logo-instagram.jpg";
+import logoFb from "@/assets/logo-facebook.jpg";
+import logoX from "@/assets/logo-x.jpg";
 
 type Social = {
   name: string;
