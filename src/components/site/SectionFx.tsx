@@ -1,53 +1,11 @@
-import { motion } from "framer-motion";
-import cube3d from "@/assets/3d-cube.png";
-import hex3d from "@/assets/3d-hex.png";
-import sphere3d from "@/assets/3d-sphere.png";
-import lock3d from "@/assets/3d-lock.png";
-import torus3d from "@/assets/3d-torus.png";
-import pyramid3d from "@/assets/3d-pyramid.png";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useRef } from "react";
 import bgGrid from "@/assets/bg-grid-space.jpg";
 import bgCircuit from "@/assets/bg-circuit.jpg";
 
-export const float3dAssets = {
-  cube: cube3d,
-  hex: hex3d,
-  sphere: sphere3d,
-  lock: lock3d,
-  torus: torus3d,
-  pyramid: pyramid3d,
-};
-
-export type Float3DKey = keyof typeof float3dAssets;
-
-export function Float3D({
-  shape,
-  className = "",
-  rotate = [-15, 15],
-  duration = 12,
-  yRange = [0, -24],
-}: {
-  shape: Float3DKey;
-  className?: string;
-  rotate?: [number, number];
-  duration?: number;
-  yRange?: [number, number];
-}) {
-  return (
-    <motion.img
-      src={float3dAssets[shape]}
-      alt=""
-      aria-hidden
-      loading="lazy"
-      className={`pointer-events-none absolute select-none drop-shadow-[0_0_30px_oklch(0.86_0.16_200_/0.45)] ${className}`}
-      animate={{ y: yRange, rotate, scale: [1, 1.06, 1] }}
-      transition={{ duration, repeat: Infinity, ease: "easeInOut", repeatType: "reverse" }}
-    />
-  );
-}
-
 export function SectionBackdrop({
   variant = "grid",
-  opacity = 0.18,
+  opacity = 0.1,
 }: {
   variant?: "grid" | "circuit";
   opacity?: number;
@@ -67,5 +25,43 @@ export function SectionBackdrop({
       />
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/40 to-background" />
     </div>
+  );
+}
+
+export function Tilt3DBox({
+  children,
+  className = "",
+  intensity = 10,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  intensity?: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const sx = useSpring(x, { stiffness: 200, damping: 18 });
+  const sy = useSpring(y, { stiffness: 200, damping: 18 });
+  const rotateX = useTransform(sy, [-50, 50], [intensity, -intensity]);
+  const rotateY = useTransform(sx, [-50, 50], [-intensity, intensity]);
+
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={(e) => {
+        const rect = ref.current?.getBoundingClientRect();
+        if (!rect) return;
+        x.set(e.clientX - rect.left - rect.width / 2);
+        y.set(e.clientY - rect.top - rect.height / 2);
+      }}
+      onMouseLeave={() => {
+        x.set(0);
+        y.set(0);
+      }}
+      style={{ rotateX, rotateY, transformStyle: "preserve-3d", perspective: 1000 }}
+      className={className}
+    >
+      {children}
+    </motion.div>
   );
 }
