@@ -2,6 +2,7 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Instagram, Facebook, Twitter, ArrowUpRight } from "lucide-react";
 import { useRef } from "react";
 import { SectionHeader } from "./Features";
+import { Float3D, SectionBackdrop } from "./SectionFx";
 
 type Social = {
   name: string;
@@ -141,7 +142,10 @@ function SocialCard({ s, index }: { s: Social; index: number }) {
 
 export function Social() {
   return (
-    <section className="relative py-24 sm:py-32">
+    <section className="relative py-24 sm:py-32 overflow-hidden">
+      <SectionBackdrop variant="grid" opacity={0.1} />
+      <Float3D shape="sphere" className="top-10 left-[3%] w-32 sm:w-44 opacity-65" duration={14} yRange={[0, -28]} />
+      <Float3D shape="cube" className="bottom-12 right-[4%] w-28 sm:w-36 opacity-70" rotate={[15, -15]} duration={11} />
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
           eyebrow="Community"

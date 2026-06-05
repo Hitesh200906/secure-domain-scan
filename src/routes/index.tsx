@@ -8,6 +8,7 @@ import { Testimonials } from "@/components/site/Testimonials";
 import { Pricing } from "@/components/site/Pricing";
 import { Social } from "@/components/site/Social";
 import { SectionHeader } from "@/components/site/Features";
+import { Float3D, SectionBackdrop } from "@/components/site/SectionFx";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -31,7 +32,10 @@ function Home() {
       <Features />
       <HowItWorks />
       <ReportShowcase />
-      <section className="relative py-24 sm:py-32">
+      <section className="relative py-24 sm:py-32 overflow-hidden">
+        <SectionBackdrop variant="circuit" opacity={0.1} />
+        <Float3D shape="pyramid" className="top-12 left-[3%] w-28 sm:w-40 opacity-70" duration={12} />
+        <Float3D shape="torus" className="bottom-16 right-[4%] w-28 sm:w-40 opacity-65" rotate={[10, -10]} duration={11} />
         <div className="mx-auto max-w-7xl px-6">
           <SectionHeader
             eyebrow="Pricing"
@@ -52,7 +56,10 @@ function Home() {
 
 function CTASection() {
   return (
-    <section className="relative py-24 sm:py-32">
+    <section className="relative py-24 sm:py-32 overflow-hidden">
+      <SectionBackdrop variant="grid" opacity={0.12} />
+      <Float3D shape="lock" className="top-10 left-[5%] w-28 sm:w-36 opacity-70" duration={11} />
+      <Float3D shape="hex" className="bottom-10 right-[5%] w-28 sm:w-40 opacity-65" rotate={[15, -15]} duration={13} />
       <div className="mx-auto max-w-5xl px-6">
         <div className="relative rounded-3xl overflow-hidden p-px bg-gradient-to-b from-primary/40 via-secondary/20 to-transparent">
           <div className="relative rounded-[calc(theme(borderRadius.3xl)-1px)] bg-[oklch(0.05_0.008_220)] p-12 sm:p-16 text-center overflow-hidden">
