@@ -1,5 +1,6 @@
 import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
 import { useEffect, useRef } from "react";
+import { Float3D, SectionBackdrop } from "./SectionFx";
 
 const stats = [
   { value: 95, suffix: "%", label: "Accuracy Rate" },
