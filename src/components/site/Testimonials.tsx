@@ -35,7 +35,10 @@ const items = [
 
 export function Testimonials() {
   return (
-    <section className="relative py-24 sm:py-32">
+    <section className="relative py-24 sm:py-32 overflow-hidden">
+      <SectionBackdrop variant="circuit" opacity={0.08} />
+      <Float3D shape="torus" className="top-12 right-[5%] w-28 sm:w-40 opacity-70" duration={10} />
+      <Float3D shape="pyramid" className="bottom-10 left-[5%] w-28 sm:w-36 opacity-60" rotate={[12, -12]} duration={13} />
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
           eyebrow="Trusted globally"
