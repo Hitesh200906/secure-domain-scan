@@ -134,10 +134,12 @@ function SocialCard({ s, index }: { s: Social; index: number }) {
             <motion.div
               whileHover={{ rotateY: 360 }}
               transition={{ duration: 0.8 }}
-              className="size-14 rounded-2xl grid place-items-center border border-white/15 bg-white/[0.04] backdrop-blur"
+              className="size-14 rounded-2xl grid place-items-center border border-white/20 shadow-lg"
+              style={{ background: s.iconBg }}
             >
               <s.icon className="size-7" />
             </motion.div>
+
             <div className="size-9 rounded-full grid place-items-center border border-white/15 bg-white/[0.04] text-white/80 group-hover:bg-white/10 transition">
               <ArrowUpRight className="size-4" />
             </div>
