@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Crosshair, Cpu, FileCheck } from "lucide-react";
 import { SectionHeader } from "./Features";
+import { Float3D, SectionBackdrop } from "./SectionFx";
 
 const steps = [
   {
