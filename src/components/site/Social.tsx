@@ -22,9 +22,9 @@ const socials: Social[] = [
     href: "https://instagram.com",
     icon: Instagram,
     followers: "128K followers",
-    gradient: "from-[#feda75] via-[#fa7e1e] via-40% to-[#d62976]",
-    glow: "shadow-[0_0_60px_-10px_rgba(214,41,118,0.6)]",
-    ring: "ring-[#fa7e1e]/40",
+    gradient: "from-[#d62976]/40 via-[#fa7e1e]/20 to-transparent",
+    glow: "shadow-[0_0_40px_-12px_rgba(214,41,118,0.4)]",
+    ring: "ring-[#d62976]/30",
   },
   {
     name: "Facebook",
@@ -32,9 +32,9 @@ const socials: Social[] = [
     href: "https://facebook.com",
     icon: Facebook,
     followers: "94K followers",
-    gradient: "from-[#0866ff] via-[#1877f2] to-[#0a3d99]",
-    glow: "shadow-[0_0_60px_-10px_rgba(24,119,242,0.7)]",
-    ring: "ring-[#1877f2]/40",
+    gradient: "from-[#1877f2]/40 via-[#1877f2]/15 to-transparent",
+    glow: "shadow-[0_0_40px_-12px_rgba(24,119,242,0.4)]",
+    ring: "ring-[#1877f2]/30",
   },
   {
     name: "Twitter",
@@ -42,9 +42,9 @@ const socials: Social[] = [
     href: "https://twitter.com",
     icon: Twitter,
     followers: "212K followers",
-    gradient: "from-[#1da1f2] via-[#0d8fd8] to-[#0a4f7a]",
-    glow: "shadow-[0_0_60px_-10px_rgba(29,161,242,0.7)]",
-    ring: "ring-[#1da1f2]/40",
+    gradient: "from-[#1da1f2]/40 via-[#1da1f2]/15 to-transparent",
+    glow: "shadow-[0_0_40px_-12px_rgba(29,161,242,0.4)]",
+    ring: "ring-[#1da1f2]/30",
   },
 ];
 
