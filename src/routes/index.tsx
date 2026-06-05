@@ -8,6 +8,7 @@ import { Testimonials } from "@/components/site/Testimonials";
 import { Pricing } from "@/components/site/Pricing";
 import { Social } from "@/components/site/Social";
 import { SectionHeader } from "@/components/site/Features";
+import { Float3D, SectionBackdrop } from "@/components/site/SectionFx";
 
 export const Route = createFileRoute("/")({
   head: () => ({
