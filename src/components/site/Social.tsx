@@ -67,6 +67,7 @@ const socials: Social[] = [
     followers: "128K followers",
     bg: bgIg,
     accent: "#e1306c",
+    iconBg: "radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%)",
   },
   {
     name: "Facebook",
@@ -76,6 +77,7 @@ const socials: Social[] = [
     followers: "94K followers",
     bg: bgFb,
     accent: "#1877F2",
+    iconBg: "#1877F2",
   },
   {
     name: "X",
@@ -85,8 +87,10 @@ const socials: Social[] = [
     followers: "212K followers",
     bg: bgTw,
     accent: "#ffffff",
+    iconBg: "#000000",
   },
 ];
+
 
 function SocialCard({ s, index }: { s: Social; index: number }) {
   const ref = useRef<HTMLAnchorElement>(null);
