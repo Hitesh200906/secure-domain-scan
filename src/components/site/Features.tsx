@@ -106,12 +106,12 @@ export function Features() {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: i * 0.07 }}
             >
-              <Tilt3DCard className="group relative h-full rounded-2xl glass p-8 lg:p-10 transition will-change-transform hover:border-primary/30">
+              <Tilt3DCard className="group relative h-full rounded-2xl glass p-8 lg:p-10 transition-colors duration-500 will-change-transform hover:border-white/20">
                 <div
-                  className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition pointer-events-none"
+                  className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                   style={{
                     background:
-                      "radial-gradient(600px circle at var(--x, 50%) var(--y, 50%), oklch(0.86 0.16 200 / 0.12), transparent 40%)",
+                      "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0) 55%)",
                   }}
                 />
                 <div
@@ -121,7 +121,7 @@ export function Features() {
                   <motion.div
                     whileHover={{ rotateY: 360 }}
                     transition={{ duration: 0.8 }}
-                    className="inline-flex items-center justify-center size-12 rounded-xl glass text-primary shadow-[0_0_30px_-6px_oklch(0.86_0.16_200_/0.5)]"
+                    className="inline-flex items-center justify-center size-12 rounded-xl glass text-primary"
                   >
                     <f.icon className="size-5" strokeWidth={1.6} />
                   </motion.div>
