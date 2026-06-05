@@ -6,80 +6,49 @@ import { SectionBackdrop } from "./SectionFx";
 import bgIg from "@/assets/social-ig.jpg";
 import bgFb from "@/assets/social-fb.jpg";
 import bgTw from "@/assets/social-tw.jpg";
-
-// Brand glyphs in white — the container box carries the brand color.
-const InstagramIcon = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" className={className} aria-hidden="true" fill="none">
-    <rect x="3" y="3" width="18" height="18" rx="5" stroke="#fff" strokeWidth="2" />
-    <circle cx="12" cy="12" r="4" stroke="#fff" strokeWidth="2" />
-    <circle cx="17.5" cy="6.5" r="1.2" fill="#fff" />
-  </svg>
-);
-
-const FacebookIcon = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
-    <path
-      fill="#fff"
-      d="M15.12 8.5h2.13V5.1c-.37-.05-1.63-.16-3.1-.16-3.07 0-5.17 1.93-5.17 5.48V13H6.07v3.8h2.91V24h3.57v-7.2h2.79l.44-3.8h-3.23v-2.2c0-1.1.3-1.85 1.57-1.85Z"
-    />
-  </svg>
-);
-
-const XIcon = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
-    <path
-      fill="#fff"
-      d="M17.53 4h2.41l-5.27 6.02L21 19h-4.86l-3.8-4.97L7.97 19H5.55l5.64-6.44L5 4h4.98l3.43 4.54L17.53 4Zm-.85 13.55h1.34L8.4 5.36H6.97l9.71 12.19Z"
-    />
-  </svg>
-);
-
+import logoIg from "@/assets/logo-instagram.png";
+import logoFb from "@/assets/logo-facebook.png";
+import logoX from "@/assets/logo-x.png";
 
 type Social = {
   name: string;
   handle: string;
   href: string;
-  icon: React.ComponentType<{ className?: string }>;
+  logo: string;
   followers: string;
   bg: string;
   accent: string;
-  iconBg: string;
 };
-
 
 const socials: Social[] = [
   {
     name: "Instagram",
     handle: "@nexussecurity",
     href: "https://instagram.com",
-    icon: InstagramIcon,
+    logo: logoIg,
     followers: "128K followers",
     bg: bgIg,
     accent: "#e1306c",
-    iconBg: "radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%)",
   },
   {
     name: "Facebook",
     handle: "/nexussecurity",
     href: "https://facebook.com",
-    icon: FacebookIcon,
+    logo: logoFb,
     followers: "94K followers",
     bg: bgFb,
     accent: "#1877F2",
-    iconBg: "#1877F2",
   },
   {
     name: "X",
     handle: "@nexussec",
     href: "https://x.com",
-    icon: XIcon,
+    logo: logoX,
     followers: "212K followers",
     bg: bgTw,
     accent: "#ffffff",
-    iconBg: "#000000",
   },
 ];
-
 
 function SocialCard({ s, index }: { s: Social; index: number }) {
   const ref = useRef<HTMLAnchorElement>(null);
@@ -116,14 +85,12 @@ function SocialCard({ s, index }: { s: Social; index: number }) {
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
         className="group relative block rounded-3xl overflow-hidden border border-white/10 hover:border-white/25 transition-colors duration-500"
       >
-        {/* dark background image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${s.bg})` }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/95" />
 
-        {/* thin top accent line */}
         <div
           className="absolute top-0 left-0 right-0 h-px opacity-60"
           style={{ background: `linear-gradient(90deg, transparent, ${s.accent}, transparent)` }}
@@ -134,10 +101,16 @@ function SocialCard({ s, index }: { s: Social; index: number }) {
             <motion.div
               whileHover={{ rotateY: 360 }}
               transition={{ duration: 0.8 }}
-              className="size-14 rounded-2xl grid place-items-center border border-white/20 shadow-lg"
-              style={{ background: s.iconBg }}
+              className="size-14 rounded-2xl overflow-hidden border border-white/15 shadow-lg bg-black"
             >
-              <s.icon className="size-7" />
+              <img
+                src={s.logo}
+                alt={`${s.name} logo`}
+                width={56}
+                height={56}
+                loading="lazy"
+                className="size-full object-cover"
+              />
             </motion.div>
 
             <div className="size-9 rounded-full grid place-items-center border border-white/15 bg-white/[0.04] text-white/80 group-hover:bg-white/10 transition">
