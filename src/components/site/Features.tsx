@@ -86,6 +86,32 @@ function Tilt3DCard({
   );
 }
 
+function FloatingObject({
+  src,
+  className,
+  rotate,
+  duration,
+  yRange,
+}: {
+  src: string;
+  className?: string;
+  rotate: [number, number];
+  duration: number;
+  yRange: [number, number];
+}) {
+  return (
+    <motion.img
+      src={src}
+      alt=""
+      aria-hidden
+      loading="lazy"
+      className={`pointer-events-none absolute select-none drop-shadow-[0_0_30px_oklch(0.86_0.16_200_/0.5)] ${className ?? ""}`}
+      animate={{ y: yRange, rotate, scale: [1, 1.05, 1] }}
+      transition={{ duration, repeat: Infinity, ease: "easeInOut", repeatType: "reverse" }}
+    />
+  );
+}
+
 export function Features() {
   return (
     <section className="relative py-24 sm:py-32 overflow-hidden">
