@@ -43,6 +43,7 @@ function Home() {
           </div>
         </div>
       </section>
+      <Social />
       <Testimonials />
       <CTASection />
     </>
