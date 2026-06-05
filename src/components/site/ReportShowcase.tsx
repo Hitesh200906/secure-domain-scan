@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight, Download, ShieldAlert } from "lucide-react";
 import { SectionHeader } from "./Features";
+import { Float3D, SectionBackdrop } from "./SectionFx";
 
 const buckets = [
   { label: "Critical", value: 3, color: "oklch(0.65 0.22 25)" },
