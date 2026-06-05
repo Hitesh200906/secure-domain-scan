@@ -32,7 +32,10 @@ function Home() {
       <Features />
       <HowItWorks />
       <ReportShowcase />
-      <section className="relative py-24 sm:py-32">
+      <section className="relative py-24 sm:py-32 overflow-hidden">
+        <SectionBackdrop variant="circuit" opacity={0.1} />
+        <Float3D shape="pyramid" className="top-12 left-[3%] w-28 sm:w-40 opacity-70" duration={12} />
+        <Float3D shape="torus" className="bottom-16 right-[4%] w-28 sm:w-40 opacity-65" rotate={[10, -10]} duration={11} />
         <div className="mx-auto max-w-7xl px-6">
           <SectionHeader
             eyebrow="Pricing"
