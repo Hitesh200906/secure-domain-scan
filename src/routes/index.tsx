@@ -6,6 +6,7 @@ import { HowItWorks } from "@/components/site/HowItWorks";
 import { ReportShowcase } from "@/components/site/ReportShowcase";
 import { Testimonials } from "@/components/site/Testimonials";
 import { Pricing } from "@/components/site/Pricing";
+import { Social } from "@/components/site/Social";
 import { SectionHeader } from "@/components/site/Features";
 
 export const Route = createFileRoute("/")({
@@ -42,6 +43,7 @@ function Home() {
           </div>
         </div>
       </section>
+      <Social />
       <Testimonials />
       <CTASection />
     </>
