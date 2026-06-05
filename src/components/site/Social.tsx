@@ -56,7 +56,9 @@ type Social = {
   followers: string;
   bg: string;
   accent: string;
+  iconBg: string;
 };
+
 
 const socials: Social[] = [
   {
