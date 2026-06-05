@@ -83,23 +83,23 @@ function SocialCard({ s, index }: { s: Social; index: number }) {
           y.set(0);
         }}
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-        className={`relative block rounded-3xl p-px bg-gradient-to-br ${s.gradient} ${s.glow} transition-shadow duration-500 hover:shadow-[0_0_90px_-8px_rgba(255,255,255,0.25)]`}
+        className={`relative block rounded-3xl p-px bg-white/[0.08] ${s.glow} transition-shadow duration-500 hover:bg-white/15`}
       >
         <div
-          className="relative rounded-[calc(theme(borderRadius.3xl)-1px)] bg-[oklch(0.06_0.008_220)] p-8 overflow-hidden"
+          className={`relative rounded-[calc(theme(borderRadius.3xl)-1px)] bg-[oklch(0.05_0.008_220)] p-8 overflow-hidden bg-gradient-to-br ${s.gradient}`}
           style={{ transformStyle: "preserve-3d" }}
         >
-          {/* floating orbs */}
+          {/* subtle dark accent orbs */}
           <motion.div
             aria-hidden
-            className={`absolute -top-12 -right-12 size-40 rounded-full bg-gradient-to-br ${s.gradient} opacity-30 blur-2xl`}
+            className={`absolute -top-12 -right-12 size-40 rounded-full bg-gradient-to-br ${s.gradient} opacity-40 blur-3xl`}
             animate={{ scale: [1, 1.15, 1], rotate: [0, 90, 0] }}
             transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
             style={{ transform: "translateZ(20px)" }}
           />
           <motion.div
             aria-hidden
-            className={`absolute -bottom-16 -left-10 size-44 rounded-full bg-gradient-to-tr ${s.gradient} opacity-20 blur-2xl`}
+            className={`absolute -bottom-16 -left-10 size-44 rounded-full bg-gradient-to-tr ${s.gradient} opacity-25 blur-3xl`}
             animate={{ scale: [1.1, 1, 1.1], rotate: [0, -90, 0] }}
             transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
           />
@@ -108,7 +108,7 @@ function SocialCard({ s, index }: { s: Social; index: number }) {
             <motion.div
               whileHover={{ rotateY: 360, scale: 1.1 }}
               transition={{ duration: 0.8 }}
-              className={`size-16 rounded-2xl bg-gradient-to-br ${s.gradient} grid place-items-center ring-2 ${s.ring} ring-offset-2 ring-offset-black/60`}
+              className={`size-16 rounded-2xl bg-[oklch(0.1_0.01_220)] grid place-items-center ring-1 ${s.ring} border border-white/10`}
             >
               <s.icon className="size-8 text-white" strokeWidth={2} />
             </motion.div>
