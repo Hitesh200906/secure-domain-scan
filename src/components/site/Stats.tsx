@@ -1,6 +1,6 @@
 import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
 import { useEffect, useRef } from "react";
-import { Float3D, SectionBackdrop } from "./SectionFx";
+import { SectionBackdrop } from "./SectionFx";
 
 const stats = [
   { value: 95, suffix: "%", label: "Accuracy Rate" },
@@ -45,8 +45,6 @@ export function Stats() {
   return (
     <section className="relative py-24 sm:py-32 border-y border-white/[0.06] overflow-hidden">
       <SectionBackdrop variant="grid" opacity={0.12} />
-      <Float3D shape="torus" className="top-6 left-6 w-24 sm:w-32 opacity-70" duration={10} />
-      <Float3D shape="pyramid" className="bottom-6 right-8 w-24 sm:w-32 opacity-70" rotate={[10, -10]} duration={12} />
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-y-12 gap-x-6">
           {stats.map((s, i) => (

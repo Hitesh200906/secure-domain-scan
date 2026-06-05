@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Crosshair, Cpu, FileCheck } from "lucide-react";
 import { SectionHeader } from "./Features";
-import { Float3D, SectionBackdrop } from "./SectionFx";
+import { SectionBackdrop } from "./SectionFx";
 
 const steps = [
   {
@@ -31,8 +31,6 @@ export function HowItWorks() {
   return (
     <section className="relative py-24 sm:py-32 overflow-hidden">
       <SectionBackdrop variant="circuit" opacity={0.1} />
-      <Float3D shape="cube" className="top-10 right-[6%] w-28 sm:w-40 opacity-75" duration={11} />
-      <Float3D shape="sphere" className="bottom-20 left-[4%] w-32 sm:w-44 opacity-60" rotate={[-20, 20]} duration={14} yRange={[0, 30]} />
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
           eyebrow="How it works"
