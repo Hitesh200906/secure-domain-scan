@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Instagram, Facebook, Twitter, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { useRef } from "react";
 import { SectionHeader } from "./Features";
 import { SectionBackdrop } from "./SectionFx";
@@ -7,11 +7,52 @@ import bgIg from "@/assets/social-ig.jpg";
 import bgFb from "@/assets/social-fb.jpg";
 import bgTw from "@/assets/social-tw.jpg";
 
+// Brand icons with official colors
+const InstagramIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+    <defs>
+      <radialGradient id="ig-grad" cx="30%" cy="107%" r="150%">
+        <stop offset="0%" stopColor="#fdf497" />
+        <stop offset="5%" stopColor="#fdf497" />
+        <stop offset="45%" stopColor="#fd5949" />
+        <stop offset="60%" stopColor="#d6249f" />
+        <stop offset="90%" stopColor="#285AEB" />
+      </radialGradient>
+    </defs>
+    <rect x="2" y="2" width="20" height="20" rx="5" fill="url(#ig-grad)" />
+    <circle cx="12" cy="12" r="4.2" fill="none" stroke="#fff" strokeWidth="1.8" />
+    <circle cx="17.5" cy="6.5" r="1.2" fill="#fff" />
+  </svg>
+);
+
+const FacebookIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+    <path
+      fill="#1877F2"
+      d="M24 12a12 12 0 1 0-13.875 11.854V15.47H7.078V12h3.047V9.356c0-3.007 1.792-4.668 4.533-4.668 1.313 0 2.686.234 2.686.234v2.953h-1.513c-1.491 0-1.956.925-1.956 1.875V12h3.328l-.532 3.47h-2.796v8.384A12.003 12.003 0 0 0 24 12Z"
+    />
+    <path
+      fill="#fff"
+      d="m16.671 15.47.532-3.47h-3.328V9.75c0-.95.465-1.875 1.956-1.875h1.513V4.922s-1.373-.234-2.686-.234c-2.741 0-4.533 1.661-4.533 4.668V12H7.078v3.47h3.047v8.384a12.09 12.09 0 0 0 3.75 0V15.47h2.796Z"
+    />
+  </svg>
+);
+
+const XIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+    <rect width="24" height="24" rx="4" fill="#000" />
+    <path
+      fill="#fff"
+      d="M17.53 5h2.41l-5.27 6.02L21 19h-4.86l-3.8-4.97L7.97 19H5.55l5.64-6.44L5 5h4.98l3.43 4.54L17.53 5Zm-.85 12.55h1.34L8.4 6.36H6.97l9.71 11.19Z"
+    />
+  </svg>
+);
+
 type Social = {
   name: string;
   handle: string;
   href: string;
-  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  icon: React.ComponentType<{ className?: string }>;
   followers: string;
   bg: string;
   accent: string;
@@ -22,28 +63,28 @@ const socials: Social[] = [
     name: "Instagram",
     handle: "@nexussecurity",
     href: "https://instagram.com",
-    icon: Instagram,
+    icon: InstagramIcon,
     followers: "128K followers",
     bg: bgIg,
-    accent: "oklch(0.55 0.18 350)",
+    accent: "#e1306c",
   },
   {
     name: "Facebook",
     handle: "/nexussecurity",
     href: "https://facebook.com",
-    icon: Facebook,
+    icon: FacebookIcon,
     followers: "94K followers",
     bg: bgFb,
-    accent: "oklch(0.55 0.18 250)",
+    accent: "#1877F2",
   },
   {
-    name: "Twitter",
+    name: "X",
     handle: "@nexussec",
-    href: "https://twitter.com",
-    icon: Twitter,
+    href: "https://x.com",
+    icon: XIcon,
     followers: "212K followers",
     bg: bgTw,
-    accent: "oklch(0.7 0.13 200)",
+    accent: "#ffffff",
   },
 ];
 
@@ -102,7 +143,7 @@ function SocialCard({ s, index }: { s: Social; index: number }) {
               transition={{ duration: 0.8 }}
               className="size-14 rounded-2xl grid place-items-center border border-white/15 bg-white/[0.04] backdrop-blur"
             >
-              <s.icon className="size-6 text-white" strokeWidth={1.8} />
+              <s.icon className="size-7" />
             </motion.div>
             <div className="size-9 rounded-full grid place-items-center border border-white/15 bg-white/[0.04] text-white/80 group-hover:bg-white/10 transition">
               <ArrowUpRight className="size-4" />
