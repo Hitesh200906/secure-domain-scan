@@ -6,8 +6,11 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+// NOTE: Inside the Lovable sandbox the plugin forces `cloudflare-module`, so this
+// `vercel` preset is only used when building outside the sandbox (e.g. on Vercel CI).
+// Lovable preview / publish continues to work unchanged.
 export default defineConfig({
-  tanstackStart: {
-    server: { entry: "server" },
+  nitro: {
+    preset: "vercel",
   },
 });
