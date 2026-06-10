@@ -50,9 +50,9 @@ export function AdminShell({ title, description, actions, children }: { title: s
               })}
             </nav>
             <div className="mt-3 px-3 py-3 rounded-xl bg-gradient-to-br from-primary/10 to-secondary/10 border border-white/5">
-              <div className="text-[10px] uppercase tracking-[0.2em] text-primary/80">Public preview</div>
+              <div className="text-[10px] uppercase tracking-[0.2em] text-primary/80">Restricted</div>
               <p className="text-[11px] mt-1 text-muted-foreground leading-relaxed">
-                Admin panel is currently unauthenticated. Lock down before launch.
+                Superadmin access only. All actions are audited.
               </p>
             </div>
           </div>
