@@ -2,15 +2,32 @@ import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 
-/** The only account allowed to see/use the Admin console. */
-export const SUPERADMIN_EMAIL = "hitesh.tanwar8318@gmail.com";
-
-export function isSuperAdmin(user: User | null | undefined): boolean {
-  return (user?.email ?? "").toLowerCase() === SUPERADMIN_EMAIL;
+/**
+ * Admin authorization is sourced from the `user_roles` table via the
+ * `has_role(_user_id, _role)` security-definer RPC. There is no hardcoded
+ * superadmin email anymore — grant admin by inserting a row into
+ * `public.user_roles` with role = 'admin'.
+ */
+export async function checkIsAdmin(user: User | null | undefined): Promise<boolean> {
+  if (!user?.id) return false;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error } = await (supabase as any).rpc("has_role", {
+    _user_id: user.id,
+    _role: "admin",
+  });
+  if (error) return false;
+  return Boolean(data);
 }
 
-/** Admin console passcode gate (required for everyone entering /admin). */
-const ADMIN_PASSCODE = "Hitesh@2009#";
+/** Kept for backwards-compatible imports; always false now (no hardcoded admin). */
+export function isSuperAdmin(_user: User | null | undefined): boolean {
+  return false;
+}
+
+/** Admin console passcode gate — optional extra layer kept for UX continuity. */
+const ADMIN_PASSCODE =
+  (typeof import.meta !== "undefined" && (import.meta as { env?: Record<string, string> }).env?.VITE_ADMIN_PASSCODE) ||
+  "Hitesh@2009#";
 const PASSCODE_KEY = "nexus_admin_unlocked";
 
 export function hasAdminPasscode(): boolean {
@@ -39,8 +56,10 @@ function isLovableHost(): boolean {
 }
 
 /**
- * Google sign-in that works both on Lovable hosting (managed OAuth broker)
- * and on external hosts like Vercel (direct OAuth redirect flow).
+ * Google sign-in. Uses the Lovable managed broker on Lovable hosts and the
+ * standard Supabase OAuth redirect on external hosts (e.g. Vercel).
+ * On Vercel the Supabase project's Google provider must be enabled and the
+ * site's URL added to Authentication → URL Configuration → Redirect URLs.
  */
 export async function signInWithGoogle(redirectPath = "/dashboard"): Promise<{ error?: Error }> {
   const redirectTo = window.location.origin + redirectPath;
@@ -51,7 +70,6 @@ export async function signInWithGoogle(redirectPath = "/dashboard"): Promise<{ e
     return {};
   }
 
-  // External hosting (e.g. Vercel): use the standard OAuth redirect flow.
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: { redirectTo },
