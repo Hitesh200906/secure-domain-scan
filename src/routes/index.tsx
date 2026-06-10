@@ -69,10 +69,10 @@ function CTASection() {
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
                 <a
-                  href="/contact"
+                  href="/signup"
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-white text-black px-6 py-3 text-sm font-medium hover:shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.7)] transition"
                 >
-                  Start Free Scan →
+                  Sign Up →
                 </a>
                 <a
                   href="/pricing"

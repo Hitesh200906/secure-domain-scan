@@ -5,8 +5,6 @@ import { SectionBackdrop } from "./SectionFx";
 const stats = [
   { value: 95, suffix: "%", label: "Accuracy Rate" },
   { value: 24, suffix: "h", label: "Average Delivery" },
-  { value: 15000, suffix: "+", label: "Scans Completed" },
-  { value: 250000, suffix: "+", label: "Vulnerabilities Detected" },
   { value: 99.9, suffix: "%", label: "System Uptime", decimals: 1 },
 ];
 
@@ -46,7 +44,7 @@ export function Stats() {
     <section className="relative py-24 sm:py-32 border-y border-white/[0.06] overflow-hidden">
       <SectionBackdrop variant="grid" opacity={0.12} />
       <div className="mx-auto max-w-7xl px-6">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-y-12 gap-x-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-y-12 gap-x-6">
           {stats.map((s, i) => (
             <motion.div
               key={s.label}

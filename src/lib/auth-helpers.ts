@@ -9,6 +9,30 @@ export function isSuperAdmin(user: User | null | undefined): boolean {
   return (user?.email ?? "").toLowerCase() === SUPERADMIN_EMAIL;
 }
 
+/** Admin console passcode gate (required for everyone entering /admin). */
+const ADMIN_PASSCODE = "Hitesh@2009#";
+const PASSCODE_KEY = "nexus_admin_unlocked";
+
+export function hasAdminPasscode(): boolean {
+  try {
+    return sessionStorage.getItem(PASSCODE_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+export function verifyAdminPasscode(code: string): boolean {
+  if (code === ADMIN_PASSCODE) {
+    try {
+      sessionStorage.setItem(PASSCODE_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+    return true;
+  }
+  return false;
+}
+
 function isLovableHost(): boolean {
   const h = window.location.hostname;
   return h.endsWith(".lovable.app") || h.endsWith(".lovableproject.com") || h === "localhost";
