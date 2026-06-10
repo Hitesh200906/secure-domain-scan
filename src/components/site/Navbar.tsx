@@ -1,16 +1,19 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, ShieldCheck, X, LogOut, User as UserIcon, LayoutDashboard } from "lucide-react";
+import { Menu, ShieldCheck, X, LogOut, User as UserIcon, LayoutDashboard, Lock } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { isSuperAdmin } from "@/lib/auth-helpers";
 
-const links = [
+const publicLinks = [
   { to: "/", label: "Features" },
   { to: "/pricing", label: "Pricing" },
+  { to: "/contact", label: "Contact" },
+] as const;
+
+const authLinks = [
   { to: "/dashboard", label: "Dashboard" },
   { to: "/profile", label: "Profile" },
-  { to: "/contact", label: "Contact" },
-  { to: "/admin", label: "Admin" },
 ] as const;
 
 export function Navbar() {
@@ -19,6 +22,8 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const admin = isSuperAdmin(user);
+  const links = [...publicLinks, ...(user ? authLinks : [])];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -55,9 +60,9 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
-            {user && (
-              <Link to="/dashboard" className="px-3.5 py-2 text-[13px] text-muted-foreground hover:text-white transition rounded-lg" activeProps={{ className: "text-white" }}>
-                Dashboard
+            {admin && (
+              <Link to="/admin" className="px-3.5 py-2 text-[13px] text-muted-foreground hover:text-white transition rounded-lg inline-flex items-center gap-1.5" activeProps={{ className: "text-white" }}>
+                <Lock className="size-3.5" /> Admin
               </Link>
             )}
           </nav>
