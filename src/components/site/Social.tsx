@@ -66,38 +66,17 @@ const socials: Social[] = [
 ];
 
 function SocialCard({ s, index }: { s: Social; index: number }) {
-  const ref = useRef<HTMLAnchorElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 220, damping: 16 });
-  const sy = useSpring(y, { stiffness: 220, damping: 16 });
-  const rotateX = useTransform(sy, [-60, 60], [8, -8]);
-  const rotateY = useTransform(sx, [-60, 60], [-8, 8]);
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.6, delay: index * 0.12 }}
-      style={{ perspective: 1200 }}
     >
-      <motion.a
-        ref={ref}
+      <a
         href={s.href}
         target="_blank"
         rel="noopener noreferrer"
-        onMouseMove={(e) => {
-          const rect = ref.current?.getBoundingClientRect();
-          if (!rect) return;
-          x.set(e.clientX - rect.left - rect.width / 2);
-          y.set(e.clientY - rect.top - rect.height / 2);
-        }}
-        onMouseLeave={() => {
-          x.set(0);
-          y.set(0);
-        }}
-        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
         className="group relative block rounded-3xl overflow-hidden border border-white/10 hover:border-white/25 transition-colors duration-500"
       >
         {/* Visual header */}
@@ -122,23 +101,21 @@ function SocialCard({ s, index }: { s: Social; index: number }) {
 
         {/* Floating logo */}
         <div className="absolute top-48 left-7 -translate-y-1/2 z-10">
-          <motion.div
-            whileHover={{ rotateY: 360 }}
-            transition={{ duration: 0.8 }}
+          <div
             className="size-16 rounded-2xl overflow-hidden border-2 shadow-2xl bg-black"
             style={{ borderColor: s.accent, boxShadow: `0 8px 30px -6px ${s.glow}` }}
           >
             <img src={s.logo} alt={`${s.name} logo`} width={64} height={64} loading="lazy" className="size-full object-cover" />
-          </motion.div>
+          </div>
         </div>
 
         {/* Body */}
-        <div className="relative bg-[oklch(0.05_0.008_220)] px-7 pt-12 pb-7" style={{ transformStyle: "preserve-3d" }}>
+        <div className="relative bg-[oklch(0.05_0.008_220)] px-7 pt-12 pb-7">
           <div
             className="absolute top-0 left-0 right-0 h-px opacity-50"
             style={{ background: `linear-gradient(90deg, transparent, ${s.accent}, transparent)` }}
           />
-          <div style={{ transform: "translateZ(30px)" }}>
+          <div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] uppercase tracking-[0.25em] text-white/40">{s.name}</span>
               <span className="size-1 rounded-full" style={{ background: s.accent }} />
@@ -173,7 +150,7 @@ function SocialCard({ s, index }: { s: Social; index: number }) {
             </div>
           </div>
         </div>
-      </motion.a>
+      </a>
     </motion.div>
   );
 }
