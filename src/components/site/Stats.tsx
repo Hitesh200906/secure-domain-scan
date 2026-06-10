@@ -52,7 +52,7 @@ export function Stats() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.6, delay: i * 0.05 }}
-              className="text-center md:text-left"
+              className="text-center"
             >
               <div className="text-4xl sm:text-5xl font-semibold tracking-tight text-gradient-accent">
                 <Counter value={s.value} suffix={s.suffix} decimals={s.decimals} />
