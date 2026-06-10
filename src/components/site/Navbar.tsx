@@ -82,6 +82,11 @@ export function Navbar() {
                     <Link to="/profile" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.05]">
                       <UserIcon className="size-4" /> Profile
                     </Link>
+                    {admin && (
+                      <Link to="/admin" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.05]">
+                        <Lock className="size-4" /> Admin Console
+                      </Link>
+                    )}
                     <button onClick={signOut} className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.05] text-destructive">
                       <LogOut className="size-4" /> Sign out
                     </button>
@@ -111,11 +116,8 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
-            {user && (
-              <>
-                <Link to="/dashboard" onClick={() => setOpen(false)} className="block px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">Dashboard</Link>
-                <Link to="/profile" onClick={() => setOpen(false)} className="block px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">Profile</Link>
-              </>
+            {admin && (
+              <Link to="/admin" onClick={() => setOpen(false)} className="block px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">Admin Console</Link>
             )}
             <div className="pt-2 mt-2 border-t border-white/10 flex flex-col gap-2">
               {user ? (
