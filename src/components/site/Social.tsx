@@ -1,11 +1,10 @@
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowUpRight, Users, BarChart3, Zap } from "lucide-react";
-import { useRef } from "react";
 import { SectionHeader } from "./Features";
 import { SectionBackdrop } from "./SectionFx";
 import bgIg from "@/assets/social-ig-dark.jpg";
 import bgFb from "@/assets/social-fb-dark.jpg";
-import bgX from "@/assets/social-x-dark.jpg";
+import bgX from "@/assets/social-x-new.jpg";
 import logoIg from "@/assets/logo-instagram.jpg";
 import logoFb from "@/assets/logo-facebook.jpg";
 import logoX from "@/assets/logo-x.jpg";
