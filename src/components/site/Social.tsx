@@ -122,7 +122,7 @@ function SocialCard({ s, index }: { s: Social; index: number }) {
         </div>
 
         {/* Floating logo */}
-        <div className="absolute top-48 left-7 -translate-y-1/2 z-10" style={{ transform: "translateZ(50px) translateY(-50%)" }}>
+        <div className="absolute top-48 left-7 -translate-y-1/2 z-10">
           <motion.div
             whileHover={{ rotateY: 360 }}
             transition={{ duration: 0.8 }}
