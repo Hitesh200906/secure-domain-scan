@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { AdminShell, Section, Badge } from "@/components/admin/AdminShell";
+import { AdminShell, Section, Badge, SuperAdminGate } from "@/components/admin/AdminShell";
 import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/admin/logs")({ component: LogsPage });
+export const Route = createFileRoute("/admin/logs")({ component: () => <SuperAdminGate><LogsPage /></SuperAdminGate> });
 
 type Log = { id: string; actor_email: string | null; action: string; target_type: string | null; target_id: string | null; metadata: Record<string, unknown>; created_at: string };
 

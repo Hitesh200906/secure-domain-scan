@@ -1,9 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, ShieldCheck, X, LogOut, User as UserIcon, LayoutDashboard, Lock } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import { isSuperAdmin } from "@/lib/auth-helpers";
+import { useAdmin } from "@/hooks/use-admin";
 
 const publicLinks = [
   { to: "/", label: "Features" },
@@ -20,9 +19,8 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, isAdmin: admin } = useAdmin();
   const navigate = useNavigate();
-  const admin = isSuperAdmin(user);
   const links = [...publicLinks, ...(user ? authLinks : [])];
 
   useEffect(() => {
@@ -96,8 +94,8 @@ export function Navbar() {
             ) : (
               <>
                 <Link to="/login" className="px-4 py-2 text-[13px] text-muted-foreground hover:text-white transition">Login</Link>
-                <Link to="/scan/new" className="relative inline-flex items-center gap-1.5 rounded-full bg-white text-black px-4 py-2 text-[13px] font-medium hover:bg-primary transition-all duration-300">
-                  Start Free Scan
+                <Link to="/signup" className="relative inline-flex items-center gap-1.5 rounded-full bg-white text-black px-4 py-2 text-[13px] font-medium hover:bg-primary transition-all duration-300">
+                  Sign Up
                   <span className="text-base leading-none">→</span>
                 </Link>
               </>
@@ -125,7 +123,7 @@ export function Navbar() {
               ) : (
                 <>
                   <Link to="/login" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">Login</Link>
-                  <Link to="/scan/new" onClick={() => setOpen(false)} className="text-center rounded-full bg-white text-black px-4 py-2.5 text-sm font-medium">Start Free Scan →</Link>
+                  <Link to="/signup" onClick={() => setOpen(false)} className="text-center rounded-full bg-white text-black px-4 py-2.5 text-sm font-medium">Sign Up →</Link>
                 </>
               )}
             </div>

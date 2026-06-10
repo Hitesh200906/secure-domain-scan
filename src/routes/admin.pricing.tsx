@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { AdminShell, Section, Badge } from "@/components/admin/AdminShell";
+import { AdminShell, Section, Badge, SuperAdminGate } from "@/components/admin/AdminShell";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { logAudit } from "@/lib/audit";
 import { Save, Star } from "lucide-react";
 
-export const Route = createFileRoute("/admin/pricing")({ component: PricingAdmin });
+export const Route = createFileRoute("/admin/pricing")({ component: () => <SuperAdminGate><PricingAdmin /></SuperAdminGate> });
 
 type Plan = {
   id: string; slug: string; name: string; headline: string | null; description: string | null;

@@ -1,25 +1,47 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Users, ShieldCheck, LifeBuoy, ScanLine, FileText,
-  Tags, ScrollText, ChevronLeft, Menu,
+  Tags, ScrollText, ChevronLeft, Menu, Loader2,
 } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { useAdmin } from "@/hooks/use-admin";
 
-type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean };
+type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean; superOnly?: boolean };
 const nav: NavItem[] = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
   { to: "/admin/users", label: "Users", icon: Users },
-  { to: "/admin/admins", label: "Admins", icon: ShieldCheck },
+  { to: "/admin/admins", label: "Admins", icon: ShieldCheck, superOnly: true },
   { to: "/admin/tickets", label: "Support", icon: LifeBuoy },
   { to: "/admin/scans", label: "Scans", icon: ScanLine },
   { to: "/admin/reports", label: "Reports", icon: FileText },
-  { to: "/admin/pricing", label: "Pricing", icon: Tags },
-  { to: "/admin/logs", label: "Audit Logs", icon: ScrollText },
+  { to: "/admin/pricing", label: "Pricing", icon: Tags, superOnly: true },
+  { to: "/admin/logs", label: "Audit Logs", icon: ScrollText, superOnly: true },
 ];
+
+/** Wrap superadmin-only pages: redirects normal admins back to /admin. */
+export function SuperAdminGate({ children }: { children: ReactNode }) {
+  const { isSuperAdmin, loading } = useAdmin();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !isSuperAdmin) navigate({ to: "/admin", replace: true });
+  }, [loading, isSuperAdmin, navigate]);
+
+  if (loading || !isSuperAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="size-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+  return <>{children}</>;
+}
 
 export function AdminShell({ title, description, actions, children }: { title: string; description?: string; actions?: ReactNode; children: ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
+  const { isSuperAdmin } = useAdmin();
+  const visibleNav = nav.filter((item) => !item.superOnly || isSuperAdmin);
 
   return (
     <div className="min-h-screen pt-24 pb-16">
@@ -32,7 +54,7 @@ export function AdminShell({ title, description, actions, children }: { title: s
               <span className="size-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_2px_oklch(0.75_0.15_150)]" />
             </div>
             <nav className="mt-1 space-y-0.5">
-              {nav.map((item) => {
+              {visibleNav.map((item) => {
                 const active = item.exact ? path === item.to : path.startsWith(item.to);
                 return (
                   <Link
@@ -52,7 +74,7 @@ export function AdminShell({ title, description, actions, children }: { title: s
             <div className="mt-3 px-3 py-3 rounded-xl bg-gradient-to-br from-primary/10 to-secondary/10 border border-white/5">
               <div className="text-[10px] uppercase tracking-[0.2em] text-primary/80">Restricted</div>
               <p className="text-[11px] mt-1 text-muted-foreground leading-relaxed">
-                Superadmin access only. All actions are audited.
+                Admin access only. All actions are audited.
               </p>
             </div>
           </div>
