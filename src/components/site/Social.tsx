@@ -116,20 +116,21 @@ function SocialCard({ s, index }: { s: Social; index: number }) {
             className="absolute -inset-x-10 -top-24 h-40 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"
             style={{ background: `radial-gradient(closest-side, ${s.glow}, transparent)` }}
           />
-          {/* Floating logo */}
-          <div className="absolute bottom-0 left-7 translate-y-1/2" style={{ transform: "translateZ(50px) translateY(50%)" }}>
-            <motion.div
-              whileHover={{ rotateY: 360 }}
-              transition={{ duration: 0.8 }}
-              className="size-16 rounded-2xl overflow-hidden border-2 shadow-2xl bg-black"
-              style={{ borderColor: s.accent, boxShadow: `0 8px 30px -6px ${s.glow}` }}
-            >
-              <img src={s.logo} alt={`${s.name} logo`} width={64} height={64} loading="lazy" className="size-full object-cover" />
-            </motion.div>
-          </div>
           <div className="absolute top-4 right-4 size-9 rounded-full grid place-items-center border border-white/15 bg-black/40 backdrop-blur text-white/80 group-hover:bg-white/15 transition">
             <ArrowUpRight className="size-4" />
           </div>
+        </div>
+
+        {/* Floating logo */}
+        <div className="absolute top-48 left-7 -translate-y-1/2 z-10" style={{ transform: "translateZ(50px) translateY(-50%)" }}>
+          <motion.div
+            whileHover={{ rotateY: 360 }}
+            transition={{ duration: 0.8 }}
+            className="size-16 rounded-2xl overflow-hidden border-2 shadow-2xl bg-black"
+            style={{ borderColor: s.accent, boxShadow: `0 8px 30px -6px ${s.glow}` }}
+          >
+            <img src={s.logo} alt={`${s.name} logo`} width={64} height={64} loading="lazy" className="size-full object-cover" />
+          </motion.div>
         </div>
 
         {/* Body */}
