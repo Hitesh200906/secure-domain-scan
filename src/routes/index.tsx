@@ -9,6 +9,7 @@ import { Pricing } from "@/components/site/Pricing";
 import { Social } from "@/components/site/Social";
 import { SectionHeader } from "@/components/site/Features";
 import { SectionBackdrop } from "@/components/site/SectionFx";
+import { useAuth } from "@/hooks/use-auth";
 
 
 export const Route = createFileRoute("/")({
@@ -55,6 +56,7 @@ function Home() {
 }
 
 function CTASection() {
+  const { user } = useAuth();
   return (
     <section className="relative py-24 sm:py-32 overflow-hidden">
       <SectionBackdrop variant="grid" opacity={0.12} />
@@ -70,12 +72,21 @@ function CTASection() {
                 Run your first AI-powered security scan in under 60 seconds.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-                <a
-                  href="/signup"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-white text-black px-6 py-3 text-sm font-medium hover:shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.7)] transition"
-                >
-                  Sign Up →
-                </a>
+                {!user ? (
+                  <a
+                    href="/signup"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white text-black px-6 py-3 text-sm font-medium hover:shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.7)] transition"
+                  >
+                    Sign Up →
+                  </a>
+                ) : (
+                  <a
+                    href="/contact"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white text-black px-6 py-3 text-sm font-medium hover:shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.7)] transition"
+                  >
+                    Contact
+                  </a>
+                )}
                 <a
                   href="/pricing"
                   className="inline-flex items-center justify-center gap-2 rounded-full glass px-6 py-3 text-sm font-medium text-white"
