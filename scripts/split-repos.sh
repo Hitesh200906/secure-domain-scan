@@ -5,7 +5,7 @@
 #   bash scripts/split-repos.sh <frontend-dir> <backend-dir>
 #
 # Example:
-#   bash scripts/split-repos.sh ../nexus-security-frontend ../nexus-security-backend
+#   bash scripts/split-repos.sh ../nexus-security ../Nexussecuritylovable
 #
 # Both target directories must NOT already exist. The script does not run
 # `git init` for you — review the output, then `cd` into each and push.
