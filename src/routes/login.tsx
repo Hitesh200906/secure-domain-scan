@@ -25,10 +25,28 @@ function LoginPage() {
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    const key = `login_attempts_${email.toLowerCase()}`;
+    const lockKey = `login_lock_${email.toLowerCase()}`;
+    const lockUntil = Number(localStorage.getItem(lockKey) || 0);
+    if (lockUntil && Date.now() < lockUntil) {
+      const mins = Math.ceil((lockUntil - Date.now()) / 60000);
+      return toast.error(`Too many requests. Try again in ${mins} minute${mins > 1 ? "s" : ""}.`);
+    }
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
-    if (error) return toast.error(error.message);
+    if (error) {
+      const attempts = Number(localStorage.getItem(key) || 0) + 1;
+      localStorage.setItem(key, String(attempts));
+      if (attempts >= 10) {
+        localStorage.setItem(lockKey, String(Date.now() + 15 * 60 * 1000));
+        localStorage.removeItem(key);
+        return toast.error("Too many requests. Try again after 15 minutes.");
+      }
+      return toast.error(`${error.message} (${10 - attempts} attempts left)`);
+    }
+    localStorage.removeItem(key);
+    localStorage.removeItem(lockKey);
     toast.success("Welcome back");
     navigate({ to: "/" });
   };
