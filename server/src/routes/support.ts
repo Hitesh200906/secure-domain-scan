@@ -8,6 +8,8 @@ const router = Router();
 const TicketSchema = z.object({
   subject: z.string().min(3).max(200),
   message: z.string().min(3).max(5000),
+  name: z.string().min(1).max(120).optional(),
+  email: z.string().email().optional(),
   priority: z.enum(["low", "normal", "high", "urgent"]).optional(),
 });
 
@@ -21,6 +23,9 @@ router.post("/tickets", requireAuth, async (req: AuthedRequest, res) => {
     .insert({
       user_id: req.user!.id,
       subject: parsed.data.subject,
+      message: parsed.data.message,
+      name: parsed.data.name ?? null,
+      email: parsed.data.email ?? req.user!.email,
       priority: parsed.data.priority ?? "normal",
       status: "open",
     })
@@ -30,8 +35,9 @@ router.post("/tickets", requireAuth, async (req: AuthedRequest, res) => {
 
   await sb.from("ticket_messages").insert({
     ticket_id: ticket.id,
-    user_id: req.user!.id,
-    message: parsed.data.message,
+    author_type: "user",
+    author_name: parsed.data.name ?? req.user!.email ?? "user",
+    body: parsed.data.message,
   });
 
   return res.status(201).json({ ticket });
