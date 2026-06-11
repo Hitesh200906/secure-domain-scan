@@ -20,7 +20,7 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (user) navigate({ to: "/dashboard", replace: true });
+    if (user) navigate({ to: "/", replace: true });
   }, [user, navigate]);
 
   const handleEmailLogin = async (e: React.FormEvent) => {
@@ -30,12 +30,12 @@ function LoginPage() {
     setLoading(false);
     if (error) return toast.error(error.message);
     toast.success("Welcome back");
-    navigate({ to: "/dashboard" });
+    navigate({ to: "/" });
   };
 
   const handleGoogle = async () => {
     setLoading(true);
-    const res = await signInWithGoogle("/dashboard");
+    const res = await signInWithGoogle("/");
     if (res.error) {
       setLoading(false);
       toast.error("Google sign-in failed");

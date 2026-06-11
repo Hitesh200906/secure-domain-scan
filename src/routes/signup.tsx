@@ -23,7 +23,7 @@ function SignupPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (user) navigate({ to: "/dashboard", replace: true });
+    if (user) navigate({ to: "/", replace: true });
   }, [user, navigate]);
 
 
@@ -35,7 +35,7 @@ function SignupPage() {
       email,
       password,
       options: {
-        emailRedirectTo: window.location.origin + "/dashboard",
+        emailRedirectTo: window.location.origin + "/",
         data: { full_name: fullName },
       },
     });
@@ -47,7 +47,7 @@ function SignupPage() {
 
   const handleGoogle = async () => {
     setLoading(true);
-    const res = await signInWithGoogle("/dashboard");
+    const res = await signInWithGoogle("/");
     if (res.error) {
       setLoading(false);
       toast.error("Google sign-up failed");
