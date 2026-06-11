@@ -4,7 +4,7 @@ import {
   Activity, AlertTriangle, BarChart3, Bell, CheckCircle2, Clock,
   CreditCard, Globe2, LayoutDashboard, LogOut, ScanSearch, Settings,
   Shield, ShieldAlert, ShieldCheck, Sparkles, TrendingUp, User as UserIcon,
-  Zap, ArrowUpRight, Search, Lock, Wifi, Server, FileWarning, Eye,
+  Zap, ArrowUpRight, Search, Lock, Wifi, Server, FileWarning, Eye, Menu, X,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,6 +31,7 @@ function Dashboard() {
   const [scans, setScans] = useState<Scan[]>([]);
   const [profile, setProfile] = useState<{ plan: string; credits: number; full_name: string | null } | null>(null);
   const [time, setTime] = useState(new Date());
+  const [mobileNav, setMobileNav] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -106,8 +107,16 @@ function Dashboard() {
       <div className="flex-1 min-w-0 relative">
         {/* Header */}
         <header className="sticky top-0 z-20 backdrop-blur-xl bg-background/70 border-b border-white/[0.06]">
-          <div className="flex items-center justify-between px-6 py-4">
-            <div>
+          <div className="flex items-center justify-between px-4 sm:px-6 py-4 gap-3">
+            <div className="flex items-start gap-3 min-w-0">
+              <button
+                onClick={() => setMobileNav(true)}
+                className="lg:hidden size-9 shrink-0 rounded-full glass grid place-items-center hover:border-white/20 transition mt-1"
+                aria-label="Open menu"
+              >
+                <Menu className="size-4" />
+              </button>
+              <div className="min-w-0">
               <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
                 <span className="relative flex size-1.5">
                   <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
@@ -120,6 +129,7 @@ function Dashboard() {
                 <RoleBadge role={role} size="md" />
               </div>
 
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <div className="hidden md:flex items-center gap-2 rounded-full glass px-3.5 py-2 text-xs text-muted-foreground w-72">
@@ -388,6 +398,44 @@ function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Mobile nav drawer */}
+      <div
+        onClick={() => setMobileNav(false)}
+        className={`lg:hidden fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm transition-opacity ${mobileNav ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+      />
+      <aside
+        className={`lg:hidden fixed left-0 top-0 z-[70] h-full w-72 bg-[oklch(0.04_0.008_220)] border-r border-white/10 shadow-2xl flex flex-col transition-transform duration-300 ${mobileNav ? "translate-x-0" : "-translate-x-full"}`}
+      >
+        <div className="px-5 py-4 border-b border-white/[0.06] flex items-center justify-between">
+          <Link to="/" onClick={() => setMobileNav(false)} className="flex items-center gap-2.5">
+            <ShieldCheck className="size-5 text-primary" />
+            <span className="text-[13px] font-semibold tracking-[0.2em]">NEXUS<span className="text-muted-foreground ml-1.5">SEC</span></span>
+          </Link>
+          <button onClick={() => setMobileNav(false)} className="size-8 grid place-items-center rounded-full hover:bg-white/10 transition" aria-label="Close">
+            <X className="size-4" />
+          </button>
+        </div>
+        <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto" onClick={() => setMobileNav(false)}>
+          <div className="px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">Workspace</div>
+          <SidebarLink to="/dashboard" icon={LayoutDashboard} label="Overview" active />
+          <SidebarLink to="/scan/new" icon={ScanSearch} label="New Scan" />
+          <SidebarLink to="/dashboard" icon={FileWarning} label="Findings" badge={String(totalFindings)} />
+          <SidebarLink to="/dashboard" icon={Globe2} label="Assets" />
+          <SidebarLink to="/dashboard" icon={Bell} label="Alerts" />
+          <div className="px-3 pt-5 pb-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">Account</div>
+          <SidebarLink to="/profile" icon={UserIcon} label="Profile" />
+          <SidebarLink to="/pricing" icon={CreditCard} label="Billing" />
+          <SidebarLink to="/contact" icon={Settings} label="Support" />
+        </nav>
+        {user && (
+          <div className="p-3 border-t border-white/[0.06]">
+            <button onClick={signOut} className="w-full text-left px-3 py-2 rounded-xl text-xs text-muted-foreground hover:text-white hover:bg-white/[0.03] inline-flex items-center gap-2">
+              <LogOut className="size-3.5" /> Sign out
+            </button>
+          </div>
+        )}
+      </aside>
     </div>
   );
 }
