@@ -125,7 +125,7 @@ export const api = {
     if (!user) throw new Error("Not signed in");
     const { data, error } = await supabase
       .from("scan_requests")
-      .insert({ ...body, user_id: user.id })
+      .insert({ ...body, user_id: user.id } as never)
       .select()
       .single();
     if (error) throw new Error(error.message);
