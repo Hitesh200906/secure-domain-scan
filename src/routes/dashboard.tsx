@@ -107,8 +107,16 @@ function Dashboard() {
       <div className="flex-1 min-w-0 relative">
         {/* Header */}
         <header className="sticky top-0 z-20 backdrop-blur-xl bg-background/70 border-b border-white/[0.06]">
-          <div className="flex items-center justify-between px-6 py-4">
-            <div>
+          <div className="flex items-center justify-between px-4 sm:px-6 py-4 gap-3">
+            <div className="flex items-start gap-3 min-w-0">
+              <button
+                onClick={() => setMobileNav(true)}
+                className="lg:hidden size-9 shrink-0 rounded-full glass grid place-items-center hover:border-white/20 transition mt-1"
+                aria-label="Open menu"
+              >
+                <Menu className="size-4" />
+              </button>
+              <div className="min-w-0">
               <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
                 <span className="relative flex size-1.5">
                   <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
