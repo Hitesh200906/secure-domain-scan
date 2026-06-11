@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { Menu, ShieldCheck, X, LogOut, User as UserIcon, LayoutDashboard, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/use-admin";
+import { RoleBadge } from "@/components/ui/RoleBadge";
+
 
 const publicLinks = [
   { to: "/", label: "Features" },
@@ -19,7 +21,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user, isAdmin: admin } = useAdmin();
+  const { user, isAdmin: admin, role } = useAdmin();
   const navigate = useNavigate();
   const links = [...publicLinks, ...(user ? authLinks : [])];
 
