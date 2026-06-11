@@ -31,6 +31,7 @@ function Dashboard() {
   const [scans, setScans] = useState<Scan[]>([]);
   const [profile, setProfile] = useState<{ plan: string; credits: number; full_name: string | null } | null>(null);
   const [time, setTime] = useState(new Date());
+  const [mobileNav, setMobileNav] = useState(false);
 
   useEffect(() => {
     if (!user) return;
