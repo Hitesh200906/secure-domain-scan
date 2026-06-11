@@ -9,6 +9,9 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
+import { useAdmin } from "@/hooks/use-admin";
+import { RoleBadge } from "@/components/ui/RoleBadge";
+
 
 export const Route = createFileRoute("/profile")({
   head: () => ({ meta: [{ title: "Profile — Nexus Security" }] }),
@@ -22,6 +25,8 @@ type TMsg = { id: string; author_type: string; author_name: string | null; body:
 
 function ProfilePage() {
   const { user } = useAuth();
+  const { role } = useAdmin();
+
   const navigate = useNavigate();
   const search = Route.useSearch();
   const [tab, setTab] = useState<Tab>(((search.tab as Tab) ?? "general"));
@@ -159,9 +164,13 @@ function ProfilePage() {
               <div className="flex items-center gap-2 text-[11px] text-emerald-400">
                 <CheckCircle2 className="size-3" /> Verified account
               </div>
-              <h1 className="mt-1 text-3xl font-semibold tracking-tight truncate">{profile.full_name || "Your profile"}</h1>
+              <div className="mt-1 flex items-center gap-3 flex-wrap">
+                <h1 className="text-3xl font-semibold tracking-tight truncate">{profile.full_name || "Your profile"}</h1>
+                <RoleBadge role={role} size="md" />
+              </div>
               <div className="text-sm text-muted-foreground mt-0.5">{profile.role_title || "—"}{profile.company && ` · ${profile.company}`}</div>
               <div className="text-xs text-muted-foreground/70 mt-1 font-mono">{user?.email || "demo@nexussecurity.com"}</div>
+
             </div>
             <div className="flex gap-2">
               <StatPill label="Plan" value={profile.plan.toUpperCase()} icon={ShieldCheck} />
