@@ -42,7 +42,7 @@ export function Navbar() {
     <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "py-2" : "py-4"}`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className={`flex items-center justify-between rounded-2xl px-4 sm:px-6 py-3 transition-all duration-300 ${scrolled ? "glass-strong" : "bg-transparent border border-transparent"}`}>
-          <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-2.5 group">
+          <Link to="/" className="flex items-center gap-2.5 group">
             <div className="relative">
               <ShieldCheck className="size-5 text-primary" strokeWidth={2.2} />
               <div className="absolute inset-0 blur-md bg-primary/40 -z-10 group-hover:bg-primary/60 transition" />
