@@ -13,6 +13,7 @@ import reportRoutes from "./routes/reports.js";
 import notificationRoutes from "./routes/notifications.js";
 import supportRoutes from "./routes/support.js";
 import adminRoutes from "./routes/admin.js";
+import publicRoutes from "./routes/public.js";
 
 const app = express();
 
