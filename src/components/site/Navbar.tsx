@@ -19,7 +19,7 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, isAdmin: admin, role } = useAdmin();
   const navigate = useNavigate();
-  const links = [...publicLinks, ...(user ? authLinks : [])];
+  const links = publicLinks;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
