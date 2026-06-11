@@ -2,16 +2,16 @@
 
 ```
 ┌────────────────────────┐   HTTPS    ┌─────────────────────────┐
-│  nexus-security-       │ ─────────► │  nexus-security-        │
-│  frontend  (Vercel)    │  Bearer    │  backend   (Render)     │
-│  React + Vite          │  token     │  Express + TypeScript   │
+│  nexus-security         │ ─────────► │  Nexussecuritylovable   │
+│  (Vercel)               │  Bearer    │  (Render)               │
+│  React + Vite           │  token     │  Express + TypeScript   │
 └──────────┬─────────────┘            └────────────┬────────────┘
            │ supabase.auth.* only                    │ service-role
            ▼ (publishable key)                       ▼
         Supabase Auth                          Supabase DB (RLS)
 ```
 
-## 1. Frontend repository structure (`nexus-security-frontend`)
+## 1. Frontend repository structure (`nexus-security`)
 
 ```
 .env.example                # VITE_API_BASE_URL, VITE_SUPABASE_URL, VITE_SUPABASE_PUBLISHABLE_KEY
@@ -27,7 +27,7 @@ src/
 ├── assets/
 ├── components/             # all UI (site, admin, ui primitives)
 ├── hooks/
-│   ├── use-admin.ts        # calls /api/admin/* (after migration)
+│   ├── use-admin.ts        # calls /api/admin/*
 │   ├── use-auth.tsx        # supabase.auth.* — STAYS
 │   └── use-mobile.tsx
 ├── integrations/
@@ -49,7 +49,7 @@ src/
 Removed from the frontend repo: `server/`, anything importing
 `SUPABASE_SERVICE_ROLE_KEY`.
 
-## 2. Backend repository structure (`nexus-security-backend`)
+## 2. Backend repository structure (`Nexussecuritylovable`)
 
 ```
 .env.example
@@ -72,7 +72,8 @@ src/
     ├── reports.ts          # user reports list
     ├── notifications.ts    # user notifications list
     ├── support.ts          # tickets create/list + messages
-    └── admin.ts            # NEW — admin-only: users, scans, reports, tickets,
+    ├── public.ts           # public pricing plans
+    └── admin.ts            # admin-only: users, scans, reports, tickets,
                             #       pricing, admins, audit logs
 ```
 
@@ -89,6 +90,7 @@ src/
 | POST   | `/api/auth/login`             | Email/password login     |
 | POST   | `/api/auth/forgot-password`   | Send reset email         |
 | GET    | `/api/auth/google`            | Start Google OAuth flow  |
+| GET    | `/api/public/pricing`         | Public pricing plans     |
 
 ### Authenticated (Bearer = Supabase access token)
 | Method | Path                              | Purpose                       |
@@ -115,6 +117,7 @@ src/
 | POST   | `/api/admin/reports`                      | Create report            |
 | DELETE | `/api/admin/reports/:id`                  | Delete report            |
 | GET    | `/api/admin/tickets`                      | List all tickets         |
+| PATCH  | `/api/admin/tickets/:id`                  | Update ticket            |
 | GET    | `/api/admin/tickets/:id/messages`         | Thread for ticket        |
 | POST   | `/api/admin/tickets/:id/reply`            | Reply + notify user      |
 | GET    | `/api/admin/pricing`                      | List pricing plans       |
@@ -122,52 +125,24 @@ src/
 | GET    | `/api/admin/admins`                       | List admin grants        |
 | GET    | `/api/admin/audit`                        | List audit logs (500)    |
 
-## 4. Remaining files that must be migrated in the frontend
+## 4. Build verification
 
-`src/lib/api-client.ts` is the single network entry point. The following
-files still hit Supabase tables directly and **must** be ported to call
-`api.*` before the architecture is truly clean. (`supabase.auth.*` calls
-stay — those are correct.)
+Both repositories build independently:
 
-| File                                         | Direct table access            | Target API                                                |
-| -------------------------------------------- | ------------------------------ | --------------------------------------------------------- |
-| `src/lib/audit.ts`                           | `audit_logs` insert            | `POST /api/audit`                                         |
-| `src/routes/dashboard.tsx`                   | `scan_requests`, `profiles`    | `GET /api/scans`, `GET /api/user/profile`                 |
-| `src/routes/profile.tsx`                     | `support_tickets`, `ticket_messages`, `profiles` | `/api/support/tickets`, `/api/user/profile`, add ticket-message endpoints |
-| `src/routes/contact.tsx`                     | `support_tickets` insert       | `POST /api/support/tickets`                               |
-| `src/routes/_authenticated.scan.new.tsx`     | `scan_requests` insert         | `POST /api/scans`                                         |
-| `src/routes/admin.scans.tsx`                 | `scan_requests`, `reports`     | `/api/admin/scans`, `POST /api/admin/reports`             |
-| `src/routes/admin.reports.tsx`               | `reports`                      | `/api/admin/reports`                                      |
-| `src/routes/admin.users.tsx`                 | `profiles`, `scan_requests`    | `/api/admin/users`, `/api/admin/scans?user_id=…` (add filter) |
-| `src/routes/admin.tickets.tsx`               | `support_tickets`, `ticket_messages`, `notifications` | `/api/admin/tickets`, `/api/admin/tickets/:id/*`          |
-| `src/routes/admin.pricing.tsx`               | `pricing_plans`                | `/api/admin/pricing`                                      |
-| `src/routes/admin.admins.tsx`                | `admins`                       | `/api/admin/admins` (add POST/DELETE if needed)           |
-| `src/routes/admin.logs.tsx`                  | `audit_logs`                   | `GET /api/admin/audit`                                    |
-| `src/routes/admin.index.tsx`                 | `profiles`, `scan_requests`, `support_tickets`, `pricing_plans` | aggregate via `/api/admin/users` etc. (or add `/api/admin/stats`) |
-| `src/components/site/Pricing.tsx`            | `pricing_plans` (public read)  | add `GET /api/public/pricing` or keep as anon-readable    |
-
-> **Verification result:** business-data Supabase queries are still
-> present in the files above. They are listed here, not silenced —
-> migrate each by replacing the `supabase.from(...)` call with the
-> corresponding `api.*` method (extend `src/lib/api-client.ts` as you go).
-
-A quick re-audit you can run from the frontend repo:
-```bash
-rg -n "supabase\.from\(" src/   # must return 0 lines when migration is done
-rg -n "service_role"      src/   # must return 0 lines, always
-```
+- **Frontend (`nexus-security`)**: `npm install && npm run build` succeeds. Output: `dist/`.
+- **Backend (`Nexussecuritylovable`)**: `npm install && npm run build` succeeds. Output: `dist/` (TypeScript `.js` files).
 
 ## 5. Deployment checklist
 
 ### Backend → Render
-- [ ] `nexus-security-backend` pushed to GitHub
+- [ ] `Nexussecuritylovable` pushed to GitHub
 - [ ] Render → New + → Blueprint → pick repo (reads `render.yaml`)
 - [ ] Env vars set: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `JWT_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `FRONTEND_URL`
 - [ ] Deploy succeeds, `GET /health` returns `{"status":"ok"}`
-- [ ] Copy the Render URL (e.g. `https://nexus-security-api.onrender.com`)
+- [ ] Copy the Render URL (e.g. `https://nexussecuritylovable.onrender.com`)
 
 ### Frontend → Vercel
-- [ ] `nexus-security-frontend` pushed to GitHub
+- [ ] `nexus-security` pushed to GitHub
 - [ ] Vercel → New Project → import the repo (framework: Other / Vite)
 - [ ] Env vars set (Production + Preview):
   - `VITE_API_BASE_URL=https://YOUR-RENDER-URL.onrender.com/api`
@@ -191,27 +166,27 @@ rg -n "service_role"      src/   # must return 0 lines, always
 Run the split script from this monorepo:
 
 ```bash
-bash scripts/split-repos.sh ../nexus-security-frontend ../nexus-security-backend
+bash scripts/split-repos.sh ../nexus-security ../Nexussecuritylovable
 ```
 
 Then for each:
 
 ```bash
 # Backend
-cd ../nexus-security-backend
+cd ../Nexussecuritylovable
 git init -b main
 git add -A
 git commit -m "Initial commit: Express backend for Nexus Security"
-gh repo create nexus-security-backend --private --source=. --remote=origin --push
-# or: git remote add origin git@github.com:<you>/nexus-security-backend.git && git push -u origin main
+gh repo create Nexussecuritylovable --private --source=. --remote=origin --push
+# or: git remote add origin git@github.com:<you>/Nexussecuritylovable.git && git push -u origin main
 
 # Frontend
-cd ../nexus-security-frontend
+cd ../nexus-security
 git init -b main
 git add -A
 git commit -m "Initial commit: React frontend for Nexus Security"
-gh repo create nexus-security-frontend --private --source=. --remote=origin --push
-# or: git remote add origin git@github.com:<you>/nexus-security-frontend.git && git push -u origin main
+gh repo create nexus-security --private --source=. --remote=origin --push
+# or: git remote add origin git@github.com:<you>/nexus-security.git && git push -u origin main
 ```
 
 After Render + Vercel are connected to their respective repos, every push
