@@ -160,6 +160,14 @@ export const api = {
       apiFetch<{ ok: true }>(`/admin/reports/${id}`, { method: "DELETE" }),
 
     listTickets: () => apiFetch<{ tickets: any[] }>("/admin/tickets"),
+    updateTicket: (
+      id: Id,
+      patch: { status?: string; priority?: string; assigned_to?: string | null },
+    ) =>
+      apiFetch<{ ok: true }>(`/admin/tickets/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(patch),
+      }),
     ticketMessages: (id: Id) => apiFetch<{ messages: any[] }>(`/admin/tickets/${id}/messages`),
     replyTicket: (id: Id, body: string) =>
       apiFetch<{ ok: true }>(`/admin/tickets/${id}/reply`, {

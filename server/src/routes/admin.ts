@@ -143,6 +143,37 @@ router.post("/tickets/:id/reply", requireAuth, requireAdmin, async (req: AuthedR
   return res.json({ ok: true });
 });
 
+// PATCH ticket: status / priority / assigned admin (with audit log)
+router.patch("/tickets/:id", requireAuth, requireAdmin, async (req: AuthedRequest, res) => {
+  const Patch = z.object({
+    status: z.enum(["open", "in_progress", "resolved", "closed"]).optional(),
+    priority: z.enum(["low", "normal", "high", "urgent"]).optional(),
+    assigned_to: z.string().uuid().nullable().optional(),
+  });
+  const parsed = Patch.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+  const sb = supabaseAsUser(req.accessToken!);
+  const { data: before } = await sb
+    .from("support_tickets")
+    .select("status, priority, assigned_to")
+    .eq("id", req.params.id)
+    .maybeSingle();
+  const { error } = await sb
+    .from("support_tickets")
+    .update({ ...parsed.data, updated_at: new Date().toISOString() })
+    .eq("id", req.params.id);
+  if (error) return res.status(400).json({ error: error.message });
+  await sb.from("audit_logs").insert({
+    actor_id: req.user!.id,
+    actor_email: req.user!.email,
+    action: "ticket.update",
+    target_type: "support_ticket",
+    target_id: req.params.id,
+    metadata: { before, after: parsed.data },
+  });
+  return res.json({ ok: true });
+});
+
 // ---- Pricing plans ----
 router.get("/pricing", requireAuth, requireAdmin, async (req: AuthedRequest, res) => {
   const sb = supabaseAsUser(req.accessToken!);
@@ -162,8 +193,24 @@ router.patch("/pricing/:id", requireAuth, requireAdmin, async (req: AuthedReques
   const parsed = Patch.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
   const sb = supabaseAsUser(req.accessToken!);
+  // Enforce single-popular: if setting popular=true, clear it on all others first.
+  if (parsed.data.popular === true) {
+    const { error: clearErr } = await sb
+      .from("pricing_plans")
+      .update({ popular: false })
+      .neq("id", req.params.id);
+    if (clearErr) return res.status(400).json({ error: clearErr.message });
+  }
   const { error } = await sb.from("pricing_plans").update(parsed.data).eq("id", req.params.id);
   if (error) return res.status(400).json({ error: error.message });
+  await sb.from("audit_logs").insert({
+    actor_id: req.user!.id,
+    actor_email: req.user!.email,
+    action: "pricing.update",
+    target_type: "pricing_plan",
+    target_id: req.params.id,
+    metadata: parsed.data,
+  });
   return res.json({ ok: true });
 });
 
