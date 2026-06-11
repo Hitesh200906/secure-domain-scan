@@ -1,88 +1,98 @@
-# Nexus Security — Full Upgrade Plan
+# Implementation Plan
 
-## 1. Enable Lovable Cloud (Auth + DB)
-Required for login/signup, profile, and persisting scan requests.
+Six discrete fixes. No architecture changes beyond the role tier extension.
 
-- Enable Cloud
-- Email/password + Google sign-in (Cloud defaults)
-- Tables:
-  - `profiles` (id → auth.users, full_name, role_title, company, avatar_url, plan, credits)
-  - `scan_requests` (id, user_id, full_name, role_title, company, email, target_url, business_email, verification_method [`email`|`manual`], status, created_at)
-- RLS: users read/write only their own rows
-- Trigger: auto-create profile + default plan on signup
+## 1. Database: 3-tier admin roles + master-admin seed
 
-## 2. New Routes
-```
-/login              public — email+password + Google
-/signup             public — same + name capture
-/reset-password     public — set new password after email link
-/_authenticated     pathless guard (redirect to /login)
-  /profile          edit name, role, company, avatar, view plan/credits
-  /dashboard        replaces current reports showcase (KPIs, scan history, vulns, sparkline)
-  /scan/new         the form in the screenshot (triggered from "Start Security Scan" + plan CTAs)
-```
+Single migration:
+- Drop existing `app_role` enum value list, recreate as `('master_admin','super_admin','admin','user')` (or `ALTER TYPE ADD VALUE` if enum already exists — check first).
+- Ensure `public.user_roles` exists with `(user_id, role)` unique; add GRANTs + RLS already in `has_role` policy.
+- Add helper `public.get_user_role(_user_id uuid) returns app_role` (returns highest role).
+- Add helper `public.is_master_admin(_user_id uuid) returns boolean`.
+- Trigger on `auth.users` INSERT: if `email = 'hitesh.tanwar8318@gmail.com'`, insert `master_admin` row in `user_roles`. Also backfill the row for existing user with that email.
+- Audit log entries for any role change via `log_role_change()` trigger on `user_roles`.
 
-Delete `/reports` route; remove "Reports" from navbar. Add "Dashboard" + auth-aware "Profile/Logout" menu.
+## 2. Backend: role-aware endpoints
 
-## 3. Scan Request Flow (matches screenshot)
-Clicking any plan's CTA or "Start Security Scan" → `/scan/new?plan=starter|professional|enterprise`.
+`server/src/routes/admin.ts`:
+- `GET /api/admin/me/role` → returns `{ role: 'master_admin'|'super_admin'|'admin'|null }`.
+- `POST /api/admin/promote` body `{ user_id, role }` — enforce:
+  - master_admin can set any role
+  - super_admin can set `admin` only, cannot touch master/super
+  - admin: forbidden
+- `DELETE /api/admin/admins/:user_id` — same hierarchy rules; cannot remove master.
+- All actions write `audit_logs` entries (`role.grant`, `role.revoke`).
 
-Form fields (exact to screenshot):
-- Full Name, Role/Title
-- Company Name, Your Email
-- Target Website URL, Business Email
-- Ownership Verification: radio cards — **Email Verification** | **Manual Code**
-- Header chip: `PLAN: <NAME> — <N> CREDITS`
-- Submit button: "Execute Scan →" (teal gradient, full width)
+Extend `api-client.ts` with `getMyRole`, `promoteAdmin`, `revokeAdmin`.
 
-On submit → insert into `scan_requests`, toast success, redirect to `/dashboard`.
+## 3. Frontend: session & redirect behavior
 
-## 4. Hero Background Animation
-Replace/augment current Globe with a richer always-moving layer:
-- Keep canvas globe but add:
-  - Animated cyan/teal aurora gradient blobs (CSS `@keyframes` drift + scale)
-  - Slow horizontal scanline sweep across hero
-  - Subtle floating particles (canvas) behind text
-  - Grid-bg gets a slow pan animation
-- All GPU-friendly transforms, respects `prefers-reduced-motion`
+- `src/hooks/use-admin.ts`: replace boolean with `{ role, isAdmin, isSuperAdmin, isMasterAdmin }` using new `/api/admin/me/role` (single source of truth).
+- New `src/routes/login.tsx` & `signup.tsx`: if `useAuth().user` present → `<Navigate to="/dashboard" replace />`. Signup confirmed users land on `/dashboard` (already via `emailRedirectTo`).
+- `src/components/site/Navbar.tsx`: logo `to="/"` becomes `to={user ? "/dashboard" : "/"}`; same for "Home" links.
+- `src/routes/index.tsx` (`/`): if `useAuth().user`, redirect to `/dashboard` via `useEffect` + `navigate({to:'/dashboard', replace:true})`. Session already persists via Supabase default `localStorage`; verify `useAuth` calls `getSession()` on mount (it does).
 
-## 5. Navbar / Auth State
-- Replace static "Login" link with real auth state:
-  - Logged out: `Login` + `Start Free Scan`
-  - Logged in: avatar dropdown → Profile, Dashboard, Logout
-- Use `onAuthStateChange` at root + router context for guards
+## 4. Pricing fix
 
-## 6. Wire All Buttons
-Audit every CTA across Hero, Pricing, Features, CTASection, Footer:
-- "Start Security Scan" / "Start Free Scan" → `/scan/new`
-- "View Plans" / "Compare Plans" → `/pricing`
-- Plan CTAs (Starter/Pro/Enterprise) → `/scan/new?plan=...`
-- "Login" → `/login`, logo → `/`, footer links → real routes
-- Dashboard sidebar links → real sub-sections
+Diagnose: `Pricing.tsx` calls `api.publicPricing()` → `${VITE_API_BASE_URL}/api/public/pricing`. In preview/Lovable hosting the Express backend isn't reachable, so the call fails and `setPlans([])` leaves the grid empty.
 
-## 7. Dashboard (replaces Reports)
-Real route at `/_authenticated/dashboard`:
-- KPI cards (Scans run, Vulns found, Risk score, Credits left) — from `scan_requests`
-- Scan history table (live from DB)
-- Sparkline + ScoreRing components (reuse existing)
-- Empty state → CTA to `/scan/new`
+Fix:
+- Add 3 hardcoded fallback plans (Starter/Professional/Enterprise) inside `Pricing.tsx`.
+- If API response is empty or fails → use fallback. Pricing section always renders.
+- Same fallback used on `/pricing` route.
 
-## 8. Profile Page
-`/_authenticated/profile`:
-- Avatar upload (Cloud Storage)
-- Editable: name, role, company
-- Read-only: email, plan, credits
-- Danger zone: sign out
+## 5. Role badges everywhere
 
-## Technical Notes
-- `requireSupabaseAuth` middleware on any serverFn (none strictly needed — direct supabase client from authenticated context is enough here)
-- All new colors via existing OKLCH tokens in `styles.css`; add `--aurora-1/2` if needed
-- Framer Motion for form transitions and dashboard reveals
-- SEO `head()` per new route
+New component `src/components/ui/RoleBadge.tsx`:
+- Props: `role: 'master_admin'|'super_admin'|'admin'|null`, `size?: 'sm'|'md'`.
+- Master = red gradient with verified checkmark icon, "MASTER ADMIN".
+- Super = gold gradient + checkmark, "SUPER ADMIN".
+- Admin = blue glass, "ADMIN".
+- Null → renders nothing.
 
-## Out of Scope
-- Actually executing scans (mocked: insert request, mark `pending`)
-- Payments (plan selection is informational; no Stripe yet)
-- Email sending for verification (UI only, marked "pending verification")
+Wire into:
+- Dashboard header (next to greeting)
+- Profile page (next to name)
+- Navbar avatar dropdown (under email)
+- `admin.users.tsx` user list rows
+- `admin.admins.tsx` rows
+- `admin.tickets.tsx` ticket author / assignee
+- `admin.reports.tsx` author column
+- `admin.logs.tsx` actor column
 
-Let me know if you'd like payments/Stripe wired in this pass, or to keep it mocked.
+For lists we need role lookups — extend the listing endpoints to include `role` field per user (join `user_roles` server-side, return highest role).
+
+## 6. Admin pages: hierarchy enforcement + master indicator
+
+`admin.admins.tsx`:
+- Show role badge per admin row.
+- Promote/Demote buttons visible per current viewer's role.
+- Master admin row: actions disabled with tooltip "Cannot modify Master Admin".
+- Add "Add admin" form: master_admin can pick `super_admin`/`admin`; super_admin can pick `admin` only.
+
+## Verification checklist
+
+- [ ] `bun run build` (frontend) and `cd server && npm run build` clean
+- [ ] Hard refresh `/dashboard` while signed in → stays
+- [ ] Logo click while signed in → `/dashboard`
+- [ ] Pricing visible on `/` and `/pricing` even with no backend
+- [ ] Sign in as `hitesh.tanwar8318@gmail.com` → MASTER ADMIN red badge visible
+- [ ] audit_logs gets row when role changed
+
+## Technical notes
+
+- `app_role` enum: if already created (likely from earlier user_roles setup), use `ALTER TYPE app_role ADD VALUE IF NOT EXISTS 'master_admin'; ADD VALUE 'super_admin';` in a separate migration block (enum new values can't be used in same tx as creation, so commit then use).
+- The `has_role` RPC already exists per `cloud-db-workflow` notes; we add `is_master_admin` separately.
+- The master-admin seed trigger fires on `auth.users` insert — also run a one-time `INSERT ... ON CONFLICT DO NOTHING` for the existing user.
+- Backend role check helper added in `server/src/middleware/role.ts` to DRY hierarchy checks.
+
+## Files touched (summary)
+
+DB migration (1), `server/src/routes/admin.ts`, `server/src/middleware/role.ts` (new),
+`src/lib/api-client.ts`, `src/hooks/use-admin.ts`, `src/components/ui/RoleBadge.tsx` (new),
+`src/components/site/Navbar.tsx`, `src/routes/index.tsx`, `src/routes/login.tsx`,
+`src/routes/signup.tsx`, `src/routes/dashboard.tsx`, `src/routes/profile.tsx`,
+`src/components/site/Pricing.tsx`, `src/routes/pricing.tsx`,
+`src/routes/admin.admins.tsx`, `src/routes/admin.users.tsx`,
+`src/routes/admin.tickets.tsx`, `src/routes/admin.reports.tsx`,
+`src/routes/admin.logs.tsx`.

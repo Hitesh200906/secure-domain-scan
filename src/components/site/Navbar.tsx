@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { Menu, ShieldCheck, X, LogOut, User as UserIcon, LayoutDashboard, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/use-admin";
+import { RoleBadge } from "@/components/ui/RoleBadge";
+
 
 const publicLinks = [
   { to: "/", label: "Features" },
@@ -19,7 +21,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user, isAdmin: admin } = useAdmin();
+  const { user, isAdmin: admin, role } = useAdmin();
   const navigate = useNavigate();
   const links = [...publicLinks, ...(user ? authLinks : [])];
 
@@ -40,7 +42,7 @@ export function Navbar() {
     <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "py-2" : "py-4"}`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className={`flex items-center justify-between rounded-2xl px-4 sm:px-6 py-3 transition-all duration-300 ${scrolled ? "glass-strong" : "bg-transparent border border-transparent"}`}>
-          <Link to="/" className="flex items-center gap-2.5 group">
+          <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-2.5 group">
             <div className="relative">
               <ShieldCheck className="size-5 text-primary" strokeWidth={2.2} />
               <div className="absolute inset-0 blur-md bg-primary/40 -z-10 group-hover:bg-primary/60 transition" />
@@ -48,7 +50,9 @@ export function Navbar() {
             <span className="text-[13px] font-semibold tracking-[0.2em] text-white">
               NEXUS<span className="text-muted-foreground ml-1.5">SECURITY</span>
             </span>
+            {role && role !== "user" && <RoleBadge role={role} />}
           </Link>
+
 
           <nav className="hidden md:flex items-center gap-1">
             {links.map((l) => (
@@ -72,8 +76,14 @@ export function Navbar() {
                   {(user.email || "?")[0].toUpperCase()}
                 </button>
                 {menuOpen && (
-                  <div className="absolute right-0 top-11 w-56 glass-strong rounded-2xl p-2 text-sm">
-                    <div className="px-3 py-2 text-xs text-muted-foreground truncate">{user.email}</div>
+                  <div className="absolute right-0 top-11 w-64 glass-strong rounded-2xl p-2 text-sm">
+                    <div className="px-3 py-2 text-xs text-muted-foreground truncate flex items-center gap-2">
+                      <span className="truncate flex-1">{user.email}</span>
+                    </div>
+                    {role && role !== "user" && (
+                      <div className="px-3 pb-2"><RoleBadge role={role} /></div>
+                    )}
+
                     <Link to="/dashboard" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.05]">
                       <LayoutDashboard className="size-4" /> Dashboard
                     </Link>

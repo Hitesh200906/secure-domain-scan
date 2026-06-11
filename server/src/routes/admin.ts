@@ -8,15 +8,60 @@ const router = Router();
 // All admin routes require an authenticated user whose role is 'admin'
 // in public.user_roles. RLS on the underlying tables enforces this too,
 // but we short-circuit early to return clean 403s.
+async function getRoleTier(userId: string): Promise<"master_admin" | "super_admin" | "admin" | "user" | null> {
+  const { data } = await supabaseAdmin.rpc("get_user_role", { _user_id: userId });
+  return (data as any) ?? null;
+}
+
 async function requireAdmin(req: AuthedRequest, res: any, next: any) {
-  const { data, error } = await supabaseAdmin.rpc("has_role", {
-    _user_id: req.user!.id,
-    _role: "admin",
-  });
-  if (error) return res.status(500).json({ error: error.message });
-  if (!data) return res.status(403).json({ error: "Forbidden" });
+  const role = await getRoleTier(req.user!.id);
+  if (!role || role === "user") return res.status(403).json({ error: "Forbidden" });
+  (req as any).viewerRole = role;
   next();
 }
+
+// rank: lower = more powerful
+const RANK: Record<string, number> = { master_admin: 1, super_admin: 2, admin: 3, user: 4 };
+
+// Current viewer's role (used by frontend)
+router.get("/me/role", requireAuth, async (req: AuthedRequest, res) => {
+  const role = await getRoleTier(req.user!.id);
+  return res.json({ role });
+});
+
+// Promote/demote: master_admin can set any role; super_admin can grant 'admin' only.
+router.post("/roles/grant", requireAuth, requireAdmin, async (req: AuthedRequest, res) => {
+  const Body = z.object({
+    user_id: z.string().uuid(),
+    role: z.enum(["master_admin", "super_admin", "admin", "user"]),
+  });
+  const parsed = Body.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+  const viewer = (req as any).viewerRole as string;
+  const target = parsed.data.role;
+  // master cannot be granted via API (only by seed trigger)
+  if (target === "master_admin") return res.status(403).json({ error: "Master Admin is immutable" });
+  if (viewer !== "master_admin" && target === "super_admin")
+    return res.status(403).json({ error: "Only Master Admin can grant Super Admin" });
+  if (viewer === "admin") return res.status(403).json({ error: "Forbidden" });
+
+  // Cannot modify someone with equal or higher rank
+  const targetCurrent = await getRoleTier(parsed.data.user_id);
+  if (targetCurrent && RANK[targetCurrent] <= RANK[viewer] && viewer !== "master_admin") {
+    return res.status(403).json({ error: "Cannot modify a peer or higher role" });
+  }
+
+  // wipe any non-user roles for this user, then insert new
+  await supabaseAdmin.from("user_roles").delete().eq("user_id", parsed.data.user_id).in("role", ["super_admin", "admin"]);
+  if (target !== "user") {
+    const { error } = await supabaseAdmin.from("user_roles").insert({
+      user_id: parsed.data.user_id, role: target, granted_by: req.user!.id,
+    });
+    if (error) return res.status(400).json({ error: error.message });
+  }
+  return res.json({ ok: true });
+});
+
 
 // ---- Users / profiles ----
 router.get("/users", requireAuth, requireAdmin, async (req: AuthedRequest, res) => {

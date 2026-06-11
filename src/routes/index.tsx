@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Hero } from "@/components/site/Hero";
 import { Stats } from "@/components/site/Stats";
 import { Features } from "@/components/site/Features";
@@ -9,6 +10,8 @@ import { Pricing } from "@/components/site/Pricing";
 import { Social } from "@/components/site/Social";
 import { SectionHeader } from "@/components/site/Features";
 import { SectionBackdrop } from "@/components/site/SectionFx";
+import { useAuth } from "@/hooks/use-auth";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -25,8 +28,15 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!loading && user) navigate({ to: "/dashboard", replace: true });
+  }, [loading, user, navigate]);
+  if (loading || user) return null;
   return (
     <>
+
       <Hero />
       <Stats />
       <Features />

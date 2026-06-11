@@ -9,12 +9,35 @@ type Plan = {
   price_monthly: number; price_label: string | null; features: string[]; popular: boolean; cta_label: string | null; sort_order: number;
 };
 
+const FALLBACK_PLANS: Plan[] = [
+  {
+    id: "fallback-starter", slug: "starter", name: "Starter", headline: "For solo founders & small sites",
+    description: "Run a full security audit on a single domain. Get an AI-generated report in minutes.",
+    price_monthly: 49, price_label: "/month", popular: false, cta_label: "Start scanning", sort_order: 1,
+    features: ["1 domain", "Weekly scans", "AI vulnerability report", "Email alerts", "Community support"],
+  },
+  {
+    id: "fallback-professional", slug: "professional", name: "Professional", headline: "For growing engineering teams",
+    description: "Continuous monitoring, advanced detection, and remediation playbooks for production estates.",
+    price_monthly: 199, price_label: "/month", popular: true, cta_label: "Start free trial", sort_order: 2,
+    features: ["10 domains", "Daily scans", "OWASP Top 10 + CVE feeds", "Slack & PagerDuty alerts", "Priority email support", "PDF & JSON exports"],
+  },
+  {
+    id: "fallback-enterprise", slug: "enterprise", name: "Enterprise", headline: "Custom programs at scale",
+    description: "Dedicated infrastructure, SAML SSO, custom integrations, and a named security engineer.",
+    price_monthly: 0, price_label: "Custom", popular: false, cta_label: "Talk to sales", sort_order: 3,
+    features: ["Unlimited domains", "Real-time monitoring", "SAML SSO + audit log export", "Dedicated security engineer", "99.99% SLA", "Custom integrations"],
+  },
+];
+
 export function Pricing({ compact = false }: { compact?: boolean }) {
-  const [plans, setPlans] = useState<Plan[]>([]);
+  const [plans, setPlans] = useState<Plan[]>(FALLBACK_PLANS);
   useEffect(() => {
     api.publicPricing()
-      .then(({ plans }) => setPlans((plans ?? []) as Plan[]))
-      .catch(() => setPlans([]));
+      .then(({ plans }) => {
+        if (Array.isArray(plans) && plans.length > 0) setPlans(plans as Plan[]);
+      })
+      .catch(() => { /* keep fallback */ });
   }, []);
 
   return (
