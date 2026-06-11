@@ -141,6 +141,9 @@ export const api = {
     apiFetch<{ ok: true }>("/audit", { method: "POST", body: JSON.stringify(body) }),
 
   // ---- Admin ----
+  getMyRole: () => apiFetch<{ role: string | null }>("/admin/me/role"),
+  grantRole: (user_id: Id, role: "master_admin" | "super_admin" | "admin" | "user") =>
+    apiFetch<{ ok: true }>("/admin/roles/grant", { method: "POST", body: JSON.stringify({ user_id, role }) }),
   admin: {
     listUsers: () => apiFetch<{ users: any[] }>("/admin/users"),
     updateUser: (id: Id, patch: AdminUserPatch) =>
