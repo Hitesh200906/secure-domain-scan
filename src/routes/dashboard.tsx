@@ -4,7 +4,7 @@ import {
   Activity, AlertTriangle, BarChart3, Bell, CheckCircle2, Clock,
   CreditCard, Globe2, LayoutDashboard, LogOut, ScanSearch, Settings,
   Shield, ShieldAlert, ShieldCheck, Sparkles, TrendingUp, User as UserIcon,
-  Zap, ArrowUpRight, Search, Lock, Wifi, Server, FileWarning, Eye,
+  Zap, ArrowUpRight, Search, Lock, Wifi, Server, FileWarning, Eye, Menu, X,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
