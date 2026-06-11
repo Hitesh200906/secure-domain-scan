@@ -16,10 +16,17 @@ export const Route = createFileRoute("/signup")({
 
 function SignupPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (user) navigate({ to: "/dashboard", replace: true });
+  }, [user, navigate]);
+
+
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
