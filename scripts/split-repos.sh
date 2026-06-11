@@ -33,18 +33,18 @@ echo "[backend] copied"
 
 # -------- Frontend --------
 mkdir -p "$FRONTEND"
-# rsync mirrors the project root, excluding backend + VCS + build artifacts.
-rsync -a \
-  --exclude '/server' \
-  --exclude '/.git' \
-  --exclude '/node_modules' \
-  --exclude '/dist' \
-  --exclude '/.vercel' \
-  --exclude '/.lovable' \
-  --exclude '/REPO_SPLIT.md' \
-  --exclude '/scripts/split-repos.sh' \
-  --exclude '/.env' \
-  "$SRC_ROOT/" "$FRONTEND/"
+# Copy project root, excluding backend + VCS + build artifacts.
+cp -R "$SRC_ROOT/." "$FRONTEND/"
+# Remove backend + VCS + build artifacts.
+rm -rf "$FRONTEND/server"
+rm -rf "$FRONTEND/.git"
+rm -rf "$FRONTEND/node_modules"
+rm -rf "$FRONTEND/dist"
+rm -rf "$FRONTEND/.vercel"
+rm -rf "$FRONTEND/.lovable"
+rm -f  "$FRONTEND/REPO_SPLIT.md"
+rm -f  "$FRONTEND/scripts/split-repos.sh"
+rm -f  "$FRONTEND/.env"
 echo "[frontend] copied"
 
 # Drop a frontend-specific README pointer.
