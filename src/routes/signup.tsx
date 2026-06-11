@@ -7,7 +7,7 @@ import { ShieldCheck, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { signInWithGoogle } from "@/lib/auth-helpers";
-import { Input } from "./login";
+import { Input, GoogleIcon } from "./login";
 
 export const Route = createFileRoute("/signup")({
   head: () => ({ meta: [{ title: "Sign up — Nexus Security" }] }),
