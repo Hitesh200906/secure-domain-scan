@@ -12,8 +12,8 @@
 
 set -euo pipefail
 
-FRONTEND="${1:-../nexus-security-frontend}"
-BACKEND="${2:-../nexus-security-backend}"
+FRONTEND="${1:-../nexus-security}"
+BACKEND="${2:-../Nexussecuritylovable}"
 
 if [[ -e "$FRONTEND" ]]; then echo "Refusing to overwrite $FRONTEND" >&2; exit 1; fi
 if [[ -e "$BACKEND"  ]]; then echo "Refusing to overwrite $BACKEND"  >&2; exit 1; fi
