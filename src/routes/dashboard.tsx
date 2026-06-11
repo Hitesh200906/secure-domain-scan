@@ -10,6 +10,9 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
+import { useAdmin } from "@/hooks/use-admin";
+import { RoleBadge } from "@/components/ui/RoleBadge";
+
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Nexus Security" }] }),
@@ -23,6 +26,8 @@ type Scan = {
 
 function Dashboard() {
   const { user } = useAuth();
+  const { role } = useAdmin();
+
   const [scans, setScans] = useState<Scan[]>([]);
   const [profile, setProfile] = useState<{ plan: string; credits: number; full_name: string | null } | null>(null);
   const [time, setTime] = useState(new Date());
@@ -110,7 +115,11 @@ function Dashboard() {
                 </span>
                 All systems operational · {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
               </div>
-              <h1 className="text-2xl font-medium tracking-tight mt-1">{user ? `Welcome back${profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}` : "Security Dashboard"}</h1>
+              <div className="flex items-center gap-3 mt-1 flex-wrap">
+                <h1 className="text-2xl font-medium tracking-tight">{user ? `Welcome back${profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}` : "Security Dashboard"}</h1>
+                <RoleBadge role={role} size="md" />
+              </div>
+
             </div>
             <div className="flex items-center gap-2">
               <div className="hidden md:flex items-center gap-2 rounded-full glass px-3.5 py-2 text-xs text-muted-foreground w-72">
