@@ -8,8 +8,9 @@ import { RoleBadge } from "@/components/ui/RoleBadge";
 
 const publicLinks = [
   { to: "/", label: "Features" },
-  { to: "/pricing", label: "Pricing" },
-  { to: "/contact", label: "Contact" },
+  { to: "/scan/new", label: "Discover" },
+  { to: "/profile", label: "Messages" },
+  { to: "/contact", label: "Business" },
 ] as const;
 
 
