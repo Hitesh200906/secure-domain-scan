@@ -5,15 +5,15 @@
 #   bash scripts/split-repos.sh <frontend-dir> <backend-dir>
 #
 # Example:
-#   bash scripts/split-repos.sh ../nexus-security-frontend ../nexus-security-backend
+#   bash scripts/split-repos.sh ../nexus-security ../Nexussecuritylovable
 #
 # Both target directories must NOT already exist. The script does not run
 # `git init` for you — review the output, then `cd` into each and push.
 
 set -euo pipefail
 
-FRONTEND="${1:-../nexus-security-frontend}"
-BACKEND="${2:-../nexus-security-backend}"
+FRONTEND="${1:-../nexus-security}"
+BACKEND="${2:-../Nexussecuritylovable}"
 
 if [[ -e "$FRONTEND" ]]; then echo "Refusing to overwrite $FRONTEND" >&2; exit 1; fi
 if [[ -e "$BACKEND"  ]]; then echo "Refusing to overwrite $BACKEND"  >&2; exit 1; fi
@@ -33,18 +33,18 @@ echo "[backend] copied"
 
 # -------- Frontend --------
 mkdir -p "$FRONTEND"
-# rsync mirrors the project root, excluding backend + VCS + build artifacts.
-rsync -a \
-  --exclude '/server' \
-  --exclude '/.git' \
-  --exclude '/node_modules' \
-  --exclude '/dist' \
-  --exclude '/.vercel' \
-  --exclude '/.lovable' \
-  --exclude '/REPO_SPLIT.md' \
-  --exclude '/scripts/split-repos.sh' \
-  --exclude '/.env' \
-  "$SRC_ROOT/" "$FRONTEND/"
+# Copy project root, excluding backend + VCS + build artifacts.
+cp -R "$SRC_ROOT/." "$FRONTEND/"
+# Remove backend + VCS + build artifacts.
+rm -rf "$FRONTEND/server"
+rm -rf "$FRONTEND/.git"
+rm -rf "$FRONTEND/node_modules"
+rm -rf "$FRONTEND/dist"
+rm -rf "$FRONTEND/.vercel"
+rm -rf "$FRONTEND/.lovable"
+rm -f  "$FRONTEND/REPO_SPLIT.md"
+rm -f  "$FRONTEND/scripts/split-repos.sh"
+rm -f  "$FRONTEND/.env"
 echo "[frontend] copied"
 
 # Drop a frontend-specific README pointer.
