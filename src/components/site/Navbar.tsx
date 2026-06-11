@@ -12,10 +12,6 @@ const publicLinks = [
   { to: "/contact", label: "Contact" },
 ] as const;
 
-const authLinks = [
-  { to: "/dashboard", label: "Dashboard" },
-  { to: "/profile", label: "Profile" },
-] as const;
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
