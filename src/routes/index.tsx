@@ -28,12 +28,6 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const { user, loading } = useAuth();
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (!loading && user) navigate({ to: "/dashboard", replace: true });
-  }, [loading, user, navigate]);
-  if (loading || user) return null;
   return (
     <>
 
