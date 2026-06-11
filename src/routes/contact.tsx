@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHeader } from "@/components/site/PageHeader";
 import { useState } from "react";
 import { LifeBuoy, Mail, MapPin, Phone } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -64,19 +64,23 @@ function ContactPage() {
             onSubmit={async (e) => {
               e.preventDefault();
               const fd = new FormData(e.currentTarget);
-              const payload = {
-                name: String(fd.get("name") || ""),
-                email: String(fd.get("email") || ""),
-                subject: `Audit request from ${fd.get("company") || fd.get("name")}`,
-                message: `Website: ${fd.get("website") || "—"}\n\n${fd.get("message") || ""}`,
-                status: "open",
-                priority: "normal",
-                user_id: user?.id ?? null,
-              };
-              const { error } = await supabase.from("support_tickets").insert(payload);
-              if (error) return toast.error(error.message);
-              toast.success("Request submitted — ticket opened in your profile");
-              setSubmitted(true);
+              if (!user) {
+                toast.error("Please sign in to open a ticket");
+                return;
+              }
+              try {
+                await api.createTicket({
+                  name: String(fd.get("name") || ""),
+                  email: String(fd.get("email") || ""),
+                  subject: `Audit request from ${fd.get("company") || fd.get("name")}`,
+                  message: `Website: ${fd.get("website") || "—"}\n\n${fd.get("message") || ""}`,
+                  priority: "normal",
+                });
+                toast.success("Request submitted — ticket opened in your profile");
+                setSubmitted(true);
+              } catch (err) {
+                toast.error(err instanceof Error ? err.message : "Failed to submit");
+              }
             }}
             className="glass-strong rounded-3xl p-8 sm:p-10 space-y-5"
           >

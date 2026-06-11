@@ -1,19 +1,20 @@
-import { supabase } from "@/integrations/supabase/client";
+import { api } from "@/lib/api-client";
 
+/**
+ * Audit logging — POSTs to the backend (which writes to audit_logs via RLS).
+ * Best-effort: never throws.
+ */
 export async function logAudit(
   action: string,
   target?: { type: string; id: string },
   metadata: Record<string, unknown> = {},
 ) {
   try {
-    const { data: { user } } = await supabase.auth.getUser();
-    await supabase.from("audit_logs").insert({
-      actor_email: user?.email ?? null,
-      actor_role: "admin",
+    await api.audit({
       action,
-      target_type: target?.type ?? null,
-      target_id: target?.id ?? null,
-      metadata: metadata as never,
+      target_type: target?.type,
+      target_id: target?.id,
+      metadata,
     });
   } catch {
     // best-effort

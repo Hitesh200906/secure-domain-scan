@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AdminShell, StatCard, Section, Badge } from "@/components/admin/AdminShell";
-import { supabase } from "@/integrations/supabase/client";
+import { api } from "@/lib/api-client";
 import { ArrowUpRight, Activity } from "lucide-react";
 
 export const Route = createFileRoute("/admin/")({ component: AdminOverview });
@@ -17,42 +17,46 @@ function AdminOverview() {
 
   useEffect(() => {
     (async () => {
-      const [u, sc, tk, pr] = await Promise.all([
-        supabase.from("profiles").select("id, plan, status, created_at"),
-        supabase.from("scan_requests").select("id, status, created_at, plan"),
-        supabase.from("support_tickets").select("id, status"),
-        supabase.from("pricing_plans").select("slug, price_monthly"),
-      ]);
-      const users = u.data ?? [];
-      const scans = sc.data ?? [];
-      const tickets = tk.data ?? [];
-      const prices = Object.fromEntries((pr.data ?? []).map((p) => [p.slug, Number(p.price_monthly)]));
-      const planDist: Record<string, number> = {};
-      users.forEach((x) => (planDist[x.plan] = (planDist[x.plan] ?? 0) + 1));
-      const revenue = users.reduce((sum, x) => sum + (prices[x.plan] ?? 0), 0);
-      // Last 14 days growth
-      const days: { d: string; users: number; scans: number }[] = [];
-      for (let i = 13; i >= 0; i--) {
-        const date = new Date(); date.setDate(date.getDate() - i);
-        const key = date.toISOString().slice(0, 10);
-        days.push({
-          d: key,
-          users: users.filter((x) => x.created_at.slice(0, 10) <= key).length,
-          scans: scans.filter((x) => x.created_at.slice(0, 10) === key).length,
+      try {
+        const [u, sc, tk, pr] = await Promise.all([
+          api.admin.listUsers(),
+          api.admin.listScans(),
+          api.admin.listTickets(),
+          api.admin.listPricing(),
+        ]);
+        const users = u.users ?? [];
+        const scans = sc.scans ?? [];
+        const tickets = tk.tickets ?? [];
+        const prices = Object.fromEntries((pr.plans ?? []).map((p: any) => [p.slug, Number(p.price_monthly)]));
+        const planDist: Record<string, number> = {};
+        users.forEach((x: any) => (planDist[x.plan] = (planDist[x.plan] ?? 0) + 1));
+        const revenue = users.reduce((sum: number, x: any) => sum + (prices[x.plan] ?? 0), 0);
+        // Last 14 days growth
+        const days: { d: string; users: number; scans: number }[] = [];
+        for (let i = 13; i >= 0; i--) {
+          const date = new Date(); date.setDate(date.getDate() - i);
+          const key = date.toISOString().slice(0, 10);
+          days.push({
+            d: key,
+            users: users.filter((x: any) => x.created_at.slice(0, 10) <= key).length,
+            scans: scans.filter((x: any) => x.created_at.slice(0, 10) === key).length,
+          });
+        }
+        setS({
+          users: users.length,
+          activeUsers: users.filter((x: any) => x.status === "active").length,
+          scans: scans.length,
+          completed: scans.filter((x: any) => x.status === "completed").length,
+          pending: scans.filter((x: any) => x.status === "pending").length,
+          ticketsOpen: tickets.filter((x: any) => x.status !== "closed" && x.status !== "resolved").length,
+          ticketsClosed: tickets.filter((x: any) => x.status === "closed" || x.status === "resolved").length,
+          revenue,
+          planDist,
+          growth: days,
         });
+      } catch {
+        setS({ users: 0, activeUsers: 0, scans: 0, completed: 0, pending: 0, ticketsOpen: 0, ticketsClosed: 0, revenue: 0, planDist: {}, growth: [] });
       }
-      setS({
-        users: users.length,
-        activeUsers: users.filter((x) => x.status === "active").length,
-        scans: scans.length,
-        completed: scans.filter((x) => x.status === "completed").length,
-        pending: scans.filter((x) => x.status === "pending").length,
-        ticketsOpen: tickets.filter((x) => x.status !== "closed" && x.status !== "resolved").length,
-        ticketsClosed: tickets.filter((x) => x.status === "closed" || x.status === "resolved").length,
-        revenue,
-        planDist,
-        growth: days,
-      });
     })();
   }, []);
 

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AdminShell, Section, Badge } from "@/components/admin/AdminShell";
-import { supabase } from "@/integrations/supabase/client";
+import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 import { logAudit } from "@/lib/audit";
 import { Download, Trash2, FileText } from "lucide-react";
@@ -12,29 +12,47 @@ type R = { id: string; title: string; summary: string | null; severity: string |
 
 function ReportsPage() {
   const [rows, setRows] = useState<R[]>([]);
-  const [form, setForm] = useState({ title: "", summary: "", severity: "medium", file_url: "", scan_id: "", user_id: "" });
+  const [form, setForm] = useState({ title: "", summary: "", severity: "medium" as "low" | "medium" | "high" | "critical", file_url: "", scan_id: "", user_id: "" });
 
   const load = async () => {
-    const { data } = await supabase.from("reports").select("*").order("created_at", { ascending: false });
-    setRows((data ?? []) as never);
+    try {
+      const { reports } = await api.admin.listReports();
+      setRows((reports ?? []) as R[]);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to load");
+    }
   };
   useEffect(() => { load(); }, []);
 
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
-    const payload = { ...form, scan_id: form.scan_id || null, user_id: form.user_id || null };
-    const { error } = await supabase.from("reports").insert(payload);
-    if (error) return toast.error(error.message);
-    await logAudit("report.create", { type: "report", id: form.title });
-    toast.success("Report uploaded");
-    setForm({ title: "", summary: "", severity: "medium", file_url: "", scan_id: "", user_id: "" });
-    load();
+    if (!form.user_id) return toast.error("user_id is required");
+    try {
+      await api.admin.createReport({
+        title: form.title,
+        summary: form.summary || undefined,
+        severity: form.severity,
+        file_url: form.file_url || undefined,
+        scan_id: form.scan_id || undefined,
+        user_id: form.user_id,
+      });
+      await logAudit("report.create", { type: "report", id: form.title });
+      toast.success("Report uploaded");
+      setForm({ title: "", summary: "", severity: "medium", file_url: "", scan_id: "", user_id: "" });
+      load();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed");
+    }
   };
 
   const remove = async (r: R) => {
-    await supabase.from("reports").delete().eq("id", r.id);
-    await logAudit("report.delete", { type: "report", id: r.id });
-    load();
+    try {
+      await api.admin.deleteReport(r.id);
+      await logAudit("report.delete", { type: "report", id: r.id });
+      load();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    }
   };
 
   return (
@@ -69,13 +87,13 @@ function ReportsPage() {
             <In label="Summary" v={form.summary} on={(v) => setForm({ ...form, summary: v })} />
             <div>
               <label className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Severity</label>
-              <select value={form.severity} onChange={(e) => setForm({ ...form, severity: e.target.value })} className="mt-1.5 w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-sm">
+              <select value={form.severity} onChange={(e) => setForm({ ...form, severity: e.target.value as typeof form.severity })} className="mt-1.5 w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-sm">
                 <option>low</option><option>medium</option><option>high</option><option>critical</option>
               </select>
             </div>
             <In label="File URL" v={form.file_url} on={(v) => setForm({ ...form, file_url: v })} />
             <In label="Scan ID (optional)" v={form.scan_id} on={(v) => setForm({ ...form, scan_id: v })} />
-            <In label="User ID (optional)" v={form.user_id} on={(v) => setForm({ ...form, user_id: v })} />
+            <In label="User ID (required)" v={form.user_id} on={(v) => setForm({ ...form, user_id: v })} req />
             <button className="w-full bg-white text-black rounded-full py-2.5 text-sm font-medium">Upload</button>
           </form>
         </Section>

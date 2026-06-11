@@ -41,10 +41,13 @@ router.patch("/users/:id", requireAuth, requireAdmin, async (req: AuthedRequest,
   return res.json({ ok: true });
 });
 
-// ---- Scan requests (admin view of all) ----
+// ---- Scan requests (admin view of all; optional ?user_id= filter) ----
 router.get("/scans", requireAuth, requireAdmin, async (req: AuthedRequest, res) => {
   const sb = supabaseAsUser(req.accessToken!);
-  const { data, error } = await sb.from("scan_requests").select("*").order("created_at", { ascending: false });
+  const userId = typeof req.query.user_id === "string" ? req.query.user_id : null;
+  let q = sb.from("scan_requests").select("*").order("created_at", { ascending: false });
+  if (userId) q = q.eq("user_id", userId);
+  const { data, error } = await q;
   if (error) return res.status(400).json({ error: error.message });
   return res.json({ scans: data });
 });
@@ -170,6 +173,44 @@ router.get("/admins", requireAuth, requireAdmin, async (req: AuthedRequest, res)
   const { data, error } = await sb.from("admins").select("*").order("created_at");
   if (error) return res.status(400).json({ error: error.message });
   return res.json({ admins: data });
+});
+
+router.post("/admins", requireAuth, requireAdmin, async (req: AuthedRequest, res) => {
+  const Body = z.object({
+    email: z.string().email(),
+    full_name: z.string().max(200).optional(),
+    role: z.enum(["admin", "super_admin"]).default("admin"),
+  });
+  const parsed = Body.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+  const sb = supabaseAsUser(req.accessToken!);
+  const { data, error } = await sb
+    .from("admins")
+    .insert({
+      ...parsed.data,
+      permissions: parsed.data.role === "super_admin" ? ["*"] : ["users.read", "tickets.respond"],
+    })
+    .select()
+    .single();
+  if (error) return res.status(400).json({ error: error.message });
+  return res.status(201).json({ admin: data });
+});
+
+router.patch("/admins/:id", requireAuth, requireAdmin, async (req: AuthedRequest, res) => {
+  const Patch = z.object({ active: z.boolean().optional(), role: z.string().max(40).optional() });
+  const parsed = Patch.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+  const sb = supabaseAsUser(req.accessToken!);
+  const { error } = await sb.from("admins").update(parsed.data).eq("id", req.params.id);
+  if (error) return res.status(400).json({ error: error.message });
+  return res.json({ ok: true });
+});
+
+router.delete("/admins/:id", requireAuth, requireAdmin, async (req: AuthedRequest, res) => {
+  const sb = supabaseAsUser(req.accessToken!);
+  const { error } = await sb.from("admins").delete().eq("id", req.params.id);
+  if (error) return res.status(400).json({ error: error.message });
+  return res.json({ ok: true });
 });
 
 // ---- Audit logs ----

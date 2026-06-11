@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
+import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/profile")({
@@ -36,11 +37,13 @@ function ProfilePage() {
   const msgEndRef = useRef<HTMLDivElement>(null);
 
   const loadTickets = async () => {
-    let q = supabase.from("support_tickets").select("*").order("created_at", { ascending: false });
-    if (user) q = q.or(`user_id.eq.${user.id},email.eq.${user.email}`);
-    else if (search.tab) return;
-    const { data } = await q;
-    setTickets((data ?? []) as Ticket[]);
+    if (!user) return;
+    try {
+      const { tickets } = await api.listTickets();
+      setTickets((tickets ?? []) as Ticket[]);
+    } catch {
+      setTickets([]);
+    }
   };
 
   useEffect(() => { loadTickets(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [user]);
@@ -48,12 +51,12 @@ function ProfilePage() {
   useEffect(() => {
     if (!activeTicket) return;
     const load = () =>
-      supabase.from("ticket_messages").select("*").eq("ticket_id", activeTicket.id).order("created_at")
-        .then(({ data }) => {
-          setTicketMsgs((data ?? []) as TMsg[]);
-          setTimeout(() => msgEndRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
-        });
+      api.listTicketMessages(activeTicket.id).then(({ messages }) => {
+        setTicketMsgs((messages ?? []) as TMsg[]);
+        setTimeout(() => msgEndRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
+      }).catch(() => undefined);
     load();
+    // Realtime subscription stays on Supabase Auth's publishable connection — no service-role usage.
     const ch = supabase.channel(`tk-${activeTicket.id}`)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "ticket_messages", filter: `ticket_id=eq.${activeTicket.id}` }, load)
       .subscribe();
@@ -64,12 +67,17 @@ function ProfilePage() {
     if (!activeTicket || !ticketReply.trim()) return;
     const body = ticketReply.trim();
     setTicketReply("");
-    await supabase.from("ticket_messages").insert({
-      ticket_id: activeTicket.id, author_type: "user",
-      author_name: profile.full_name || user?.email || activeTicket.name, body,
-    });
-    await supabase.from("support_tickets").update({ status: "open", updated_at: new Date().toISOString() }).eq("id", activeTicket.id);
+    try {
+      await api.sendTicketMessage(
+        activeTicket.id,
+        body,
+        profile.full_name || user?.email || activeTicket.name,
+      );
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to send reply");
+    }
   };
+
 
 
   useEffect(() => {
@@ -85,7 +93,7 @@ function ProfilePage() {
       setLoading(false);
       return;
     }
-    supabase.from("profiles").select("*").eq("id", user.id).maybeSingle().then(({ data }) => {
+    api.profile().then(({ profile: data }) => {
       if (data) setProfile({
         full_name: data.full_name ?? "",
         role_title: data.role_title ?? "",
@@ -94,18 +102,24 @@ function ProfilePage() {
         credits: data.credits ?? 0,
       });
       setLoading(false);
-    });
+    }).catch(() => setLoading(false));
   }, [user]);
 
   const save = async () => {
     if (!user) return;
     setSaving(true);
-    const { error } = await supabase.from("profiles").update({
-      full_name: profile.full_name, role_title: profile.role_title, company: profile.company,
-    }).eq("id", user.id);
-    setSaving(false);
-    if (error) return toast.error(error.message);
-    toast.success("Profile updated");
+    try {
+      await api.updateProfile({
+        full_name: profile.full_name,
+        role_title: profile.role_title,
+        company: profile.company,
+      });
+      toast.success("Profile updated");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to update");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const signOut = async () => { await supabase.auth.signOut(); navigate({ to: "/" }); };

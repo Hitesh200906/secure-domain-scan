@@ -13,6 +13,8 @@ import reportRoutes from "./routes/reports.js";
 import notificationRoutes from "./routes/notifications.js";
 import supportRoutes from "./routes/support.js";
 import adminRoutes from "./routes/admin.js";
+import publicRoutes from "./routes/public.js";
+import publicRoutes from "./routes/public.js";
 
 const app = express();
 
@@ -53,6 +55,7 @@ app.use("/api/reports", reportRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/support", supportRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/public", publicRoutes);
 
 app.use((_req, res) => res.status(404).json({ error: "Not found" }));
 

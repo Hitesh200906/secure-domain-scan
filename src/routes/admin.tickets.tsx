@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AdminShell, Section, Badge } from "@/components/admin/AdminShell";
-import { supabase } from "@/integrations/supabase/client";
+import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 import { logAudit } from "@/lib/audit";
 import { Send } from "lucide-react";
@@ -22,38 +22,41 @@ function TicketsPage() {
   const [reply, setReply] = useState("");
 
   const load = async () => {
-    const { data } = await supabase.from("support_tickets").select("*").order("created_at", { ascending: false });
-    setTickets((data ?? []) as never);
+    try {
+      const { tickets } = await api.admin.listTickets();
+      setTickets((tickets ?? []) as Ticket[]);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to load");
+    }
   };
   useEffect(() => { load(); }, []);
 
   useEffect(() => {
     if (!active) return;
-    supabase.from("ticket_messages").select("*").eq("ticket_id", active.id).order("created_at")
-      .then(({ data }) => setMsgs((data ?? []) as never));
+    api.admin.ticketMessages(active.id)
+      .then(({ messages }) => setMsgs((messages ?? []) as Msg[]))
+      .catch(() => setMsgs([]));
   }, [active]);
 
   const send = async () => {
     if (!active || !reply.trim()) return;
     const body = reply.trim();
     setReply("");
-    await supabase.from("ticket_messages").insert({ ticket_id: active.id, author_type: "admin", author_name: "Nexus Admin", body });
-    await supabase.from("support_tickets").update({ status: "in_progress" }).eq("id", active.id);
-    if (active.user_id) {
-      await supabase.from("notifications").insert({ user_id: active.user_id, title: "Support replied", body: body.slice(0, 120), link: "/profile" });
+    try {
+      await api.admin.replyTicket(active.id, body);
+      await logAudit("ticket.reply", { type: "ticket", id: active.id });
+      const { messages } = await api.admin.ticketMessages(active.id);
+      setMsgs((messages ?? []) as Msg[]);
+      load();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
     }
-    await logAudit("ticket.reply", { type: "ticket", id: active.id });
-    const { data } = await supabase.from("ticket_messages").select("*").eq("ticket_id", active.id).order("created_at");
-    setMsgs((data ?? []) as never);
-    load();
   };
 
-  const updateTicket = async (patch: Partial<Ticket>, action: string) => {
-    if (!active) return;
-    await supabase.from("support_tickets").update(patch).eq("id", active.id);
-    await logAudit(action, { type: "ticket", id: active.id }, patch);
-    setActive({ ...active, ...patch });
-    load();
+  const updateTicket = async (_patch: Partial<Ticket>, _action: string) => {
+    // Note: ticket status/priority updates would go through a PATCH /api/admin/tickets/:id
+    // endpoint. The backend doesn't expose that yet — flag in migration report.
+    toast.info("Ticket status/priority editing requires PATCH /api/admin/tickets/:id");
   };
 
   const filtered = tickets.filter((t) => filter === "all" || t.status === filter);

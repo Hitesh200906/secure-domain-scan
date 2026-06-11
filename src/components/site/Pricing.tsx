@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { api } from "@/lib/api-client";
 
 type Plan = {
   id: string; slug: string; name: string; headline: string | null; description: string | null;
@@ -12,8 +12,9 @@ type Plan = {
 export function Pricing({ compact = false }: { compact?: boolean }) {
   const [plans, setPlans] = useState<Plan[]>([]);
   useEffect(() => {
-    supabase.from("pricing_plans").select("*").eq("active", true).order("sort_order")
-      .then(({ data }) => setPlans((data ?? []) as never));
+    api.publicPricing()
+      .then(({ plans }) => setPlans((plans ?? []) as Plan[]))
+      .catch(() => setPlans([]));
   }, []);
 
   return (

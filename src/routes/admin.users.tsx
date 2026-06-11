@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AdminShell, Section, Badge } from "@/components/admin/AdminShell";
-import { supabase } from "@/integrations/supabase/client";
+import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 import { logAudit } from "@/lib/audit";
 import { Search, Plus, Minus, Ban, Check, X } from "lucide-react";
@@ -20,8 +20,12 @@ function UsersPage() {
   const [selected, setSelected] = useState<Profile | null>(null);
 
   const load = async () => {
-    const { data } = await supabase.from("profiles").select("*").order("created_at", { ascending: false });
-    setRows((data ?? []) as Profile[]);
+    try {
+      const { users } = await api.admin.listUsers();
+      setRows((users ?? []) as Profile[]);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to load");
+    }
   };
   useEffect(() => { load(); }, []);
 
@@ -32,11 +36,14 @@ function UsersPage() {
   });
 
   const act = async (p: Profile, patch: Partial<Profile>, action: string) => {
-    const { error } = await supabase.from("profiles").update(patch).eq("id", p.id);
-    if (error) return toast.error(error.message);
-    toast.success(action);
-    await logAudit(action, { type: "user", id: p.id }, patch);
-    load();
+    try {
+      await api.admin.updateUser(p.id, patch as never);
+      toast.success(action);
+      await logAudit(action, { type: "user", id: p.id }, patch);
+      load();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    }
   };
 
   return (
@@ -107,16 +114,20 @@ function UsersPage() {
 function UserDrawer({ user, onClose, onChange }: { user: Profile; onClose: () => void; onChange: (u: Profile) => void }) {
   const [scans, setScans] = useState<{ id: string; target_url: string; status: string; created_at: string }[]>([]);
   useEffect(() => {
-    supabase.from("scan_requests").select("id,target_url,status,created_at").eq("user_id", user.id).order("created_at", { ascending: false })
-      .then(({ data }) => setScans((data ?? []) as never));
+    api.admin.listScans(user.id)
+      .then(({ scans }) => setScans((scans ?? []) as never))
+      .catch(() => setScans([]));
   }, [user.id]);
 
   const update = async (patch: Partial<Profile>, action: string) => {
-    const { error } = await supabase.from("profiles").update(patch).eq("id", user.id);
-    if (error) return toast.error(error.message);
-    await logAudit(action, { type: "user", id: user.id }, patch);
-    toast.success("Updated");
-    onChange({ ...user, ...patch });
+    try {
+      await api.admin.updateUser(user.id, patch as never);
+      await logAudit(action, { type: "user", id: user.id }, patch);
+      toast.success("Updated");
+      onChange({ ...user, ...patch });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    }
   };
 
   return (
