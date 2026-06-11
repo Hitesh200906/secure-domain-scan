@@ -193,8 +193,24 @@ router.patch("/pricing/:id", requireAuth, requireAdmin, async (req: AuthedReques
   const parsed = Patch.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
   const sb = supabaseAsUser(req.accessToken!);
+  // Enforce single-popular: if setting popular=true, clear it on all others first.
+  if (parsed.data.popular === true) {
+    const { error: clearErr } = await sb
+      .from("pricing_plans")
+      .update({ popular: false })
+      .neq("id", req.params.id);
+    if (clearErr) return res.status(400).json({ error: clearErr.message });
+  }
   const { error } = await sb.from("pricing_plans").update(parsed.data).eq("id", req.params.id);
   if (error) return res.status(400).json({ error: error.message });
+  await sb.from("audit_logs").insert({
+    actor_id: req.user!.id,
+    actor_email: req.user!.email,
+    action: "pricing.update",
+    target_type: "pricing_plan",
+    target_id: req.params.id,
+    metadata: parsed.data,
+  });
   return res.json({ ok: true });
 });
 
