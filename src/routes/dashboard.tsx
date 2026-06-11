@@ -398,6 +398,44 @@ function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Mobile nav drawer */}
+      <div
+        onClick={() => setMobileNav(false)}
+        className={`lg:hidden fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm transition-opacity ${mobileNav ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+      />
+      <aside
+        className={`lg:hidden fixed left-0 top-0 z-[70] h-full w-72 bg-[oklch(0.04_0.008_220)] border-r border-white/10 shadow-2xl flex flex-col transition-transform duration-300 ${mobileNav ? "translate-x-0" : "-translate-x-full"}`}
+      >
+        <div className="px-5 py-4 border-b border-white/[0.06] flex items-center justify-between">
+          <Link to="/" onClick={() => setMobileNav(false)} className="flex items-center gap-2.5">
+            <ShieldCheck className="size-5 text-primary" />
+            <span className="text-[13px] font-semibold tracking-[0.2em]">NEXUS<span className="text-muted-foreground ml-1.5">SEC</span></span>
+          </Link>
+          <button onClick={() => setMobileNav(false)} className="size-8 grid place-items-center rounded-full hover:bg-white/10 transition" aria-label="Close">
+            <X className="size-4" />
+          </button>
+        </div>
+        <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto" onClick={() => setMobileNav(false)}>
+          <div className="px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">Workspace</div>
+          <SidebarLink to="/dashboard" icon={LayoutDashboard} label="Overview" active />
+          <SidebarLink to="/scan/new" icon={ScanSearch} label="New Scan" />
+          <SidebarLink to="/dashboard" icon={FileWarning} label="Findings" badge={String(totalFindings)} />
+          <SidebarLink to="/dashboard" icon={Globe2} label="Assets" />
+          <SidebarLink to="/dashboard" icon={Bell} label="Alerts" />
+          <div className="px-3 pt-5 pb-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">Account</div>
+          <SidebarLink to="/profile" icon={UserIcon} label="Profile" />
+          <SidebarLink to="/pricing" icon={CreditCard} label="Billing" />
+          <SidebarLink to="/contact" icon={Settings} label="Support" />
+        </nav>
+        {user && (
+          <div className="p-3 border-t border-white/[0.06]">
+            <button onClick={signOut} className="w-full text-left px-3 py-2 rounded-xl text-xs text-muted-foreground hover:text-white hover:bg-white/[0.03] inline-flex items-center gap-2">
+              <LogOut className="size-3.5" /> Sign out
+            </button>
+          </div>
+        )}
+      </aside>
     </div>
   );
 }
