@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
+import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/dashboard")({
@@ -28,10 +29,12 @@ function Dashboard() {
 
   useEffect(() => {
     if (!user) return;
-    supabase.from("scan_requests").select("*").order("created_at", { ascending: false }).limit(20)
-      .then(({ data }) => setScans((data as Scan[]) ?? []));
-    supabase.from("profiles").select("plan,credits,full_name").eq("id", user.id).maybeSingle()
-      .then(({ data }) => data && setProfile(data));
+    api.listScans()
+      .then(({ scans }) => setScans((scans as Scan[]) ?? []))
+      .catch(() => setScans([]));
+    api.profile()
+      .then(({ profile }) => profile && setProfile(profile))
+      .catch(() => undefined);
   }, [user]);
 
   useEffect(() => {

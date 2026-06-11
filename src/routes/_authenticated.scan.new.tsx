@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Code2, Loader2, Mail, ScanSearch } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
 
 type Plan = "starter" | "professional" | "enterprise";
@@ -52,22 +52,24 @@ function ScanNewPage() {
     e.preventDefault();
     if (!user) return;
     setLoading(true);
-    const { error } = await supabase.from("scan_requests").insert({
-      user_id: user.id,
-      full_name: form.full_name,
-      role_title: form.role_title,
-      company: form.company,
-      email: form.email,
-      target_url: form.target_url,
-      business_email: form.business_email,
-      plan,
-      verification_method: verification,
-      status: "pending",
-    });
-    setLoading(false);
-    if (error) return toast.error(error.message);
-    toast.success("Scan request submitted");
-    navigate({ to: "/dashboard" });
+    try {
+      await api.createScan({
+        full_name: form.full_name,
+        role_title: form.role_title,
+        company: form.company,
+        email: form.email,
+        target_url: form.target_url,
+        business_email: form.business_email,
+        plan,
+        verification_method: verification,
+      });
+      toast.success("Scan request submitted");
+      navigate({ to: "/dashboard" });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to submit scan");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
