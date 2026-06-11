@@ -215,7 +215,7 @@ export const api = {
       action: body.action,
       target_type: body.target_type ?? null,
       target_id: body.target_id ?? null,
-      metadata: body.metadata ?? {},
+      metadata: (body.metadata ?? {}) as never,
       actor_email: user?.email ?? null,
     });
     if (error) throw new Error(error.message);
@@ -268,7 +268,7 @@ export const api = {
       return { scans: data ?? [] };
     },
     updateScan: async (id: Id, patch: AdminScanPatch) => {
-      const { error } = await supabase.from("scan_requests").update(patch).eq("id", id);
+      const { error } = await supabase.from("scan_requests").update(patch as never).eq("id", id);
       if (error) throw new Error(error.message);
       return { ok: true as const };
     },
