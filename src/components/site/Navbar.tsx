@@ -58,11 +58,6 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
-            {admin && (
-              <Link to="/admin" className="px-3.5 py-2 text-[13px] text-muted-foreground hover:text-white transition rounded-lg inline-flex items-center gap-1.5" activeProps={{ className: "text-white" }}>
-                <Lock className="size-3.5" /> Admin
-              </Link>
-            )}
           </nav>
 
           <div className="hidden md:flex items-center gap-2">
