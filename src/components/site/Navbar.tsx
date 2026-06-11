@@ -1,15 +1,15 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, ShieldCheck, X, LogOut, User as UserIcon, LayoutDashboard, Lock } from "lucide-react";
+import { Menu, ShieldCheck, X, LogOut, User as UserIcon, LayoutDashboard, Lock, MessageSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/use-admin";
 import { RoleBadge } from "@/components/ui/RoleBadge";
+import { MessagesDrawer } from "@/components/site/MessagesDrawer";
 
 
 const publicLinks = [
   { to: "/", label: "Features" },
   { to: "/scan/new", label: "Discover" },
-  { to: "/profile", label: "Messages" },
   { to: "/contact", label: "Business" },
 ] as const;
 
@@ -18,6 +18,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [msgOpen, setMsgOpen] = useState(false);
   const { user, isAdmin: admin, role } = useAdmin();
   const navigate = useNavigate();
   const links = publicLinks;
@@ -35,10 +36,15 @@ export function Navbar() {
     navigate({ to: "/" });
   };
 
+  const openMessages = () => {
+    setMsgOpen(true);
+    setOpen(false);
+  };
+
   return (
     <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "py-2" : "py-4"}`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className={`flex items-center justify-between rounded-2xl px-4 sm:px-6 py-3 transition-all duration-300 ${scrolled ? "glass-strong" : "bg-transparent border border-transparent"}`}>
+        <div className={`flex items-center justify-between rounded-2xl px-4 sm:px-6 py-3 transition-all duration-300 ${scrolled ? "bg-black/80 backdrop-blur-xl border border-white/10 shadow-lg" : "bg-transparent border border-transparent"}`}>
           <Link to="/" className="flex items-center gap-2.5 group">
             <div className="relative">
               <ShieldCheck className="size-5 text-primary" strokeWidth={2.2} />
@@ -47,7 +53,6 @@ export function Navbar() {
             <span className="text-[13px] font-semibold tracking-[0.2em] text-white">
               NEXUS<span className="text-muted-foreground ml-1.5">SECURITY</span>
             </span>
-            {role && role !== "user" && <RoleBadge role={role} />}
           </Link>
 
 
@@ -59,6 +64,14 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
+            {user && (
+              <button
+                onClick={openMessages}
+                className="px-3.5 py-2 text-[13px] text-muted-foreground hover:text-white transition rounded-lg"
+              >
+                Messages
+              </button>
+            )}
           </nav>
 
           <div className="hidden md:flex items-center gap-2">
@@ -110,18 +123,38 @@ export function Navbar() {
         </div>
 
         {open && (
-          <div className="md:hidden mt-2 glass-strong rounded-2xl p-4 space-y-1">
+          <div className="md:hidden mt-2 bg-black/90 backdrop-blur-xl border border-white/10 rounded-2xl p-4 space-y-1">
             {links.map((l) => (
               <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="block px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">
                 {l.label}
               </Link>
             ))}
-            {admin && (
-              <Link to="/admin" onClick={() => setOpen(false)} className="block px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">Admin Console</Link>
+            {user && (
+              <>
+                <button
+                  onClick={openMessages}
+                  className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg"
+                >
+                  <MessageSquare className="size-4" /> Messages
+                </button>
+                <Link to="/dashboard" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">
+                  <LayoutDashboard className="size-4" /> Dashboard
+                </Link>
+                <Link to="/profile" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">
+                  <UserIcon className="size-4" /> Profile
+                </Link>
+                {admin && (
+                  <Link to="/admin" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">
+                    <Lock className="size-4" /> Admin Console
+                  </Link>
+                )}
+              </>
             )}
             <div className="pt-2 mt-2 border-t border-white/10 flex flex-col gap-2">
               {user ? (
-                <button onClick={signOut} className="text-center rounded-full glass px-4 py-2.5 text-sm">Sign out</button>
+                <button onClick={signOut} className="text-center rounded-full glass px-4 py-2.5 text-sm flex items-center justify-center gap-2">
+                  <LogOut className="size-4" /> Sign out
+                </button>
               ) : (
                 <>
                   <Link to="/login" onClick={() => setOpen(false)} className="px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">Login</Link>
@@ -132,6 +165,8 @@ export function Navbar() {
           </div>
         )}
       </div>
+
+      <MessagesDrawer open={msgOpen} onClose={() => setMsgOpen(false)} />
     </header>
   );
 }
