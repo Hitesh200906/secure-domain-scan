@@ -7,8 +7,13 @@ const router = Router();
 
 const ScanSchema = z.object({
   target_url: z.string().url().max(2048),
-  scan_type: z.string().min(1).max(64).optional(),
-  notes: z.string().max(2000).optional(),
+  full_name: z.string().max(120).optional(),
+  email: z.string().email().optional(),
+  business_email: z.string().email().optional(),
+  company: z.string().max(200).optional(),
+  role_title: z.string().max(120).optional(),
+  plan: z.string().max(64).optional(),
+  verification_method: z.string().max(64).optional(),
 });
 
 router.post("/", requireAuth, async (req: AuthedRequest, res) => {
