@@ -12,10 +12,6 @@ const publicLinks = [
   { to: "/contact", label: "Contact" },
 ] as const;
 
-const authLinks = [
-  { to: "/dashboard", label: "Dashboard" },
-  { to: "/profile", label: "Profile" },
-] as const;
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -23,7 +19,7 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, isAdmin: admin, role } = useAdmin();
   const navigate = useNavigate();
-  const links = [...publicLinks, ...(user ? authLinks : [])];
+  const links = publicLinks;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -62,11 +58,6 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
-            {admin && (
-              <Link to="/admin" className="px-3.5 py-2 text-[13px] text-muted-foreground hover:text-white transition rounded-lg inline-flex items-center gap-1.5" activeProps={{ className: "text-white" }}>
-                <Lock className="size-3.5" /> Admin
-              </Link>
-            )}
           </nav>
 
           <div className="hidden md:flex items-center gap-2">

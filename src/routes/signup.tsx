@@ -7,7 +7,7 @@ import { ShieldCheck, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { signInWithGoogle } from "@/lib/auth-helpers";
-import { Input } from "./login";
+import { Input, GoogleIcon } from "./login";
 
 export const Route = createFileRoute("/signup")({
   head: () => ({ meta: [{ title: "Sign up — Nexus Security" }] }),
@@ -77,7 +77,7 @@ function SignupPage() {
           disabled={loading}
           className="mt-7 w-full inline-flex items-center justify-center gap-2 rounded-full glass px-4 py-3 text-sm font-medium hover:border-white/20 transition disabled:opacity-50"
         >
-          Continue with Google
+          <GoogleIcon /> Continue with Google
         </button>
 
         <div className="my-6 flex items-center gap-3 text-[10px] uppercase tracking-widest text-muted-foreground">
