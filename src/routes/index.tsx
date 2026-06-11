@@ -34,8 +34,9 @@ function Home() {
     if (!loading && user) navigate({ to: "/dashboard", replace: true });
   }, [loading, user, navigate]);
   if (loading || user) return null;
-
+  return (
     <>
+
       <Hero />
       <Stats />
       <Features />
