@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AdminShell, Section, Badge } from "@/components/admin/AdminShell";
-import { supabase } from "@/integrations/supabase/client";
+import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 import { logAudit } from "@/lib/audit";
 import { CheckCircle2, XCircle, Trash2, Upload } from "lucide-react";
@@ -15,28 +15,50 @@ function ScansPage() {
   const [filter, setFilter] = useState("all");
 
   const load = async () => {
-    const { data } = await supabase.from("scan_requests").select("*").order("created_at", { ascending: false });
-    setRows((data ?? []) as never);
+    try {
+      const { scans } = await api.admin.listScans();
+      setRows((scans ?? []) as Scan[]);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to load");
+    }
   };
   useEffect(() => { load(); }, []);
 
-  const act = async (s: Scan, patch: Partial<Scan>, action: string) => {
-    await supabase.from("scan_requests").update(patch).eq("id", s.id);
-    await logAudit(action, { type: "scan", id: s.id }, patch);
-    toast.success(action);
-    load();
+  const act = async (s: Scan, patch: { status?: string }, action: string) => {
+    try {
+      await api.admin.updateScan(s.id, patch);
+      await logAudit(action, { type: "scan", id: s.id }, patch);
+      toast.success(action);
+      load();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    }
   };
   const remove = async (s: Scan) => {
-    await supabase.from("scan_requests").delete().eq("id", s.id);
-    await logAudit("scan.delete", { type: "scan", id: s.id });
-    toast.success("Deleted");
-    load();
+    try {
+      await api.admin.deleteScan(s.id);
+      await logAudit("scan.delete", { type: "scan", id: s.id });
+      toast.success("Deleted");
+      load();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    }
   };
   const uploadReport = async (s: Scan) => {
     const url = prompt("Report URL (PDF link):");
     if (!url) return;
-    await supabase.from("reports").insert({ scan_id: s.id, user_id: s.user_id, title: `Report for ${s.target_url}`, file_url: url, severity: "medium" });
-    await act(s, { status: "completed" }, "scan.report.upload");
+    try {
+      await api.admin.createReport({
+        scan_id: s.id,
+        user_id: s.user_id,
+        title: `Report for ${s.target_url}`,
+        file_url: url,
+        severity: "medium",
+      });
+      await act(s, { status: "completed" }, "scan.report.upload");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    }
   };
 
   const filtered = rows.filter((r) => filter === "all" || r.status === filter);

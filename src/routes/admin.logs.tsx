@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AdminShell, Section, Badge, SuperAdminGate } from "@/components/admin/AdminShell";
-import { supabase } from "@/integrations/supabase/client";
+import { api } from "@/lib/api-client";
 
 export const Route = createFileRoute("/admin/logs")({ component: () => <SuperAdminGate><LogsPage /></SuperAdminGate> });
 
@@ -10,8 +10,9 @@ type Log = { id: string; actor_email: string | null; action: string; target_type
 function LogsPage() {
   const [rows, setRows] = useState<Log[]>([]);
   useEffect(() => {
-    supabase.from("audit_logs").select("*").order("created_at", { ascending: false }).limit(500)
-      .then(({ data }) => setRows((data ?? []) as never));
+    api.admin.listAuditLogs()
+      .then(({ logs }) => setRows((logs ?? []) as Log[]))
+      .catch(() => setRows([]));
   }, []);
 
   return (

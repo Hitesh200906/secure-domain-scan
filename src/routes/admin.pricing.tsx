@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AdminShell, Section, Badge, SuperAdminGate } from "@/components/admin/AdminShell";
-import { supabase } from "@/integrations/supabase/client";
+import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 import { logAudit } from "@/lib/audit";
 import { Save, Star } from "lucide-react";
@@ -18,24 +18,32 @@ function PricingAdmin() {
   const [plans, setPlans] = useState<Plan[]>([]);
 
   const load = async () => {
-    const { data } = await supabase.from("pricing_plans").select("*").order("sort_order");
-    setPlans((data ?? []) as never);
+    try {
+      const { plans } = await api.admin.listPricing();
+      setPlans((plans ?? []) as Plan[]);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to load");
+    }
   };
   useEffect(() => { load(); }, []);
 
   const save = async (p: Plan) => {
-    const { error } = await supabase.from("pricing_plans").update({
-      name: p.name, headline: p.headline, description: p.description, price_monthly: p.price_monthly,
-      price_label: p.price_label, credits: p.credits, features: p.features, popular: p.popular,
-      cta_label: p.cta_label, active: p.active,
-    }).eq("id", p.id);
-    if (error) return toast.error(error.message);
-    await logAudit("pricing.update", { type: "plan", id: p.slug });
-    toast.success(`${p.name} saved`);
+    try {
+      await api.admin.updatePricing(p.id, {
+        name: p.name, headline: p.headline, description: p.description, price_monthly: p.price_monthly,
+        price_label: p.price_label, credits: p.credits, features: p.features, popular: p.popular,
+        cta_label: p.cta_label, active: p.active,
+      });
+      await logAudit("pricing.update", { type: "plan", id: p.slug });
+      toast.success(`${p.name} saved`);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    }
   };
 
   const togglePopular = async (p: Plan) => {
-    await supabase.from("pricing_plans").update({ popular: false }).neq("id", p.id);
+    // Optimistically update locally; persist via Save button (server-side uniqueness
+    // for `popular` should be enforced in a future endpoint).
     setPlans((curr) => curr.map((x) => ({ ...x, popular: x.id === p.id })));
   };
 
