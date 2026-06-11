@@ -129,6 +129,7 @@ function Dashboard() {
                 <RoleBadge role={role} size="md" />
               </div>
 
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <div className="hidden md:flex items-center gap-2 rounded-full glass px-3.5 py-2 text-xs text-muted-foreground w-72">
