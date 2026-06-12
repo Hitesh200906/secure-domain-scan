@@ -81,7 +81,7 @@ export function Navbar() {
                   {(user.email || "?")[0].toUpperCase()}
                 </button>
                 {menuOpen && (
-                  <div className="absolute right-0 top-11 w-64 glass-strong rounded-2xl p-2 text-sm">
+                  <div className="absolute right-0 top-11 w-64 rounded-2xl p-2 text-sm bg-black/95 backdrop-blur-xl border border-white/10 shadow-2xl">
                     <div className="px-3 py-2 text-xs text-muted-foreground truncate flex items-center gap-2">
                       <span className="truncate flex-1">{user.email}</span>
                     </div>
