@@ -406,7 +406,7 @@ function PreviewCard({ name, slug, tagline, description, logoUrl, bannerUrl, ski
       <div className="p-5">
         {/* Header: bigger logo + name + socials */}
         <div className="flex items-start gap-3">
-          <div className="size-16 rounded-2xl border-2 border-background bg-background overflow-hidden shrink-0 -mt-12 shadow-lg">
+          <div className="size-12 rounded-full bg-background overflow-hidden shrink-0 shadow-lg ring-1 ring-white/10">
             {logoUrl ? (
               <img src={logoUrl} alt="" className="size-full object-cover" />
             ) : (
