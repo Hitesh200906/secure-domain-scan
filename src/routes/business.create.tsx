@@ -103,11 +103,16 @@ function CreateStoreWizard() {
   const next = () => setStep((s) => Math.min(STEPS.length, s + 1));
   const back = () => setStep((s) => Math.max(1, s - 1));
 
+  const [launching, setLaunching] = useState(false);
+  const [launchPhase, setLaunchPhase] = useState<"idle" | "forging" | "done">("idle");
+
   const publish = async () => {
-    if (!userId) return;
+    if (!userId || submitting) return;
     setSubmitting(true);
+    setLaunching(true);
+    setLaunchPhase("forging");
     const social_links = Object.fromEntries(Object.entries(socials).filter(([_, v]) => v.trim()));
-    const { error } = await supabase.from("stores").insert({
+    const insertPromise = supabase.from("stores").insert({
       owner_id: userId,
       name: name.trim(),
       slug,
@@ -119,13 +124,22 @@ function CreateStoreWizard() {
       website_url: socials.website.trim() || null,
       social_links: Object.keys(social_links).length ? social_links : null,
     });
+    // Run animation + insert in parallel — minimum 1.8s of magic
+    const [{ error }] = await Promise.all([
+      insertPromise,
+      new Promise((r) => setTimeout(r, 1800)),
+    ]);
     if (error) {
       setSubmitting(false);
+      setLaunching(false);
+      setLaunchPhase("idle");
       toast.error(error.message);
       return;
     }
-    toast.success("Store published 🎉");
-    navigate({ to: "/business" });
+    setLaunchPhase("done");
+    setTimeout(() => {
+      navigate({ to: "/business/products", search: { new: 1 } as any });
+    }, 900);
   };
 
   return (
