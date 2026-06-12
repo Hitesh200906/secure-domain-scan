@@ -6,7 +6,10 @@ import { getStoreProducts, type Product, type Store } from "@/lib/business";
 import { Plus, Trash2, Edit, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/business/products")({ component: ProductsPage });
+export const Route = createFileRoute("/business/products")({
+  component: ProductsPage,
+  validateSearch: (s: Record<string, unknown>) => ({ new: s.new ? Number(s.new) : undefined }),
+});
 
 
 function ProductsPage() {
