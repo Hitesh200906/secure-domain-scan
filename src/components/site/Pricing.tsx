@@ -41,8 +41,8 @@ export function Pricing({ compact = false }: { compact?: boolean }) {
   }, []);
 
   return (
-    <section className={`relative ${compact ? "py-16" : "py-24 sm:py-32"}`}>
-      <div className="mx-auto max-w-7xl px-6">
+    <section className={`relative ${compact ? "py-12 sm:py-16" : "py-16 sm:py-32"}`}>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="grid md:grid-cols-3 gap-5">
           {plans.map((t, i) => (
             <motion.div
@@ -53,7 +53,7 @@ export function Pricing({ compact = false }: { compact?: boolean }) {
               transition={{ duration: 0.5, delay: i * 0.07 }}
               className={`relative rounded-3xl p-px ${t.popular ? "bg-gradient-to-b from-primary/60 via-secondary/30 to-transparent" : "bg-white/[0.08]"}`}
             >
-              <div className="rounded-[calc(theme(borderRadius.3xl)-1px)] bg-[oklch(0.05_0.008_220)] p-8 h-full flex flex-col">
+              <div className="rounded-[calc(theme(borderRadius.3xl)-1px)] bg-[oklch(0.05_0.008_220)] p-6 sm:p-8 h-full flex flex-col">
                 {t.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-[0.2em] bg-primary text-primary-foreground px-3 py-1 rounded-full">
                     Most Popular
@@ -61,8 +61,8 @@ export function Pricing({ compact = false }: { compact?: boolean }) {
                 )}
                 <div>
                   <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{t.name}</div>
-                  <div className="mt-5 flex items-baseline gap-1">
-                    <span className="text-5xl font-semibold tracking-tight">
+                  <div className="mt-4 sm:mt-5 flex items-baseline gap-1">
+                    <span className="text-4xl sm:text-5xl font-semibold tracking-tight">
                       {t.price_monthly > 0 ? `$${t.price_monthly}` : (t.price_label || "Custom")}
                     </span>
                     {t.price_monthly > 0 && <span className="text-sm text-muted-foreground">{t.price_label || "/month"}</span>}
