@@ -191,6 +191,7 @@ export function Navbar() {
       </div>
 
       <MessagesDrawer open={msgOpen} onClose={() => setMsgOpen(false)} />
+      <StoresDrawer open={storesOpen} onClose={() => setStoresOpen(false)} />
     </header>
   );
 }
