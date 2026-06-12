@@ -255,7 +255,7 @@ export function NexusHome() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="rounded-2xl glass p-7"
+                className="rounded-2xl glass p-6 sm:p-7"
               >
                 <div className="inline-flex items-center justify-center size-11 rounded-xl glass text-primary">
                   <s.icon className="size-5" />
