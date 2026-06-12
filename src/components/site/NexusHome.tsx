@@ -103,6 +103,9 @@ export function NexusHome() {
         </div>
       </section>
 
+      {/* TOWNHALL FEED */}
+      <TownhallFeed />
+
       {/* CATEGORIES */}
       <section className="relative py-20 border-t border-white/5">
         <div className="mx-auto max-w-7xl px-6">
