@@ -6,12 +6,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/use-admin";
 import { RoleBadge } from "@/components/ui/RoleBadge";
 import { MessagesDrawer } from "@/components/site/MessagesDrawer";
+import { useAppMode } from "@/lib/app-mode";
 
 
-const publicLinks = [
+const baseLinks = [
   { to: "/", label: "Features" },
   { to: "/discover", label: "Discover" },
-  { to: "/business", label: "Business" },
 ] as const;
 
 
@@ -21,8 +21,14 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [msgOpen, setMsgOpen] = useState(false);
   const { user, isAdmin: admin, role } = useAdmin();
+  const { mode } = useAppMode();
   const navigate = useNavigate();
-  const links = publicLinks;
+  const links = [
+    ...baseLinks,
+    mode === "security"
+      ? { to: "/dashboard" as const, label: "Dashboard" }
+      : { to: "/business" as const, label: "Business" },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
