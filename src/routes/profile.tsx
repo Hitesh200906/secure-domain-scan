@@ -40,6 +40,7 @@ function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [following, setFollowing] = useState(false);
+  const [listOpen, setListOpen] = useState<null | "followers" | "following" | "products">(null);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [activeTicket, setActiveTicket] = useState<Ticket | null>(null);
   const [ticketMsgs, setTicketMsgs] = useState<TMsg[]>([]);
