@@ -41,16 +41,16 @@ export function ReportCard() {
     <div className="relative rounded-3xl p-px bg-gradient-to-b from-white/15 to-white/[0.02] shadow-[0_30px_80px_-30px_oklch(0.86_0.16_200_/_0.3)]">
       <div className="rounded-[calc(theme(borderRadius.3xl)-1px)] bg-[oklch(0.06_0.008_220)] overflow-hidden">
         {/* window chrome */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-white/5">
-          <div className="flex items-center gap-1.5">
+        <div className="flex items-center justify-between px-3 sm:px-5 py-3 border-b border-white/5 gap-2">
+          <div className="flex items-center gap-1.5 shrink-0">
             <div className="size-2.5 rounded-full bg-white/10" />
             <div className="size-2.5 rounded-full bg-white/10" />
             <div className="size-2.5 rounded-full bg-white/10" />
           </div>
-          <div className="text-xs font-mono text-muted-foreground">
+          <div className="text-[10px] sm:text-xs font-mono text-muted-foreground truncate">
             nexus-security.app/reports/rpt_8421
           </div>
-          <button className="text-xs text-muted-foreground hover:text-white inline-flex items-center gap-1.5">
+          <button className="text-xs text-muted-foreground hover:text-white inline-flex items-center gap-1.5 shrink-0">
             <Download className="size-3.5" /> PDF
           </button>
         </div>
