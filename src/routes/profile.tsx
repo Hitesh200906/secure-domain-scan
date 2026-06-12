@@ -2,10 +2,10 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
-  Award, Bell, BadgeCheck, Calendar, Camera, CheckCircle2, Copy, CreditCard, Crown,
-  DollarSign, Eye, Github, Globe, Heart, Key, LifeBuoy, Linkedin, Loader2, LogOut, MessageCircle,
-  MessageSquare, Monitor, Pencil, Plus, Send, Share2, Shield, ShieldCheck, Smartphone, Sparkles,
-  Star, Trash2, TrendingUp, Trophy, UserPlus, Users, X, Youtube, Zap,
+  ArrowDownLeft, ArrowUpRight, ArrowLeftRight, Award, Bell, BadgeCheck, Banknote, Calendar, Camera, CheckCircle2, Copy, CreditCard, Crown,
+  DollarSign, Download, Eye, Github, Globe, Heart, Key, LifeBuoy, Linkedin, Loader2, LogOut, MessageCircle,
+  MessageSquare, Monitor, Pencil, Plus, Send, Share2, Shield, ShieldCheck, ShieldQuestion, Smartphone, Sparkles,
+  Star, Trash2, TrendingUp, Trophy, UserPlus, Users, Wallet, X, Youtube, Zap,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
