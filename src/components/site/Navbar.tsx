@@ -51,7 +51,7 @@ export function Navbar() {
               <div className="absolute inset-0 blur-md bg-primary/40 -z-10 group-hover:bg-primary/60 transition" />
             </div>
             <span className="text-[13px] font-semibold tracking-[0.2em] text-white">
-              NEXUS<span className="text-muted-foreground ml-1.5">SECURITY</span>
+              NEXUS
             </span>
           </Link>
 

@@ -15,7 +15,7 @@ import { useAuth } from "@/hooks/use-auth";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Nexus Security — AI-Powered Security Analysis" },
+      { title: "Nexus — AI-Powered Security Analysis" },
       {
         name: "description",
         content:

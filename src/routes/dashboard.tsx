@@ -15,7 +15,7 @@ import { RoleBadge } from "@/components/ui/RoleBadge";
 
 
 export const Route = createFileRoute("/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — Nexus Security" }] }),
+  head: () => ({ meta: [{ title: "Dashboard — Nexus Sec" }] }),
   component: Dashboard,
 });
 
