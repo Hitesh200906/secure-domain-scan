@@ -247,23 +247,23 @@ function FeaturedBanner({ c }: { c: Card }) {
   return (
     <Link to={c.href as never} className={`mb-10 block relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br ${c.gradient}`}>
       <div className="absolute inset-0 bg-black/30" />
-      <div className="relative p-8 sm:p-12 flex flex-col sm:flex-row items-start sm:items-center gap-6">
-        <div className="size-20 rounded-2xl bg-white/15 backdrop-blur grid place-items-center text-4xl shrink-0">{c.emoji}</div>
+      <div className="relative p-6 sm:p-12 flex flex-col sm:flex-row items-start sm:items-center gap-5 sm:gap-6">
+        <div className="size-16 sm:size-20 rounded-2xl bg-white/15 backdrop-blur grid place-items-center text-3xl sm:text-4xl shrink-0">{c.emoji}</div>
         <div className="flex-1 min-w-0">
           <div className="text-[10px] uppercase tracking-widest text-white/80 mb-2 inline-flex items-center gap-2">
             <Flame className="size-3" /> Featured
           </div>
-          <h2 className="text-2xl sm:text-3xl font-semibold text-white flex items-center gap-2">
-            {c.title} {c.verified && <BadgeCheck className="size-5 text-white" />}
+          <h2 className="text-xl sm:text-3xl font-semibold text-white flex items-center gap-2">
+            <span className="truncate">{c.title}</span> {c.verified && <BadgeCheck className="size-5 text-white shrink-0" />}
           </h2>
           <p className="mt-2 text-sm text-white/85 max-w-2xl line-clamp-2">{c.description}</p>
-          <div className="mt-3 flex flex-wrap gap-4 text-xs text-white/80">
+          <div className="mt-3 flex flex-wrap gap-3 sm:gap-4 text-xs text-white/80">
             <span className="inline-flex items-center gap-1"><Users className="size-3" /> {c.members} members</span>
             {c.rating && <span className="inline-flex items-center gap-1"><Star className="size-3 fill-amber-300 text-amber-300" /> {c.rating}</span>}
             <span>{c.launched}</span>
           </div>
         </div>
-        <span className="rounded-full bg-white text-black px-5 py-2.5 text-sm font-medium">Explore →</span>
+        <span className="rounded-full bg-white text-black px-5 py-2.5 text-sm font-medium shrink-0">Explore →</span>
       </div>
     </Link>
   );

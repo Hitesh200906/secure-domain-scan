@@ -28,8 +28,8 @@ function ContactPage() {
         description="Tell us about your stack. Our team will reply within one business day with a tailored plan."
       />
 
-      <section className="relative py-12 pb-32">
-        <div className="mx-auto max-w-6xl px-6 grid lg:grid-cols-[1fr_1.4fr] gap-10">
+      <section className="relative py-10 sm:py-12 pb-24 sm:pb-32">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 grid lg:grid-cols-[1fr_1.4fr] gap-6 lg:gap-10">
           <aside className="space-y-4">
             {[
               { icon: Mail, label: "Email", value: "security@nexus.io" },
@@ -82,7 +82,7 @@ function ContactPage() {
                 toast.error(err instanceof Error ? err.message : "Failed to submit");
               }
             }}
-            className="glass-strong rounded-3xl p-8 sm:p-10 space-y-5"
+            className="glass-strong rounded-3xl p-5 sm:p-10 space-y-5"
           >
             {submitted ? (
               <div className="text-center py-12">
