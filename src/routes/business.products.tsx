@@ -1,16 +1,16 @@
 import { useStore } from "@/lib/store-context";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { getStoreProducts, type Product, type Store } from "@/lib/business";
-import { Plus, Trash2, Edit, X, Loader2 } from "lucide-react";
+import { getStoreProducts, type Product } from "@/lib/business";
+import { Plus, Trash2, Edit, Loader2, Package, ExternalLink, Eye } from "lucide-react";
 import { toast } from "sonner";
+import { ProductWizard } from "@/components/business/ProductWizard";
 
 export const Route = createFileRoute("/business/products")({
   component: ProductsPage,
   validateSearch: (s: Record<string, unknown>) => ({ new: s.new ? Number(s.new) : undefined }),
 });
-
 
 function ProductsPage() {
   const store = useStore();
@@ -18,7 +18,7 @@ function ProductsPage() {
   const navigate = Route.useNavigate();
   const [items, setItems] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState<Partial<Product> | null>(null);
+  const [wizard, setWizard] = useState<{ open: boolean; initial?: Partial<Product> | null }>({ open: false });
 
   const load = async () => {
     setLoading(true);
@@ -27,33 +27,12 @@ function ProductsPage() {
   };
   useEffect(() => { load(); }, [store.id]);
 
-  // Auto-open the "new product" modal when arriving from the create-store flow
   useEffect(() => {
     if (search.new) {
-      setEditing({});
+      setWizard({ open: true, initial: null });
       navigate({ search: {} as any, replace: true });
     }
   }, [search.new]);
-
-  const save = async () => {
-    if (!editing?.name) { toast.error("Name required"); return; }
-    const payload = {
-      store_id: store.id,
-      name: editing.name,
-      description: editing.description ?? null,
-      product_type: editing.product_type ?? "digital",
-      price: Number(editing.price ?? 0),
-      billing_type: editing.billing_type ?? "one_time",
-      active: editing.active ?? true,
-    };
-    const { error } = editing.id
-      ? await supabase.from("products").update(payload).eq("id", editing.id)
-      : await supabase.from("products").insert(payload);
-    if (error) { toast.error(error.message); return; }
-    toast.success("Saved");
-    setEditing(null);
-    load();
-  };
 
   const remove = async (id: string) => {
     if (!confirm("Delete this product?")) return;
@@ -68,74 +47,73 @@ function ProductsPage() {
           <h1 className="text-2xl font-semibold">Products</h1>
           <p className="text-sm text-muted-foreground mt-1">Manage what your store sells.</p>
         </div>
-        <button onClick={() => setEditing({})} className="inline-flex items-center gap-2 rounded-full bg-white text-black px-4 py-2 text-sm font-medium hover:bg-primary transition">
-          <Plus className="size-4" /> New product
+        <button onClick={() => setWizard({ open: true, initial: null })} className="inline-flex items-center gap-2 rounded-full bg-white text-black px-4 py-2 text-sm font-medium hover:bg-primary hover:text-white transition">
+          <Plus className="size-4" /> Add product
         </button>
       </div>
 
       {loading ? (
         <div className="grid place-items-center py-20"><Loader2 className="size-5 animate-spin text-muted-foreground" /></div>
       ) : items.length === 0 ? (
-        <div className="glass rounded-2xl p-12 text-center text-sm text-muted-foreground">No products yet. Create your first.</div>
+        <div className="glass rounded-2xl p-12 text-center">
+          <Package className="size-10 mx-auto mb-3 text-muted-foreground" />
+          <div className="font-medium">No products yet</div>
+          <div className="text-sm text-muted-foreground mt-1">Launch your first product with our 12-step wizard.</div>
+          <button onClick={() => setWizard({ open: true })} className="mt-4 inline-flex items-center gap-2 rounded-full bg-white text-black px-4 py-2 text-sm font-medium">
+            <Plus className="size-4" /> Create product
+          </button>
+        </div>
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {items.map((p) => (
-            <div key={p.id} className="glass rounded-2xl p-5">
-              <div className="flex items-start justify-between">
-                <div className="min-w-0">
-                  <div className="text-xs uppercase tracking-wider text-muted-foreground">{p.product_type}</div>
-                  <div className="mt-1 font-semibold truncate">{p.name}</div>
+          {items.map((p) => {
+            const anyP = p as any;
+            const banner = anyP.banner_url || anyP.thumbnail_url || p.image_url;
+            const logo = anyP.logo_url || p.image_url;
+            return (
+              <div key={p.id} className="glass rounded-2xl overflow-hidden group">
+                <div className="relative aspect-[16/9] bg-gradient-to-br from-primary/20 to-emerald-500/10">
+                  {banner && <img src={banner} className="absolute inset-0 w-full h-full object-cover" />}
+                  {logo && <img src={logo} className="absolute bottom-2 left-2 size-10 rounded-lg border-2 border-black object-cover" />}
+                  {anyP.status === "draft" && <span className="absolute top-2 right-2 text-[10px] rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5">Draft</span>}
                 </div>
-                <div className="text-right">
-                  <div className="font-semibold">${Number(p.price).toFixed(2)}</div>
-                  <div className="text-xs text-muted-foreground">{p.billing_type.replace("_", " ")}</div>
+                <div className="p-4">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{p.product_type.replace("_"," ")}</div>
+                      <div className="mt-0.5 font-semibold truncate">{p.name}</div>
+                      {anyP.headline && <div className="text-xs text-muted-foreground line-clamp-1 mt-0.5">{anyP.headline}</div>}
+                    </div>
+                    <div className="text-right shrink-0">
+                      <div className="font-semibold text-sm">{p.billing_type === "free" ? "Free" : `$${Number(p.price).toFixed(0)}`}</div>
+                      <div className="text-[10px] text-muted-foreground">{p.billing_type.replace("_", " ")}</div>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex gap-2">
+                    <button onClick={() => setWizard({ open: true, initial: p })} className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-xs hover:bg-white/5">
+                      <Edit className="size-3.5" /> Edit
+                    </button>
+                    <Link to="/$slug" params={{ slug: store.slug }} className="inline-flex items-center justify-center rounded-lg border border-white/10 px-2 py-1.5 text-xs hover:bg-white/5">
+                      <Eye className="size-3.5" />
+                    </Link>
+                    <button onClick={() => remove(p.id)} className="inline-flex items-center justify-center rounded-lg border border-white/10 px-2 py-1.5 text-xs text-destructive hover:bg-white/5">
+                      <Trash2 className="size-3.5" />
+                    </button>
+                  </div>
                 </div>
               </div>
-              {p.description && <p className="mt-3 text-sm text-muted-foreground line-clamp-3">{p.description}</p>}
-              <div className="mt-4 flex gap-2">
-                <button onClick={() => setEditing(p)} className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-xs hover:bg-white/5">
-                  <Edit className="size-3.5" /> Edit
-                </button>
-                <button onClick={() => remove(p.id)} className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-xs text-destructive hover:bg-white/5">
-                  <Trash2 className="size-3.5" />
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
-      {editing && (
-        <div className="fixed inset-0 z-[80] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={() => setEditing(null)}>
-          <div className="glass-strong rounded-2xl p-6 w-full max-w-lg" onClick={e=>e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">{editing.id ? "Edit product" : "New product"}</h2>
-              <button onClick={() => setEditing(null)}><X className="size-5" /></button>
-            </div>
-            <div className="space-y-3">
-              <input className="input" placeholder="Product name" value={editing.name ?? ""} onChange={e=>setEditing({...editing, name:e.target.value})} />
-              <textarea className="input min-h-[80px]" placeholder="Description" value={editing.description ?? ""} onChange={e=>setEditing({...editing, description:e.target.value})} />
-              <div className="grid grid-cols-3 gap-2">
-                <select className="input" value={editing.product_type ?? "digital"} onChange={e=>setEditing({...editing, product_type:e.target.value})}>
-                  <option value="community">Community</option>
-                  <option value="digital">Digital</option>
-                  <option value="software">Software</option>
-                  <option value="membership">Membership</option>
-                </select>
-                <select className="input" value={editing.billing_type ?? "one_time"} onChange={e=>setEditing({...editing, billing_type:e.target.value})}>
-                  <option value="one_time">One-time</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="yearly">Yearly</option>
-                </select>
-                <input className="input" placeholder="Price" inputMode="decimal" value={editing.price ?? ""} onChange={e=>setEditing({...editing, price:Number(e.target.value)})} />
-              </div>
-              <button onClick={save} className="w-full rounded-full bg-white text-black py-2.5 text-sm font-medium">Save</button>
-            </div>
-          </div>
-        </div>
+      {wizard.open && (
+        <ProductWizard
+          store={store}
+          initial={wizard.initial}
+          onClose={() => setWizard({ open: false })}
+          onSaved={load}
+        />
       )}
-
-      <style>{`.input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:0.625rem;padding:0.55rem 0.75rem;color:white;font-size:0.875rem;outline:none}.input:focus{border-color:rgba(124,58,237,0.6)}`}</style>
     </div>
   );
 }

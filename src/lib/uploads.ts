@@ -5,10 +5,11 @@ const TEN_YEARS = 60 * 60 * 24 * 365 * 10;
 export async function uploadStoreAsset(
   userId: string,
   file: File,
-  kind: "logo" | "banner",
+  kind: string,
 ): Promise<string> {
   const ext = file.name.split(".").pop()?.toLowerCase() || "png";
-  const path = `${userId}/${kind}-${Date.now()}.${ext}`;
+  const safe = kind.replace(/[^a-z0-9_-]/gi, "-");
+  const path = `${userId}/${safe}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
   const { error: upErr } = await supabase.storage
     .from("store-assets")
     .upload(path, file, { upsert: true, contentType: file.type });
