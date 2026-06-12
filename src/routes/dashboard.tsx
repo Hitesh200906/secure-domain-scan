@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
+import nexusLogo from "@/assets/nexus-logo.png";
 import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
 import { useAdmin } from "@/hooks/use-admin";
@@ -68,7 +69,7 @@ function Dashboard() {
       <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r border-white/[0.06] bg-[oklch(0.04_0.008_220)]/80 backdrop-blur-xl">
         <div className="px-6 py-5 border-b border-white/[0.06]">
           <Link to="/" className="flex items-center gap-2">
-            <img src={(await import("@/assets/nexus-logo.png")).default ?? ""} alt="Nexus" className="size-6 object-contain" />
+            <img src={nexusLogo} alt="Nexus" className="size-6 object-contain" />
             <span className="text-[13px] font-semibold tracking-[0.2em]">NEXUS<span className="text-muted-foreground ml-1.5">SEC</span></span>
           </Link>
         </div>
