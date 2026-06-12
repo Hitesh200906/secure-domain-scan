@@ -35,15 +35,15 @@ const items = [
 
 export function Testimonials() {
   return (
-    <section className="relative py-24 sm:py-32 overflow-hidden">
+    <section className="relative py-16 sm:py-32 overflow-hidden">
       <SectionBackdrop variant="circuit" opacity={0.08} />
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeader
           eyebrow="Trusted globally"
           title="Loved by security and engineering teams"
         />
 
-        <div className="mt-16 grid md:grid-cols-2 gap-5">
+        <div className="mt-10 sm:mt-16 grid md:grid-cols-2 gap-4 sm:gap-5">
           {items.map((t, i) => (
             <motion.figure
               key={t.name}
@@ -51,9 +51,9 @@ export function Testimonials() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.5, delay: i * 0.05 }}
-              className="glass rounded-3xl p-8"
+              className="glass rounded-3xl p-6 sm:p-8"
             >
-              <blockquote className="text-lg leading-relaxed text-white/90">
+              <blockquote className="text-base sm:text-lg leading-relaxed text-white/90">
                 “{t.quote}”
               </blockquote>
               <figcaption className="mt-6 flex items-center justify-between">
