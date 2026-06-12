@@ -12,9 +12,9 @@ const buckets = [
 
 export function ReportShowcase() {
   return (
-    <section className="relative py-24 sm:py-32 overflow-hidden">
+    <section className="relative py-16 sm:py-32 overflow-hidden">
       <SectionBackdrop variant="grid" opacity={0.1} />
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeader
           eyebrow="Reports"
           title="Reports your security team will actually read"
