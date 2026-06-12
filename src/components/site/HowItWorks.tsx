@@ -29,16 +29,16 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <section className="relative py-24 sm:py-32 overflow-hidden">
+    <section className="relative py-16 sm:py-32 overflow-hidden">
       <SectionBackdrop variant="circuit" opacity={0.1} />
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeader
           eyebrow="How it works"
           title="From input to insight in three steps"
           description="Our pipeline takes you from raw target to executive-ready report — without the toil."
         />
 
-        <div className="mt-20 relative">
+        <div className="mt-14 sm:mt-20 relative">
           <div
             aria-hidden
             className="hidden lg:block absolute left-0 right-0 top-[44px] h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent"
