@@ -5,6 +5,7 @@ import {
   MessageCircle, Star, ArrowRight, Zap, Globe2, Crown, Coins,
 } from "lucide-react";
 import { ModeToggle } from "./ModeToggle";
+import { TownhallFeed } from "./TownhallFeed";
 import nexusLogo from "@/assets/nexus-logo.png";
 
 const categories = [
@@ -101,6 +102,9 @@ export function NexusHome() {
           </motion.div>
         </div>
       </section>
+
+      {/* TOWNHALL FEED */}
+      <TownhallFeed />
 
       {/* CATEGORIES */}
       <section className="relative py-20 border-t border-white/5">
