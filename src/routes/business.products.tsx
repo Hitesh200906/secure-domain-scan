@@ -14,6 +14,8 @@ export const Route = createFileRoute("/business/products")({
 
 function ProductsPage() {
   const store = useStore();
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
   const [items, setItems] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Partial<Product> | null>(null);
