@@ -4,7 +4,7 @@ import { useAppMode } from "@/lib/app-mode";
 
 export function ModeToggle({ size = "lg" }: { size?: "lg" | "md" }) {
   const { mode, setMode } = useAppMode();
-  const pad = size === "lg" ? "px-6 py-3 text-sm" : "px-4 py-2 text-xs";
+  const pad = size === "lg" ? "px-3 sm:px-6 py-2.5 sm:py-3 text-[12px] sm:text-sm" : "px-3 sm:px-4 py-2 text-[11px] sm:text-xs";
 
   return (
     <motion.div
@@ -21,8 +21,8 @@ export function ModeToggle({ size = "lg" }: { size?: "lg" | "md" }) {
             : "text-muted-foreground hover:text-white"
         }`}
       >
-        <Sparkles className="size-4" />
-        Switch to Nexus
+        <Sparkles className="size-3.5 sm:size-4 shrink-0" />
+        <span className="whitespace-nowrap"><span className="hidden xs:inline">Switch to </span>Nexus</span>
       </button>
       <button
         onClick={() => setMode("security")}
@@ -32,8 +32,8 @@ export function ModeToggle({ size = "lg" }: { size?: "lg" | "md" }) {
             : "text-muted-foreground hover:text-white"
         }`}
       >
-        <ShieldCheck className="size-4" />
-        Switch to Nexus Security
+        <ShieldCheck className="size-3.5 sm:size-4 shrink-0" />
+        <span className="whitespace-nowrap"><span className="hidden xs:inline">Switch to Nexus </span>Security</span>
       </button>
     </motion.div>
   );

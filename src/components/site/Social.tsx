@@ -157,18 +157,18 @@ function SocialCard({ s, index }: { s: Social; index: number }) {
 
 export function Social() {
   return (
-    <section className="relative py-24 sm:py-32 overflow-hidden">
+    <section className="relative py-16 sm:py-32 overflow-hidden">
       <SectionBackdrop variant="grid" opacity={0.1} />
       {/* Ambient accent glows */}
       <div className="pointer-events-none absolute top-1/3 left-0 size-96 rounded-full blur-[140px] opacity-20 bg-[#e1306c]" />
       <div className="pointer-events-none absolute bottom-0 right-0 size-96 rounded-full blur-[140px] opacity-15 bg-[#1877F2]" />
-      <div className="relative mx-auto max-w-7xl px-6">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeader
           eyebrow="Community"
           title="Join us on social"
           description="Follow Nexus Security for live threat intel, research drops, and behind-the-scenes from our red team."
         />
-        <div className="mt-16 grid md:grid-cols-3 gap-6">
+        <div className="mt-10 sm:mt-16 grid md:grid-cols-3 gap-5 sm:gap-6">
           {socials.map((s, i) => (
             <SocialCard key={s.name} s={s} index={i} />
           ))}

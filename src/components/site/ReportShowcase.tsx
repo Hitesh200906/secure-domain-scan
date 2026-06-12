@@ -12,9 +12,9 @@ const buckets = [
 
 export function ReportShowcase() {
   return (
-    <section className="relative py-24 sm:py-32 overflow-hidden">
+    <section className="relative py-16 sm:py-32 overflow-hidden">
       <SectionBackdrop variant="grid" opacity={0.1} />
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeader
           eyebrow="Reports"
           title="Reports your security team will actually read"
@@ -26,7 +26,7 @@ export function ReportShowcase() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.8 }}
-          className="mt-16"
+          className="mt-10 sm:mt-16"
         >
           <ReportCard />
         </motion.div>
@@ -41,47 +41,47 @@ export function ReportCard() {
     <div className="relative rounded-3xl p-px bg-gradient-to-b from-white/15 to-white/[0.02] shadow-[0_30px_80px_-30px_oklch(0.86_0.16_200_/_0.3)]">
       <div className="rounded-[calc(theme(borderRadius.3xl)-1px)] bg-[oklch(0.06_0.008_220)] overflow-hidden">
         {/* window chrome */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-white/5">
-          <div className="flex items-center gap-1.5">
+        <div className="flex items-center justify-between px-3 sm:px-5 py-3 border-b border-white/5 gap-2">
+          <div className="flex items-center gap-1.5 shrink-0">
             <div className="size-2.5 rounded-full bg-white/10" />
             <div className="size-2.5 rounded-full bg-white/10" />
             <div className="size-2.5 rounded-full bg-white/10" />
           </div>
-          <div className="text-xs font-mono text-muted-foreground">
+          <div className="text-[10px] sm:text-xs font-mono text-muted-foreground truncate">
             nexus-security.app/reports/rpt_8421
           </div>
-          <button className="text-xs text-muted-foreground hover:text-white inline-flex items-center gap-1.5">
+          <button className="text-xs text-muted-foreground hover:text-white inline-flex items-center gap-1.5 shrink-0">
             <Download className="size-3.5" /> PDF
           </button>
         </div>
 
         <div className="grid lg:grid-cols-[1.1fr_1fr] gap-px bg-white/[0.05]">
           {/* Left: score + summary */}
-          <div className="bg-[oklch(0.06_0.008_220)] p-8">
-            <div className="flex items-start justify-between">
-              <div>
+          <div className="bg-[oklch(0.06_0.008_220)] p-5 sm:p-8">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
                 <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
                   Security Report
                 </div>
-                <h3 className="mt-2 text-2xl font-medium tracking-tight">
+                <h3 className="mt-2 text-xl sm:text-2xl font-medium tracking-tight truncate">
                   acme-fintech.com
                 </h3>
-                <div className="mt-1 text-xs font-mono text-muted-foreground">
+                <div className="mt-1 text-[10px] sm:text-xs font-mono text-muted-foreground">
                   Scan ID rpt_8421 · May 30, 2026
                 </div>
               </div>
-              <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-primary glass px-2 py-1 rounded">
+              <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-primary glass px-2 py-1 rounded shrink-0">
                 Verified
               </span>
             </div>
 
-            <div className="mt-8 flex items-center gap-8">
+            <div className="mt-6 sm:mt-8 flex items-center gap-5 sm:gap-8">
               <ScoreRing score={72} />
               <div>
                 <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
                   Security Score
                 </div>
-                <div className="mt-1 text-4xl font-semibold tracking-tight text-gradient-accent">
+                <div className="mt-1 text-3xl sm:text-4xl font-semibold tracking-tight text-gradient-accent">
                   72/100
                 </div>
                 <div className="mt-1 text-xs text-muted-foreground">
@@ -90,16 +90,16 @@ export function ReportCard() {
               </div>
             </div>
 
-            <div className="mt-8 grid grid-cols-4 gap-2">
+            <div className="mt-7 sm:mt-8 grid grid-cols-4 gap-2">
               {buckets.map((b) => (
-                <div key={b.label} className="rounded-xl glass p-3">
+                <div key={b.label} className="rounded-xl glass p-2 sm:p-3">
                   <div
-                    className="text-2xl font-semibold tracking-tight"
+                    className="text-xl sm:text-2xl font-semibold tracking-tight"
                     style={{ color: b.color }}
                   >
                     {b.value}
                   </div>
-                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
+                  <div className="text-[9px] sm:text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
                     {b.label}
                   </div>
                 </div>
@@ -126,7 +126,7 @@ export function ReportCard() {
           </div>
 
           {/* Right: findings list */}
-          <div className="bg-[oklch(0.05_0.008_220)] p-8">
+          <div className="bg-[oklch(0.05_0.008_220)] p-5 sm:p-8">
             <div className="flex items-center justify-between">
               <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
                 Top Findings

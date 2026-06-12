@@ -46,7 +46,7 @@ export function NexusHome() {
           <div className="absolute bottom-0 right-0 size-[480px] rounded-full bg-[oklch(0.75_0.18_310_/0.12)] blur-[120px]" />
         </div>
 
-        <div className="relative mx-auto max-w-6xl px-6 text-center pt-32 pb-20">
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 text-center pt-28 sm:pt-32 pb-16 sm:pb-20">
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -61,7 +61,7 @@ export function NexusHome() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="mt-7 text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-semibold tracking-[-0.04em] leading-[0.95] text-gradient"
+            className="mt-6 text-[40px] leading-[1] sm:text-6xl md:text-7xl lg:text-[88px] font-semibold tracking-[-0.04em] sm:leading-[0.95] text-gradient"
           >
             The home of
             <br />
@@ -72,7 +72,7 @@ export function NexusHome() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="mt-7 max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground leading-relaxed"
+            className="mt-5 sm:mt-7 max-w-2xl mx-auto text-sm sm:text-lg text-muted-foreground leading-relaxed"
           >
             Discover thousands of communities, courses, and digital products — or launch your own
             store in minutes. One platform, infinite possibilities.
@@ -86,7 +86,7 @@ export function NexusHome() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.6 }}
-            className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-3xl mx-auto"
+            className="mt-12 sm:mt-16 grid grid-cols-2 sm:grid-cols-4 gap-5 sm:gap-6 max-w-3xl mx-auto"
           >
             {[
               { v: "50k+", l: "Creators" },
@@ -95,8 +95,8 @@ export function NexusHome() {
               { v: "180+", l: "Countries" },
             ].map((s) => (
               <div key={s.l} className="text-center">
-                <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">{s.v}</div>
-                <div className="mt-1 text-xs uppercase tracking-[0.18em] text-muted-foreground">{s.l}</div>
+                <div className="text-xl sm:text-3xl font-semibold tracking-tight text-white">{s.v}</div>
+                <div className="mt-1 text-[10px] sm:text-xs uppercase tracking-[0.18em] text-muted-foreground">{s.l}</div>
               </div>
             ))}
           </motion.div>
@@ -107,18 +107,18 @@ export function NexusHome() {
       <TownhallFeed />
 
       {/* CATEGORIES */}
-      <section className="relative py-20 border-t border-white/5">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="flex items-end justify-between mb-10">
-            <div>
+      <section className="relative py-14 sm:py-20 border-t border-white/5">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="flex items-end justify-between mb-7 sm:mb-10 gap-4">
+            <div className="min-w-0">
               <div className="inline-flex items-center gap-2 rounded-full glass px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
                 <Compass className="size-3" /> Browse
               </div>
-              <h2 className="mt-4 text-3xl sm:text-4xl font-semibold tracking-tight text-white">
+              <h2 className="mt-4 text-2xl sm:text-4xl font-semibold tracking-tight text-white">
                 Explore by category
               </h2>
             </div>
-            <Link to="/discover" className="hidden sm:inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-white">
+            <Link to="/discover" className="hidden sm:inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-white shrink-0">
               See all <ArrowRight className="size-4" />
             </Link>
           </div>
@@ -130,7 +130,7 @@ export function NexusHome() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
-                className="group rounded-2xl glass p-5 hover:border-white/20 transition cursor-pointer"
+                className="group rounded-2xl glass p-4 sm:p-5 hover:border-white/20 transition cursor-pointer"
               >
                 <c.icon className="size-5 text-primary group-hover:scale-110 transition" />
                 <div className="mt-3 text-sm font-medium text-white">{c.label}</div>
@@ -142,19 +142,19 @@ export function NexusHome() {
       </section>
 
       {/* FEATURED COMMUNITIES */}
-      <section className="relative py-20">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="flex items-end justify-between mb-10">
+      <section className="relative py-14 sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="flex items-end justify-between mb-7 sm:mb-10">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full glass px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
                 <Flame className="size-3" /> Trending now
               </div>
-              <h2 className="mt-4 text-3xl sm:text-4xl font-semibold tracking-tight text-white">
+              <h2 className="mt-4 text-2xl sm:text-4xl font-semibold tracking-tight text-white">
                 Featured communities
               </h2>
             </div>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {featuredCommunities.map((c, i) => (
               <motion.div
                 key={c.name}
@@ -194,14 +194,14 @@ export function NexusHome() {
       </section>
 
       {/* POPULAR CREATORS */}
-      <section className="relative py-20 border-t border-white/5">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="flex items-end justify-between mb-10">
+      <section className="relative py-14 sm:py-20 border-t border-white/5">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="flex items-end justify-between mb-7 sm:mb-10">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full glass px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
                 <Star className="size-3" /> Top creators
               </div>
-              <h2 className="mt-4 text-3xl sm:text-4xl font-semibold tracking-tight text-white">
+              <h2 className="mt-4 text-2xl sm:text-4xl font-semibold tracking-tight text-white">
                 Popular users
               </h2>
             </div>
@@ -233,17 +233,17 @@ export function NexusHome() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="relative py-20 border-t border-white/5">
-        <div className="mx-auto max-w-6xl px-6">
+      <section className="relative py-14 sm:py-20 border-t border-white/5">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="text-center max-w-2xl mx-auto">
             <div className="inline-flex items-center gap-2 rounded-full glass px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
               <Zap className="size-3" /> How it works
             </div>
-            <h2 className="mt-4 text-3xl sm:text-4xl font-semibold tracking-tight text-gradient">
+            <h2 className="mt-4 text-2xl sm:text-4xl font-semibold tracking-tight text-gradient">
               Launch in three steps
             </h2>
           </div>
-          <div className="mt-12 grid sm:grid-cols-3 gap-5">
+          <div className="mt-10 sm:mt-12 grid sm:grid-cols-3 gap-4 sm:gap-5">
             {[
               { icon: Store, title: "Create your store", desc: "Set up your branded storefront in under 2 minutes. No code required." },
               { icon: MessageCircle, title: "Build community", desc: "Chat, forums, courses, drops — everything your audience needs in one place." },
@@ -255,7 +255,7 @@ export function NexusHome() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="rounded-2xl glass p-7"
+                className="rounded-2xl glass p-6 sm:p-7"
               >
                 <div className="inline-flex items-center justify-center size-11 rounded-xl glass text-primary">
                   <s.icon className="size-5" />
@@ -270,19 +270,19 @@ export function NexusHome() {
       </section>
 
       {/* CTA */}
-      <section className="relative py-24">
-        <div className="mx-auto max-w-5xl px-6">
+      <section className="relative py-16 sm:py-24">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="relative rounded-3xl overflow-hidden p-px bg-gradient-to-b from-primary/40 via-secondary/20 to-transparent">
-            <div className="relative rounded-[calc(theme(borderRadius.3xl)-1px)] bg-[oklch(0.05_0.008_220)] p-12 sm:p-16 text-center overflow-hidden">
+            <div className="relative rounded-[calc(theme(borderRadius.3xl)-1px)] bg-[oklch(0.05_0.008_220)] p-8 sm:p-16 text-center overflow-hidden">
               <div className="absolute inset-0 hero-gradient opacity-60" />
               <div className="relative">
-                <h2 className="text-4xl sm:text-5xl font-semibold tracking-[-0.03em] text-gradient">
+                <h2 className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-gradient">
                   Start your business today
                 </h2>
-                <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
+                <p className="mt-4 text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
                   Join 50,000+ creators building their internet business on Nexus.
                 </p>
-                <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+                <div className="mt-7 sm:mt-8 flex flex-col sm:flex-row gap-3 justify-center">
                   <Link
                     to="/business"
                     className="inline-flex items-center justify-center gap-2 rounded-full bg-white text-black px-6 py-3 text-sm font-medium hover:shadow-[0_0_40px_-4px_rgba(255,255,255,0.5)] transition"

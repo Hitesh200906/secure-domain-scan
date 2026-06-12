@@ -83,11 +83,11 @@ function Tilt3DCard({
 
 export function Features() {
   return (
-    <section className="relative py-24 sm:py-32 overflow-hidden">
+    <section className="relative py-16 sm:py-32 overflow-hidden">
 
 
 
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeader
           eyebrow="Capabilities"
           title="Security infrastructure, reimagined"
@@ -95,7 +95,7 @@ export function Features() {
         />
 
         <div
-          className="mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="mt-10 sm:mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
           style={{ perspective: 1200 }}
         >
           {features.map((f, i) => (
@@ -106,7 +106,7 @@ export function Features() {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: i * 0.07 }}
             >
-              <Tilt3DCard className="group relative h-full rounded-2xl glass p-8 lg:p-10 transition-colors duration-500 will-change-transform hover:border-white/20">
+              <Tilt3DCard className="group relative h-full rounded-2xl glass p-6 sm:p-8 lg:p-10 transition-colors duration-500 will-change-transform hover:border-white/20">
                 <div
                   className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                   style={{
@@ -159,7 +159,7 @@ export function SectionHeader({
           {eyebrow}
         </div>
       )}
-      <h2 className="mt-5 text-4xl sm:text-5xl font-semibold tracking-[-0.03em] text-gradient">
+      <h2 className="mt-5 text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-gradient">
         {title}
       </h2>
       {description && (
