@@ -5,6 +5,7 @@ import {
   MessageCircle, Star, ArrowRight, Zap, Globe2, Crown, Coins,
 } from "lucide-react";
 import { ModeToggle } from "./ModeToggle";
+import { TownhallFeed } from "./TownhallFeed";
 import nexusLogo from "@/assets/nexus-logo.png";
 
 const categories = [
