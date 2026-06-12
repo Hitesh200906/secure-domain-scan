@@ -126,7 +126,7 @@ export function ReportCard() {
           </div>
 
           {/* Right: findings list */}
-          <div className="bg-[oklch(0.05_0.008_220)] p-8">
+          <div className="bg-[oklch(0.05_0.008_220)] p-5 sm:p-8">
             <div className="flex items-center justify-between">
               <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
                 Top Findings
