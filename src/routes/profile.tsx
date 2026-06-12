@@ -234,6 +234,7 @@ function ProfilePage() {
               <Card title="Personal information" className="lg:col-span-2">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label="Full name" value={profile.full_name} onChange={(v) => setProfile({ ...profile, full_name: v })} />
+                  <Field label="Username" value={profile.username} onChange={(v) => setProfile({ ...profile, username: v.toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 24) })} prefix="@" />
                   <Field label="Role / Title" value={profile.role_title} onChange={(v) => setProfile({ ...profile, role_title: v })} />
                   <Field label="Company" value={profile.company} onChange={(v) => setProfile({ ...profile, company: v })} />
                   <Field label="Email" value={user?.email ?? "demo@nexus.com"} readOnly />
