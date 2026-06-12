@@ -147,65 +147,64 @@ function ProfilePage() {
           ← Back to dashboard
         </Link>
 
-        {/* Hero / identity card — centered, black background */}
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-          className="mt-6 rounded-3xl overflow-hidden relative bg-black border border-white/10">
-          <div className="px-6 sm:px-8 py-10 sm:py-12 flex flex-col items-center text-center">
-            <div className="relative">
-              <div className="size-24 sm:size-28 rounded-2xl bg-gradient-to-br from-primary to-secondary grid place-items-center text-4xl font-semibold text-black shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.6)] ring-4 ring-black">
+        {/* Hero / identity card — compact, professional, all-black */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
+          className="mt-6 rounded-2xl overflow-hidden relative bg-black border border-white/10">
+          <div className="px-5 sm:px-7 py-6 sm:py-7 grid sm:grid-cols-[auto_1fr_auto] items-center gap-5">
+            {/* Avatar */}
+            <div className="relative justify-self-center sm:justify-self-start">
+              <div className="size-16 sm:size-20 rounded-2xl bg-gradient-to-br from-primary to-secondary grid place-items-center text-2xl sm:text-3xl font-semibold text-black ring-2 ring-white/10">
                 {initials}
               </div>
-              <button className="absolute -bottom-1.5 -right-1.5 size-8 rounded-full bg-black border border-white/15 grid place-items-center hover:border-primary/40 transition" aria-label="Change avatar">
-                <Camera className="size-3.5" />
+              <button className="absolute -bottom-1 -right-1 size-7 rounded-full bg-black border border-white/15 grid place-items-center hover:border-primary/40 transition" aria-label="Change avatar">
+                <Camera className="size-3" />
               </button>
             </div>
 
-            <div className="mt-5 flex items-center gap-2 flex-wrap justify-center">
-              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">{displayName}</h1>
-              <BadgeCheck className="size-5 text-primary fill-primary/20" aria-label="Verified" />
-              <RoleBadge role={role} size="md" />
-              <span className="text-[10px] uppercase tracking-widest px-2 py-1 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/20 inline-flex items-center gap-1">
-                <Crown className="size-3" /> Creator
-              </span>
-            </div>
-
-            <div className="mt-1.5 text-sm text-muted-foreground">
-              {handle} · <span className="text-foreground/80">{profile.role_title || "—"}</span>{profile.company && ` · ${profile.company}`}
-            </div>
-
-            {profile.bio && (
-              <p className="mt-3 text-sm text-foreground/80 max-w-xl">{profile.bio}</p>
-            )}
-
-            <div className="mt-3 text-[11px] text-muted-foreground inline-flex items-center gap-1.5">
-              <Calendar className="size-3" /> Joined {joinDate}
-            </div>
-
-            {profile.show_earnings && (
-              <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-emerald-400/10 border border-emerald-400/20 text-emerald-300 px-3.5 py-1.5 text-xs font-medium">
-                <DollarSign className="size-3.5" /> ${profile.earnings.toLocaleString()} earned
+            {/* Identity */}
+            <div className="min-w-0 text-center sm:text-left">
+              <div className="flex items-center gap-2 flex-wrap justify-center sm:justify-start">
+                <h1 className="text-lg sm:text-xl font-semibold tracking-tight truncate">{displayName}</h1>
+                <BadgeCheck className="size-4 text-primary fill-primary/20 shrink-0" aria-label="Verified" />
+                <RoleBadge role={role} size="sm" />
+                {profile.show_earnings && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-400/10 border border-emerald-400/20 text-emerald-300 px-2 py-0.5 text-[10px] font-medium">
+                    <DollarSign className="size-3" /> ${profile.earnings.toLocaleString()} earned
+                  </span>
+                )}
               </div>
-            )}
-
-            {/* Own-profile actions */}
-            <div className="mt-6 flex flex-wrap gap-2 justify-center">
-              <button onClick={() => setTab("general")}
-                className="rounded-full bg-white text-black px-4 py-2 text-sm font-medium inline-flex items-center gap-1.5 hover:shadow-[0_0_30px_-4px_oklch(0.86_0.16_200_/0.5)] transition">
-                <Pencil className="size-3.5" /> Edit profile
-              </button>
-              <button onClick={shareProfile} className="rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-sm inline-flex items-center gap-1.5 hover:border-primary/40 transition">
-                <Share2 className="size-3.5" /> Share
-              </button>
-              <button onClick={copyLink} className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-2 text-sm inline-flex items-center gap-1.5 hover:border-primary/40 transition" aria-label="Copy link">
-                <Copy className="size-3.5" />
-              </button>
+              <div className="mt-1 text-xs text-muted-foreground truncate">
+                {handle}{profile.role_title ? ` · ${profile.role_title}` : ""}{profile.company ? ` · ${profile.company}` : ""}
+              </div>
+              {profile.bio && (
+                <p className="mt-2 text-xs sm:text-sm text-foreground/80 line-clamp-2 max-w-xl mx-auto sm:mx-0">{profile.bio}</p>
+              )}
+              <div className="mt-2 text-[11px] text-muted-foreground inline-flex items-center gap-1.5">
+                <Calendar className="size-3" /> Joined {joinDate}
+              </div>
             </div>
 
-            {/* Stats — clickable */}
-            <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3 w-full max-w-md">
-              <StatButton label="Followers" value="12.4k" onClick={() => setListOpen("followers")} />
-              <StatButton label="Following" value="284" onClick={() => setListOpen("following")} />
-              <StatButton label="Products" value="9" onClick={() => setListOpen("products")} />
+            {/* Actions + stats */}
+            <div className="flex flex-col gap-3 items-center sm:items-end">
+              <div className="flex gap-1.5">
+                <button onClick={() => setTab("general")}
+                  className="rounded-full bg-white text-black px-3.5 py-1.5 text-xs font-medium inline-flex items-center gap-1.5 hover:shadow-[0_0_24px_-6px_oklch(0.86_0.16_200_/0.6)] transition">
+                  <Pencil className="size-3" /> Edit profile
+                </button>
+                <button onClick={shareProfile} className="rounded-full border border-white/15 bg-white/[0.04] size-8 grid place-items-center hover:border-primary/40 transition" aria-label="Share">
+                  <Share2 className="size-3.5" />
+                </button>
+                <button onClick={copyLink} className="rounded-full border border-white/15 bg-white/[0.04] size-8 grid place-items-center hover:border-primary/40 transition" aria-label="Copy link">
+                  <Copy className="size-3.5" />
+                </button>
+              </div>
+              <div className="flex items-center gap-1 text-xs">
+                <MiniStat label="Followers" value="12.4k" onClick={() => setListOpen("followers")} />
+                <span className="text-white/10">·</span>
+                <MiniStat label="Following" value="284" onClick={() => setListOpen("following")} />
+                <span className="text-white/10">·</span>
+                <MiniStat label="Products" value="9" onClick={() => setListOpen("products")} />
+              </div>
             </div>
           </div>
         </motion.div>
