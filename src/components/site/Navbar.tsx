@@ -1,11 +1,12 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X, LogOut, User as UserIcon, LayoutDashboard, Lock, MessageSquare } from "lucide-react";
+import { Menu, X, LogOut, User as UserIcon, LayoutDashboard, Lock, MessageSquare, Store as StoreIcon } from "lucide-react";
 import nexusLogo from "@/assets/nexus-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/use-admin";
 import { RoleBadge } from "@/components/ui/RoleBadge";
 import { MessagesDrawer } from "@/components/site/MessagesDrawer";
+import { StoresDrawer } from "@/components/site/StoresDrawer";
 import { useAppMode } from "@/lib/app-mode";
 
 
