@@ -213,6 +213,7 @@ function ProfilePage() {
         <div className="mt-6 flex items-center gap-1 border-b border-white/[0.06] overflow-x-auto">
           {([
             ["general", "General"],
+            ["balance", "Balance"],
             ["tickets", `Tickets${tickets.length ? ` · ${tickets.length}` : ""}`],
             ["security", "Security"], ["billing", "Billing"],
             ["notifications", "Notifications"], ["api", "API Keys"],
