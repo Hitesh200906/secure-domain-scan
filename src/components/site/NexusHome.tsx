@@ -233,17 +233,17 @@ export function NexusHome() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="relative py-20 border-t border-white/5">
-        <div className="mx-auto max-w-6xl px-6">
+      <section className="relative py-14 sm:py-20 border-t border-white/5">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="text-center max-w-2xl mx-auto">
             <div className="inline-flex items-center gap-2 rounded-full glass px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
               <Zap className="size-3" /> How it works
             </div>
-            <h2 className="mt-4 text-3xl sm:text-4xl font-semibold tracking-tight text-gradient">
+            <h2 className="mt-4 text-2xl sm:text-4xl font-semibold tracking-tight text-gradient">
               Launch in three steps
             </h2>
           </div>
-          <div className="mt-12 grid sm:grid-cols-3 gap-5">
+          <div className="mt-10 sm:mt-12 grid sm:grid-cols-3 gap-4 sm:gap-5">
             {[
               { icon: Store, title: "Create your store", desc: "Set up your branded storefront in under 2 minutes. No code required." },
               { icon: MessageCircle, title: "Build community", desc: "Chat, forums, courses, drops — everything your audience needs in one place." },
