@@ -61,7 +61,7 @@ export function NexusHome() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="mt-7 text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-semibold tracking-[-0.04em] leading-[0.95] text-gradient"
+            className="mt-6 text-[40px] leading-[1] sm:text-6xl md:text-7xl lg:text-[88px] font-semibold tracking-[-0.04em] sm:leading-[0.95] text-gradient"
           >
             The home of
             <br />
@@ -72,7 +72,7 @@ export function NexusHome() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="mt-7 max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground leading-relaxed"
+            className="mt-5 sm:mt-7 max-w-2xl mx-auto text-sm sm:text-lg text-muted-foreground leading-relaxed"
           >
             Discover thousands of communities, courses, and digital products — or launch your own
             store in minutes. One platform, infinite possibilities.
