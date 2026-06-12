@@ -4,7 +4,7 @@ import { useAppMode } from "@/lib/app-mode";
 
 export function ModeToggle({ size = "lg" }: { size?: "lg" | "md" }) {
   const { mode, setMode } = useAppMode();
-  const pad = size === "lg" ? "px-6 py-3 text-sm" : "px-4 py-2 text-xs";
+  const pad = size === "lg" ? "px-3 sm:px-6 py-2.5 sm:py-3 text-[12px] sm:text-sm" : "px-3 sm:px-4 py-2 text-[11px] sm:text-xs";
 
   return (
     <motion.div
