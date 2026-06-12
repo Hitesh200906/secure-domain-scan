@@ -5,8 +5,8 @@ export function Footer() {
   return (
     <footer className="relative border-t border-white/10 mt-32">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
-      <div className="mx-auto max-w-7xl px-6 py-16">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 sm:gap-10">
           <div className="col-span-2">
             <div className="flex items-center gap-2.5">
               <ShieldCheck className="size-5 text-primary" />
