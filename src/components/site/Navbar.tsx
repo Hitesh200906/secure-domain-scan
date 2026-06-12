@@ -21,6 +21,7 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [msgOpen, setMsgOpen] = useState(false);
+  const [storesOpen, setStoresOpen] = useState(false);
   const { user, isAdmin: admin, role } = useAdmin();
   const { mode } = useAppMode();
   const navigate = useNavigate();
