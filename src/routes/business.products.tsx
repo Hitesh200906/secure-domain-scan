@@ -1,4 +1,4 @@
-import { createFileRoute, getRouteApi } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getStoreProducts, type Product, type Store } from "@/lib/business";
@@ -7,10 +7,9 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/business/products")({ component: ProductsPage });
 
-const parentRoute = getRouteApi("/business");
 
 function ProductsPage() {
-  const { store } = parentRoute.useRouteContext() as { store: Store };
+  const { store } = useStore() as Store;
   const [items, setItems] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Partial<Product> | null>(null);

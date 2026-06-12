@@ -1,4 +1,4 @@
-import { createFileRoute, getRouteApi } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Store } from "@/lib/business";
@@ -6,10 +6,9 @@ import { toast } from "sonner";
 import { ExternalLink } from "lucide-react";
 
 export const Route = createFileRoute("/business/store")({ component: StoreSettings });
-const parentRoute = getRouteApi("/business");
 
 function StoreSettings() {
-  const { store } = parentRoute.useRouteContext() as { store: Store };
+  const { store } = useStore() as Store;
   const [f, setF] = useState({
     name: store.name, description: store.description ?? "", category: store.category ?? "",
     website_url: store.website_url ?? "", logo_url: store.logo_url ?? "", banner_url: store.banner_url ?? "",

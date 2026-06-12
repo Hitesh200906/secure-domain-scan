@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useRouteContext, getRouteApi } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { DollarSign, ShoppingBag, Users, TrendingUp, Package, Wallet, Bell, Plus } from "lucide-react";
 import type { Store, Order, Product } from "@/lib/business";
@@ -8,7 +8,6 @@ export const Route = createFileRoute("/business/")({
   component: BusinessDashboard,
 });
 
-const parentRoute = getRouteApi("/business");
 
 function StatCard({ icon: Icon, label, value, sub }: any) {
   return (
@@ -24,7 +23,7 @@ function StatCard({ icon: Icon, label, value, sub }: any) {
 }
 
 function BusinessDashboard() {
-  const { store } = parentRoute.useRouteContext() as { store: Store };
+  const { store } = useStore() as Store;
   const [orders, setOrders] = useState<Order[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
 

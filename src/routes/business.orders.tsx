@@ -1,13 +1,12 @@
-import { createFileRoute, getRouteApi } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { getStoreOrders, type Order, type Store } from "@/lib/business";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/business/orders")({ component: OrdersPage });
-const parentRoute = getRouteApi("/business");
 
 function OrdersPage() {
-  const { store } = parentRoute.useRouteContext() as { store: Store };
+  const { store } = useStore() as Store;
   const [items, setItems] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => { getStoreOrders(store.id).then(d => { setItems(d); setLoading(false); }); }, [store.id]);
