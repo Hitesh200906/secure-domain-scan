@@ -90,16 +90,16 @@ export function ReportCard() {
               </div>
             </div>
 
-            <div className="mt-8 grid grid-cols-4 gap-2">
+            <div className="mt-7 sm:mt-8 grid grid-cols-4 gap-2">
               {buckets.map((b) => (
-                <div key={b.label} className="rounded-xl glass p-3">
+                <div key={b.label} className="rounded-xl glass p-2 sm:p-3">
                   <div
-                    className="text-2xl font-semibold tracking-tight"
+                    className="text-xl sm:text-2xl font-semibold tracking-tight"
                     style={{ color: b.color }}
                   >
                     {b.value}
                   </div>
-                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
+                  <div className="text-[9px] sm:text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
                     {b.label}
                   </div>
                 </div>
