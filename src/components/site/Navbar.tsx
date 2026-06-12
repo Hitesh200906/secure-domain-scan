@@ -9,7 +9,7 @@ import { MessagesDrawer } from "@/components/site/MessagesDrawer";
 
 const publicLinks = [
   { to: "/", label: "Features" },
-  { to: "/scan/new", label: "Discover" },
+  { to: "/discover", label: "Discover" },
   { to: "/contact", label: "Business" },
 ] as const;
 
