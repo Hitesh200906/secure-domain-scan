@@ -159,7 +159,7 @@ export function SectionHeader({
           {eyebrow}
         </div>
       )}
-      <h2 className="mt-5 text-4xl sm:text-5xl font-semibold tracking-[-0.03em] text-gradient">
+      <h2 className="mt-5 text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-gradient">
         {title}
       </h2>
       {description && (
