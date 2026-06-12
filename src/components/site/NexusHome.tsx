@@ -107,18 +107,18 @@ export function NexusHome() {
       <TownhallFeed />
 
       {/* CATEGORIES */}
-      <section className="relative py-20 border-t border-white/5">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="flex items-end justify-between mb-10">
-            <div>
+      <section className="relative py-14 sm:py-20 border-t border-white/5">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="flex items-end justify-between mb-7 sm:mb-10 gap-4">
+            <div className="min-w-0">
               <div className="inline-flex items-center gap-2 rounded-full glass px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
                 <Compass className="size-3" /> Browse
               </div>
-              <h2 className="mt-4 text-3xl sm:text-4xl font-semibold tracking-tight text-white">
+              <h2 className="mt-4 text-2xl sm:text-4xl font-semibold tracking-tight text-white">
                 Explore by category
               </h2>
             </div>
-            <Link to="/discover" className="hidden sm:inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-white">
+            <Link to="/discover" className="hidden sm:inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-white shrink-0">
               See all <ArrowRight className="size-4" />
             </Link>
           </div>
