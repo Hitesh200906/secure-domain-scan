@@ -21,7 +21,7 @@ export const Route = createFileRoute("/profile")({
   component: ProfilePage,
 });
 
-type Tab = "overview" | "general" | "security" | "tickets" | "billing" | "notifications" | "api";
+type Tab = "general" | "security" | "tickets" | "billing" | "notifications" | "api";
 type Ticket = { id: string; subject: string; status: string; priority: string; created_at: string; message: string; email: string; name: string };
 type TMsg = { id: string; author_type: string; author_name: string | null; body: string; created_at: string };
 
@@ -31,9 +31,11 @@ function ProfilePage() {
 
   const navigate = useNavigate();
   const search = Route.useSearch();
-  const [tab, setTab] = useState<Tab>(((search.tab as Tab) ?? "overview"));
+  const [tab, setTab] = useState<Tab>(((search.tab as Tab) ?? "general"));
   const [profile, setProfile] = useState({
     full_name: "", role_title: "", company: "", plan: "starter", credits: 0,
+    bio: "Building tools and communities for indie creators. Coffee, code, and clean design.",
+    show_earnings: false, earnings: 18400,
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
