@@ -33,7 +33,7 @@ function ProfilePage() {
   const search = Route.useSearch();
   const [tab, setTab] = useState<Tab>(((search.tab as Tab) ?? "general"));
   const [profile, setProfile] = useState({
-    full_name: "", role_title: "", company: "", plan: "starter", credits: 0,
+    full_name: "", username: "", role_title: "", company: "", plan: "starter", credits: 0,
     bio: "Building tools and communities for indie creators. Coffee, code, and clean design.",
     show_earnings: false, earnings: 18400,
   });
