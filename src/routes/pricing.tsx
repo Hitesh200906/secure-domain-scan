@@ -26,10 +26,10 @@ function PricingPage() {
       />
       <Pricing />
 
-      <section className="relative py-20">
-        <div className="mx-auto max-w-3xl px-6">
-          <h2 className="text-2xl font-medium tracking-tight text-center">FAQ</h2>
-          <div className="mt-10 divide-y divide-white/10 glass rounded-3xl">
+      <section className="relative py-14 sm:py-20">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6">
+          <h2 className="text-xl sm:text-2xl font-medium tracking-tight text-center">FAQ</h2>
+          <div className="mt-8 sm:mt-10 divide-y divide-white/10 glass rounded-3xl">
             {[
               {
                 q: "How fast do I get a report?",
@@ -48,7 +48,7 @@ function PricingPage() {
                 a: "Enterprise reports map findings to SOC 2, ISO 27001, PCI-DSS and HIPAA controls.",
               },
             ].map((f) => (
-              <details key={f.q} className="group p-6 [&_summary::-webkit-details-marker]:hidden">
+              <details key={f.q} className="group p-5 sm:p-6 [&_summary::-webkit-details-marker]:hidden">
                 <summary className="flex items-center justify-between cursor-pointer">
                   <span className="text-sm font-medium">{f.q}</span>
                   <span className="text-primary text-lg leading-none transition group-open:rotate-45">

@@ -61,15 +61,15 @@ function SignupPage() {
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md glass-strong rounded-3xl p-8"
+        className="w-full max-w-md glass-strong rounded-3xl p-6 sm:p-8"
       >
-        <Link to="/" className="flex items-center gap-2 mb-8">
+        <Link to="/" className="flex items-center gap-2 mb-6 sm:mb-8">
           <ShieldCheck className="size-5 text-primary" />
           <span className="text-[13px] font-semibold tracking-[0.2em]">
             NEXUS<span className="text-muted-foreground ml-1.5">SECURITY</span>
           </span>
         </Link>
-        <h1 className="text-3xl font-semibold tracking-tight text-gradient">Create your account</h1>
+        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gradient">Create your account</h1>
         <p className="mt-2 text-sm text-muted-foreground">Start your first security scan in under a minute.</p>
 
         <button

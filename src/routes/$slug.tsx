@@ -44,7 +44,7 @@ function StorefrontPage() {
 
   return (
     <div className="min-h-screen pt-20">
-      <div className="relative h-56 sm:h-72 overflow-hidden">
+      <div className="relative h-40 sm:h-72 overflow-hidden">
         {store.banner_url ? (
           <img src={store.banner_url} alt="" className="absolute inset-0 size-full object-cover" />
         ) : (
@@ -53,19 +53,19 @@ function StorefrontPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
       </div>
 
-      <div className="mx-auto max-w-6xl px-4 -mt-16 relative">
+      <div className="mx-auto max-w-6xl px-4 -mt-14 sm:-mt-16 relative">
         <div className="flex flex-col sm:flex-row sm:items-end gap-4">
-          <div className="size-24 sm:size-28 rounded-2xl border-2 border-background overflow-hidden grid place-items-center text-2xl font-bold text-white" style={{ background: theme }}>
+          <div className="size-20 sm:size-28 rounded-2xl border-2 border-background overflow-hidden grid place-items-center text-2xl font-bold text-white shrink-0" style={{ background: theme }}>
             {store.logo_url ? <img src={store.logo_url} alt="" className="size-full object-cover" /> : store.name[0]}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl sm:text-3xl font-semibold truncate">{store.name}</h1>
-              {store.verified && <BadgeCheck className="size-5 text-primary" />}
+              <h1 className="text-xl sm:text-3xl font-semibold truncate">{store.name}</h1>
+              {store.verified && <BadgeCheck className="size-5 text-primary shrink-0" />}
             </div>
-            <div className="mt-1 text-sm text-muted-foreground">/{store.slug} · {store.category}</div>
+            <div className="mt-1 text-xs sm:text-sm text-muted-foreground truncate">/{store.slug} · {store.category}</div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {store.website_url && <a href={store.website_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-full glass px-4 py-2 text-sm"><Globe className="size-4" /> Website</a>}
           </div>
         </div>
