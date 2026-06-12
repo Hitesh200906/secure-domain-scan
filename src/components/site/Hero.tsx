@@ -1,6 +1,6 @@
-import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Globe } from "./Globe";
+import { ModeToggle } from "./ModeToggle";
 
 export function Hero() {
   return (
@@ -71,26 +71,9 @@ export function Hero() {
           reports powered by AI and industry-leading security methodologies.
         </motion.p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3"
-        >
-          <Link
-            to="/scan/new"
-            className="group relative inline-flex items-center gap-2 rounded-full bg-white text-black px-6 py-3 text-sm font-medium hover:shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.7)] transition-all"
-          >
-            Start Security Scan
-            <span className="transition-transform group-hover:translate-x-0.5">→</span>
-          </Link>
-          <Link
-            to="/pricing"
-            className="inline-flex items-center gap-2 rounded-full glass px-6 py-3 text-sm font-medium text-white hover:border-white/20 transition"
-          >
-            View Plans
-          </Link>
-        </motion.div>
+        <div className="mt-10 flex justify-center">
+          <ModeToggle />
+        </div>
 
         <motion.div
           initial={{ opacity: 0 }}
