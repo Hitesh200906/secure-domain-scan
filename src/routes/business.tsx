@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyStore, type Store } from "@/lib/business";
 import { BusinessShell } from "@/components/business/BusinessShell";
+import { StoreContext } from "@/lib/store-context";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/business")({
@@ -41,12 +42,13 @@ function BusinessLayout() {
     );
   }
 
-  // Wizard route doesn't need the shell
   if (!store) return <Outlet />;
 
   return (
-    <BusinessShell store={store}>
-      <Outlet context={{ store }} />
-    </BusinessShell>
+    <StoreContext.Provider value={store}>
+      <BusinessShell store={store}>
+        <Outlet />
+      </BusinessShell>
+    </StoreContext.Provider>
   );
 }

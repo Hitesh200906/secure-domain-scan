@@ -6,7 +6,8 @@ import {
 } from "lucide-react";
 import type { Store } from "@/lib/business";
 
-const NAV = [
+type NavItem = { to: string; label: string; icon: any; exact?: boolean };
+const NAV: NavItem[] = [
   { to: "/business", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/business/store", label: "My Store", icon: StoreIcon },
   { to: "/business/products", label: "Products", icon: Package },
@@ -19,7 +20,7 @@ const NAV = [
   { to: "/business/payouts", label: "Payouts", icon: Wallet },
   { to: "/business/settings", label: "Settings", icon: Settings },
   { to: "/business/support", label: "Support", icon: LifeBuoy },
-] as const;
+];
 
 export function BusinessShell({ store, children }: { store: Store | null; children: ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
