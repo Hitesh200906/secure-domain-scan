@@ -92,20 +92,20 @@ function SecurityHome() {
 function CTASection() {
   const { user } = useAuth();
   return (
-    <section className="relative py-24 sm:py-32 overflow-hidden">
+    <section className="relative py-16 sm:py-32 overflow-hidden">
       <SectionBackdrop variant="grid" opacity={0.12} />
-      <div className="mx-auto max-w-5xl px-6">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <div className="relative rounded-3xl overflow-hidden p-px bg-gradient-to-b from-primary/40 via-secondary/20 to-transparent">
-          <div className="relative rounded-[calc(theme(borderRadius.3xl)-1px)] bg-[oklch(0.05_0.008_220)] p-12 sm:p-16 text-center overflow-hidden">
+          <div className="relative rounded-[calc(theme(borderRadius.3xl)-1px)] bg-[oklch(0.05_0.008_220)] p-8 sm:p-16 text-center overflow-hidden">
             <div className="absolute inset-0 hero-gradient opacity-60" />
             <div className="relative">
-              <h2 className="text-4xl sm:text-5xl font-semibold tracking-[-0.03em] text-gradient">
+              <h2 className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-gradient">
                 Ship faster. Sleep better.
               </h2>
-              <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
+              <p className="mt-4 text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
                 Run your first AI-powered security scan in under 60 seconds.
               </p>
-              <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+              <div className="mt-7 sm:mt-8 flex flex-col sm:flex-row gap-3 justify-center">
                 {!user ? (
                   <a
                     href="/signup"
