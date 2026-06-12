@@ -509,9 +509,75 @@ function ProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Followers / Following / Products modal */}
+      <AnimatePresence>
+        {listOpen && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 grid place-items-center p-4 bg-black/70 backdrop-blur-sm"
+            onClick={() => setListOpen(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.97 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md rounded-3xl bg-black border border-white/10 overflow-hidden"
+            >
+              <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
+                <div className="text-sm font-medium capitalize">{listOpen}</div>
+                <button onClick={() => setListOpen(null)} className="size-8 grid place-items-center rounded-full hover:bg-white/5" aria-label="Close">
+                  <X className="size-4" />
+                </button>
+              </div>
+              <div className="max-h-[60vh] overflow-y-auto p-3 space-y-2">
+                {listOpen === "products" ? (
+                  [
+                    { name: "Indie OS Toolkit", meta: "$49 · 482 sales", emoji: "🧰" },
+                    { name: "Creator Launchpad", meta: "$29 · 318 sales", emoji: "🚀" },
+                    { name: "Brand Lab Guide", meta: "$19 · 612 sales", emoji: "🎨" },
+                  ].map((p) => (
+                    <div key={p.name} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.04] transition">
+                      <div className="size-10 rounded-lg bg-gradient-to-br from-primary/40 to-secondary/30 grid place-items-center text-lg">{p.emoji}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm truncate">{p.name}</div>
+                        <div className="text-[11px] text-muted-foreground">{p.meta}</div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  Array.from({ length: 8 }).map((_, i) => (
+                    <div key={i} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.04] transition">
+                      <div className="size-10 rounded-full bg-gradient-to-br from-primary to-secondary grid place-items-center text-sm font-semibold text-black">
+                        {String.fromCharCode(65 + i)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm truncate">User {i + 1}</div>
+                        <div className="text-[11px] text-muted-foreground">@user{i + 1}</div>
+                      </div>
+                      <button className="text-xs rounded-full border border-white/15 bg-white/[0.04] px-3 py-1.5 hover:border-primary/40">
+                        {listOpen === "followers" ? "Follow back" : "Following"}
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
+
+function StatButton({ label, value, onClick }: { label: string; value: string; onClick: () => void }) {
+  return (
+    <button onClick={onClick} className="rounded-xl bg-white/[0.03] border border-white/10 px-3 py-3 text-center hover:border-primary/40 hover:bg-white/[0.06] transition">
+      <div className="text-lg font-semibold">{value}</div>
+      <div className="text-[10px] uppercase tracking-widest text-muted-foreground mt-0.5">{label}</div>
+    </button>
+  );
+}
+
 
 /* ============================== OVERVIEW TAB ============================== */
 function OverviewTab() {
