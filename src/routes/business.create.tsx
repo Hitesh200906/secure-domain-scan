@@ -394,38 +394,67 @@ function UploadCard({ shape, url, uploading, onFile, onClear }: { shape: "square
 }
 
 function PreviewCard({ name, slug, tagline, description, logoUrl, bannerUrl, skills, socials }: { name: string; slug: string; tagline: string; description: string; logoUrl: string; bannerUrl: string; skills: string[]; socials: Record<string, string> }) {
+  const primaryCategory = skills[0];
   return (
-    <div className="rounded-2xl overflow-hidden border border-white/10 bg-black/40">
-      <div className="h-32 sm:h-40 relative overflow-hidden bg-gradient-to-br from-primary/40 to-cyan-400/30">
+    <div className="rounded-2xl overflow-hidden border border-white/[0.08] bg-[oklch(0.06_0.008_220)] max-w-[460px] mx-auto">
+      {/* Banner */}
+      <div className="relative h-44 sm:h-52 overflow-hidden bg-gradient-to-br from-primary/40 via-fuchsia-700/30 to-cyan-400/30">
         {bannerUrl && <img src={bannerUrl} alt="" className="absolute inset-0 size-full object-cover" />}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
       </div>
+
       <div className="p-5">
-        <div className="flex items-start gap-4 -mt-12">
-          <div className="size-20 rounded-2xl border-4 border-background bg-background overflow-hidden shrink-0">
-            {logoUrl ? <img src={logoUrl} alt="" className="size-full object-cover" />
-              : <div className="size-full grid place-items-center bg-gradient-to-br from-primary to-cyan-400 text-2xl font-bold text-white">{(name[0] ?? "S").toUpperCase()}</div>}
+        {/* Header: bigger logo + name + socials */}
+        <div className="flex items-start gap-3">
+          <div className="size-16 rounded-2xl border-2 border-background bg-background overflow-hidden shrink-0 -mt-12 shadow-lg">
+            {logoUrl ? (
+              <img src={logoUrl} alt="" className="size-full object-cover" />
+            ) : (
+              <div className="size-full grid place-items-center bg-gradient-to-br from-primary to-cyan-400 text-xl font-bold text-white">
+                {(name[0] ?? "S").toUpperCase()}
+              </div>
+            )}
           </div>
-          <div className="flex-1 min-w-0 pt-12">
-            <div className="font-semibold truncate">{name || "Your store"}</div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5">
+              <div className="font-semibold text-white truncate">{name || "Your store"}</div>
+              <BadgeCheck className="size-4 text-sky-400 shrink-0" />
+            </div>
             <div className="text-xs text-muted-foreground truncate">nexus.app/{slug || "your-handle"}</div>
           </div>
+          {Object.values(socials).some(Boolean) && (
+            <div className="flex items-center gap-1.5 text-muted-foreground shrink-0">
+              {socials.github && <span className="size-7 grid place-items-center rounded-full bg-white/5"><Github className="size-3.5" /></span>}
+              {socials.linkedin && <span className="size-7 grid place-items-center rounded-full bg-white/5"><Linkedin className="size-3.5" /></span>}
+              {socials.x && <span className="size-7 grid place-items-center rounded-full bg-white/5"><Twitter className="size-3.5" /></span>}
+            </div>
+          )}
         </div>
-        {tagline && <div className="mt-4 text-sm font-medium">{tagline}</div>}
-        {description && <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{description}</p>}
-        {skills.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-1.5">
-            {skills.map((s) => <span key={s} className="text-[11px] rounded-full bg-white/5 border border-white/10 px-2.5 py-0.5">{s}</span>)}
+
+        {/* Tagline */}
+        {tagline && <div className="mt-4 text-base font-semibold text-white">{tagline}</div>}
+
+        {/* Description */}
+        {description && <p className={`${tagline ? "mt-1.5" : "mt-4"} text-sm text-muted-foreground line-clamp-2 leading-relaxed`}>{description}</p>}
+
+        {/* Footer: category + join */}
+        <div className="mt-5 flex items-center justify-between gap-3">
+          <div className="flex flex-wrap gap-1.5 min-w-0">
+            {primaryCategory && (
+              <span className="text-[11px] rounded-full bg-white/[0.06] border border-white/10 px-3 py-1 text-white whitespace-nowrap">
+                {primaryCategory}
+              </span>
+            )}
+            {skills.length > 1 && (
+              <span className="text-[11px] rounded-full bg-white/[0.06] border border-white/10 px-2.5 py-1 text-muted-foreground">
+                +{skills.length - 1}
+              </span>
+            )}
           </div>
-        )}
-        {Object.values(socials).some(Boolean) && (
-          <div className="mt-4 flex items-center gap-3 text-muted-foreground">
-            {socials.github && <Github className="size-4" />}
-            {socials.linkedin && <Linkedin className="size-4" />}
-            {socials.website && <Globe className="size-4" />}
-            {socials.discord && <MessagesSquare className="size-4" />}
-            {socials.x && <Twitter className="size-4" />}
-          </div>
-        )}
+          <button type="button" className="shrink-0 rounded-full bg-white text-black px-4 py-1.5 text-xs font-semibold hover:bg-primary hover:text-primary-foreground transition">
+            Join now
+          </button>
+        </div>
       </div>
     </div>
   );
