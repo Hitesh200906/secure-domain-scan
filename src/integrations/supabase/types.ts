@@ -110,6 +110,54 @@ export type Database = {
         }
         Relationships: []
       }
+      orders: {
+        Row: {
+          amount: number
+          buyer_email: string | null
+          buyer_id: string | null
+          created_at: string
+          id: string
+          product_id: string
+          status: string
+          store_id: string
+        }
+        Insert: {
+          amount?: number
+          buyer_email?: string | null
+          buyer_id?: string | null
+          created_at?: string
+          id?: string
+          product_id: string
+          status?: string
+          store_id: string
+        }
+        Update: {
+          amount?: number
+          buyer_email?: string | null
+          buyer_id?: string | null
+          created_at?: string
+          id?: string
+          product_id?: string
+          status?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pricing_plans: {
         Row: {
           active: boolean
@@ -163,6 +211,71 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      products: {
+        Row: {
+          active: boolean
+          banner_url: string | null
+          benefits: Json | null
+          billing_type: string
+          category: string | null
+          created_at: string
+          description: string | null
+          faq: Json | null
+          id: string
+          image_url: string | null
+          name: string
+          price: number
+          product_type: string
+          store_id: string
+          tags: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          banner_url?: string | null
+          benefits?: Json | null
+          billing_type?: string
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          faq?: Json | null
+          id?: string
+          image_url?: string | null
+          name: string
+          price?: number
+          product_type?: string
+          store_id: string
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          banner_url?: string | null
+          benefits?: Json | null
+          billing_type?: string
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          faq?: Json | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          price?: number
+          product_type?: string
+          store_id?: string
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -298,6 +411,66 @@ export type Database = {
           target_url?: string
           user_id?: string
           verification_method?: string
+        }
+        Relationships: []
+      }
+      stores: {
+        Row: {
+          accent_color: string | null
+          banner_url: string | null
+          category: string | null
+          created_at: string
+          description: string | null
+          id: string
+          logo_url: string | null
+          member_count: number
+          name: string
+          owner_id: string
+          slug: string
+          social_links: Json | null
+          theme_color: string | null
+          total_sales: number
+          updated_at: string
+          verified: boolean
+          website_url: string | null
+        }
+        Insert: {
+          accent_color?: string | null
+          banner_url?: string | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          logo_url?: string | null
+          member_count?: number
+          name: string
+          owner_id: string
+          slug: string
+          social_links?: Json | null
+          theme_color?: string | null
+          total_sales?: number
+          updated_at?: string
+          verified?: boolean
+          website_url?: string | null
+        }
+        Update: {
+          accent_color?: string | null
+          banner_url?: string | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          logo_url?: string | null
+          member_count?: number
+          name?: string
+          owner_id?: string
+          slug?: string
+          social_links?: Json | null
+          theme_color?: string | null
+          total_sales?: number
+          updated_at?: string
+          verified?: boolean
+          website_url?: string | null
         }
         Relationships: []
       }
