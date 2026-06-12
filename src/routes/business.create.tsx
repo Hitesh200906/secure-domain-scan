@@ -112,6 +112,18 @@ function CreateStoreWizard() {
     setLaunching(true);
     setLaunchPhase("forging");
     const social_links = Object.fromEntries(Object.entries(socials).filter(([_, v]) => v.trim()));
+
+    // Guard: user already owns a store
+    const { data: existing } = await supabase.from("stores").select("id").eq("owner_id", userId).maybeSingle();
+    if (existing) {
+      setLaunching(false);
+      setLaunchPhase("idle");
+      setSubmitting(false);
+      toast.info("You already have a store — opening it now.");
+      navigate({ to: "/business/store" });
+      return;
+    }
+
     const insertPromise = supabase.from("stores").insert({
       owner_id: userId,
       name: name.trim(),
@@ -124,13 +136,19 @@ function CreateStoreWizard() {
       website_url: socials.website.trim() || null,
       social_links: Object.keys(social_links).length ? social_links : null,
     });
-    // Run animation + insert in parallel — minimum 1.8s of magic
     const [{ error }] = await Promise.all([
       insertPromise,
-      new Promise((r) => setTimeout(r, 1800)),
+      new Promise((r) => setTimeout(r, 2400)),
     ]);
     if (error) {
       setSubmitting(false);
+      if ((error as any).code === "23505" || /duplicate key|stores_owner_unique/i.test(error.message)) {
+        setLaunching(false);
+        setLaunchPhase("idle");
+        toast.info("You already have a store — opening it now.");
+        navigate({ to: "/business/store" });
+        return;
+      }
       setLaunching(false);
       setLaunchPhase("idle");
       toast.error(error.message);
@@ -139,7 +157,7 @@ function CreateStoreWizard() {
     setLaunchPhase("done");
     setTimeout(() => {
       navigate({ to: "/business/products", search: { new: 1 } as any });
-    }, 900);
+    }, 1200);
   };
 
   return (
