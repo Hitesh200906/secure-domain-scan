@@ -3,11 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
   Award, Bell, BadgeCheck, Calendar, Camera, CheckCircle2, Copy, CreditCard, Crown,
-  Eye, Flag, Github, Globe, Heart, Key, LifeBuoy, Linkedin, Loader2, LogOut, MessageCircle,
-  MessageSquare, Monitor, Plus, Send, Share2, Shield, ShieldCheck, Smartphone, Sparkles,
-  Star, Trash2, TrendingUp, Trophy, UserPlus, Users, Youtube, Zap,
+  DollarSign, Eye, Github, Globe, Heart, Key, LifeBuoy, Linkedin, Loader2, LogOut, MessageCircle,
+  MessageSquare, Monitor, Pencil, Plus, Send, Share2, Shield, ShieldCheck, Smartphone, Sparkles,
+  Star, Trash2, TrendingUp, Trophy, UserPlus, Users, X, Youtube, Zap,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/profile")({
   component: ProfilePage,
 });
 
-type Tab = "overview" | "general" | "security" | "tickets" | "billing" | "notifications" | "api";
+type Tab = "general" | "security" | "tickets" | "billing" | "notifications" | "api";
 type Ticket = { id: string; subject: string; status: string; priority: string; created_at: string; message: string; email: string; name: string };
 type TMsg = { id: string; author_type: string; author_name: string | null; body: string; created_at: string };
 
@@ -31,13 +31,16 @@ function ProfilePage() {
 
   const navigate = useNavigate();
   const search = Route.useSearch();
-  const [tab, setTab] = useState<Tab>(((search.tab as Tab) ?? "overview"));
+  const [tab, setTab] = useState<Tab>(((search.tab as Tab) ?? "general"));
   const [profile, setProfile] = useState({
     full_name: "", role_title: "", company: "", plan: "starter", credits: 0,
+    bio: "Building tools and communities for indie creators. Coffee, code, and clean design.",
+    show_earnings: false, earnings: 18400,
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [following, setFollowing] = useState(false);
+  const [listOpen, setListOpen] = useState<null | "followers" | "following" | "products">(null);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [activeTicket, setActiveTicket] = useState<Ticket | null>(null);
   const [ticketMsgs, setTicketMsgs] = useState<TMsg[]>([]);
@@ -83,18 +86,19 @@ function ProfilePage() {
 
   useEffect(() => {
     if (!user) {
-      setProfile({ full_name: "Alex Rivera", role_title: "Creator · Founder", company: "Apex Studio", plan: "professional", credits: 12 });
+      setProfile((p) => ({ ...p, full_name: "Alex Rivera", role_title: "Creator · Founder", company: "Apex Studio", plan: "professional", credits: 12 }));
       setLoading(false);
       return;
     }
     api.profile().then(({ profile: data }) => {
-      if (data) setProfile({
+      if (data) setProfile((p) => ({
+        ...p,
         full_name: data.full_name ?? "",
         role_title: data.role_title ?? "",
         company: data.company ?? "",
         plan: data.plan ?? "starter",
         credits: data.credits ?? 0,
-      });
+      }));
       setLoading(false);
     }).catch(() => setLoading(false));
   }, [user]);
@@ -143,69 +147,65 @@ function ProfilePage() {
           ← Back to dashboard
         </Link>
 
-        {/* Hero / identity card */}
+        {/* Hero / identity card — centered, black background */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-          className="mt-6 glass-strong rounded-3xl overflow-hidden relative">
-          {/* cover */}
-          <div className="h-32 sm:h-40 bg-gradient-to-br from-primary/30 via-secondary/20 to-transparent relative">
-            <div className="absolute inset-0 grid-bg opacity-30" />
-          </div>
-          <div className="px-6 sm:px-8 pb-6 sm:pb-8 -mt-12 sm:-mt-14">
-            <div className="flex flex-col sm:flex-row sm:items-end gap-5">
-              <div className="relative shrink-0">
-                <div className="size-24 sm:size-28 rounded-2xl bg-gradient-to-br from-primary to-secondary grid place-items-center text-4xl font-semibold text-black shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.6)] ring-4 ring-background">
-                  {initials}
-                </div>
-                <button className="absolute -bottom-1.5 -right-1.5 size-8 rounded-full glass-strong grid place-items-center hover:border-primary/40 transition" aria-label="Change avatar">
-                  <Camera className="size-3.5" />
-                </button>
+          className="mt-6 rounded-3xl overflow-hidden relative bg-black border border-white/10">
+          <div className="px-6 sm:px-8 py-10 sm:py-12 flex flex-col items-center text-center">
+            <div className="relative">
+              <div className="size-24 sm:size-28 rounded-2xl bg-gradient-to-br from-primary to-secondary grid place-items-center text-4xl font-semibold text-black shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.6)] ring-4 ring-black">
+                {initials}
               </div>
-              <div className="flex-1 min-w-0 sm:pb-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight truncate">{displayName}</h1>
-                  <BadgeCheck className="size-5 text-primary fill-primary/20" aria-label="Verified" />
-                  <RoleBadge role={role} size="md" />
-                  <span className="text-[10px] uppercase tracking-widest px-2 py-1 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/20 inline-flex items-center gap-1">
-                    <Crown className="size-3" /> Creator
-                  </span>
-                </div>
-                <div className="mt-1 text-sm text-muted-foreground">{handle} · <span className="text-foreground/80">{profile.role_title || "—"}</span>{profile.company && ` · ${profile.company}`}</div>
-                <p className="mt-2 text-sm text-foreground/80 max-w-xl">
-                  Building tools and communities for indie creators. Coffee, code, and clean design.
-                </p>
-                <div className="mt-2 text-[11px] text-muted-foreground inline-flex items-center gap-1.5">
-                  <Calendar className="size-3" /> Joined {joinDate}
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-2 sm:pb-1">
-                <button onClick={() => { setFollowing(!following); toast.success(following ? "Unfollowed" : "Following"); }}
-                  className={`rounded-full px-4 py-2 text-sm font-medium inline-flex items-center gap-1.5 transition ${following ? "glass hover:border-white/20" : "bg-white text-black hover:shadow-[0_0_30px_-4px_oklch(0.86_0.16_200_/0.5)]"}`}>
-                  <UserPlus className="size-3.5" /> {following ? "Following" : "Follow"}
-                </button>
-                <button onClick={() => toast.success("Message draft opened")} className="rounded-full glass px-4 py-2 text-sm inline-flex items-center gap-1.5 hover:border-primary/40 transition">
-                  <MessageCircle className="size-3.5" /> Message
-                </button>
-                <button onClick={shareProfile} className="rounded-full glass px-3 py-2 text-sm inline-flex items-center gap-1.5 hover:border-primary/40 transition" aria-label="Share profile">
-                  <Share2 className="size-3.5" />
-                </button>
-                <button onClick={copyLink} className="rounded-full glass px-3 py-2 text-sm inline-flex items-center gap-1.5 hover:border-primary/40 transition" aria-label="Copy link">
-                  <Copy className="size-3.5" />
-                </button>
-                <button onClick={() => toast("Report submitted")} className="rounded-full glass px-3 py-2 text-sm inline-flex items-center gap-1.5 hover:border-destructive/40 hover:text-destructive transition" aria-label="Report profile">
-                  <Flag className="size-3.5" />
-                </button>
-              </div>
+              <button className="absolute -bottom-1.5 -right-1.5 size-8 rounded-full bg-black border border-white/15 grid place-items-center hover:border-primary/40 transition" aria-label="Change avatar">
+                <Camera className="size-3.5" />
+              </button>
             </div>
 
-            {/* Social proof */}
-            <div className="mt-6 grid grid-cols-3 sm:grid-cols-7 gap-2 sm:gap-3">
-              <ProofStat label="Followers" value="12.4k" />
-              <ProofStat label="Following" value="284" />
-              <ProofStat label="Products" value="9" />
-              <ProofStat label="Reviews" value="1,238" />
-              <ProofStat label="Rating" value="4.9" icon={Star} />
-              <ProofStat label="Sales" value="$184k" />
-              <ProofStat label="Reach" value="38k" />
+            <div className="mt-5 flex items-center gap-2 flex-wrap justify-center">
+              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">{displayName}</h1>
+              <BadgeCheck className="size-5 text-primary fill-primary/20" aria-label="Verified" />
+              <RoleBadge role={role} size="md" />
+              <span className="text-[10px] uppercase tracking-widest px-2 py-1 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/20 inline-flex items-center gap-1">
+                <Crown className="size-3" /> Creator
+              </span>
+            </div>
+
+            <div className="mt-1.5 text-sm text-muted-foreground">
+              {handle} · <span className="text-foreground/80">{profile.role_title || "—"}</span>{profile.company && ` · ${profile.company}`}
+            </div>
+
+            {profile.bio && (
+              <p className="mt-3 text-sm text-foreground/80 max-w-xl">{profile.bio}</p>
+            )}
+
+            <div className="mt-3 text-[11px] text-muted-foreground inline-flex items-center gap-1.5">
+              <Calendar className="size-3" /> Joined {joinDate}
+            </div>
+
+            {profile.show_earnings && (
+              <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-emerald-400/10 border border-emerald-400/20 text-emerald-300 px-3.5 py-1.5 text-xs font-medium">
+                <DollarSign className="size-3.5" /> ${profile.earnings.toLocaleString()} earned
+              </div>
+            )}
+
+            {/* Own-profile actions */}
+            <div className="mt-6 flex flex-wrap gap-2 justify-center">
+              <button onClick={() => setTab("general")}
+                className="rounded-full bg-white text-black px-4 py-2 text-sm font-medium inline-flex items-center gap-1.5 hover:shadow-[0_0_30px_-4px_oklch(0.86_0.16_200_/0.5)] transition">
+                <Pencil className="size-3.5" /> Edit profile
+              </button>
+              <button onClick={shareProfile} className="rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-sm inline-flex items-center gap-1.5 hover:border-primary/40 transition">
+                <Share2 className="size-3.5" /> Share
+              </button>
+              <button onClick={copyLink} className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-2 text-sm inline-flex items-center gap-1.5 hover:border-primary/40 transition" aria-label="Copy link">
+                <Copy className="size-3.5" />
+              </button>
+            </div>
+
+            {/* Stats — clickable */}
+            <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3 w-full max-w-md">
+              <StatButton label="Followers" value="12.4k" onClick={() => setListOpen("followers")} />
+              <StatButton label="Following" value="284" onClick={() => setListOpen("following")} />
+              <StatButton label="Products" value="9" onClick={() => setListOpen("products")} />
             </div>
           </div>
         </motion.div>
@@ -213,7 +213,6 @@ function ProfilePage() {
         {/* Tabs */}
         <div className="mt-6 flex items-center gap-1 border-b border-white/[0.06] overflow-x-auto">
           {([
-            ["overview", "Overview"],
             ["general", "General"],
             ["tickets", `Tickets${tickets.length ? ` · ${tickets.length}` : ""}`],
             ["security", "Security"], ["billing", "Billing"],
@@ -228,7 +227,7 @@ function ProfilePage() {
         </div>
 
         <div className="mt-6">
-          {tab === "overview" && <OverviewTab />}
+
 
           {tab === "general" && (
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="grid lg:grid-cols-3 gap-4">
@@ -239,20 +238,67 @@ function ProfilePage() {
                   <Field label="Company" value={profile.company} onChange={(v) => setProfile({ ...profile, company: v })} />
                   <Field label="Email" value={user?.email ?? "demo@nexus.com"} readOnly />
                 </div>
+                <label className="block">
+                  <span className="text-[11px] uppercase tracking-widest text-muted-foreground">Bio</span>
+                  <textarea
+                    value={profile.bio}
+                    onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+                    rows={3}
+                    maxLength={240}
+                    placeholder="Tell people what you create…"
+                    className="mt-1.5 w-full rounded-xl bg-[oklch(0.06_0.008_220)] border border-white/10 px-4 py-2.5 text-sm focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 resize-none"
+                  />
+                  <span className="text-[10px] text-muted-foreground">{profile.bio.length}/240</span>
+                </label>
                 {user && (
                   <button onClick={save} disabled={saving} className="mt-2 rounded-full bg-white text-black px-5 py-2.5 text-sm font-medium inline-flex items-center gap-2 disabled:opacity-60 hover:shadow-[0_0_30px_-4px_oklch(0.86_0.16_200_/0.5)] transition">
                     {saving && <Loader2 className="size-4 animate-spin" />} Save changes
                   </button>
                 )}
               </Card>
-              <Card title="Account">
-                <Row label="Member since" value={user ? new Date(user.created_at).toLocaleDateString() : "Jan 15, 2026"} />
-                <Row label="User ID" value={user ? `${user.id.slice(0, 8)}…` : "demo-user"} mono />
-                <Row label="Auth provider" value={user ? (user.app_metadata?.provider ?? "email") : "email"} />
-                <Row label="Last sign-in" value={user ? (user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : "—") : "Active now"} />
-              </Card>
+              <div className="space-y-4">
+                <Card title="Public display" desc="Choose what visitors see on your profile.">
+                  <div className="flex items-center justify-between p-4 rounded-xl glass">
+                    <div className="flex items-center gap-3">
+                      <div className="size-10 rounded-lg glass grid place-items-center"><DollarSign className="size-4 text-emerald-300" /></div>
+                      <div>
+                        <div className="text-sm">Show earnings</div>
+                        <div className="text-[11px] text-muted-foreground">Display total earnings on your profile (Whop style).</div>
+                      </div>
+                    </div>
+                    <Toggle defaultOn={profile.show_earnings} onChange={(v) => setProfile({ ...profile, show_earnings: v })} />
+                  </div>
+                  <div className="flex items-center justify-between p-4 rounded-xl glass">
+                    <div className="flex items-center gap-3">
+                      <div className="size-10 rounded-lg glass grid place-items-center"><Users className="size-4 text-primary" /></div>
+                      <div>
+                        <div className="text-sm">Show followers count</div>
+                        <div className="text-[11px] text-muted-foreground">Visible to anyone viewing your profile.</div>
+                      </div>
+                    </div>
+                    <Toggle defaultOn={true} />
+                  </div>
+                  <div className="flex items-center justify-between p-4 rounded-xl glass">
+                    <div className="flex items-center gap-3">
+                      <div className="size-10 rounded-lg glass grid place-items-center"><BadgeCheck className="size-4 text-primary" /></div>
+                      <div>
+                        <div className="text-sm">Verified badge</div>
+                        <div className="text-[11px] text-muted-foreground">Display your verification badge publicly.</div>
+                      </div>
+                    </div>
+                    <Toggle defaultOn={true} />
+                  </div>
+                </Card>
+                <Card title="Account">
+                  <Row label="Member since" value={user ? new Date(user.created_at).toLocaleDateString() : "Jan 15, 2026"} />
+                  <Row label="User ID" value={user ? `${user.id.slice(0, 8)}…` : "demo-user"} mono />
+                  <Row label="Auth provider" value={user ? (user.app_metadata?.provider ?? "email") : "email"} />
+                  <Row label="Last sign-in" value={user ? (user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : "—") : "Active now"} />
+                </Card>
+              </div>
             </motion.div>
           )}
+
 
           {tab === "tickets" && (
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="grid lg:grid-cols-[340px_1fr] gap-4">
@@ -463,9 +509,75 @@ function ProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Followers / Following / Products modal */}
+      <AnimatePresence>
+        {listOpen && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 grid place-items-center p-4 bg-black/70 backdrop-blur-sm"
+            onClick={() => setListOpen(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.97 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md rounded-3xl bg-black border border-white/10 overflow-hidden"
+            >
+              <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
+                <div className="text-sm font-medium capitalize">{listOpen}</div>
+                <button onClick={() => setListOpen(null)} className="size-8 grid place-items-center rounded-full hover:bg-white/5" aria-label="Close">
+                  <X className="size-4" />
+                </button>
+              </div>
+              <div className="max-h-[60vh] overflow-y-auto p-3 space-y-2">
+                {listOpen === "products" ? (
+                  [
+                    { name: "Indie OS Toolkit", meta: "$49 · 482 sales", emoji: "🧰" },
+                    { name: "Creator Launchpad", meta: "$29 · 318 sales", emoji: "🚀" },
+                    { name: "Brand Lab Guide", meta: "$19 · 612 sales", emoji: "🎨" },
+                  ].map((p) => (
+                    <div key={p.name} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.04] transition">
+                      <div className="size-10 rounded-lg bg-gradient-to-br from-primary/40 to-secondary/30 grid place-items-center text-lg">{p.emoji}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm truncate">{p.name}</div>
+                        <div className="text-[11px] text-muted-foreground">{p.meta}</div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  Array.from({ length: 8 }).map((_, i) => (
+                    <div key={i} className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.04] transition">
+                      <div className="size-10 rounded-full bg-gradient-to-br from-primary to-secondary grid place-items-center text-sm font-semibold text-black">
+                        {String.fromCharCode(65 + i)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm truncate">User {i + 1}</div>
+                        <div className="text-[11px] text-muted-foreground">@user{i + 1}</div>
+                      </div>
+                      <button className="text-xs rounded-full border border-white/15 bg-white/[0.04] px-3 py-1.5 hover:border-primary/40">
+                        {listOpen === "followers" ? "Follow back" : "Following"}
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
+
+function StatButton({ label, value, onClick }: { label: string; value: string; onClick: () => void }) {
+  return (
+    <button onClick={onClick} className="rounded-xl bg-white/[0.03] border border-white/10 px-3 py-3 text-center hover:border-primary/40 hover:bg-white/[0.06] transition">
+      <div className="text-lg font-semibold">{value}</div>
+      <div className="text-[10px] uppercase tracking-widest text-muted-foreground mt-0.5">{label}</div>
+    </button>
+  );
+}
+
 
 /* ============================== OVERVIEW TAB ============================== */
 function OverviewTab() {
@@ -725,11 +837,13 @@ function Row({ label, value, mono }: { label: string; value: string; mono?: bool
   );
 }
 
-function Toggle({ defaultOn = false }: { defaultOn?: boolean }) {
+function Toggle({ defaultOn = false, onChange }: { defaultOn?: boolean; onChange?: (v: boolean) => void }) {
   const [on, setOn] = useState(defaultOn);
+  const toggle = () => { const v = !on; setOn(v); onChange?.(v); };
   return (
-    <button onClick={() => setOn(!on)} className={`relative w-10 h-6 rounded-full transition ${on ? "bg-primary" : "bg-white/10"}`}>
+    <button onClick={toggle} className={`relative w-10 h-6 rounded-full transition ${on ? "bg-primary" : "bg-white/10"}`}>
       <span className={`absolute top-0.5 size-5 rounded-full bg-white transition-transform ${on ? "translate-x-[18px]" : "translate-x-0.5"}`} />
     </button>
   );
 }
+
