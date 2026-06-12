@@ -853,3 +853,191 @@ function Toggle({ defaultOn = false, onChange }: { defaultOn?: boolean; onChange
   );
 }
 
+
+function MiniStat({ label, value, onClick }: { label: string; value: string; onClick: () => void }) {
+  return (
+    <button onClick={onClick} className="px-2 py-1 rounded-lg hover:bg-white/[0.05] transition text-left">
+      <span className="font-semibold text-foreground">{value}</span>
+      <span className="ml-1 text-[10px] uppercase tracking-widest text-muted-foreground">{label}</span>
+    </button>
+  );
+}
+
+/* =============================== BALANCE TAB =============================== */
+function BalanceTab() {
+  const [showVerify, setShowVerify] = useState(true);
+  const balances = [
+    { code: "USD", label: "US Dollar", flag: "🇺🇸", amount: 184.32 },
+    { code: "EUR", label: "Euro", flag: "🇪🇺", amount: 42.10 },
+    { code: "GBP", label: "Pound Sterling", flag: "🇬🇧", amount: 0 },
+  ];
+  const business = [
+    { name: "Apex Studio", emoji: "🧰", amount: 1240.55, grad: "from-violet-500/60 to-fuchsia-500/40" },
+    { name: "Indie Builders Club", emoji: "🚀", amount: 318.00, grad: "from-sky-500/60 to-cyan-400/40" },
+    { name: "Brand Lab", emoji: "🎨", amount: 0, grad: "from-rose-500/60 to-amber-400/40" },
+  ];
+  const tx = [
+    { kind: "in", from: "Stripe payout · Apex Studio", when: "Today · 09:14", amount: 240.00 },
+    { kind: "out", from: "Withdraw to Wise", when: "Jun 09 · 16:02", amount: -180.00 },
+    { kind: "in", from: "Product sale · Brand Lab Guide", when: "Jun 08 · 11:48", amount: 19.00 },
+    { kind: "move", from: "Move USD → EUR", when: "Jun 05 · 08:21", amount: -50.00 },
+    { kind: "in", from: "Affiliate commission", when: "Jun 02 · 14:55", amount: 32.40 },
+  ];
+  const total = balances.reduce((s, b) => s + b.amount, 0) + business.reduce((s, b) => s + b.amount, 0);
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="grid lg:grid-cols-[1fr_340px] gap-4">
+      <div className="space-y-4">
+        {/* Total balance */}
+        <div className="rounded-3xl bg-black border border-white/10 p-6 sm:p-8">
+          <div className="text-xs uppercase tracking-widest text-muted-foreground">Total balance</div>
+          <div className="mt-2 text-4xl sm:text-5xl font-semibold tracking-tight">${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <button className="rounded-xl bg-primary text-primary-foreground px-4 py-2.5 text-sm font-medium inline-flex items-center gap-2 hover:opacity-90 transition">
+              <Plus className="size-4" /> Add money
+            </button>
+            <button className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm inline-flex items-center gap-2 hover:border-primary/40 transition">
+              <ArrowUpRight className="size-4" /> Withdraw
+            </button>
+            <button className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm inline-flex items-center gap-2 hover:border-primary/40 transition">
+              <ArrowLeftRight className="size-4" /> Move
+            </button>
+            <button className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm inline-flex items-center gap-2 hover:border-primary/40 transition">
+              <Download className="size-4" /> Statement
+            </button>
+          </div>
+        </div>
+
+        {/* Verify identity */}
+        {showVerify && (
+          <div className="rounded-2xl bg-black border border-white/10 p-5 flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="size-10 rounded-xl glass grid place-items-center text-amber-300"><ShieldQuestion className="size-4" /></div>
+              <div className="min-w-0">
+                <div className="text-sm font-medium">Verify your identity</div>
+                <div className="text-[11px] text-muted-foreground">Complete verification to withdraw your balance.</div>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={() => setShowVerify(false)} className="text-xs text-muted-foreground hover:text-white px-3">Later</button>
+              <button className="rounded-lg bg-primary text-primary-foreground px-4 py-2 text-xs font-medium">Verify</button>
+            </div>
+          </div>
+        )}
+
+        {/* Wallets */}
+        <Card title="Wallets" desc="Balances across currencies." action={<button className="text-xs text-primary hover:underline inline-flex items-center gap-1"><Plus className="size-3" /> Add currency</button>}>
+          <div className="divide-y divide-white/[0.04]">
+            {balances.map((b) => (
+              <div key={b.code} className="flex items-center justify-between py-3">
+                <div className="flex items-center gap-3">
+                  <div className="size-10 rounded-full glass grid place-items-center text-lg">{b.flag}</div>
+                  <div>
+                    <div className="text-sm font-medium">{b.code}</div>
+                    <div className="text-[11px] text-muted-foreground">{b.label}</div>
+                  </div>
+                </div>
+                <div className="text-sm font-mono">${b.amount.toFixed(2)}</div>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Business balances */}
+        <Card title="Business balances" desc="Earnings per store/community.">
+          <div className="grid sm:grid-cols-3 gap-3">
+            {business.map((b) => (
+              <div key={b.name} className="rounded-2xl glass p-4 hover:border-primary/30 transition">
+                <div className={`size-10 rounded-xl bg-gradient-to-br ${b.grad} grid place-items-center text-lg`}>{b.emoji}</div>
+                <div className="mt-3 text-sm font-medium truncate">{b.name}</div>
+                <div className="mt-1 text-base font-semibold">${b.amount.toFixed(2)}</div>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Activity */}
+        <Card title="Recent activity" desc="Money in, out, and moves." action={<button className="text-xs text-primary hover:underline">View all</button>}>
+          <div className="divide-y divide-white/[0.04]">
+            {tx.map((t, i) => {
+              const isIn = t.kind === "in";
+              const Icon = isIn ? ArrowDownLeft : t.kind === "out" ? ArrowUpRight : ArrowLeftRight;
+              const color = isIn ? "text-emerald-300 bg-emerald-400/10" : t.kind === "out" ? "text-rose-300 bg-rose-400/10" : "text-sky-300 bg-sky-400/10";
+              return (
+                <div key={i} className="flex items-center justify-between py-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className={`size-9 rounded-xl grid place-items-center ${color}`}><Icon className="size-4" /></div>
+                    <div className="min-w-0">
+                      <div className="text-sm truncate">{t.from}</div>
+                      <div className="text-[11px] text-muted-foreground">{t.when}</div>
+                    </div>
+                  </div>
+                  <div className={`text-sm font-mono ${isIn ? "text-emerald-300" : t.kind === "out" ? "text-rose-300" : "text-foreground"}`}>
+                    {t.amount > 0 ? "+" : ""}${Math.abs(t.amount).toFixed(2)}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      </div>
+
+      {/* Sidebar */}
+      <div className="space-y-4">
+        <div className="rounded-3xl bg-black border border-white/10 p-6">
+          <div className="flex items-center justify-between">
+            <div className="text-sm font-medium">Total earned</div>
+            <button className="text-xs text-muted-foreground hover:text-white inline-flex items-center gap-1"><Share2 className="size-3" /> Share</button>
+          </div>
+          <div className="mt-2 text-3xl font-semibold text-emerald-300">$18,400.05</div>
+          <div className="mt-1 text-[11px] text-muted-foreground">All time, across all stores.</div>
+          <div className="mt-4 grid grid-cols-2 gap-2 text-center">
+            <div className="rounded-xl glass p-3">
+              <div className="text-xs text-muted-foreground">This month</div>
+              <div className="mt-1 text-sm font-semibold">$1,240</div>
+            </div>
+            <div className="rounded-xl glass p-3">
+              <div className="text-xs text-muted-foreground">Pending</div>
+              <div className="mt-1 text-sm font-semibold">$84.20</div>
+            </div>
+          </div>
+        </div>
+
+        <Card title="Ways to earn" desc="Grow your balance.">
+          <div className="space-y-1.5">
+            {[
+              { icon: Plus, l: "Add money" },
+              { icon: Sparkles, l: "Become an affiliate" },
+              { icon: Wallet, l: "Start a business" },
+              { icon: Banknote, l: "Connect payouts" },
+            ].map((a) => (
+              <button key={a.l} className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/[0.05] transition text-left">
+                <div className="size-8 rounded-lg glass grid place-items-center"><a.icon className="size-3.5 text-primary" /></div>
+                <span className="text-sm flex-1">{a.l}</span>
+                <ArrowUpRight className="size-3.5 text-muted-foreground" />
+              </button>
+            ))}
+          </div>
+        </Card>
+
+        <Card title="Payout methods">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between p-3 rounded-xl glass">
+              <div className="flex items-center gap-3">
+                <div className="size-9 rounded-lg glass grid place-items-center"><CreditCard className="size-4 text-primary" /></div>
+                <div>
+                  <div className="text-sm">Visa ···· 4242</div>
+                  <div className="text-[11px] text-muted-foreground">Default</div>
+                </div>
+              </div>
+              <CheckCircle2 className="size-4 text-emerald-300" />
+            </div>
+            <button className="w-full rounded-xl glass px-3 py-2.5 text-xs hover:border-primary/40 transition inline-flex items-center justify-center gap-1.5">
+              <Plus className="size-3.5" /> Add method
+            </button>
+          </div>
+        </Card>
+      </div>
+    </motion.div>
+  );
+}
