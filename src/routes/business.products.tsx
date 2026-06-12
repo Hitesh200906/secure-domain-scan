@@ -10,7 +10,7 @@ export const Route = createFileRoute("/business/products")({ component: Products
 
 
 function ProductsPage() {
-  const { store } = useStore() as Store;
+  const store = useStore();
   const [items, setItems] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Partial<Product> | null>(null);

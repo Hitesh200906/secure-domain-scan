@@ -9,7 +9,7 @@ import { ExternalLink } from "lucide-react";
 export const Route = createFileRoute("/business/store")({ component: StoreSettings });
 
 function StoreSettings() {
-  const { store } = useStore() as Store;
+  const store = useStore();
   const [f, setF] = useState({
     name: store.name, description: store.description ?? "", category: store.category ?? "",
     website_url: store.website_url ?? "", logo_url: store.logo_url ?? "", banner_url: store.banner_url ?? "",

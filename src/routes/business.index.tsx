@@ -24,7 +24,7 @@ function StatCard({ icon: Icon, label, value, sub }: any) {
 }
 
 function BusinessDashboard() {
-  const { store } = useStore() as Store;
+  const store = useStore();
   const [orders, setOrders] = useState<Order[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
 

@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 export const Route = createFileRoute("/business/orders")({ component: OrdersPage });
 
 function OrdersPage() {
-  const { store } = useStore() as Store;
+  const store = useStore();
   const [items, setItems] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => { getStoreOrders(store.id).then(d => { setItems(d); setLoading(false); }); }, [store.id]);
