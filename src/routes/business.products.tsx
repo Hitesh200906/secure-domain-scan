@@ -27,6 +27,14 @@ function ProductsPage() {
   };
   useEffect(() => { load(); }, [store.id]);
 
+  // Auto-open the "new product" modal when arriving from the create-store flow
+  useEffect(() => {
+    if (search.new) {
+      setEditing({});
+      navigate({ search: {} as any, replace: true });
+    }
+  }, [search.new]);
+
   const save = async () => {
     if (!editing?.name) { toast.error("Name required"); return; }
     const payload = {
