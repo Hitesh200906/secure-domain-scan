@@ -71,12 +71,20 @@ export function Navbar() {
               </Link>
             ))}
             {user && (
-              <button
-                onClick={openMessages}
-                className="px-3.5 py-2 text-[13px] text-muted-foreground hover:text-white transition rounded-lg"
-              >
-                Messages
-              </button>
+              <>
+                <button
+                  onClick={() => setStoresOpen(true)}
+                  className="px-3.5 py-2 text-[13px] text-muted-foreground hover:text-white transition rounded-lg"
+                >
+                  Stores
+                </button>
+                <button
+                  onClick={openMessages}
+                  className="px-3.5 py-2 text-[13px] text-muted-foreground hover:text-white transition rounded-lg"
+                >
+                  Messages
+                </button>
+              </>
             )}
           </nav>
 
