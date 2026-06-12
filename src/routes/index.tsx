@@ -69,15 +69,15 @@ function SecurityHome() {
       <Features />
       <HowItWorks />
       <ReportShowcase />
-      <section className="relative py-24 sm:py-32 overflow-hidden">
+      <section className="relative py-16 sm:py-32 overflow-hidden">
         <SectionBackdrop variant="circuit" opacity={0.1} />
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <SectionHeader
             eyebrow="Pricing"
             title="Simple pricing, enterprise depth"
             description="Start with a single scan or scale to continuous monitoring across your estate."
           />
-          <div className="mt-16">
+          <div className="mt-10 sm:mt-16">
             <Pricing compact />
           </div>
         </div>
