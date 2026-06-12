@@ -483,6 +483,47 @@ export type Database = {
         }
         Relationships: []
       }
+      store_apps: {
+        Row: {
+          app_key: string
+          created_at: string
+          enabled: boolean
+          id: string
+          position: number
+          settings: Json
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          app_key: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          position?: number
+          settings?: Json
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          app_key?: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          position?: number
+          settings?: Json
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_apps_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stores: {
         Row: {
           accent_color: string | null
