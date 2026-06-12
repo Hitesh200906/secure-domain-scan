@@ -57,31 +57,31 @@ export function ReportCard() {
 
         <div className="grid lg:grid-cols-[1.1fr_1fr] gap-px bg-white/[0.05]">
           {/* Left: score + summary */}
-          <div className="bg-[oklch(0.06_0.008_220)] p-8">
-            <div className="flex items-start justify-between">
-              <div>
+          <div className="bg-[oklch(0.06_0.008_220)] p-5 sm:p-8">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
                 <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
                   Security Report
                 </div>
-                <h3 className="mt-2 text-2xl font-medium tracking-tight">
+                <h3 className="mt-2 text-xl sm:text-2xl font-medium tracking-tight truncate">
                   acme-fintech.com
                 </h3>
-                <div className="mt-1 text-xs font-mono text-muted-foreground">
+                <div className="mt-1 text-[10px] sm:text-xs font-mono text-muted-foreground">
                   Scan ID rpt_8421 · May 30, 2026
                 </div>
               </div>
-              <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-primary glass px-2 py-1 rounded">
+              <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-primary glass px-2 py-1 rounded shrink-0">
                 Verified
               </span>
             </div>
 
-            <div className="mt-8 flex items-center gap-8">
+            <div className="mt-6 sm:mt-8 flex items-center gap-5 sm:gap-8">
               <ScoreRing score={72} />
               <div>
                 <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
                   Security Score
                 </div>
-                <div className="mt-1 text-4xl font-semibold tracking-tight text-gradient-accent">
+                <div className="mt-1 text-3xl sm:text-4xl font-semibold tracking-tight text-gradient-accent">
                   72/100
                 </div>
                 <div className="mt-1 text-xs text-muted-foreground">
