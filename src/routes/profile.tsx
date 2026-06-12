@@ -837,11 +837,13 @@ function Row({ label, value, mono }: { label: string; value: string; mono?: bool
   );
 }
 
-function Toggle({ defaultOn = false }: { defaultOn?: boolean }) {
+function Toggle({ defaultOn = false, onChange }: { defaultOn?: boolean; onChange?: (v: boolean) => void }) {
   const [on, setOn] = useState(defaultOn);
+  const toggle = () => { const v = !on; setOn(v); onChange?.(v); };
   return (
-    <button onClick={() => setOn(!on)} className={`relative w-10 h-6 rounded-full transition ${on ? "bg-primary" : "bg-white/10"}`}>
+    <button onClick={toggle} className={`relative w-10 h-6 rounded-full transition ${on ? "bg-primary" : "bg-white/10"}`}>
       <span className={`absolute top-0.5 size-5 rounded-full bg-white transition-transform ${on ? "translate-x-[18px]" : "translate-x-0.5"}`} />
     </button>
   );
 }
+
