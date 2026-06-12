@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { AnimatePresence, motion } from "framer-motion";
 import { Hero } from "@/components/site/Hero";
 import { Stats } from "@/components/site/Stats";
 import { Features } from "@/components/site/Features";
@@ -9,17 +10,19 @@ import { Pricing } from "@/components/site/Pricing";
 import { Social } from "@/components/site/Social";
 import { SectionHeader } from "@/components/site/Features";
 import { SectionBackdrop } from "@/components/site/SectionFx";
+import { NexusHome } from "@/components/site/NexusHome";
+import { useAppMode } from "@/lib/app-mode";
 import { useAuth } from "@/hooks/use-auth";
 
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Nexus — AI-Powered Security Analysis" },
+      { title: "Nexus — The home of internet business" },
       {
         name: "description",
         content:
-          "Detect vulnerabilities before attackers do. AI-powered security audits, pen test reports, and continuous monitoring for modern teams.",
+          "Discover thousands of communities, courses, and digital products — or launch your own store in minutes on Nexus.",
       },
     ],
   }),
@@ -27,9 +30,40 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const { mode } = useAppMode();
+
+  return (
+    <div className="relative overflow-hidden">
+      <AnimatePresence mode="wait" initial={false}>
+        {mode === "nexus" ? (
+          <motion.div
+            key="nexus"
+            initial={{ opacity: 0, x: -40 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -40 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <NexusHome />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="security"
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 40 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <SecurityHome />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function SecurityHome() {
   return (
     <>
-
       <Hero />
       <Stats />
       <Features />
