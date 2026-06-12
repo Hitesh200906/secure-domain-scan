@@ -307,7 +307,8 @@ function BigCard({ c }: { c: Card }) {
       to={c.href as never}
       className="group snap-start shrink-0 w-[88%] sm:w-[420px] lg:w-[460px] overflow-hidden rounded-2xl border border-white/[0.08] hover:border-white/20 bg-[oklch(0.06_0.008_220)] transition"
     >
-      <div className={`relative h-56 bg-gradient-to-br ${c.gradient} overflow-hidden`}>
+      {/* Banner */}
+      <div className={`relative h-44 sm:h-52 bg-gradient-to-br ${c.gradient} overflow-hidden`}>
         <div className="absolute inset-0 grid place-items-center text-7xl opacity-90 group-hover:scale-105 transition-transform duration-500">
           {c.emoji}
         </div>
@@ -317,50 +318,35 @@ function BigCard({ c }: { c: Card }) {
             {c.badge}
           </span>
         )}
-        <span className="absolute top-3 right-3 inline-flex items-center gap-1 text-[10px] font-medium bg-black/40 backdrop-blur text-white px-2 py-1 rounded-md">
-          <StoreIcon className="size-3" /> {c.category}
-        </span>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
       </div>
 
       <div className="p-5">
-        <div className="flex items-center gap-3">
-          <div className={`size-11 rounded-xl bg-gradient-to-br ${c.gradient} grid place-items-center text-xl shrink-0`}>
+        {/* Header: bigger logo + owner + verify */}
+        <div className="flex items-start gap-3">
+          <div className={`size-16 rounded-2xl border-2 border-background bg-gradient-to-br ${c.gradient} grid place-items-center text-2xl shrink-0 -mt-12 shadow-lg`}>
             {c.emoji}
           </div>
-          <div className="min-w-0 flex-1">
+          <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5">
               <div className="text-base font-semibold text-white truncate">{c.title}</div>
               {c.verified && <BadgeCheck className="size-4 text-sky-400 shrink-0" />}
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <span className="size-4 rounded-full bg-white/10 grid place-items-center text-[9px]">
-                {c.owner.charAt(0)}
-              </span>
-              by {c.owner}
-            </div>
+            <div className="text-xs text-muted-foreground truncate">by {c.owner}</div>
           </div>
         </div>
 
+        {/* Description */}
         <p className="mt-4 text-sm text-muted-foreground line-clamp-2 leading-relaxed">{c.description}</p>
 
-        <div className="mt-4 flex items-center justify-between text-[11px] text-muted-foreground">
-          <div className="flex items-center gap-4">
-            {c.rating && (
-              <span className="inline-flex items-center gap-1">
-                <Star className="size-3 text-amber-400 fill-amber-400" />
-                {c.rating.toFixed(1)} {c.reviews && <span className="opacity-70">({c.reviews})</span>}
-              </span>
-            )}
-            <span className="inline-flex items-center gap-1">
-              <Users className="size-3" /> {c.members}
-            </span>
-            {c.views !== "—" && (
-              <span className="inline-flex items-center gap-1">
-                <Eye className="size-3" /> {c.views}
-              </span>
-            )}
-          </div>
-          <span className="opacity-70">{c.launched}</span>
+        {/* Footer: category chip + Join now */}
+        <div className="mt-5 flex items-center justify-between gap-3">
+          <span className="text-[11px] rounded-full bg-white/[0.06] border border-white/10 px-3 py-1 text-white whitespace-nowrap truncate">
+            {c.category === "all" ? "Community" : c.category}
+          </span>
+          <span className="shrink-0 rounded-full bg-white text-black px-4 py-1.5 text-xs font-semibold group-hover:bg-primary group-hover:text-primary-foreground transition">
+            Join now
+          </span>
         </div>
       </div>
     </Link>
