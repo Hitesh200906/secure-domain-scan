@@ -6,12 +6,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/use-admin";
 import { RoleBadge } from "@/components/ui/RoleBadge";
 import { MessagesDrawer } from "@/components/site/MessagesDrawer";
+import { useAppMode } from "@/lib/app-mode";
 
 
-const publicLinks = [
+const baseLinks = [
   { to: "/", label: "Features" },
   { to: "/discover", label: "Discover" },
-  { to: "/business", label: "Business" },
 ] as const;
 
 
@@ -21,8 +21,14 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [msgOpen, setMsgOpen] = useState(false);
   const { user, isAdmin: admin, role } = useAdmin();
+  const { mode } = useAppMode();
   const navigate = useNavigate();
-  const links = publicLinks;
+  const links = [
+    ...baseLinks,
+    mode === "security"
+      ? { to: "/dashboard" as const, label: "Dashboard" }
+      : { to: "/business" as const, label: "Business" },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -87,9 +93,11 @@ export function Navbar() {
                       <div className="px-3 pb-2"><RoleBadge role={role} /></div>
                     )}
 
-                    <Link to="/dashboard" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.05]">
-                      <LayoutDashboard className="size-4" /> Dashboard
-                    </Link>
+                    {mode === "security" && (
+                      <Link to="/dashboard" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.05]">
+                        <LayoutDashboard className="size-4" /> Dashboard
+                      </Link>
+                    )}
                     <Link to="/profile" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.05]">
                       <UserIcon className="size-4" /> Profile
                     </Link>
@@ -135,9 +143,11 @@ export function Navbar() {
                 >
                   <MessageSquare className="size-4" /> Messages
                 </button>
-                <Link to="/dashboard" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">
-                  <LayoutDashboard className="size-4" /> Dashboard
-                </Link>
+                {mode === "security" && (
+                  <Link to="/dashboard" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">
+                    <LayoutDashboard className="size-4" /> Dashboard
+                  </Link>
+                )}
                 <Link to="/profile" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">
                   <UserIcon className="size-4" /> Profile
                 </Link>
