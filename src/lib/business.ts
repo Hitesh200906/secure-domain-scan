@@ -13,6 +13,7 @@ export type Store = {
   accent_color: string | null;
   website_url: string | null;
   social_links: Record<string, string> | null;
+  skills: string[] | null;
   verified: boolean;
   member_count: number;
   total_sales: number;
