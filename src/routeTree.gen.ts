@@ -35,6 +35,7 @@ import { Route as AdminReportsRouteImport } from './routes/admin.reports'
 import { Route as AdminPricingRouteImport } from './routes/admin.pricing'
 import { Route as AdminLogsRouteImport } from './routes/admin.logs'
 import { Route as AdminAdminsRouteImport } from './routes/admin.admins'
+import { Route as BusinessStoreEditRouteImport } from './routes/business.store.edit'
 import { Route as AuthenticatedScanNewRouteImport } from './routes/_authenticated.scan.new'
 
 const SignupRoute = SignupRouteImport.update({
@@ -166,6 +167,11 @@ const AdminAdminsRoute = AdminAdminsRouteImport.update({
   path: '/admins',
   getParentRoute: () => AdminRoute,
 } as any)
+const BusinessStoreEditRoute = BusinessStoreEditRouteImport.update({
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => BusinessStoreRoute,
+} as any)
 const AuthenticatedScanNewRoute = AuthenticatedScanNewRouteImport.update({
   id: '/scan/new',
   path: '/scan/new',
@@ -195,10 +201,11 @@ export interface FileRoutesByFullPath {
   '/business/create': typeof BusinessCreateRoute
   '/business/orders': typeof BusinessOrdersRoute
   '/business/products': typeof BusinessProductsRoute
-  '/business/store': typeof BusinessStoreRoute
+  '/business/store': typeof BusinessStoreRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/business/': typeof BusinessIndexRoute
   '/scan/new': typeof AuthenticatedScanNewRoute
+  '/business/store/edit': typeof BusinessStoreEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -221,10 +228,11 @@ export interface FileRoutesByTo {
   '/business/create': typeof BusinessCreateRoute
   '/business/orders': typeof BusinessOrdersRoute
   '/business/products': typeof BusinessProductsRoute
-  '/business/store': typeof BusinessStoreRoute
+  '/business/store': typeof BusinessStoreRouteWithChildren
   '/admin': typeof AdminIndexRoute
   '/business': typeof BusinessIndexRoute
   '/scan/new': typeof AuthenticatedScanNewRoute
+  '/business/store/edit': typeof BusinessStoreEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -251,10 +259,11 @@ export interface FileRoutesById {
   '/business/create': typeof BusinessCreateRoute
   '/business/orders': typeof BusinessOrdersRoute
   '/business/products': typeof BusinessProductsRoute
-  '/business/store': typeof BusinessStoreRoute
+  '/business/store': typeof BusinessStoreRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/business/': typeof BusinessIndexRoute
   '/_authenticated/scan/new': typeof AuthenticatedScanNewRoute
+  '/business/store/edit': typeof BusinessStoreEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -285,6 +294,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/business/'
     | '/scan/new'
+    | '/business/store/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -311,6 +321,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/business'
     | '/scan/new'
+    | '/business/store/edit'
   id:
     | '__root__'
     | '/'
@@ -340,6 +351,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/business/'
     | '/_authenticated/scan/new'
+    | '/business/store/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -542,6 +554,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/business/store/edit': {
+      id: '/business/store/edit'
+      path: '/edit'
+      fullPath: '/business/store/edit'
+      preLoaderRoute: typeof BusinessStoreEditRouteImport
+      parentRoute: typeof BusinessStoreRoute
+    }
     '/_authenticated/scan/new': {
       id: '/_authenticated/scan/new'
       path: '/scan/new'
@@ -588,11 +607,23 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface BusinessStoreRouteChildren {
+  BusinessStoreEditRoute: typeof BusinessStoreEditRoute
+}
+
+const BusinessStoreRouteChildren: BusinessStoreRouteChildren = {
+  BusinessStoreEditRoute: BusinessStoreEditRoute,
+}
+
+const BusinessStoreRouteWithChildren = BusinessStoreRoute._addFileChildren(
+  BusinessStoreRouteChildren,
+)
+
 interface BusinessRouteChildren {
   BusinessCreateRoute: typeof BusinessCreateRoute
   BusinessOrdersRoute: typeof BusinessOrdersRoute
   BusinessProductsRoute: typeof BusinessProductsRoute
-  BusinessStoreRoute: typeof BusinessStoreRoute
+  BusinessStoreRoute: typeof BusinessStoreRouteWithChildren
   BusinessIndexRoute: typeof BusinessIndexRoute
 }
 
@@ -600,7 +631,7 @@ const BusinessRouteChildren: BusinessRouteChildren = {
   BusinessCreateRoute: BusinessCreateRoute,
   BusinessOrdersRoute: BusinessOrdersRoute,
   BusinessProductsRoute: BusinessProductsRoute,
-  BusinessStoreRoute: BusinessStoreRoute,
+  BusinessStoreRoute: BusinessStoreRouteWithChildren,
   BusinessIndexRoute: BusinessIndexRoute,
 }
 
