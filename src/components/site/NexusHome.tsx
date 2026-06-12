@@ -86,7 +86,7 @@ export function NexusHome() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.6 }}
-            className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-3xl mx-auto"
+            className="mt-12 sm:mt-16 grid grid-cols-2 sm:grid-cols-4 gap-5 sm:gap-6 max-w-3xl mx-auto"
           >
             {[
               { v: "50k+", l: "Creators" },
@@ -95,8 +95,8 @@ export function NexusHome() {
               { v: "180+", l: "Countries" },
             ].map((s) => (
               <div key={s.l} className="text-center">
-                <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">{s.v}</div>
-                <div className="mt-1 text-xs uppercase tracking-[0.18em] text-muted-foreground">{s.l}</div>
+                <div className="text-xl sm:text-3xl font-semibold tracking-tight text-white">{s.v}</div>
+                <div className="mt-1 text-[10px] sm:text-xs uppercase tracking-[0.18em] text-muted-foreground">{s.l}</div>
               </div>
             ))}
           </motion.div>
