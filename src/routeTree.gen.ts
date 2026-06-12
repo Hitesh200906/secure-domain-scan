@@ -14,6 +14,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -52,6 +53,11 @@ const PricingRoute = PricingRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiscoverRoute = DiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -129,6 +135,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/discover': typeof DiscoverRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
@@ -148,6 +155,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/discover': typeof DiscoverRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
@@ -170,6 +178,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/discover': typeof DiscoverRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
@@ -192,6 +201,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/contact'
     | '/dashboard'
+    | '/discover'
     | '/login'
     | '/pricing'
     | '/profile'
@@ -211,6 +221,7 @@ export interface FileRouteTypes {
     | '/'
     | '/contact'
     | '/dashboard'
+    | '/discover'
     | '/login'
     | '/pricing'
     | '/profile'
@@ -232,6 +243,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/contact'
     | '/dashboard'
+    | '/discover'
     | '/login'
     | '/pricing'
     | '/profile'
@@ -254,6 +266,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRoute
+  DiscoverRoute: typeof DiscoverRoute
   LoginRoute: typeof LoginRoute
   PricingRoute: typeof PricingRoute
   ProfileRoute: typeof ProfileRoute
@@ -296,6 +309,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/discover': {
+      id: '/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof DiscoverRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -441,6 +461,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRoute,
+  DiscoverRoute: DiscoverRoute,
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
   ProfileRoute: ProfileRoute,
