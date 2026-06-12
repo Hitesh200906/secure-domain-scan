@@ -3,11 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
   Award, Bell, BadgeCheck, Calendar, Camera, CheckCircle2, Copy, CreditCard, Crown,
-  Eye, Flag, Github, Globe, Heart, Key, LifeBuoy, Linkedin, Loader2, LogOut, MessageCircle,
-  MessageSquare, Monitor, Plus, Send, Share2, Shield, ShieldCheck, Smartphone, Sparkles,
-  Star, Trash2, TrendingUp, Trophy, UserPlus, Users, Youtube, Zap,
+  DollarSign, Eye, Github, Globe, Heart, Key, LifeBuoy, Linkedin, Loader2, LogOut, MessageCircle,
+  MessageSquare, Monitor, Pencil, Plus, Send, Share2, Shield, ShieldCheck, Smartphone, Sparkles,
+  Star, Trash2, TrendingUp, Trophy, UserPlus, Users, X, Youtube, Zap,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
