@@ -1,11 +1,12 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X, LogOut, User as UserIcon, LayoutDashboard, Lock, MessageSquare } from "lucide-react";
+import { Menu, X, LogOut, User as UserIcon, LayoutDashboard, Lock, MessageSquare, Store as StoreIcon } from "lucide-react";
 import nexusLogo from "@/assets/nexus-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/use-admin";
 import { RoleBadge } from "@/components/ui/RoleBadge";
 import { MessagesDrawer } from "@/components/site/MessagesDrawer";
+import { StoresDrawer } from "@/components/site/StoresDrawer";
 import { useAppMode } from "@/lib/app-mode";
 
 
@@ -20,6 +21,7 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [msgOpen, setMsgOpen] = useState(false);
+  const [storesOpen, setStoresOpen] = useState(false);
   const { user, isAdmin: admin, role } = useAdmin();
   const { mode } = useAppMode();
   const navigate = useNavigate();
@@ -69,12 +71,20 @@ export function Navbar() {
               </Link>
             ))}
             {user && (
-              <button
-                onClick={openMessages}
-                className="px-3.5 py-2 text-[13px] text-muted-foreground hover:text-white transition rounded-lg"
-              >
-                Messages
-              </button>
+              <>
+                <button
+                  onClick={() => setStoresOpen(true)}
+                  className="px-3.5 py-2 text-[13px] text-muted-foreground hover:text-white transition rounded-lg"
+                >
+                  Stores
+                </button>
+                <button
+                  onClick={openMessages}
+                  className="px-3.5 py-2 text-[13px] text-muted-foreground hover:text-white transition rounded-lg"
+                >
+                  Messages
+                </button>
+              </>
             )}
           </nav>
 
@@ -138,6 +148,12 @@ export function Navbar() {
             {user && (
               <>
                 <button
+                  onClick={() => { setStoresOpen(true); setOpen(false); }}
+                  className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg"
+                >
+                  <StoreIcon className="size-4" /> Stores
+                </button>
+                <button
                   onClick={openMessages}
                   className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg"
                 >
@@ -175,6 +191,7 @@ export function Navbar() {
       </div>
 
       <MessagesDrawer open={msgOpen} onClose={() => setMsgOpen(false)} />
+      <StoresDrawer open={storesOpen} onClose={() => setStoresOpen(false)} />
     </header>
   );
 }
