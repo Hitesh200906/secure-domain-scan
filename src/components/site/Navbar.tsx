@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, ShieldCheck, X, LogOut, User as UserIcon, LayoutDashboard, Lock, MessageSquare } from "lucide-react";
+import { Menu, X, LogOut, User as UserIcon, LayoutDashboard, Lock, MessageSquare } from "lucide-react";
+import nexusLogo from "@/assets/nexus-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/use-admin";
 import { RoleBadge } from "@/components/ui/RoleBadge";
@@ -45,13 +46,10 @@ export function Navbar() {
     <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "py-2" : "py-4"}`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className={`flex items-center justify-between rounded-2xl px-4 sm:px-6 py-3 transition-all duration-300 ${scrolled ? "bg-black/80 backdrop-blur-xl border border-white/10 shadow-lg" : "bg-transparent border border-transparent"}`}>
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="relative">
-              <ShieldCheck className="size-5 text-primary" strokeWidth={2.2} />
-              <div className="absolute inset-0 blur-md bg-primary/40 -z-10 group-hover:bg-primary/60 transition" />
-            </div>
-            <span className="text-[13px] font-semibold tracking-[0.2em] text-white">
-              NEXUS
+          <Link to="/" className="flex items-center gap-2 group">
+            <img src={nexusLogo} alt="Nexus" width={28} height={28} className="size-7 object-contain" />
+            <span className="text-[15px] font-semibold tracking-tight text-white">
+              Nexus
             </span>
           </Link>
 
