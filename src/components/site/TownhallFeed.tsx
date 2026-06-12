@@ -127,7 +127,7 @@ export function TownhallFeed() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.05 }}
-              className="rounded-2xl glass p-5 hover:border-white/20 transition"
+              className="rounded-2xl glass p-4 sm:p-5 hover:border-white/20 transition"
             >
               <div className="flex items-start gap-3">
                 <div className={`size-11 rounded-full bg-gradient-to-br ${p.color} grid place-items-center text-white font-semibold shrink-0`}>
