@@ -41,10 +41,10 @@ function Counter({
 
 export function Stats() {
   return (
-    <section className="relative py-24 sm:py-32 border-y border-white/[0.06] overflow-hidden">
+    <section className="relative py-16 sm:py-32 border-y border-white/[0.06] overflow-hidden">
       <SectionBackdrop variant="grid" opacity={0.12} />
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-y-12 gap-x-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-y-10 sm:gap-y-12 gap-x-6">
           {stats.map((s, i) => (
             <motion.div
               key={s.label}
@@ -54,10 +54,10 @@ export function Stats() {
               transition={{ duration: 0.6, delay: i * 0.05 }}
               className="text-center"
             >
-              <div className="text-4xl sm:text-5xl font-semibold tracking-tight text-gradient-accent">
+              <div className="text-3xl sm:text-5xl font-semibold tracking-tight text-gradient-accent">
                 <Counter value={s.value} suffix={s.suffix} decimals={s.decimals} />
               </div>
-              <div className="mt-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+              <div className="mt-2 text-[10px] sm:text-xs uppercase tracking-[0.18em] text-muted-foreground">
                 {s.label}
               </div>
             </motion.div>
