@@ -426,10 +426,10 @@ function StepBranding({ data, set, store }: any) {
   return (
     <div className="space-y-5">
       <div className="grid sm:grid-cols-2 gap-4">
-        <UploadCard label="Product logo" hint="Square, 512×512+" value={data.logo_url} onUpload={(u)=>set("logo_url", u)} kind="product-logo" store={store} aspect="aspect-square" />
-        <UploadCard label="Product banner" hint="Wide, 1600×600+" value={data.banner_url} onUpload={(u)=>set("banner_url", u)} kind="product-banner" store={store} aspect="aspect-[16/6]" />
+        <UploadCard label="Product logo" hint="Square, 512×512+" value={data.logo_url} onUpload={(u: string)=>set("logo_url", u)} kind="product-logo" store={store} aspect="aspect-square" />
+        <UploadCard label="Product banner" hint="Wide, 1600×600+" value={data.banner_url} onUpload={(u: string)=>set("banner_url", u)} kind="product-banner" store={store} aspect="aspect-[16/6]" />
       </div>
-      <UploadCard label="Thumbnail" hint="Used on cards and discover" value={data.thumbnail_url} onUpload={(u)=>set("thumbnail_url", u)} kind="product-thumb" store={store} aspect="aspect-video" />
+      <UploadCard label="Thumbnail" hint="Used on cards and discover" value={data.thumbnail_url} onUpload={(u: string)=>set("thumbnail_url", u)} kind="product-thumb" store={store} aspect="aspect-video" />
 
       <Field label="Gallery images">
         <div className="grid grid-cols-3 gap-2">
@@ -439,7 +439,7 @@ function StepBranding({ data, set, store }: any) {
               <button onClick={()=>set("gallery", data.gallery.filter((_:any, idx:number)=>idx!==i))} className="absolute top-1 right-1 rounded-full bg-black/70 p-1"><X className="size-3" /></button>
             </div>
           ))}
-          <UploadCard compact kind="product-gallery" store={store} onUpload={(u)=>set("gallery", [...data.gallery, u])} aspect="aspect-square" />
+          <UploadCard compact kind="product-gallery" store={store} onUpload={(u: string)=>set("gallery", [...data.gallery, u])} aspect="aspect-square" />
         </div>
       </Field>
 
