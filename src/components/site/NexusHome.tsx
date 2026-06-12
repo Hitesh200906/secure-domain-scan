@@ -142,19 +142,19 @@ export function NexusHome() {
       </section>
 
       {/* FEATURED COMMUNITIES */}
-      <section className="relative py-20">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="flex items-end justify-between mb-10">
+      <section className="relative py-14 sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="flex items-end justify-between mb-7 sm:mb-10">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full glass px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
                 <Flame className="size-3" /> Trending now
               </div>
-              <h2 className="mt-4 text-3xl sm:text-4xl font-semibold tracking-tight text-white">
+              <h2 className="mt-4 text-2xl sm:text-4xl font-semibold tracking-tight text-white">
                 Featured communities
               </h2>
             </div>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {featuredCommunities.map((c, i) => (
               <motion.div
                 key={c.name}
