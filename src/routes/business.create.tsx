@@ -7,7 +7,7 @@ import {
   Check, ChevronLeft, ChevronRight, Loader2, Sparkles, Upload, X,
   Github, Linkedin, Globe, Twitter, MessagesSquare, ImageIcon, AtSign,
   Code2, Server, Layers, Brain, ShieldCheck, Cog, Cloud, Smartphone,
-  Rocket, ExternalLink,
+  Rocket, ExternalLink, BadgeCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 
