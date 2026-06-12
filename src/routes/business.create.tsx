@@ -112,6 +112,18 @@ function CreateStoreWizard() {
     setLaunching(true);
     setLaunchPhase("forging");
     const social_links = Object.fromEntries(Object.entries(socials).filter(([_, v]) => v.trim()));
+
+    // Guard: user already owns a store
+    const { data: existing } = await supabase.from("stores").select("id").eq("owner_id", userId).maybeSingle();
+    if (existing) {
+      setLaunching(false);
+      setLaunchPhase("idle");
+      setSubmitting(false);
+      toast.info("You already have a store — opening it now.");
+      navigate({ to: "/business/store" });
+      return;
+    }
+
     const insertPromise = supabase.from("stores").insert({
       owner_id: userId,
       name: name.trim(),
@@ -124,13 +136,19 @@ function CreateStoreWizard() {
       website_url: socials.website.trim() || null,
       social_links: Object.keys(social_links).length ? social_links : null,
     });
-    // Run animation + insert in parallel — minimum 1.8s of magic
     const [{ error }] = await Promise.all([
       insertPromise,
-      new Promise((r) => setTimeout(r, 1800)),
+      new Promise((r) => setTimeout(r, 2400)),
     ]);
     if (error) {
       setSubmitting(false);
+      if ((error as any).code === "23505" || /duplicate key|stores_owner_unique/i.test(error.message)) {
+        setLaunching(false);
+        setLaunchPhase("idle");
+        toast.info("You already have a store — opening it now.");
+        navigate({ to: "/business/store" });
+        return;
+      }
       setLaunching(false);
       setLaunchPhase("idle");
       toast.error(error.message);
@@ -139,7 +157,7 @@ function CreateStoreWizard() {
     setLaunchPhase("done");
     setTimeout(() => {
       navigate({ to: "/business/products", search: { new: 1 } as any });
-    }, 900);
+    }, 1200);
   };
 
   return (
@@ -348,66 +366,95 @@ function CreateStoreWizard() {
 }
 
 function LaunchOverlay({ phase, name }: { phase: "idle" | "forging" | "done"; name: string }) {
-  const particles = Array.from({ length: 28 });
+  const done = phase === "done";
   return (
-    <div className="fixed inset-0 z-[200] grid place-items-center bg-black/85 backdrop-blur-xl animate-in fade-in duration-300">
-      <div className="relative" style={{ perspective: 900 }}>
-        {/* Rotating 3D ring */}
+    <div className="fixed inset-0 z-[200] grid place-items-center bg-black/80 backdrop-blur-2xl animate-in fade-in duration-500">
+      {/* Soft ambient glow */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
         <div
-          className="relative size-44 rounded-full"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-[640px] rounded-full opacity-40 blur-3xl transition-all duration-700"
           style={{
-            transformStyle: "preserve-3d",
-            animation: "spin3d 2.4s linear infinite",
-            background: "conic-gradient(from 0deg, #7c3aed, #22d3ee, #ec4899, #7c3aed)",
-            boxShadow: "0 0 80px rgba(124,58,237,0.6), inset 0 0 40px rgba(34,211,238,0.4)",
-            filter: phase === "done" ? "brightness(1.4)" : undefined,
+            background: done
+              ? "radial-gradient(circle, rgba(16,185,129,0.45), transparent 60%)"
+              : "radial-gradient(circle, rgba(124,58,237,0.45), transparent 60%)",
           }}
-        >
-          <div className="absolute inset-2 rounded-full bg-black grid place-items-center">
-            {phase === "done" ? (
-              <Check className="size-14 text-emerald-400 animate-in zoom-in duration-300" />
+        />
+      </div>
+
+      <div className="relative flex flex-col items-center">
+        {/* Concentric pulsing rings */}
+        <div className="relative size-40 grid place-items-center">
+          <span
+            className="absolute inset-0 rounded-full border border-white/10"
+            style={{ animation: "lo-pulse 2.4s ease-out infinite" }}
+          />
+          <span
+            className="absolute inset-0 rounded-full border border-white/10"
+            style={{ animation: "lo-pulse 2.4s ease-out 0.6s infinite" }}
+          />
+          <span
+            className="absolute inset-0 rounded-full border border-white/10"
+            style={{ animation: "lo-pulse 2.4s ease-out 1.2s infinite" }}
+          />
+
+          {/* Sweeping conic ring */}
+          <div
+            className="absolute inset-3 rounded-full"
+            style={{
+              background: done
+                ? "conic-gradient(from 0deg, rgba(16,185,129,0.9), rgba(16,185,129,0.05))"
+                : "conic-gradient(from 0deg, rgba(255,255,255,0.9), rgba(255,255,255,0.02))",
+              animation: done ? undefined : "lo-spin 1.6s linear infinite",
+              mask: "radial-gradient(circle, transparent 56%, black 58%)",
+              WebkitMask: "radial-gradient(circle, transparent 56%, black 58%)",
+              transition: "background 500ms ease",
+            }}
+          />
+
+          {/* Inner orb */}
+          <div
+            className="relative size-24 rounded-full grid place-items-center border border-white/10 transition-all duration-500"
+            style={{
+              background: done
+                ? "radial-gradient(circle at 30% 30%, rgba(16,185,129,0.4), rgba(0,0,0,0.9))"
+                : "radial-gradient(circle at 30% 30%, rgba(255,255,255,0.18), rgba(0,0,0,0.9))",
+              boxShadow: done
+                ? "0 0 60px rgba(16,185,129,0.5), inset 0 1px 0 rgba(255,255,255,0.2)"
+                : "0 0 40px rgba(255,255,255,0.15), inset 0 1px 0 rgba(255,255,255,0.2)",
+            }}
+          >
+            {done ? (
+              <Check className="size-9 text-emerald-300 animate-in zoom-in duration-400" strokeWidth={2.5} />
             ) : (
-              <Rocket className="size-12 text-white animate-pulse" />
+              <Rocket className="size-8 text-white" style={{ animation: "lo-float 2.2s ease-in-out infinite" }} />
             )}
           </div>
         </div>
 
-        {/* Particles */}
-        {particles.map((_, i) => {
-          const angle = (i / particles.length) * Math.PI * 2;
-          const r = 120 + (i % 3) * 30;
-          const x = Math.cos(angle) * r;
-          const y = Math.sin(angle) * r;
-          return (
-            <span
-              key={i}
-              className="absolute left-1/2 top-1/2 size-1.5 rounded-full bg-white"
-              style={{
-                transform: `translate(${x}px, ${y}px)`,
-                opacity: 0,
-                animation: `sparkOut 1.6s ${i * 40}ms ease-out infinite`,
-                boxShadow: "0 0 10px #fff",
-              }}
-            />
-          );
-        })}
-      </div>
-
-      <div className="absolute bottom-24 text-center px-6">
-        <div className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-2">
-          {phase === "done" ? "Live" : "Forging your store"}
-        </div>
-        <div className="text-2xl font-semibold">
-          {phase === "done" ? `${name} is live` : name}
+        {/* Caption */}
+        <div className="mt-10 text-center px-6">
+          <div className="text-[10px] uppercase tracking-[0.5em] text-white/40 mb-3 transition-all duration-300">
+            {done ? "Store live" : "Publishing"}
+          </div>
+          <div className="text-xl sm:text-2xl font-medium tracking-tight text-white">
+            {done ? `Welcome, ${name}` : name}
+          </div>
+          <div className="mt-2 text-xs text-white/40">
+            {done ? "Redirecting to add your first product…" : "Securing your space on Nexus"}
+          </div>
         </div>
       </div>
 
       <style>{`
-        @keyframes spin3d { from { transform: rotateX(60deg) rotateZ(0deg); } to { transform: rotateX(60deg) rotateZ(360deg); } }
-        @keyframes sparkOut {
-          0% { opacity: 0; transform: translate(0,0) scale(0.4); }
-          30% { opacity: 1; }
-          100% { opacity: 0; transform: translate(var(--tx,0), var(--ty,0)) scale(1); }
+        @keyframes lo-spin { to { transform: rotate(360deg); } }
+        @keyframes lo-pulse {
+          0%   { transform: scale(0.6); opacity: 0.9; }
+          80%  { opacity: 0; }
+          100% { transform: scale(1.5); opacity: 0; }
+        }
+        @keyframes lo-float {
+          0%, 100% { transform: translateY(0) rotate(-8deg); }
+          50%      { transform: translateY(-4px) rotate(-2deg); }
         }
       `}</style>
     </div>
