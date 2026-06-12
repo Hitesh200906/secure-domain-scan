@@ -238,20 +238,67 @@ function ProfilePage() {
                   <Field label="Company" value={profile.company} onChange={(v) => setProfile({ ...profile, company: v })} />
                   <Field label="Email" value={user?.email ?? "demo@nexus.com"} readOnly />
                 </div>
+                <label className="block">
+                  <span className="text-[11px] uppercase tracking-widest text-muted-foreground">Bio</span>
+                  <textarea
+                    value={profile.bio}
+                    onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+                    rows={3}
+                    maxLength={240}
+                    placeholder="Tell people what you create…"
+                    className="mt-1.5 w-full rounded-xl bg-[oklch(0.06_0.008_220)] border border-white/10 px-4 py-2.5 text-sm focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 resize-none"
+                  />
+                  <span className="text-[10px] text-muted-foreground">{profile.bio.length}/240</span>
+                </label>
                 {user && (
                   <button onClick={save} disabled={saving} className="mt-2 rounded-full bg-white text-black px-5 py-2.5 text-sm font-medium inline-flex items-center gap-2 disabled:opacity-60 hover:shadow-[0_0_30px_-4px_oklch(0.86_0.16_200_/0.5)] transition">
                     {saving && <Loader2 className="size-4 animate-spin" />} Save changes
                   </button>
                 )}
               </Card>
-              <Card title="Account">
-                <Row label="Member since" value={user ? new Date(user.created_at).toLocaleDateString() : "Jan 15, 2026"} />
-                <Row label="User ID" value={user ? `${user.id.slice(0, 8)}…` : "demo-user"} mono />
-                <Row label="Auth provider" value={user ? (user.app_metadata?.provider ?? "email") : "email"} />
-                <Row label="Last sign-in" value={user ? (user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : "—") : "Active now"} />
-              </Card>
+              <div className="space-y-4">
+                <Card title="Public display" desc="Choose what visitors see on your profile.">
+                  <div className="flex items-center justify-between p-4 rounded-xl glass">
+                    <div className="flex items-center gap-3">
+                      <div className="size-10 rounded-lg glass grid place-items-center"><DollarSign className="size-4 text-emerald-300" /></div>
+                      <div>
+                        <div className="text-sm">Show earnings</div>
+                        <div className="text-[11px] text-muted-foreground">Display total earnings on your profile (Whop style).</div>
+                      </div>
+                    </div>
+                    <Toggle defaultOn={profile.show_earnings} onChange={(v) => setProfile({ ...profile, show_earnings: v })} />
+                  </div>
+                  <div className="flex items-center justify-between p-4 rounded-xl glass">
+                    <div className="flex items-center gap-3">
+                      <div className="size-10 rounded-lg glass grid place-items-center"><Users className="size-4 text-primary" /></div>
+                      <div>
+                        <div className="text-sm">Show followers count</div>
+                        <div className="text-[11px] text-muted-foreground">Visible to anyone viewing your profile.</div>
+                      </div>
+                    </div>
+                    <Toggle defaultOn={true} />
+                  </div>
+                  <div className="flex items-center justify-between p-4 rounded-xl glass">
+                    <div className="flex items-center gap-3">
+                      <div className="size-10 rounded-lg glass grid place-items-center"><BadgeCheck className="size-4 text-primary" /></div>
+                      <div>
+                        <div className="text-sm">Verified badge</div>
+                        <div className="text-[11px] text-muted-foreground">Display your verification badge publicly.</div>
+                      </div>
+                    </div>
+                    <Toggle defaultOn={true} />
+                  </div>
+                </Card>
+                <Card title="Account">
+                  <Row label="Member since" value={user ? new Date(user.created_at).toLocaleDateString() : "Jan 15, 2026"} />
+                  <Row label="User ID" value={user ? `${user.id.slice(0, 8)}…` : "demo-user"} mono />
+                  <Row label="Auth provider" value={user ? (user.app_metadata?.provider ?? "email") : "email"} />
+                  <Row label="Last sign-in" value={user ? (user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : "—") : "Active now"} />
+                </Card>
+              </div>
             </motion.div>
           )}
+
 
           {tab === "tickets" && (
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="grid lg:grid-cols-[340px_1fr] gap-4">
