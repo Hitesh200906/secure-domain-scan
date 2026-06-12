@@ -270,19 +270,19 @@ export function NexusHome() {
       </section>
 
       {/* CTA */}
-      <section className="relative py-24">
-        <div className="mx-auto max-w-5xl px-6">
+      <section className="relative py-16 sm:py-24">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="relative rounded-3xl overflow-hidden p-px bg-gradient-to-b from-primary/40 via-secondary/20 to-transparent">
-            <div className="relative rounded-[calc(theme(borderRadius.3xl)-1px)] bg-[oklch(0.05_0.008_220)] p-12 sm:p-16 text-center overflow-hidden">
+            <div className="relative rounded-[calc(theme(borderRadius.3xl)-1px)] bg-[oklch(0.05_0.008_220)] p-8 sm:p-16 text-center overflow-hidden">
               <div className="absolute inset-0 hero-gradient opacity-60" />
               <div className="relative">
-                <h2 className="text-4xl sm:text-5xl font-semibold tracking-[-0.03em] text-gradient">
+                <h2 className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-gradient">
                   Start your business today
                 </h2>
-                <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
+                <p className="mt-4 text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
                   Join 50,000+ creators building their internet business on Nexus.
                 </p>
-                <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+                <div className="mt-7 sm:mt-8 flex flex-col sm:flex-row gap-3 justify-center">
                   <Link
                     to="/business"
                     className="inline-flex items-center justify-center gap-2 rounded-full bg-white text-black px-6 py-3 text-sm font-medium hover:shadow-[0_0_40px_-4px_rgba(255,255,255,0.5)] transition"
