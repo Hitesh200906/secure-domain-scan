@@ -96,22 +96,22 @@ export function TownhallFeed() {
             />
           </div>
 
-          <div className="mt-4 flex items-center justify-between">
-            <div className="flex items-center gap-1 text-muted-foreground">
+          <div className="mt-4 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-0.5 sm:gap-1 text-muted-foreground">
               {[ImageIcon, Smile, BarChart3, DollarSign].map((Icon, i) => (
-                <button key={i} className="size-9 grid place-items-center rounded-full hover:bg-white/[0.05] hover:text-white transition">
+                <button key={i} className="size-8 sm:size-9 grid place-items-center rounded-full hover:bg-white/[0.05] hover:text-white transition">
                   <Icon className="size-4" />
                 </button>
               ))}
-              <button className="size-9 grid place-items-center rounded-full hover:bg-white/[0.05] hover:text-white transition text-[10px] font-bold tracking-tight">
+              <button className="size-8 sm:size-9 grid place-items-center rounded-full hover:bg-white/[0.05] hover:text-white transition text-[10px] font-bold tracking-tight">
                 GIF
               </button>
             </div>
-            <div className="flex items-center gap-2">
-              <button className="inline-flex items-center gap-1.5 rounded-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 text-xs sm:text-sm font-medium transition">
-                <Radio className="size-3.5" /> Go live
+            <div className="flex items-center gap-2 shrink-0">
+              <button className="inline-flex items-center gap-1.5 rounded-full bg-red-500 hover:bg-red-600 text-white px-3 sm:px-4 py-2 text-[11px] sm:text-sm font-medium transition">
+                <Radio className="size-3.5" /> <span className="hidden xs:inline">Go live</span><span className="xs:hidden">Live</span>
               </button>
-              <button className="rounded-full bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 text-xs sm:text-sm font-medium transition">
+              <button className="rounded-full bg-blue-500 hover:bg-blue-600 text-white px-4 sm:px-5 py-2 text-[11px] sm:text-sm font-medium transition">
                 Post
               </button>
             </div>
