@@ -214,58 +214,127 @@ export type Database = {
       }
       products: {
         Row: {
+          access: Json
           active: boolean
+          apps: Json
           banner_url: string | null
           benefits: Json | null
           billing_type: string
           category: string | null
+          changelog: string | null
+          community: Json
           created_at: string
+          delivery: Json
+          demo_video_url: string | null
           description: string | null
+          docs_url: string | null
           faq: Json | null
+          features: Json
+          gallery: Json
+          github_url: string | null
+          headline: string | null
           id: string
           image_url: string | null
+          logo_url: string | null
           name: string
+          preview_url: string | null
           price: number
+          pricing_extra: Json
           product_type: string
+          requirements: Json
+          scheduled_at: string | null
+          seo: Json
+          service_settings: Json
+          short_description: string | null
+          status: string
           store_id: string
+          subcategory: string | null
           tags: string[] | null
+          thumbnail_url: string | null
           updated_at: string
+          version: string | null
         }
         Insert: {
+          access?: Json
           active?: boolean
+          apps?: Json
           banner_url?: string | null
           benefits?: Json | null
           billing_type?: string
           category?: string | null
+          changelog?: string | null
+          community?: Json
           created_at?: string
+          delivery?: Json
+          demo_video_url?: string | null
           description?: string | null
+          docs_url?: string | null
           faq?: Json | null
+          features?: Json
+          gallery?: Json
+          github_url?: string | null
+          headline?: string | null
           id?: string
           image_url?: string | null
+          logo_url?: string | null
           name: string
+          preview_url?: string | null
           price?: number
+          pricing_extra?: Json
           product_type?: string
+          requirements?: Json
+          scheduled_at?: string | null
+          seo?: Json
+          service_settings?: Json
+          short_description?: string | null
+          status?: string
           store_id: string
+          subcategory?: string | null
           tags?: string[] | null
+          thumbnail_url?: string | null
           updated_at?: string
+          version?: string | null
         }
         Update: {
+          access?: Json
           active?: boolean
+          apps?: Json
           banner_url?: string | null
           benefits?: Json | null
           billing_type?: string
           category?: string | null
+          changelog?: string | null
+          community?: Json
           created_at?: string
+          delivery?: Json
+          demo_video_url?: string | null
           description?: string | null
+          docs_url?: string | null
           faq?: Json | null
+          features?: Json
+          gallery?: Json
+          github_url?: string | null
+          headline?: string | null
           id?: string
           image_url?: string | null
+          logo_url?: string | null
           name?: string
+          preview_url?: string | null
           price?: number
+          pricing_extra?: Json
           product_type?: string
+          requirements?: Json
+          scheduled_at?: string | null
+          seo?: Json
+          service_settings?: Json
+          short_description?: string | null
+          status?: string
           store_id?: string
+          subcategory?: string | null
           tags?: string[] | null
+          thumbnail_url?: string | null
           updated_at?: string
+          version?: string | null
         }
         Relationships: [
           {
