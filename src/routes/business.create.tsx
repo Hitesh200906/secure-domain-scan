@@ -103,11 +103,16 @@ function CreateStoreWizard() {
   const next = () => setStep((s) => Math.min(STEPS.length, s + 1));
   const back = () => setStep((s) => Math.max(1, s - 1));
 
+  const [launching, setLaunching] = useState(false);
+  const [launchPhase, setLaunchPhase] = useState<"idle" | "forging" | "done">("idle");
+
   const publish = async () => {
-    if (!userId) return;
+    if (!userId || submitting) return;
     setSubmitting(true);
+    setLaunching(true);
+    setLaunchPhase("forging");
     const social_links = Object.fromEntries(Object.entries(socials).filter(([_, v]) => v.trim()));
-    const { error } = await supabase.from("stores").insert({
+    const insertPromise = supabase.from("stores").insert({
       owner_id: userId,
       name: name.trim(),
       slug,
@@ -119,13 +124,22 @@ function CreateStoreWizard() {
       website_url: socials.website.trim() || null,
       social_links: Object.keys(social_links).length ? social_links : null,
     });
+    // Run animation + insert in parallel — minimum 1.8s of magic
+    const [{ error }] = await Promise.all([
+      insertPromise,
+      new Promise((r) => setTimeout(r, 1800)),
+    ]);
     if (error) {
       setSubmitting(false);
+      setLaunching(false);
+      setLaunchPhase("idle");
       toast.error(error.message);
       return;
     }
-    toast.success("Store published 🎉");
-    navigate({ to: "/business" });
+    setLaunchPhase("done");
+    setTimeout(() => {
+      navigate({ to: "/business/products", search: { new: 1 } as any });
+    }, 900);
   };
 
   return (
@@ -314,15 +328,88 @@ function CreateStoreWizard() {
                 Continue <ChevronRight className="size-4" />
               </button>
             ) : (
-              <button onClick={publish} disabled={submitting}
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-cyan-400 text-white px-6 py-2.5 text-sm font-semibold shadow-lg shadow-primary/30 hover:shadow-primary/50 transition disabled:opacity-50">
-                {submitting ? <Loader2 className="size-4 animate-spin" /> : <Rocket className="size-4" />}
+              <button
+                onClick={publish}
+                disabled={submitting}
+                style={{ transformStyle: "preserve-3d" }}
+                className="group relative inline-flex items-center gap-2 rounded-full bg-white text-black px-6 py-2.5 text-sm font-semibold transition-all duration-150 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97] disabled:opacity-60"
+              >
+                {submitting ? <Loader2 className="size-4 animate-spin" /> : <Rocket className="size-4 transition-transform duration-200 group-hover:-rotate-12 group-active:translate-x-1 group-active:-translate-y-1" />}
                 Publish store
               </button>
             )}
           </div>
         </div>
       </div>
+
+      {launching && <LaunchOverlay phase={launchPhase} name={name || "Your store"} />}
+    </div>
+  );
+}
+
+function LaunchOverlay({ phase, name }: { phase: "idle" | "forging" | "done"; name: string }) {
+  const particles = Array.from({ length: 28 });
+  return (
+    <div className="fixed inset-0 z-[200] grid place-items-center bg-black/85 backdrop-blur-xl animate-in fade-in duration-300">
+      <div className="relative" style={{ perspective: 900 }}>
+        {/* Rotating 3D ring */}
+        <div
+          className="relative size-44 rounded-full"
+          style={{
+            transformStyle: "preserve-3d",
+            animation: "spin3d 2.4s linear infinite",
+            background: "conic-gradient(from 0deg, #7c3aed, #22d3ee, #ec4899, #7c3aed)",
+            boxShadow: "0 0 80px rgba(124,58,237,0.6), inset 0 0 40px rgba(34,211,238,0.4)",
+            filter: phase === "done" ? "brightness(1.4)" : undefined,
+          }}
+        >
+          <div className="absolute inset-2 rounded-full bg-black grid place-items-center">
+            {phase === "done" ? (
+              <Check className="size-14 text-emerald-400 animate-in zoom-in duration-300" />
+            ) : (
+              <Rocket className="size-12 text-white animate-pulse" />
+            )}
+          </div>
+        </div>
+
+        {/* Particles */}
+        {particles.map((_, i) => {
+          const angle = (i / particles.length) * Math.PI * 2;
+          const r = 120 + (i % 3) * 30;
+          const x = Math.cos(angle) * r;
+          const y = Math.sin(angle) * r;
+          return (
+            <span
+              key={i}
+              className="absolute left-1/2 top-1/2 size-1.5 rounded-full bg-white"
+              style={{
+                transform: `translate(${x}px, ${y}px)`,
+                opacity: 0,
+                animation: `sparkOut 1.6s ${i * 40}ms ease-out infinite`,
+                boxShadow: "0 0 10px #fff",
+              }}
+            />
+          );
+        })}
+      </div>
+
+      <div className="absolute bottom-24 text-center px-6">
+        <div className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-2">
+          {phase === "done" ? "Live" : "Forging your store"}
+        </div>
+        <div className="text-2xl font-semibold">
+          {phase === "done" ? `${name} is live` : name}
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes spin3d { from { transform: rotateX(60deg) rotateZ(0deg); } to { transform: rotateX(60deg) rotateZ(360deg); } }
+        @keyframes sparkOut {
+          0% { opacity: 0; transform: translate(0,0) scale(0.4); }
+          30% { opacity: 1; }
+          100% { opacity: 0; transform: translate(var(--tx,0), var(--ty,0)) scale(1); }
+        }
+      `}</style>
     </div>
   );
 }

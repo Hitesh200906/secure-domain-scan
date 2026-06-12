@@ -6,11 +6,16 @@ import { getStoreProducts, type Product, type Store } from "@/lib/business";
 import { Plus, Trash2, Edit, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/business/products")({ component: ProductsPage });
+export const Route = createFileRoute("/business/products")({
+  component: ProductsPage,
+  validateSearch: (s: Record<string, unknown>) => ({ new: s.new ? Number(s.new) : undefined }),
+});
 
 
 function ProductsPage() {
   const store = useStore();
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
   const [items, setItems] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Partial<Product> | null>(null);
@@ -21,6 +26,14 @@ function ProductsPage() {
     setLoading(false);
   };
   useEffect(() => { load(); }, [store.id]);
+
+  // Auto-open the "new product" modal when arriving from the create-store flow
+  useEffect(() => {
+    if (search.new) {
+      setEditing({});
+      navigate({ search: {} as any, replace: true });
+    }
+  }, [search.new]);
 
   const save = async () => {
     if (!editing?.name) { toast.error("Name required"); return; }
