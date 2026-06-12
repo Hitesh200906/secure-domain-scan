@@ -21,7 +21,7 @@ export const Route = createFileRoute("/profile")({
   component: ProfilePage,
 });
 
-type Tab = "general" | "security" | "tickets" | "billing" | "notifications" | "api";
+type Tab = "general" | "balance" | "security" | "tickets" | "billing" | "notifications" | "api";
 type Ticket = { id: string; subject: string; status: string; priority: string; created_at: string; message: string; email: string; name: string };
 type TMsg = { id: string; author_type: string; author_name: string | null; body: string; created_at: string };
 
