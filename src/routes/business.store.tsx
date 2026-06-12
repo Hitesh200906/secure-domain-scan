@@ -8,7 +8,7 @@ import {
   BadgeCheck, MapPin, Instagram, Github, Linkedin, Twitter, Globe,
   UserPlus, Bell, MoreHorizontal, Plus, Home as HomeIcon,
   MessagesSquare, LayoutGrid, Package, Info, Image as ImageIcon, Smile, Send,
-  ExternalLink, Settings,
+  Settings,
 } from "lucide-react";
 
 export const Route = createFileRoute("/business/store")({ component: StoreInterior });
