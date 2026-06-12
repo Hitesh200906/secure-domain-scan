@@ -85,18 +85,19 @@ function ProfilePage() {
 
   useEffect(() => {
     if (!user) {
-      setProfile({ full_name: "Alex Rivera", role_title: "Creator · Founder", company: "Apex Studio", plan: "professional", credits: 12 });
+      setProfile((p) => ({ ...p, full_name: "Alex Rivera", role_title: "Creator · Founder", company: "Apex Studio", plan: "professional", credits: 12 }));
       setLoading(false);
       return;
     }
     api.profile().then(({ profile: data }) => {
-      if (data) setProfile({
+      if (data) setProfile((p) => ({
+        ...p,
         full_name: data.full_name ?? "",
         role_title: data.role_title ?? "",
         company: data.company ?? "",
         plan: data.plan ?? "starter",
         credits: data.credits ?? 0,
-      });
+      }));
       setLoading(false);
     }).catch(() => setLoading(false));
   }, [user]);
