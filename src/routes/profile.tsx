@@ -130,7 +130,7 @@ function ProfilePage() {
   if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="size-5 animate-spin text-primary" /></div>;
 
   const displayName = profile.full_name || "Your profile";
-  const handle = "@" + (profile.full_name || user?.email || "you").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 18);
+  const handle = "@" + (profile.username || profile.full_name || user?.email || "you").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 24);
   const initials = (profile.full_name || user?.email || "?").trim()[0].toUpperCase();
   const joinDate = user ? new Date(user.created_at).toLocaleDateString(undefined, { month: "long", year: "numeric" }) : "January 2026";
 
