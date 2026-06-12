@@ -426,6 +426,7 @@ export type Database = {
           member_count: number
           name: string
           owner_id: string
+          skills: string[]
           slug: string
           social_links: Json | null
           theme_color: string | null
@@ -445,6 +446,7 @@ export type Database = {
           member_count?: number
           name: string
           owner_id: string
+          skills?: string[]
           slug: string
           social_links?: Json | null
           theme_color?: string | null
@@ -464,6 +466,7 @@ export type Database = {
           member_count?: number
           name?: string
           owner_id?: string
+          skills?: string[]
           slug?: string
           social_links?: Json | null
           theme_color?: string | null
