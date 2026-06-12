@@ -8,7 +8,7 @@ import {
   BadgeCheck, MapPin, Instagram, Github, Linkedin, Twitter, Globe,
   UserPlus, Bell, MoreHorizontal, Plus, Home as HomeIcon,
   MessagesSquare, LayoutGrid, Package, Info, Image as ImageIcon, Smile, Send,
-  ExternalLink, Settings,
+  Settings,
 } from "lucide-react";
 
 export const Route = createFileRoute("/business/store")({ component: StoreInterior });
@@ -122,13 +122,6 @@ function StoreInterior() {
           <TabBtn active={tab === "apps"} onClick={() => setTab("apps")} icon={LayoutGrid}>Apps</TabBtn>
           <TabBtn active={tab === "products"} onClick={() => setTab("products")} icon={Package}>Products</TabBtn>
           <TabBtn active={tab === "about"} onClick={() => setTab("about")} icon={Info}>About</TabBtn>
-
-          <a
-            href={`/${store.slug}`} target="_blank" rel="noreferrer"
-            className="ml-auto inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground px-3 py-2"
-          >
-            Public view <ExternalLink className="size-3.5" />
-          </a>
         </div>
       </div>
 
