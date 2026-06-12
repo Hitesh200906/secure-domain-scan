@@ -36,7 +36,7 @@ export function Hero() {
 
 
 
-      <div className="relative mx-auto max-w-5xl px-6 text-center pt-32 pb-24">
+      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 text-center pt-28 sm:pt-32 pb-20 sm:pb-24">
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -54,7 +54,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1 }}
-          className="mt-7 text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-semibold tracking-[-0.04em] leading-[0.95] text-gradient"
+          className="mt-6 text-[40px] leading-[1] sm:text-6xl md:text-7xl lg:text-[88px] font-semibold tracking-[-0.04em] sm:leading-[0.95] text-gradient"
         >
           AI-Powered
           <br />
@@ -65,7 +65,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="mt-7 max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground leading-relaxed"
+          className="mt-5 sm:mt-7 max-w-2xl mx-auto text-sm sm:text-lg text-muted-foreground leading-relaxed"
         >
           Detect vulnerabilities before attackers do. Get detailed, actionable security
           reports powered by AI and industry-leading security methodologies.
