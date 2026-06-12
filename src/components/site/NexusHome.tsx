@@ -130,7 +130,7 @@ export function NexusHome() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
-                className="group rounded-2xl glass p-5 hover:border-white/20 transition cursor-pointer"
+                className="group rounded-2xl glass p-4 sm:p-5 hover:border-white/20 transition cursor-pointer"
               >
                 <c.icon className="size-5 text-primary group-hover:scale-110 transition" />
                 <div className="mt-3 text-sm font-medium text-white">{c.label}</div>
