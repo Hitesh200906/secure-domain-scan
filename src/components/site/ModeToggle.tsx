@@ -21,8 +21,8 @@ export function ModeToggle({ size = "lg" }: { size?: "lg" | "md" }) {
             : "text-muted-foreground hover:text-white"
         }`}
       >
-        <Sparkles className="size-4" />
-        Switch to Nexus
+        <Sparkles className="size-3.5 sm:size-4 shrink-0" />
+        <span className="whitespace-nowrap"><span className="hidden xs:inline">Switch to </span>Nexus</span>
       </button>
       <button
         onClick={() => setMode("security")}
@@ -32,8 +32,8 @@ export function ModeToggle({ size = "lg" }: { size?: "lg" | "md" }) {
             : "text-muted-foreground hover:text-white"
         }`}
       >
-        <ShieldCheck className="size-4" />
-        Switch to Nexus Security
+        <ShieldCheck className="size-3.5 sm:size-4 shrink-0" />
+        <span className="whitespace-nowrap"><span className="hidden xs:inline">Switch to Nexus </span>Security</span>
       </button>
     </motion.div>
   );
