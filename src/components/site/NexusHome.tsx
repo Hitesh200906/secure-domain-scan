@@ -46,7 +46,7 @@ export function NexusHome() {
           <div className="absolute bottom-0 right-0 size-[480px] rounded-full bg-[oklch(0.75_0.18_310_/0.12)] blur-[120px]" />
         </div>
 
-        <div className="relative mx-auto max-w-6xl px-6 text-center pt-32 pb-20">
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 text-center pt-28 sm:pt-32 pb-16 sm:pb-20">
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
