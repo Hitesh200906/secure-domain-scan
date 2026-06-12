@@ -146,69 +146,65 @@ function ProfilePage() {
           ← Back to dashboard
         </Link>
 
-        {/* Hero / identity card */}
+        {/* Hero / identity card — centered, black background */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-          className="mt-6 glass-strong rounded-3xl overflow-hidden relative">
-          {/* cover */}
-          <div className="h-32 sm:h-40 bg-gradient-to-br from-primary/30 via-secondary/20 to-transparent relative">
-            <div className="absolute inset-0 grid-bg opacity-30" />
-          </div>
-          <div className="px-6 sm:px-8 pb-6 sm:pb-8 -mt-12 sm:-mt-14">
-            <div className="flex flex-col sm:flex-row sm:items-end gap-5">
-              <div className="relative shrink-0">
-                <div className="size-24 sm:size-28 rounded-2xl bg-gradient-to-br from-primary to-secondary grid place-items-center text-4xl font-semibold text-black shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.6)] ring-4 ring-background">
-                  {initials}
-                </div>
-                <button className="absolute -bottom-1.5 -right-1.5 size-8 rounded-full glass-strong grid place-items-center hover:border-primary/40 transition" aria-label="Change avatar">
-                  <Camera className="size-3.5" />
-                </button>
+          className="mt-6 rounded-3xl overflow-hidden relative bg-black border border-white/10">
+          <div className="px-6 sm:px-8 py-10 sm:py-12 flex flex-col items-center text-center">
+            <div className="relative">
+              <div className="size-24 sm:size-28 rounded-2xl bg-gradient-to-br from-primary to-secondary grid place-items-center text-4xl font-semibold text-black shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.6)] ring-4 ring-black">
+                {initials}
               </div>
-              <div className="flex-1 min-w-0 sm:pb-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight truncate">{displayName}</h1>
-                  <BadgeCheck className="size-5 text-primary fill-primary/20" aria-label="Verified" />
-                  <RoleBadge role={role} size="md" />
-                  <span className="text-[10px] uppercase tracking-widest px-2 py-1 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/20 inline-flex items-center gap-1">
-                    <Crown className="size-3" /> Creator
-                  </span>
-                </div>
-                <div className="mt-1 text-sm text-muted-foreground">{handle} · <span className="text-foreground/80">{profile.role_title || "—"}</span>{profile.company && ` · ${profile.company}`}</div>
-                <p className="mt-2 text-sm text-foreground/80 max-w-xl">
-                  Building tools and communities for indie creators. Coffee, code, and clean design.
-                </p>
-                <div className="mt-2 text-[11px] text-muted-foreground inline-flex items-center gap-1.5">
-                  <Calendar className="size-3" /> Joined {joinDate}
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-2 sm:pb-1">
-                <button onClick={() => { setFollowing(!following); toast.success(following ? "Unfollowed" : "Following"); }}
-                  className={`rounded-full px-4 py-2 text-sm font-medium inline-flex items-center gap-1.5 transition ${following ? "glass hover:border-white/20" : "bg-white text-black hover:shadow-[0_0_30px_-4px_oklch(0.86_0.16_200_/0.5)]"}`}>
-                  <UserPlus className="size-3.5" /> {following ? "Following" : "Follow"}
-                </button>
-                <button onClick={() => toast.success("Message draft opened")} className="rounded-full glass px-4 py-2 text-sm inline-flex items-center gap-1.5 hover:border-primary/40 transition">
-                  <MessageCircle className="size-3.5" /> Message
-                </button>
-                <button onClick={shareProfile} className="rounded-full glass px-3 py-2 text-sm inline-flex items-center gap-1.5 hover:border-primary/40 transition" aria-label="Share profile">
-                  <Share2 className="size-3.5" />
-                </button>
-                <button onClick={copyLink} className="rounded-full glass px-3 py-2 text-sm inline-flex items-center gap-1.5 hover:border-primary/40 transition" aria-label="Copy link">
-                  <Copy className="size-3.5" />
-                </button>
-                <button onClick={() => toast("Report submitted")} className="rounded-full glass px-3 py-2 text-sm inline-flex items-center gap-1.5 hover:border-destructive/40 hover:text-destructive transition" aria-label="Report profile">
-                  <Flag className="size-3.5" />
-                </button>
-              </div>
+              <button className="absolute -bottom-1.5 -right-1.5 size-8 rounded-full bg-black border border-white/15 grid place-items-center hover:border-primary/40 transition" aria-label="Change avatar">
+                <Camera className="size-3.5" />
+              </button>
             </div>
 
-            {/* Social proof */}
-            <div className="mt-6 grid grid-cols-3 sm:grid-cols-7 gap-2 sm:gap-3">
-              <ProofStat label="Followers" value="12.4k" />
-              <ProofStat label="Following" value="284" />
-              <ProofStat label="Products" value="9" />
-              <ProofStat label="Reviews" value="1,238" />
-              <ProofStat label="Rating" value="4.9" icon={Star} />
-              <ProofStat label="Sales" value="$184k" />
-              <ProofStat label="Reach" value="38k" />
+            <div className="mt-5 flex items-center gap-2 flex-wrap justify-center">
+              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">{displayName}</h1>
+              <BadgeCheck className="size-5 text-primary fill-primary/20" aria-label="Verified" />
+              <RoleBadge role={role} size="md" />
+              <span className="text-[10px] uppercase tracking-widest px-2 py-1 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/20 inline-flex items-center gap-1">
+                <Crown className="size-3" /> Creator
+              </span>
+            </div>
+
+            <div className="mt-1.5 text-sm text-muted-foreground">
+              {handle} · <span className="text-foreground/80">{profile.role_title || "—"}</span>{profile.company && ` · ${profile.company}`}
+            </div>
+
+            {profile.bio && (
+              <p className="mt-3 text-sm text-foreground/80 max-w-xl">{profile.bio}</p>
+            )}
+
+            <div className="mt-3 text-[11px] text-muted-foreground inline-flex items-center gap-1.5">
+              <Calendar className="size-3" /> Joined {joinDate}
+            </div>
+
+            {profile.show_earnings && (
+              <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-emerald-400/10 border border-emerald-400/20 text-emerald-300 px-3.5 py-1.5 text-xs font-medium">
+                <DollarSign className="size-3.5" /> ${profile.earnings.toLocaleString()} earned
+              </div>
+            )}
+
+            {/* Own-profile actions */}
+            <div className="mt-6 flex flex-wrap gap-2 justify-center">
+              <button onClick={() => setTab("general")}
+                className="rounded-full bg-white text-black px-4 py-2 text-sm font-medium inline-flex items-center gap-1.5 hover:shadow-[0_0_30px_-4px_oklch(0.86_0.16_200_/0.5)] transition">
+                <Pencil className="size-3.5" /> Edit profile
+              </button>
+              <button onClick={shareProfile} className="rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-sm inline-flex items-center gap-1.5 hover:border-primary/40 transition">
+                <Share2 className="size-3.5" /> Share
+              </button>
+              <button onClick={copyLink} className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-2 text-sm inline-flex items-center gap-1.5 hover:border-primary/40 transition" aria-label="Copy link">
+                <Copy className="size-3.5" />
+              </button>
+            </div>
+
+            {/* Stats — clickable */}
+            <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3 w-full max-w-md">
+              <StatButton label="Followers" value="12.4k" onClick={() => setListOpen("followers")} />
+              <StatButton label="Following" value="284" onClick={() => setListOpen("following")} />
+              <StatButton label="Products" value="9" onClick={() => setListOpen("products")} />
             </div>
           </div>
         </motion.div>
@@ -216,7 +212,6 @@ function ProfilePage() {
         {/* Tabs */}
         <div className="mt-6 flex items-center gap-1 border-b border-white/[0.06] overflow-x-auto">
           {([
-            ["overview", "Overview"],
             ["general", "General"],
             ["tickets", `Tickets${tickets.length ? ` · ${tickets.length}` : ""}`],
             ["security", "Security"], ["billing", "Billing"],
@@ -231,7 +226,7 @@ function ProfilePage() {
         </div>
 
         <div className="mt-6">
-          {tab === "overview" && <OverviewTab />}
+
 
           {tab === "general" && (
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="grid lg:grid-cols-3 gap-4">
