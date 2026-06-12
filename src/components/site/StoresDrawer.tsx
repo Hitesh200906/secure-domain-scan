@@ -58,7 +58,7 @@ export function StoresDrawer({ open, onClose }: { open: boolean; onClose: () => 
             onClick={onClose}
           />
           <motion.aside
-            className="fixed left-0 top-0 z-[90] h-full w-[340px] bg-black border-r border-white/10 flex flex-col"
+            className="fixed left-0 top-0 z-[90] h-full w-[88vw] max-w-[340px] bg-black border-r border-white/10 flex flex-col"
             initial={{ x: -360 }} animate={{ x: 0 }} exit={{ x: -360 }}
             transition={{ type: "spring", stiffness: 280, damping: 30 }}
           >
