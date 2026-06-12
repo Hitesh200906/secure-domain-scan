@@ -42,12 +42,12 @@ export function TownhallFeed() {
   const [draft, setDraft] = useState("");
 
   return (
-    <section className="relative py-20 border-t border-white/5">
-      <div className="mx-auto max-w-7xl px-6">
+    <section className="relative py-14 sm:py-20 border-t border-white/5">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         {/* Header row */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-5 sm:mb-6">
           <div className="flex items-center gap-3">
-            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">Townhall</h2>
+            <h2 className="text-xl sm:text-3xl font-semibold tracking-tight text-white">Townhall</h2>
             <span className="relative flex size-2.5">
               <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
               <span className="relative inline-flex size-2.5 rounded-full bg-emerald-400" />
@@ -59,7 +59,7 @@ export function TownhallFeed() {
               <button
                 key={t}
                 onClick={() => setTab(t)}
-                className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-full capitalize transition ${
+                className={`px-3 sm:px-4 py-1.5 text-[11px] sm:text-sm font-medium rounded-full capitalize transition ${
                   tab === t ? "bg-white text-black" : "text-muted-foreground hover:text-white"
                 }`}
               >
@@ -70,7 +70,7 @@ export function TownhallFeed() {
         </div>
 
         {/* Composer */}
-        <div className="rounded-2xl glass p-5">
+        <div className="rounded-2xl glass p-4 sm:p-5">
           <div className="flex items-center gap-2 mb-4">
             <button className="inline-flex items-center gap-2 rounded-full glass px-3 py-1.5 text-xs sm:text-sm text-white hover:border-white/20 transition">
               <span className="size-5 rounded-md bg-gradient-to-br from-cyan-500 to-blue-600 grid place-items-center text-[10px] font-bold">C</span>
