@@ -2,10 +2,10 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
-  Award, Bell, BadgeCheck, Calendar, Camera, CheckCircle2, Copy, CreditCard, Crown,
-  DollarSign, Eye, Github, Globe, Heart, Key, LifeBuoy, Linkedin, Loader2, LogOut, MessageCircle,
-  MessageSquare, Monitor, Pencil, Plus, Send, Share2, Shield, ShieldCheck, Smartphone, Sparkles,
-  Star, Trash2, TrendingUp, Trophy, UserPlus, Users, X, Youtube, Zap,
+  ArrowDownLeft, ArrowUpRight, ArrowLeftRight, Award, Bell, BadgeCheck, Banknote, Calendar, Camera, CheckCircle2, Copy, CreditCard, Crown,
+  DollarSign, Download, Eye, Github, Globe, Heart, Key, LifeBuoy, Linkedin, Loader2, LogOut, MessageCircle,
+  MessageSquare, Monitor, Pencil, Plus, Send, Share2, Shield, ShieldCheck, ShieldQuestion, Smartphone, Sparkles,
+  Star, Trash2, TrendingUp, Trophy, UserPlus, Users, Wallet, X, Youtube, Zap,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/profile")({
   component: ProfilePage,
 });
 
-type Tab = "general" | "security" | "tickets" | "billing" | "notifications" | "api";
+type Tab = "general" | "balance" | "security" | "tickets" | "billing" | "notifications" | "api";
 type Ticket = { id: string; subject: string; status: string; priority: string; created_at: string; message: string; email: string; name: string };
 type TMsg = { id: string; author_type: string; author_name: string | null; body: string; created_at: string };
 
@@ -33,7 +33,7 @@ function ProfilePage() {
   const search = Route.useSearch();
   const [tab, setTab] = useState<Tab>(((search.tab as Tab) ?? "general"));
   const [profile, setProfile] = useState({
-    full_name: "", role_title: "", company: "", plan: "starter", credits: 0,
+    full_name: "", username: "", role_title: "", company: "", plan: "starter", credits: 0,
     bio: "Building tools and communities for indie creators. Coffee, code, and clean design.",
     show_earnings: false, earnings: 18400,
   });
@@ -130,7 +130,7 @@ function ProfilePage() {
   if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="size-5 animate-spin text-primary" /></div>;
 
   const displayName = profile.full_name || "Your profile";
-  const handle = "@" + (profile.full_name || user?.email || "you").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 18);
+  const handle = "@" + (profile.username || profile.full_name || user?.email || "you").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 24);
   const initials = (profile.full_name || user?.email || "?").trim()[0].toUpperCase();
   const joinDate = user ? new Date(user.created_at).toLocaleDateString(undefined, { month: "long", year: "numeric" }) : "January 2026";
 
@@ -147,65 +147,64 @@ function ProfilePage() {
           ← Back to dashboard
         </Link>
 
-        {/* Hero / identity card — centered, black background */}
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-          className="mt-6 rounded-3xl overflow-hidden relative bg-black border border-white/10">
-          <div className="px-6 sm:px-8 py-10 sm:py-12 flex flex-col items-center text-center">
-            <div className="relative">
-              <div className="size-24 sm:size-28 rounded-2xl bg-gradient-to-br from-primary to-secondary grid place-items-center text-4xl font-semibold text-black shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.6)] ring-4 ring-black">
+        {/* Hero / identity card — compact, professional, all-black */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
+          className="mt-6 rounded-2xl overflow-hidden relative bg-black border border-white/10">
+          <div className="px-5 sm:px-7 py-6 sm:py-7 grid sm:grid-cols-[auto_1fr_auto] items-center gap-5">
+            {/* Avatar */}
+            <div className="relative justify-self-center sm:justify-self-start">
+              <div className="size-16 sm:size-20 rounded-2xl bg-gradient-to-br from-primary to-secondary grid place-items-center text-2xl sm:text-3xl font-semibold text-black ring-2 ring-white/10">
                 {initials}
               </div>
-              <button className="absolute -bottom-1.5 -right-1.5 size-8 rounded-full bg-black border border-white/15 grid place-items-center hover:border-primary/40 transition" aria-label="Change avatar">
-                <Camera className="size-3.5" />
+              <button className="absolute -bottom-1 -right-1 size-7 rounded-full bg-black border border-white/15 grid place-items-center hover:border-primary/40 transition" aria-label="Change avatar">
+                <Camera className="size-3" />
               </button>
             </div>
 
-            <div className="mt-5 flex items-center gap-2 flex-wrap justify-center">
-              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">{displayName}</h1>
-              <BadgeCheck className="size-5 text-primary fill-primary/20" aria-label="Verified" />
-              <RoleBadge role={role} size="md" />
-              <span className="text-[10px] uppercase tracking-widest px-2 py-1 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/20 inline-flex items-center gap-1">
-                <Crown className="size-3" /> Creator
-              </span>
-            </div>
-
-            <div className="mt-1.5 text-sm text-muted-foreground">
-              {handle} · <span className="text-foreground/80">{profile.role_title || "—"}</span>{profile.company && ` · ${profile.company}`}
-            </div>
-
-            {profile.bio && (
-              <p className="mt-3 text-sm text-foreground/80 max-w-xl">{profile.bio}</p>
-            )}
-
-            <div className="mt-3 text-[11px] text-muted-foreground inline-flex items-center gap-1.5">
-              <Calendar className="size-3" /> Joined {joinDate}
-            </div>
-
-            {profile.show_earnings && (
-              <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-emerald-400/10 border border-emerald-400/20 text-emerald-300 px-3.5 py-1.5 text-xs font-medium">
-                <DollarSign className="size-3.5" /> ${profile.earnings.toLocaleString()} earned
+            {/* Identity */}
+            <div className="min-w-0 text-center sm:text-left">
+              <div className="flex items-center gap-2 flex-wrap justify-center sm:justify-start">
+                <h1 className="text-lg sm:text-xl font-semibold tracking-tight truncate">{displayName}</h1>
+                <BadgeCheck className="size-4 text-primary fill-primary/20 shrink-0" aria-label="Verified" />
+                <RoleBadge role={role} size="sm" />
+                {profile.show_earnings && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-400/10 border border-emerald-400/20 text-emerald-300 px-2 py-0.5 text-[10px] font-medium">
+                    <DollarSign className="size-3" /> ${profile.earnings.toLocaleString()} earned
+                  </span>
+                )}
               </div>
-            )}
-
-            {/* Own-profile actions */}
-            <div className="mt-6 flex flex-wrap gap-2 justify-center">
-              <button onClick={() => setTab("general")}
-                className="rounded-full bg-white text-black px-4 py-2 text-sm font-medium inline-flex items-center gap-1.5 hover:shadow-[0_0_30px_-4px_oklch(0.86_0.16_200_/0.5)] transition">
-                <Pencil className="size-3.5" /> Edit profile
-              </button>
-              <button onClick={shareProfile} className="rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-sm inline-flex items-center gap-1.5 hover:border-primary/40 transition">
-                <Share2 className="size-3.5" /> Share
-              </button>
-              <button onClick={copyLink} className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-2 text-sm inline-flex items-center gap-1.5 hover:border-primary/40 transition" aria-label="Copy link">
-                <Copy className="size-3.5" />
-              </button>
+              <div className="mt-1 text-xs text-muted-foreground truncate">
+                {handle}{profile.role_title ? ` · ${profile.role_title}` : ""}{profile.company ? ` · ${profile.company}` : ""}
+              </div>
+              {profile.bio && (
+                <p className="mt-2 text-xs sm:text-sm text-foreground/80 line-clamp-2 max-w-xl mx-auto sm:mx-0">{profile.bio}</p>
+              )}
+              <div className="mt-2 text-[11px] text-muted-foreground inline-flex items-center gap-1.5">
+                <Calendar className="size-3" /> Joined {joinDate}
+              </div>
             </div>
 
-            {/* Stats — clickable */}
-            <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3 w-full max-w-md">
-              <StatButton label="Followers" value="12.4k" onClick={() => setListOpen("followers")} />
-              <StatButton label="Following" value="284" onClick={() => setListOpen("following")} />
-              <StatButton label="Products" value="9" onClick={() => setListOpen("products")} />
+            {/* Actions + stats */}
+            <div className="flex flex-col gap-3 items-center sm:items-end">
+              <div className="flex gap-1.5">
+                <button onClick={() => setTab("general")}
+                  className="rounded-full bg-white text-black px-3.5 py-1.5 text-xs font-medium inline-flex items-center gap-1.5 hover:shadow-[0_0_24px_-6px_oklch(0.86_0.16_200_/0.6)] transition">
+                  <Pencil className="size-3" /> Edit profile
+                </button>
+                <button onClick={shareProfile} className="rounded-full border border-white/15 bg-white/[0.04] size-8 grid place-items-center hover:border-primary/40 transition" aria-label="Share">
+                  <Share2 className="size-3.5" />
+                </button>
+                <button onClick={copyLink} className="rounded-full border border-white/15 bg-white/[0.04] size-8 grid place-items-center hover:border-primary/40 transition" aria-label="Copy link">
+                  <Copy className="size-3.5" />
+                </button>
+              </div>
+              <div className="flex items-center gap-1 text-xs">
+                <MiniStat label="Followers" value="12.4k" onClick={() => setListOpen("followers")} />
+                <span className="text-white/10">·</span>
+                <MiniStat label="Following" value="284" onClick={() => setListOpen("following")} />
+                <span className="text-white/10">·</span>
+                <MiniStat label="Products" value="9" onClick={() => setListOpen("products")} />
+              </div>
             </div>
           </div>
         </motion.div>
@@ -214,6 +213,7 @@ function ProfilePage() {
         <div className="mt-6 flex items-center gap-1 border-b border-white/[0.06] overflow-x-auto">
           {([
             ["general", "General"],
+            ["balance", "Balance"],
             ["tickets", `Tickets${tickets.length ? ` · ${tickets.length}` : ""}`],
             ["security", "Security"], ["billing", "Billing"],
             ["notifications", "Notifications"], ["api", "API Keys"],
@@ -234,6 +234,7 @@ function ProfilePage() {
               <Card title="Personal information" className="lg:col-span-2">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label="Full name" value={profile.full_name} onChange={(v) => setProfile({ ...profile, full_name: v })} />
+                  <Field label="Username" value={profile.username} onChange={(v) => setProfile({ ...profile, username: v.toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 24) })} prefix="@" />
                   <Field label="Role / Title" value={profile.role_title} onChange={(v) => setProfile({ ...profile, role_title: v })} />
                   <Field label="Company" value={profile.company} onChange={(v) => setProfile({ ...profile, company: v })} />
                   <Field label="Email" value={user?.email ?? "demo@nexus.com"} readOnly />
@@ -298,6 +299,8 @@ function ProfilePage() {
               </div>
             </motion.div>
           )}
+
+          {tab === "balance" && <BalanceTab />}
 
 
           {tab === "tickets" && (
@@ -815,15 +818,18 @@ function Card({ title, desc, children, className = "", action }: { title: string
   );
 }
 
-function Field({ label, value, onChange, readOnly, type = "text" }: { label: string; value: string; onChange?: (v: string) => void; readOnly?: boolean; type?: string }) {
+function Field({ label, value, onChange, readOnly, type = "text", prefix }: { label: string; value: string; onChange?: (v: string) => void; readOnly?: boolean; type?: string; prefix?: string }) {
   return (
     <label className="block">
       <span className="text-[11px] uppercase tracking-widest text-muted-foreground">{label}</span>
-      <input
-        type={type} value={value} readOnly={readOnly}
-        onChange={(e) => onChange?.(e.target.value)}
-        className={`mt-1.5 w-full rounded-xl bg-[oklch(0.06_0.008_220)] border border-white/10 px-4 py-2.5 text-sm focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 ${readOnly ? "text-muted-foreground cursor-not-allowed" : ""}`}
-      />
+      <div className={`mt-1.5 flex items-center rounded-xl bg-[oklch(0.06_0.008_220)] border border-white/10 focus-within:border-primary/60 focus-within:ring-2 focus-within:ring-primary/20 ${readOnly ? "opacity-80" : ""}`}>
+        {prefix && <span className="pl-3 pr-1 text-sm text-muted-foreground select-none">{prefix}</span>}
+        <input
+          type={type} value={value} readOnly={readOnly}
+          onChange={(e) => onChange?.(e.target.value)}
+          className={`flex-1 bg-transparent ${prefix ? "pl-0" : "pl-4"} pr-4 py-2.5 text-sm focus:outline-none ${readOnly ? "text-muted-foreground cursor-not-allowed" : ""}`}
+        />
+      </div>
     </label>
   );
 }
@@ -847,3 +853,191 @@ function Toggle({ defaultOn = false, onChange }: { defaultOn?: boolean; onChange
   );
 }
 
+
+function MiniStat({ label, value, onClick }: { label: string; value: string; onClick: () => void }) {
+  return (
+    <button onClick={onClick} className="px-2 py-1 rounded-lg hover:bg-white/[0.05] transition text-left">
+      <span className="font-semibold text-foreground">{value}</span>
+      <span className="ml-1 text-[10px] uppercase tracking-widest text-muted-foreground">{label}</span>
+    </button>
+  );
+}
+
+/* =============================== BALANCE TAB =============================== */
+function BalanceTab() {
+  const [showVerify, setShowVerify] = useState(true);
+  const balances = [
+    { code: "USD", label: "US Dollar", flag: "🇺🇸", amount: 184.32 },
+    { code: "EUR", label: "Euro", flag: "🇪🇺", amount: 42.10 },
+    { code: "GBP", label: "Pound Sterling", flag: "🇬🇧", amount: 0 },
+  ];
+  const business = [
+    { name: "Apex Studio", emoji: "🧰", amount: 1240.55, grad: "from-violet-500/60 to-fuchsia-500/40" },
+    { name: "Indie Builders Club", emoji: "🚀", amount: 318.00, grad: "from-sky-500/60 to-cyan-400/40" },
+    { name: "Brand Lab", emoji: "🎨", amount: 0, grad: "from-rose-500/60 to-amber-400/40" },
+  ];
+  const tx = [
+    { kind: "in", from: "Stripe payout · Apex Studio", when: "Today · 09:14", amount: 240.00 },
+    { kind: "out", from: "Withdraw to Wise", when: "Jun 09 · 16:02", amount: -180.00 },
+    { kind: "in", from: "Product sale · Brand Lab Guide", when: "Jun 08 · 11:48", amount: 19.00 },
+    { kind: "move", from: "Move USD → EUR", when: "Jun 05 · 08:21", amount: -50.00 },
+    { kind: "in", from: "Affiliate commission", when: "Jun 02 · 14:55", amount: 32.40 },
+  ];
+  const total = balances.reduce((s, b) => s + b.amount, 0) + business.reduce((s, b) => s + b.amount, 0);
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="grid lg:grid-cols-[1fr_340px] gap-4">
+      <div className="space-y-4">
+        {/* Total balance */}
+        <div className="rounded-3xl bg-black border border-white/10 p-6 sm:p-8">
+          <div className="text-xs uppercase tracking-widest text-muted-foreground">Total balance</div>
+          <div className="mt-2 text-4xl sm:text-5xl font-semibold tracking-tight">${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <button className="rounded-xl bg-primary text-primary-foreground px-4 py-2.5 text-sm font-medium inline-flex items-center gap-2 hover:opacity-90 transition">
+              <Plus className="size-4" /> Add money
+            </button>
+            <button className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm inline-flex items-center gap-2 hover:border-primary/40 transition">
+              <ArrowUpRight className="size-4" /> Withdraw
+            </button>
+            <button className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm inline-flex items-center gap-2 hover:border-primary/40 transition">
+              <ArrowLeftRight className="size-4" /> Move
+            </button>
+            <button className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm inline-flex items-center gap-2 hover:border-primary/40 transition">
+              <Download className="size-4" /> Statement
+            </button>
+          </div>
+        </div>
+
+        {/* Verify identity */}
+        {showVerify && (
+          <div className="rounded-2xl bg-black border border-white/10 p-5 flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="size-10 rounded-xl glass grid place-items-center text-amber-300"><ShieldQuestion className="size-4" /></div>
+              <div className="min-w-0">
+                <div className="text-sm font-medium">Verify your identity</div>
+                <div className="text-[11px] text-muted-foreground">Complete verification to withdraw your balance.</div>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={() => setShowVerify(false)} className="text-xs text-muted-foreground hover:text-white px-3">Later</button>
+              <button className="rounded-lg bg-primary text-primary-foreground px-4 py-2 text-xs font-medium">Verify</button>
+            </div>
+          </div>
+        )}
+
+        {/* Wallets */}
+        <Card title="Wallets" desc="Balances across currencies." action={<button className="text-xs text-primary hover:underline inline-flex items-center gap-1"><Plus className="size-3" /> Add currency</button>}>
+          <div className="divide-y divide-white/[0.04]">
+            {balances.map((b) => (
+              <div key={b.code} className="flex items-center justify-between py-3">
+                <div className="flex items-center gap-3">
+                  <div className="size-10 rounded-full glass grid place-items-center text-lg">{b.flag}</div>
+                  <div>
+                    <div className="text-sm font-medium">{b.code}</div>
+                    <div className="text-[11px] text-muted-foreground">{b.label}</div>
+                  </div>
+                </div>
+                <div className="text-sm font-mono">${b.amount.toFixed(2)}</div>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Business balances */}
+        <Card title="Business balances" desc="Earnings per store/community.">
+          <div className="grid sm:grid-cols-3 gap-3">
+            {business.map((b) => (
+              <div key={b.name} className="rounded-2xl glass p-4 hover:border-primary/30 transition">
+                <div className={`size-10 rounded-xl bg-gradient-to-br ${b.grad} grid place-items-center text-lg`}>{b.emoji}</div>
+                <div className="mt-3 text-sm font-medium truncate">{b.name}</div>
+                <div className="mt-1 text-base font-semibold">${b.amount.toFixed(2)}</div>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Activity */}
+        <Card title="Recent activity" desc="Money in, out, and moves." action={<button className="text-xs text-primary hover:underline">View all</button>}>
+          <div className="divide-y divide-white/[0.04]">
+            {tx.map((t, i) => {
+              const isIn = t.kind === "in";
+              const Icon = isIn ? ArrowDownLeft : t.kind === "out" ? ArrowUpRight : ArrowLeftRight;
+              const color = isIn ? "text-emerald-300 bg-emerald-400/10" : t.kind === "out" ? "text-rose-300 bg-rose-400/10" : "text-sky-300 bg-sky-400/10";
+              return (
+                <div key={i} className="flex items-center justify-between py-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className={`size-9 rounded-xl grid place-items-center ${color}`}><Icon className="size-4" /></div>
+                    <div className="min-w-0">
+                      <div className="text-sm truncate">{t.from}</div>
+                      <div className="text-[11px] text-muted-foreground">{t.when}</div>
+                    </div>
+                  </div>
+                  <div className={`text-sm font-mono ${isIn ? "text-emerald-300" : t.kind === "out" ? "text-rose-300" : "text-foreground"}`}>
+                    {t.amount > 0 ? "+" : ""}${Math.abs(t.amount).toFixed(2)}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      </div>
+
+      {/* Sidebar */}
+      <div className="space-y-4">
+        <div className="rounded-3xl bg-black border border-white/10 p-6">
+          <div className="flex items-center justify-between">
+            <div className="text-sm font-medium">Total earned</div>
+            <button className="text-xs text-muted-foreground hover:text-white inline-flex items-center gap-1"><Share2 className="size-3" /> Share</button>
+          </div>
+          <div className="mt-2 text-3xl font-semibold text-emerald-300">$18,400.05</div>
+          <div className="mt-1 text-[11px] text-muted-foreground">All time, across all stores.</div>
+          <div className="mt-4 grid grid-cols-2 gap-2 text-center">
+            <div className="rounded-xl glass p-3">
+              <div className="text-xs text-muted-foreground">This month</div>
+              <div className="mt-1 text-sm font-semibold">$1,240</div>
+            </div>
+            <div className="rounded-xl glass p-3">
+              <div className="text-xs text-muted-foreground">Pending</div>
+              <div className="mt-1 text-sm font-semibold">$84.20</div>
+            </div>
+          </div>
+        </div>
+
+        <Card title="Ways to earn" desc="Grow your balance.">
+          <div className="space-y-1.5">
+            {[
+              { icon: Plus, l: "Add money" },
+              { icon: Sparkles, l: "Become an affiliate" },
+              { icon: Wallet, l: "Start a business" },
+              { icon: Banknote, l: "Connect payouts" },
+            ].map((a) => (
+              <button key={a.l} className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/[0.05] transition text-left">
+                <div className="size-8 rounded-lg glass grid place-items-center"><a.icon className="size-3.5 text-primary" /></div>
+                <span className="text-sm flex-1">{a.l}</span>
+                <ArrowUpRight className="size-3.5 text-muted-foreground" />
+              </button>
+            ))}
+          </div>
+        </Card>
+
+        <Card title="Payout methods">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between p-3 rounded-xl glass">
+              <div className="flex items-center gap-3">
+                <div className="size-9 rounded-lg glass grid place-items-center"><CreditCard className="size-4 text-primary" /></div>
+                <div>
+                  <div className="text-sm">Visa ···· 4242</div>
+                  <div className="text-[11px] text-muted-foreground">Default</div>
+                </div>
+              </div>
+              <CheckCircle2 className="size-4 text-emerald-300" />
+            </div>
+            <button className="w-full rounded-xl glass px-3 py-2.5 text-xs hover:border-primary/40 transition inline-flex items-center justify-center gap-1.5">
+              <Plus className="size-3.5" /> Add method
+            </button>
+          </div>
+        </Card>
+      </div>
+    </motion.div>
+  );
+}
