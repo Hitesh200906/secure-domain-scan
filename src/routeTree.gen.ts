@@ -26,7 +26,6 @@ import { Route as BusinessIndexRouteImport } from './routes/business.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as BusinessStoreRouteImport } from './routes/business.store'
 import { Route as BusinessProductsRouteImport } from './routes/business.products'
-import { Route as BusinessPlaceholderRouteImport } from './routes/business.placeholder'
 import { Route as BusinessOrdersRouteImport } from './routes/business.orders'
 import { Route as BusinessCreateRouteImport } from './routes/business.create'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
@@ -122,11 +121,6 @@ const BusinessProductsRoute = BusinessProductsRouteImport.update({
   path: '/products',
   getParentRoute: () => BusinessRoute,
 } as any)
-const BusinessPlaceholderRoute = BusinessPlaceholderRouteImport.update({
-  id: '/placeholder',
-  path: '/placeholder',
-  getParentRoute: () => BusinessRoute,
-} as any)
 const BusinessOrdersRoute = BusinessOrdersRouteImport.update({
   id: '/orders',
   path: '/orders',
@@ -200,7 +194,6 @@ export interface FileRoutesByFullPath {
   '/admin/users': typeof AdminUsersRoute
   '/business/create': typeof BusinessCreateRoute
   '/business/orders': typeof BusinessOrdersRoute
-  '/business/placeholder': typeof BusinessPlaceholderRoute
   '/business/products': typeof BusinessProductsRoute
   '/business/store': typeof BusinessStoreRoute
   '/admin/': typeof AdminIndexRoute
@@ -227,7 +220,6 @@ export interface FileRoutesByTo {
   '/admin/users': typeof AdminUsersRoute
   '/business/create': typeof BusinessCreateRoute
   '/business/orders': typeof BusinessOrdersRoute
-  '/business/placeholder': typeof BusinessPlaceholderRoute
   '/business/products': typeof BusinessProductsRoute
   '/business/store': typeof BusinessStoreRoute
   '/admin': typeof AdminIndexRoute
@@ -258,7 +250,6 @@ export interface FileRoutesById {
   '/admin/users': typeof AdminUsersRoute
   '/business/create': typeof BusinessCreateRoute
   '/business/orders': typeof BusinessOrdersRoute
-  '/business/placeholder': typeof BusinessPlaceholderRoute
   '/business/products': typeof BusinessProductsRoute
   '/business/store': typeof BusinessStoreRoute
   '/admin/': typeof AdminIndexRoute
@@ -289,7 +280,6 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/business/create'
     | '/business/orders'
-    | '/business/placeholder'
     | '/business/products'
     | '/business/store'
     | '/admin/'
@@ -316,7 +306,6 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/business/create'
     | '/business/orders'
-    | '/business/placeholder'
     | '/business/products'
     | '/business/store'
     | '/admin'
@@ -346,7 +335,6 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/business/create'
     | '/business/orders'
-    | '/business/placeholder'
     | '/business/products'
     | '/business/store'
     | '/admin/'
@@ -491,13 +479,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BusinessProductsRouteImport
       parentRoute: typeof BusinessRoute
     }
-    '/business/placeholder': {
-      id: '/business/placeholder'
-      path: '/placeholder'
-      fullPath: '/business/placeholder'
-      preLoaderRoute: typeof BusinessPlaceholderRouteImport
-      parentRoute: typeof BusinessRoute
-    }
     '/business/orders': {
       id: '/business/orders'
       path: '/orders'
@@ -610,7 +591,6 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 interface BusinessRouteChildren {
   BusinessCreateRoute: typeof BusinessCreateRoute
   BusinessOrdersRoute: typeof BusinessOrdersRoute
-  BusinessPlaceholderRoute: typeof BusinessPlaceholderRoute
   BusinessProductsRoute: typeof BusinessProductsRoute
   BusinessStoreRoute: typeof BusinessStoreRoute
   BusinessIndexRoute: typeof BusinessIndexRoute
@@ -619,7 +599,6 @@ interface BusinessRouteChildren {
 const BusinessRouteChildren: BusinessRouteChildren = {
   BusinessCreateRoute: BusinessCreateRoute,
   BusinessOrdersRoute: BusinessOrdersRoute,
-  BusinessPlaceholderRoute: BusinessPlaceholderRoute,
   BusinessProductsRoute: BusinessProductsRoute,
   BusinessStoreRoute: BusinessStoreRoute,
   BusinessIndexRoute: BusinessIndexRoute,
@@ -647,3 +626,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
