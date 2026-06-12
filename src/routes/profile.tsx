@@ -818,15 +818,18 @@ function Card({ title, desc, children, className = "", action }: { title: string
   );
 }
 
-function Field({ label, value, onChange, readOnly, type = "text" }: { label: string; value: string; onChange?: (v: string) => void; readOnly?: boolean; type?: string }) {
+function Field({ label, value, onChange, readOnly, type = "text", prefix }: { label: string; value: string; onChange?: (v: string) => void; readOnly?: boolean; type?: string; prefix?: string }) {
   return (
     <label className="block">
       <span className="text-[11px] uppercase tracking-widest text-muted-foreground">{label}</span>
-      <input
-        type={type} value={value} readOnly={readOnly}
-        onChange={(e) => onChange?.(e.target.value)}
-        className={`mt-1.5 w-full rounded-xl bg-[oklch(0.06_0.008_220)] border border-white/10 px-4 py-2.5 text-sm focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 ${readOnly ? "text-muted-foreground cursor-not-allowed" : ""}`}
-      />
+      <div className={`mt-1.5 flex items-center rounded-xl bg-[oklch(0.06_0.008_220)] border border-white/10 focus-within:border-primary/60 focus-within:ring-2 focus-within:ring-primary/20 ${readOnly ? "opacity-80" : ""}`}>
+        {prefix && <span className="pl-3 pr-1 text-sm text-muted-foreground select-none">{prefix}</span>}
+        <input
+          type={type} value={value} readOnly={readOnly}
+          onChange={(e) => onChange?.(e.target.value)}
+          className={`flex-1 bg-transparent ${prefix ? "pl-0" : "pl-4"} pr-4 py-2.5 text-sm focus:outline-none ${readOnly ? "text-muted-foreground cursor-not-allowed" : ""}`}
+        />
+      </div>
     </label>
   );
 }
