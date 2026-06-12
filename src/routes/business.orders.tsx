@@ -1,3 +1,4 @@
+import { useStore } from "@/lib/store-context";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { getStoreOrders, type Order, type Store } from "@/lib/business";

@@ -1,3 +1,4 @@
+import { useStore } from "@/lib/store-context";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { DollarSign, ShoppingBag, Users, TrendingUp, Package, Wallet, Bell, Plus } from "lucide-react";
