@@ -79,7 +79,7 @@ export function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.6 }}
-          className="mt-20 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-xs uppercase tracking-[0.2em] text-muted-foreground/70"
+          className="mt-14 sm:mt-20 flex flex-wrap items-center justify-center gap-x-5 sm:gap-x-10 gap-y-3 text-[10px] sm:text-xs uppercase tracking-[0.2em] text-muted-foreground/70"
         >
           <span>SOC 2 Type II</span>
           <span>·</span>
