@@ -6,6 +6,22 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
+import chatLogo from "@/assets/store-apps/chat.png";
+import announcementsLogo from "@/assets/store-apps/announcements.png";
+import forumLogo from "@/assets/store-apps/forum.png";
+import faqLogo from "@/assets/store-apps/faq.png";
+import reviewsLogo from "@/assets/store-apps/reviews.png";
+import supportLogo from "@/assets/store-apps/support.png";
+import resourcesLogo from "@/assets/store-apps/resources.png";
+import downloadsLogo from "@/assets/store-apps/downloads.png";
+import changelogLogo from "@/assets/store-apps/changelog.png";
+import featureRequestsLogo from "@/assets/store-apps/feature_requests.png";
+import pollsLogo from "@/assets/store-apps/polls.png";
+import eventsLogo from "@/assets/store-apps/events.png";
+import showcaseLogo from "@/assets/store-apps/showcase.png";
+import membersLogo from "@/assets/store-apps/members.png";
+import aboutLogo from "@/assets/store-apps/about.png";
+
 export type AppKey =
   | "chat" | "announcements" | "forum" | "faq" | "reviews"
   | "support" | "resources" | "downloads" | "changelog"
@@ -17,25 +33,26 @@ export type AppDef = {
   description: string;
   icon: LucideIcon;
   color: string; // tailwind bg gradient stops
+  logo: string;  // dedicated app logo (square PNG)
   default?: boolean;
 };
 
 export const APP_CATALOG: AppDef[] = [
-  { key: "chat", name: "Chat", description: "Community chat, member discussions, file sharing.", icon: MessagesSquare, color: "from-orange-500 to-rose-500", default: true },
-  { key: "announcements", name: "Announcements", description: "Updates, product launches and important notices.", icon: Megaphone, color: "from-amber-400 to-orange-500", default: true },
-  { key: "forum", name: "Forum", description: "Categories, topics, replies and upvotes.", icon: MessageCircle, color: "from-blue-500 to-indigo-500", default: true },
-  { key: "faq", name: "FAQ", description: "Searchable frequently asked questions.", icon: HelpCircle, color: "from-emerald-500 to-teal-500", default: true },
-  { key: "reviews", name: "Reviews", description: "Ratings and written reviews from members.", icon: Star, color: "from-yellow-400 to-amber-500", default: true },
-  { key: "support", name: "Support", description: "Contact support and submit help requests.", icon: LifeBuoy, color: "from-sky-500 to-cyan-500" },
-  { key: "resources", name: "Resources", description: "Useful links, docs and external resources.", icon: BookOpen, color: "from-violet-500 to-fuchsia-500" },
-  { key: "downloads", name: "Downloads", description: "Product files, templates and assets.", icon: Download, color: "from-green-500 to-emerald-500" },
-  { key: "changelog", name: "Changelog", description: "Product updates and version history.", icon: History, color: "from-slate-400 to-slate-600" },
-  { key: "feature_requests", name: "Feature Requests", description: "Suggest features and vote on them.", icon: Lightbulb, color: "from-yellow-500 to-orange-500" },
-  { key: "polls", name: "Polls", description: "Community voting and surveys.", icon: BarChart3, color: "from-pink-500 to-rose-500" },
-  { key: "events", name: "Events", description: "Community events, workshops and webinars.", icon: Calendar, color: "from-red-500 to-pink-500" },
-  { key: "showcase", name: "Showcase", description: "Customer projects, stories, portfolio submissions.", icon: Sparkles, color: "from-purple-500 to-indigo-500" },
-  { key: "members", name: "Members", description: "Community member list, roles and permissions.", icon: Users, color: "from-cyan-500 to-blue-500" },
-  { key: "about", name: "About", description: "Store information, rules and contact details.", icon: Info, color: "from-zinc-500 to-zinc-700" },
+  { key: "chat", name: "Chat", description: "Community chat, member discussions, file sharing.", icon: MessagesSquare, color: "from-orange-500 to-rose-500", logo: chatLogo, default: true },
+  { key: "announcements", name: "Announcements", description: "Updates, product launches and important notices.", icon: Megaphone, color: "from-amber-400 to-orange-500", logo: announcementsLogo, default: true },
+  { key: "forum", name: "Forum", description: "Categories, topics, replies and upvotes.", icon: MessageCircle, color: "from-blue-500 to-indigo-500", logo: forumLogo, default: true },
+  { key: "faq", name: "FAQ", description: "Searchable frequently asked questions.", icon: HelpCircle, color: "from-emerald-500 to-teal-500", logo: faqLogo, default: true },
+  { key: "reviews", name: "Reviews", description: "Ratings and written reviews from members.", icon: Star, color: "from-yellow-400 to-amber-500", logo: reviewsLogo, default: true },
+  { key: "support", name: "Support", description: "Contact support and submit help requests.", icon: LifeBuoy, color: "from-sky-500 to-cyan-500", logo: supportLogo },
+  { key: "resources", name: "Resources", description: "Useful links, docs and external resources.", icon: BookOpen, color: "from-violet-500 to-fuchsia-500", logo: resourcesLogo },
+  { key: "downloads", name: "Downloads", description: "Product files, templates and assets.", icon: Download, color: "from-green-500 to-emerald-500", logo: downloadsLogo },
+  { key: "changelog", name: "Changelog", description: "Product updates and version history.", icon: History, color: "from-slate-400 to-slate-600", logo: changelogLogo },
+  { key: "feature_requests", name: "Feature Requests", description: "Suggest features and vote on them.", icon: Lightbulb, color: "from-yellow-500 to-orange-500", logo: featureRequestsLogo },
+  { key: "polls", name: "Polls", description: "Community voting and surveys.", icon: BarChart3, color: "from-pink-500 to-rose-500", logo: pollsLogo },
+  { key: "events", name: "Events", description: "Community events, workshops and webinars.", icon: Calendar, color: "from-red-500 to-pink-500", logo: eventsLogo },
+  { key: "showcase", name: "Showcase", description: "Customer projects, stories, portfolio submissions.", icon: Sparkles, color: "from-purple-500 to-indigo-500", logo: showcaseLogo },
+  { key: "members", name: "Members", description: "Community member list, roles and permissions.", icon: Users, color: "from-cyan-500 to-blue-500", logo: membersLogo },
+  { key: "about", name: "About", description: "Store information, rules and contact details.", icon: Info, color: "from-zinc-500 to-zinc-700", logo: aboutLogo },
 ];
 
 export const APP_MAP: Record<string, AppDef> = Object.fromEntries(APP_CATALOG.map((a) => [a.key, a]));
