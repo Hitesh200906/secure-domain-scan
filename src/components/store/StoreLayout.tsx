@@ -236,12 +236,9 @@ function HomeOverview({ store, apps, onOpenApp }: { store: Store; apps: StoreApp
             {apps.map(a => {
               const def = APP_MAP[a.app_key];
               if (!def) return null;
-              const Icon = def.icon;
               return (
                 <button key={a.id} onClick={() => onOpenApp(a.app_key)} className="text-left rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition p-4 flex items-center gap-3">
-                  <div className={`size-10 rounded-xl grid place-items-center bg-gradient-to-br ${def.color}`}>
-                    <Icon className="size-5 text-white" />
-                  </div>
+                  <img src={def.logo} alt="" loading="lazy" width={40} height={40} className="size-10 rounded-xl object-contain shrink-0" />
                   <div className="min-w-0">
                     <div className="font-medium truncate">{def.name}</div>
                     <div className="text-[11px] text-muted-foreground truncate">{def.description}</div>
