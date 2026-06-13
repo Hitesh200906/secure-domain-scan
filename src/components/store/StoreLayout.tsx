@@ -311,7 +311,7 @@ function HomeOverview({ store, apps, onOpenApp }: { store: Store; apps: StoreApp
                 <div className="mt-3 flex items-center justify-between">
                   <div className="flex items-center gap-1 text-sky-400">
                     <ComposerBtn><ImageIcon className="size-5" /></ComposerBtn>
-                    <ComposerBtn><span className="text-[10px] font-bold tracking-wider px-1.5 py-0.5 border-2 border-current rounded">GIF</span></ComposerBtn>
+                    <ComposerBtn><span className="size-5 grid place-items-center text-[9px] font-bold tracking-wider border-[1.75px] border-current rounded-[5px] leading-none">GIF</span></ComposerBtn>
                     <ComposerBtn><Smile className="size-5" /></ComposerBtn>
                     <ComposerBtn><PollIcon className="size-5" /></ComposerBtn>
                     <ComposerBtn><DollarSign className="size-5" /></ComposerBtn>
