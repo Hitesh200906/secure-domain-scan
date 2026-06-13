@@ -39,6 +39,7 @@ export function hasAdminPasscode(): boolean {
 }
 
 export function verifyAdminPasscode(code: string): boolean {
+  if (!ADMIN_PASSCODE) return false;
   if (code === ADMIN_PASSCODE) {
     try {
       sessionStorage.setItem(PASSCODE_KEY, "1");
