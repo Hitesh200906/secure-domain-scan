@@ -211,48 +211,172 @@ function IconBtn({ children, title }: { children: React.ReactNode; title?: strin
 function HomeOverview({ store, apps, onOpenApp }: { store: Store; apps: StoreApp[]; onOpenApp: (k: AppKey) => void }) {
   const theme = store.theme_color ?? "#7c3aed";
   const accent = store.accent_color ?? "#22d3ee";
+  const [tab, setTab] = useState<"home" | "chats" | "apps" | "products" | "about">("home");
+  const [post, setPost] = useState("");
+
+  const TABS: { key: typeof tab; label: string }[] = [
+    { key: "home", label: "Home" },
+    { key: "chats", label: "Chats" },
+    { key: "apps", label: "Apps" },
+    { key: "products", label: "Products" },
+    { key: "about", label: "About" },
+  ];
+
   return (
-    <div className="space-y-8">
+    <div className="-mx-6 sm:-mx-8 -mt-6 sm:-mt-8">
       {/* Banner */}
-      <div className="relative h-56 sm:h-64 rounded-3xl overflow-hidden border border-white/10">
-        {store.banner_url ? <img src={store.banner_url} alt="" className="absolute inset-0 size-full object-cover" /> : <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${theme}, ${accent})` }} />}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-        <div className="absolute bottom-4 left-4 right-4 flex items-end gap-4">
-          <div className="size-16 rounded-2xl ring-2 ring-background overflow-hidden shrink-0" style={{ background: `linear-gradient(135deg, ${theme}, ${accent})` }}>
-            {store.logo_url ? <img src={store.logo_url} alt={store.name} className="size-full object-cover" /> : <div className="size-full grid place-items-center text-xl font-bold text-white">{store.name[0]?.toUpperCase()}</div>}
-          </div>
-          <div className="min-w-0">
-            <div className="text-xl font-bold truncate">{store.name}</div>
-            {store.description && <div className="text-xs text-white/80 truncate">{store.description}</div>}
-          </div>
-        </div>
+      <div className="relative h-64 sm:h-80 overflow-hidden">
+        {store.banner_url
+          ? <img src={store.banner_url} alt="" className="absolute inset-0 size-full object-cover" />
+          : <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${theme}, ${accent})` }} />}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
       </div>
 
-      {/* Apps quick-grid */}
-      <section>
-        <div className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Apps in this store</div>
-        {apps.length === 0 ? (
-          <div className="text-sm text-muted-foreground">No apps installed yet.</div>
-        ) : (
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
-            {apps.map(a => {
-              const def = APP_MAP[a.app_key];
-              if (!def) return null;
-              return (
-                <button key={a.id} onClick={() => onOpenApp(a.app_key)} className="text-left rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition p-4 flex items-center gap-3">
-                  <img src={def.logo} alt="" loading="lazy" width={40} height={40} className="size-10 rounded-xl object-contain shrink-0" />
-                  <div className="min-w-0">
-                    <div className="font-medium truncate">{def.name}</div>
-                    <div className="text-[11px] text-muted-foreground truncate">{def.description}</div>
-                  </div>
-                </button>
-              );
-            })}
+      <div className="px-6 sm:px-10 max-w-5xl">
+        {/* Logo overlapping banner */}
+        <div className="-mt-16 mb-5">
+          <div className="size-28 rounded-3xl ring-4 ring-background overflow-hidden shadow-2xl" style={{ background: `linear-gradient(135deg, ${theme}, ${accent})` }}>
+            {store.logo_url
+              ? <img src={store.logo_url} alt={store.name} className="size-full object-cover" />
+              : <div className="size-full grid place-items-center text-3xl font-bold text-white">{store.name[0]?.toUpperCase()}</div>}
           </div>
-        )}
-      </section>
+        </div>
+
+        {/* Title row */}
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div className="min-w-0">
+            <h1 className="text-3xl font-bold flex items-center gap-2">
+              {store.name}
+              {store.verified && <BadgeCheck className="size-6 text-sky-400" />}
+            </h1>
+            {store.description && <p className="mt-2 text-muted-foreground max-w-2xl">{store.description}</p>}
+          </div>
+          <div className="flex items-center gap-2">
+            <IconBtn title="Invite"><UserPlus className="size-4" /></IconBtn>
+            <IconBtn title="Notifications"><Bell className="size-4" /></IconBtn>
+            <IconBtn title="More"><MoreHorizontal className="size-4" /></IconBtn>
+            <button className="inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-semibold">
+              Add team <Plus className="size-3.5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Meta row */}
+        <div className="mt-4 flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
+          <span className="inline-flex items-center gap-1.5"><MapPin className="size-4" /> Location hidden</span>
+          <span className="opacity-50">•</span>
+          <a className="inline-flex items-center hover:text-foreground" href="#"><Instagram className="size-4" /></a>
+          <a className="inline-flex items-center hover:text-foreground text-xs font-semibold" href="#">TikTok</a>
+          <span className="opacity-50">•</span>
+          <span className="inline-flex items-center gap-1.5">
+            Created by
+            <span className="size-5 rounded-full overflow-hidden inline-block" style={{ background: `linear-gradient(135deg, ${theme}, ${accent})` }} />
+            <span className="text-foreground font-medium">owner</span>
+          </span>
+        </div>
+
+        <div className="mt-3 text-sm">
+          <span className="font-semibold">{store.member_count ?? 1}</span>{" "}
+          <span className="text-muted-foreground">member{(store.member_count ?? 1) === 1 ? "" : "s"}</span>
+        </div>
+
+        {/* Tabs */}
+        <div className="mt-6 border-b border-white/10 flex items-center gap-1 overflow-x-auto">
+          {TABS.map(t => (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`px-5 py-3 text-sm font-medium relative transition ${tab === t.key ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              {t.label}
+              {tab === t.key && <span className="absolute left-3 right-3 -bottom-px h-0.5 bg-primary rounded-full" />}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab content */}
+        <div className="py-6">
+          {tab === "home" && (
+            <div className="space-y-6">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="flex items-start gap-3">
+                  <div className="size-9 rounded-full shrink-0" style={{ background: `linear-gradient(135deg, ${theme}, ${accent})` }} />
+                  <input
+                    value={post}
+                    onChange={e => setPost(e.target.value)}
+                    placeholder="What's on your mind?"
+                    className="flex-1 bg-transparent outline-none text-base placeholder:text-muted-foreground py-2"
+                  />
+                </div>
+                <div className="mt-3 flex items-center justify-between">
+                  <div className="flex items-center gap-1 text-sky-400">
+                    <ComposerBtn><ImageIcon className="size-5" /></ComposerBtn>
+                    <ComposerBtn><span className="text-[10px] font-bold tracking-wider px-1.5 py-0.5 border-2 border-current rounded">GIF</span></ComposerBtn>
+                    <ComposerBtn><Smile className="size-5" /></ComposerBtn>
+                    <ComposerBtn><PollIcon className="size-5" /></ComposerBtn>
+                    <ComposerBtn><DollarSign className="size-5" /></ComposerBtn>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button className="inline-flex items-center gap-1.5 rounded-full bg-rose-500/15 text-rose-400 px-3 py-1.5 text-xs font-semibold">
+                      <Video className="size-3.5" /> Go live
+                    </button>
+                    <button disabled={!post.trim()} className="rounded-full bg-primary text-primary-foreground px-4 py-1.5 text-sm font-semibold disabled:opacity-50">
+                      Post
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+                <div className="flex items-center gap-3">
+                  <div className="size-9 rounded-full bg-white/10" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-2 w-1/3 bg-white/10 rounded" />
+                    <div className="h-2 w-1/5 bg-white/10 rounded" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {tab === "chats" && <EmptyTab label="Chats" />}
+
+          {tab === "apps" && (
+            apps.length === 0 ? <EmptyTab label="Apps" /> : (
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
+                {apps.map(a => {
+                  const def = APP_MAP[a.app_key];
+                  if (!def) return null;
+                  return (
+                    <button key={a.id} onClick={() => onOpenApp(a.app_key)} className="text-left rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition p-4 flex items-center gap-3">
+                      <img src={def.logo} alt="" loading="lazy" width={40} height={40} className="size-10 rounded-xl object-contain shrink-0" />
+                      <div className="min-w-0">
+                        <div className="font-medium truncate">{def.name}</div>
+                        <div className="text-[11px] text-muted-foreground truncate">{def.description}</div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )
+          )}
+
+          {tab === "products" && <EmptyTab label="Products" />}
+          {tab === "about" && (
+            <p className="text-muted-foreground">{store.description || "No description yet."}</p>
+          )}
+        </div>
+      </div>
     </div>
   );
+}
+
+function ComposerBtn({ children }: { children: React.ReactNode }) {
+  return <button className="size-9 grid place-items-center rounded-full hover:bg-white/[0.06] transition">{children}</button>;
+}
+
+function EmptyTab({ label }: { label: string }) {
+  return <div className="py-16 text-center text-sm text-muted-foreground">No {label.toLowerCase()} yet.</div>;
 }
 
 function AddAppModal({
