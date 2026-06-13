@@ -30,12 +30,9 @@ export function AppContent({ appKey, store, isOwner }: { appKey: AppKey; store: 
 export function AppHeader({ appKey }: { appKey: AppKey }) {
   const def = APP_MAP[appKey];
   if (!def) return null;
-  const Icon = def.icon;
   return (
     <div className="flex items-center gap-3">
-      <div className={`size-8 rounded-xl grid place-items-center bg-gradient-to-br ${def.color}`}>
-        <Icon className="size-4 text-white" />
-      </div>
+      <img src={def.logo} alt="" loading="lazy" width={32} height={32} className="size-8 rounded-xl object-contain shrink-0" />
       <div className="text-xl font-semibold">{def.name}</div>
     </div>
   );
