@@ -110,9 +110,7 @@ export function StoreLayout({
                       className={`flex-1 flex items-center gap-3 px-3 py-2 text-sm ${isActive ? "text-foreground" : "text-muted-foreground"} ${!a.enabled ? "opacity-50" : ""} text-left`}
                     >
                       {manage && <GripVertical className="size-3 text-muted-foreground/40" />}
-                      <span className={`size-6 rounded-lg grid place-items-center bg-gradient-to-br ${def.color}`}>
-                        <Icon className="size-3.5 text-white" />
-                      </span>
+                      <img src={def.logo} alt="" loading="lazy" width={24} height={24} className="size-6 rounded-lg object-contain shrink-0" />
                       <span className="truncate flex-1">{def.name}</span>
                     </button>
                     {manage && isOwner && (
