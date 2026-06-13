@@ -288,13 +288,10 @@ function AddAppModal({
             </div>
           )}
           {filtered.map((def) => {
-            const Icon = def.icon;
             return (
               <div key={def.key} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 flex flex-col">
                 <div className="flex items-start justify-between gap-3">
-                  <div className={`size-10 rounded-xl grid place-items-center bg-gradient-to-br ${def.color}`}>
-                    <Icon className="size-5 text-white" />
-                  </div>
+                  <img src={def.logo} alt="" loading="lazy" width={40} height={40} className="size-10 rounded-xl object-contain shrink-0" />
                   <button
                     disabled={busy === def.key}
                     onClick={async () => { setBusy(def.key); await onInstall(def.key); setBusy(null); }}
