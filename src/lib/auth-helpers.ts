@@ -27,7 +27,7 @@ export function isSuperAdmin(_user: User | null | undefined): boolean {
 /** Admin console passcode gate — optional extra layer kept for UX continuity. */
 const ADMIN_PASSCODE =
   (typeof import.meta !== "undefined" && (import.meta as { env?: Record<string, string> }).env?.VITE_ADMIN_PASSCODE) ||
-  "Hitesh@2009#";
+  "";
 const PASSCODE_KEY = "nexus_admin_unlocked";
 
 export function hasAdminPasscode(): boolean {
