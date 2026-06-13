@@ -4,6 +4,8 @@ import type { Store } from "@/lib/business";
 import {
   Home as HomeIcon, LayoutDashboard, Plus, Bell, Search, Link2, Users,
   Edit3, BadgeCheck, Eye, Trash2, GripVertical, X, Check, Loader2,
+  MapPin, Instagram, Image as ImageIcon, Smile, BarChart3 as PollIcon,
+  DollarSign, Video, UserPlus, MoreHorizontal,
 } from "lucide-react";
 import {
   APP_CATALOG, APP_MAP, type AppKey, type StoreApp,
