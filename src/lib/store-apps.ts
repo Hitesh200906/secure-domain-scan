@@ -6,6 +6,22 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
+import chatLogo from "@/assets/store-apps/chat.png";
+import announcementsLogo from "@/assets/store-apps/announcements.png";
+import forumLogo from "@/assets/store-apps/forum.png";
+import faqLogo from "@/assets/store-apps/faq.png";
+import reviewsLogo from "@/assets/store-apps/reviews.png";
+import supportLogo from "@/assets/store-apps/support.png";
+import resourcesLogo from "@/assets/store-apps/resources.png";
+import downloadsLogo from "@/assets/store-apps/downloads.png";
+import changelogLogo from "@/assets/store-apps/changelog.png";
+import featureRequestsLogo from "@/assets/store-apps/feature_requests.png";
+import pollsLogo from "@/assets/store-apps/polls.png";
+import eventsLogo from "@/assets/store-apps/events.png";
+import showcaseLogo from "@/assets/store-apps/showcase.png";
+import membersLogo from "@/assets/store-apps/members.png";
+import aboutLogo from "@/assets/store-apps/about.png";
+
 export type AppKey =
   | "chat" | "announcements" | "forum" | "faq" | "reviews"
   | "support" | "resources" | "downloads" | "changelog"
