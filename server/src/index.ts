@@ -31,7 +31,7 @@ app.use(
   cors({
     origin(origin, cb) {
       if (!origin) return cb(null, true); // server-to-server / curl
-      if (allowedOrigins.has(origin) || /\.vercel\.app$/.test(new URL(origin).hostname)) {
+      if (allowedOrigins.has(origin)) {
         return cb(null, true);
       }
       return cb(new Error(`CORS: origin ${origin} not allowed`));
@@ -61,7 +61,7 @@ app.use((_req, res) => res.status(404).json({ error: "Not found" }));
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error(err);
-  res.status(500).json({ error: err.message || "Internal server error" });
+  res.status(500).json({ error: "Internal server error" });
 });
 
 app.listen(env.PORT, () => {
