@@ -172,10 +172,10 @@ function ConnectionLines() {
 
   return (
     <lineSegments ref={ref}>
-      {/* @ts-expect-error r3f primitive */}
       <primitive object={geom} attach="geometry" />
       <lineBasicMaterial color="#22d3ee" transparent opacity={0.25} />
     </lineSegments>
+
   );
 }
 
