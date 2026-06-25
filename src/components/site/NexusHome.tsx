@@ -6,7 +6,9 @@ import {
 } from "lucide-react";
 import { ModeToggle } from "./ModeToggle";
 import { TownhallFeed } from "./TownhallFeed";
+import { NexusUniverse } from "./NexusUniverse";
 import nexusLogo from "@/assets/nexus-logo.png";
+
 
 const categories = [
   { icon: Rocket, label: "Startups", count: "2.4k" },
