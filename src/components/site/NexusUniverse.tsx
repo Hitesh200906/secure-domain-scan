@@ -55,19 +55,18 @@ function NexusCore() {
 }
 
 function OrbitRing({ radius, tilt }: { radius: number; tilt: number }) {
-  const geom = useMemo(() => {
+  const lineObj = useMemo(() => {
     const curve = new THREE.EllipseCurve(0, 0, radius, radius, 0, Math.PI * 2, false, 0);
     const pts = curve.getPoints(128).map((p) => new THREE.Vector3(p.x, 0, p.y));
-    return new THREE.BufferGeometry().setFromPoints(pts);
-  }, [radius]);
-  return (
-    <line rotation={[tilt, 0, tilt * 0.5]}>
-      {/* @ts-expect-error - r3f line geometry assignment */}
-      <primitive object={geom} attach="geometry" />
-      <lineBasicMaterial color="#ffffff" transparent opacity={0.08} />
-    </line>
-  );
+    const geom = new THREE.BufferGeometry().setFromPoints(pts);
+    const mat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.08 });
+    const ln = new THREE.LineLoop(geom, mat);
+    ln.rotation.set(tilt, 0, tilt * 0.5);
+    return ln;
+  }, [radius, tilt]);
+  return <primitive object={lineObj} />;
 }
+
 
 function OrbitingPlanet({
   planet,
