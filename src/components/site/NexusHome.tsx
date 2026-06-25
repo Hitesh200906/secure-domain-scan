@@ -40,70 +40,109 @@ const creators = [
 export function NexusHome() {
   return (
     <div className="relative">
-      {/* HERO */}
-      <section className="relative min-h-[92svh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 grid-bg opacity-30 -z-10" />
+      {/* HERO - Split screen with 3D Nexus Universe */}
+      <section className="relative min-h-[92svh] flex items-center overflow-hidden pt-24 sm:pt-28 pb-12 sm:pb-16">
+        <div className="absolute inset-0 grid-bg opacity-25 -z-10" />
         <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
           <div className="absolute top-1/4 -left-32 size-[520px] rounded-full bg-[oklch(0.86_0.16_200_/0.14)] blur-[120px]" />
           <div className="absolute bottom-0 right-0 size-[480px] rounded-full bg-[oklch(0.75_0.18_310_/0.12)] blur-[120px]" />
         </div>
 
-        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 text-center pt-28 sm:pt-32 pb-16 sm:pb-20">
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 rounded-full glass px-3.5 py-1.5 text-xs text-muted-foreground"
-          >
-            <img src={nexusLogo} alt="" className="size-3.5" />
-            <span className="tracking-[0.18em] uppercase">Welcome to Nexus</span>
-          </motion.div>
+        <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+          {/* LEFT — Copy (45%) */}
+          <div className="lg:col-span-5 text-center lg:text-left">
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-2 rounded-full glass px-3.5 py-1.5 text-xs text-muted-foreground"
+            >
+              <img src={nexusLogo} alt="" className="size-3.5" />
+              <span className="tracking-[0.18em] uppercase">Welcome to Nexus</span>
+            </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1 }}
-            className="mt-6 text-[40px] leading-[1] sm:text-6xl md:text-7xl lg:text-[88px] font-semibold tracking-[-0.04em] sm:leading-[0.95] text-gradient"
-          >
-            The home of
-            <br />
-            internet business.
-          </motion.h1>
+            <motion.h1
+              initial={{ opacity: 0, y: 22 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-6 text-[40px] leading-[1] sm:text-6xl lg:text-[76px] xl:text-[88px] font-semibold tracking-[-0.04em] sm:leading-[0.95] text-gradient"
+            >
+              The home of
+              <br />
+              internet business.
+            </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="mt-5 sm:mt-7 max-w-2xl mx-auto text-sm sm:text-lg text-muted-foreground leading-relaxed"
-          >
-            Discover thousands of communities, courses, and digital products — or launch your own
-            store in minutes. One platform, infinite possibilities.
-          </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-5 sm:mt-7 max-w-xl mx-auto lg:mx-0 text-sm sm:text-lg text-muted-foreground leading-relaxed"
+            >
+              Discover thousands of communities, courses, and digital products — or launch your own
+              store in minutes. One platform, infinite possibilities.
+            </motion.p>
 
-          <div className="mt-10 flex justify-center">
-            <ModeToggle />
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start"
+            >
+              <Link
+                to="/business"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-white text-black px-6 py-3 text-sm font-medium hover:shadow-[0_0_40px_-4px_rgba(255,255,255,0.55)] transition"
+              >
+                Start a business <ArrowRight className="size-4" />
+              </Link>
+              <Link
+                to="/discover"
+                className="inline-flex items-center justify-center gap-2 rounded-full glass px-6 py-3 text-sm font-medium text-white"
+              >
+                Explore stores
+              </Link>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.55 }}
+              className="mt-8 flex justify-center lg:justify-start"
+            >
+              <ModeToggle />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.7 }}
+              className="mt-10 sm:mt-12 grid grid-cols-4 gap-4 sm:gap-6 max-w-md mx-auto lg:mx-0"
+            >
+              {[
+                { v: "50k+", l: "Creators" },
+                { v: "$120M", l: "Paid" },
+                { v: "2.1M", l: "Members" },
+                { v: "180+", l: "Countries" },
+              ].map((s) => (
+                <div key={s.l} className="text-center lg:text-left">
+                  <div className="text-lg sm:text-2xl font-semibold tracking-tight text-white">{s.v}</div>
+                  <div className="mt-1 text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-muted-foreground">{s.l}</div>
+                </div>
+              ))}
+            </motion.div>
           </div>
 
+          {/* RIGHT — Nexus Universe 3D (55%) */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.6 }}
-            className="mt-12 sm:mt-16 grid grid-cols-2 sm:grid-cols-4 gap-5 sm:gap-6 max-w-3xl mx-auto"
+            transition={{ duration: 1.2, delay: 0.2 }}
+            className="lg:col-span-7 relative h-[440px] sm:h-[560px] lg:h-[640px]"
           >
-            {[
-              { v: "50k+", l: "Creators" },
-              { v: "$120M", l: "Paid out" },
-              { v: "2.1M", l: "Members" },
-              { v: "180+", l: "Countries" },
-            ].map((s) => (
-              <div key={s.l} className="text-center">
-                <div className="text-xl sm:text-3xl font-semibold tracking-tight text-white">{s.v}</div>
-                <div className="mt-1 text-[10px] sm:text-xs uppercase tracking-[0.18em] text-muted-foreground">{s.l}</div>
-              </div>
-            ))}
+            <NexusUniverse />
           </motion.div>
         </div>
       </section>
+
 
       {/* TOWNHALL FEED */}
       <TownhallFeed />
