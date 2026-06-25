@@ -248,7 +248,7 @@ export function NexusUniverse() {
           className="absolute inset-0"
         >
           <Canvas
-            dpr={[1, lowPower ? 1.25 : 2]}
+            dpr={[1, lowPower ? 1 : 1.5]}
             camera={{ position: [0, 2.5, 9], fov: 50 }}
             gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
           >
