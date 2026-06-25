@@ -65,7 +65,7 @@ export function NexusHome() {
               initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-6 text-[40px] leading-[1] sm:text-6xl lg:text-[76px] xl:text-[88px] font-semibold tracking-[-0.04em] sm:leading-[0.95] text-gradient"
+              className="mt-6 pb-2 text-[40px] leading-[1.05] sm:text-5xl lg:text-[58px] xl:text-[72px] font-semibold tracking-[-0.035em] sm:leading-[1.02] text-gradient"
             >
               The home of
               <br />
