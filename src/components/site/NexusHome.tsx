@@ -1,13 +1,15 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import { useState } from "react";
 import {
   Compass, Flame, Users, TrendingUp, Sparkles, Store, Rocket,
-  MessageCircle, Star, ArrowRight, Zap, Globe2, Crown, Coins,
+  MessageCircle, Star, ArrowRight, Zap, Globe2, Crown, Coins, Shield,
 } from "lucide-react";
-import { ModeToggle } from "./ModeToggle";
 import { TownhallFeed } from "./TownhallFeed";
-import { NexusUniverse } from "./NexusUniverse";
+import { NexusCinematicHero, type Phase } from "./NexusCinematicHero";
+import { useAppMode } from "@/lib/app-mode";
 import nexusLogo from "@/assets/nexus-logo.png";
+
 
 
 const categories = [
