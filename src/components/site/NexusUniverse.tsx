@@ -207,11 +207,11 @@ function Scene({ onHover, lowPower }: { onHover: (p: Planet | null) => void; low
           <OrbitingPlanet key={p.name} planet={p} onHover={onHover} />
         ))}
         <ConnectionLines />
-        <Sparkles count={lowPower ? 60 : 180} scale={14} size={2} speed={0.3} color="#67e8f9" opacity={0.6} />
+        <Sparkles count={lowPower ? 40 : 110} scale={14} size={2} speed={0.3} color="#67e8f9" opacity={0.6} />
       </ParallaxRig>
       {!lowPower && (
         <EffectComposer>
-          <Bloom intensity={0.9} luminanceThreshold={0.2} luminanceSmoothing={0.6} mipmapBlur />
+          <Bloom intensity={0.7} luminanceThreshold={0.25} luminanceSmoothing={0.6} mipmapBlur />
         </EffectComposer>
       )}
     </>
