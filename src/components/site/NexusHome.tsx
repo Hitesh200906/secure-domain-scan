@@ -5,6 +5,7 @@ import {
   MessageCircle, Star, ArrowRight, Zap, Globe2, Crown, Coins,
 } from "lucide-react";
 import { TownhallFeed } from "./TownhallFeed";
+import { NexusCinematicHero } from "./NexusCinematicHero";
 
 
 
@@ -40,16 +41,10 @@ const creators = [
 export function NexusHome() {
   return (
     <div className="relative">
-      {/* HERO - clean split foundation (ready for rebuild) */}
-      <section className="relative min-h-[92svh] flex items-center overflow-hidden pt-24 sm:pt-28 pb-12 sm:pb-16 bg-black">
-        <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
-          {/* LEFT — empty container for future text */}
-          <div className="lg:col-span-5" />
+      {/* HERO — cinematic full-width vertical sequence */}
+      <NexusCinematicHero />
 
-          {/* RIGHT — empty container for future Three.js cinematic content */}
-          <div className="lg:col-span-7 relative h-[440px] sm:h-[560px] lg:h-[640px]" />
-        </div>
-      </section>
+
 
 
 
