@@ -40,147 +40,19 @@ const creators = [
 ];
 
 export function NexusHome() {
-  const { mode, setMode } = useAppMode();
-  const [phase, setPhase] = useState<Phase>("galaxy");
-
-  const textShown   = phase === "text" || phase === "buttons" || phase === "living";
-  const btnsShown   = phase === "buttons" || phase === "living";
-  const introActive = phase !== "living";
-
   return (
     <div className="relative">
-      {/* HERO - cinematic split-screen */}
+      {/* HERO - clean split foundation (ready for rebuild) */}
       <section className="relative min-h-[92svh] flex items-center overflow-hidden pt-24 sm:pt-28 pb-12 sm:pb-16 bg-black">
-        <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute top-1/4 -left-32 size-[520px] rounded-full bg-[oklch(0.86_0.16_200_/0.10)] blur-[140px]" />
-          <div className="absolute bottom-0 right-0 size-[480px] rounded-full bg-[oklch(0.55_0.20_280_/0.10)] blur-[140px]" />
-        </div>
-
         <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
-          {/* LEFT — Copy */}
-          <div className="lg:col-span-5 text-center lg:text-left">
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: textShown ? 1 : 0, y: textShown ? 0 : 8 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 rounded-full glass px-3.5 py-1.5 text-xs text-muted-foreground"
-            >
-              <img src={nexusLogo} alt="" className="size-3.5" />
-              <span className="tracking-[0.18em] uppercase">Welcome to Nexus</span>
-            </motion.div>
+          {/* LEFT — empty container for future text */}
+          <div className="lg:col-span-5" />
 
-            {/* Apple-style blur→focus reveal */}
-            <motion.h1
-              initial={{ opacity: 0, y: 18, filter: "blur(18px)" }}
-              animate={
-                textShown
-                  ? { opacity: 1, y: 0, filter: "blur(0px)" }
-                  : { opacity: 0, y: 18, filter: "blur(18px)" }
-              }
-              transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-6 pb-2 text-[40px] leading-[1.05] sm:text-5xl lg:text-[58px] xl:text-[72px] font-semibold tracking-[-0.035em] sm:leading-[1.02] text-gradient"
-            >
-              The home of
-              <br />
-              internet bu
-              <span id="nexus-guardian-anchor" className="relative inline-block">
-                ss
-                {/* Guardian sit anchor — perches on top of the "ss" */}
-                <span className="pointer-events-none absolute -top-1 left-1/2 -translate-x-1/2 size-1.5 rounded-full bg-cyan-300/70 blur-[2px]" aria-hidden />
-              </span>
-              iness.
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 14, filter: "blur(12px)" }}
-              animate={
-                textShown
-                  ? { opacity: 1, y: 0, filter: "blur(0px)" }
-                  : { opacity: 0, y: 14, filter: "blur(12px)" }
-              }
-              transition={{ duration: 1.0, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-5 sm:mt-7 max-w-xl mx-auto lg:mx-0 text-sm sm:text-lg text-muted-foreground leading-relaxed"
-            >
-              Discover thousands of communities, courses, and digital products — or launch your own
-              store in minutes. One platform, infinite possibilities.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              animate={btnsShown ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
-              transition={{ type: "spring", stiffness: 220, damping: 22, delay: 0.05 }}
-              className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start"
-            >
-              <button
-                onClick={() => setMode("nexus")}
-                className={`group relative inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition will-change-transform ${
-                  mode === "nexus"
-                    ? "bg-white text-black shadow-[0_10px_40px_-10px_rgba(255,255,255,0.55)]"
-                    : "glass text-white hover:bg-white/10"
-                }`}
-              >
-                <Sparkles className="size-4" />
-                Switch to Nexus
-                <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
-              </button>
-              <button
-                onClick={() => setMode("security")}
-                className={`group relative inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition will-change-transform ${
-                  mode === "security"
-                    ? "bg-white text-black shadow-[0_10px_40px_-10px_rgba(34,211,238,0.55)]"
-                    : "glass text-white hover:bg-white/10"
-                }`}
-              >
-                <Shield className="size-4" />
-                Switch to Nexus Security
-                <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
-              </button>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: btnsShown ? 1 : 0 }}
-              transition={{ duration: 1, delay: 0.4 }}
-              className="mt-10 sm:mt-12 grid grid-cols-4 gap-4 sm:gap-6 max-w-md mx-auto lg:mx-0"
-            >
-              {[
-                { v: "50k+", l: "Creators" },
-                { v: "$120M", l: "Paid" },
-                { v: "2.1M", l: "Members" },
-                { v: "180+", l: "Countries" },
-              ].map((s) => (
-                <div key={s.l} className="text-center lg:text-left">
-                  <div className="text-lg sm:text-2xl font-semibold tracking-tight text-white">{s.v}</div>
-                  <div className="mt-1 text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-muted-foreground">{s.l}</div>
-                </div>
-              ))}
-            </motion.div>
-          </div>
-
-          {/* RIGHT — Cinematic universe */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.0 }}
-            className="lg:col-span-7 relative h-[440px] sm:h-[560px] lg:h-[640px]"
-          >
-            <NexusCinematicHero onPhaseChange={setPhase} />
-          </motion.div>
+          {/* RIGHT — empty container for future Three.js cinematic content */}
+          <div className="lg:col-span-7 relative h-[440px] sm:h-[560px] lg:h-[640px]" />
         </div>
-
-        {/* Intro skip affordance — only visible during the 6s intro */}
-        {introActive && (
-          <button
-            onClick={() => {
-              sessionStorage.setItem("nexus_intro_seen", "true");
-              setPhase("living");
-            }}
-            className="absolute bottom-5 right-5 z-10 rounded-full glass px-3.5 py-1.5 text-[11px] uppercase tracking-[0.18em] text-white/70 hover:text-white"
-          >
-            Skip intro
-          </button>
-        )}
       </section>
+
 
 
 
