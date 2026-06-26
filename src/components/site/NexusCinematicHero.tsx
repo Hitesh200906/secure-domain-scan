@@ -1,19 +1,30 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Float, Sparkles, Stars, Html } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Float, Sparkles, Stars } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { AnimatePresence, motion } from "framer-motion";
+import { Sparkles as SparklesIcon, ShieldCheck } from "lucide-react";
+import { useAppMode } from "@/lib/app-mode";
 import { PrototypeGuardian, type GuardianState } from "./PrototypeGuardian";
 
-/* ============================================================
-   Cinematic hero – galaxy + 5 reality-birth feature worlds
-   ============================================================ */
+/* ================================================================
+   CINEMATIC HERO — full-width, centered, vertical sequence.
+   Timeline (~5.6s):
+     0.00–0.30  galaxy only
+     0.30–2.00  guardian falls, lands, waves
+     2.00       guardian disappears cleanly
+     2.00–4.00  5 feature worlds materialize (staggered)
+     3.40       labels reveal
+     4.00       headline (blur→focus)
+     4.60       description
+     5.20       buttons
+     5.60+      living state (everything keeps breathing)
+   ================================================================ */
 
-const INTRO_KEY = "nexus_intro_seen";
+const INTRO_KEY = "nexus_hero_intro_seen_v2";
 
 type Quality = "high" | "medium" | "low";
-
 function useQuality(): Quality {
   const [q, setQ] = useState<Quality>("high");
   useEffect(() => {
@@ -25,31 +36,22 @@ function useQuality(): Quality {
   return q;
 }
 
-/* ------------ Worlds ------------- */
+export type HeroPhase =
+  | "galaxy"
+  | "guardian"
+  | "worlds"
+  | "labels"
+  | "headline"
+  | "description"
+  | "buttons"
+  | "living";
 
-type World = {
-  id: string;
-  label: string;
-  position: [number, number, number];
-  color: string;
-};
-
-const WORLDS: World[] = [
-  { id: "marketplace", label: "Marketplace",    position: [-4.6, 0.6, 0],  color: "#22d3ee" },
-  { id: "communities", label: "Communities",    position: [-2.4, -0.4, 1], color: "#a855f7" },
-  { id: "security",    label: "Nexus Security", position: [0,    0.9, 0],  color: "#60a5fa" },
-  { id: "ai",          label: "AI Tools",       position: [2.4, -0.4, 1],  color: "#67e8f9" },
-  { id: "business",    label: "Business",       position: [4.6,  0.6, 0],  color: "#fbbf24" },
-];
+/* ----------------------------------------------------------------
+   Background scene — stars + nebula + guardian + impact particles
+   ---------------------------------------------------------------- */
 
 function Nebula() {
   const ref = useRef<THREE.Mesh>(null!);
-  useFrame(({ clock }) => {
-    if (!ref.current) return;
-    ref.current.rotation.z = clock.elapsedTime * 0.02;
-    const m = ref.current.material as THREE.ShaderMaterial;
-    m.uniforms.uTime.value = clock.elapsedTime;
-  });
   const mat = useMemo(
     () =>
       new THREE.ShaderMaterial({
@@ -69,72 +71,180 @@ function Nebula() {
           void main(){
             vec2 uv=vUv-0.5;
             float r=length(uv);
-            float n=noise(uv*3.+uTime*0.04);
-            n+=noise(uv*6.-uTime*0.03)*0.5;
-            vec3 blue=vec3(0.05,0.25,0.55);
-            vec3 cyan=vec3(0.10,0.55,0.75);
-            vec3 purple=vec3(0.30,0.10,0.55);
-            vec3 col=mix(blue,purple,n);
-            col=mix(col,cyan,smoothstep(0.4,0.9,n));
-            float a=smoothstep(0.55,0.0,r)*0.55*n;
+            float n=noise(uv*2.6+uTime*0.03);
+            n+=noise(uv*5.-uTime*0.02)*0.5;
+            vec3 deep=vec3(0.02,0.05,0.14);
+            vec3 cyan=vec3(0.08,0.42,0.68);
+            vec3 indigo=vec3(0.15,0.08,0.42);
+            vec3 col=mix(deep,indigo,n);
+            col=mix(col,cyan,smoothstep(0.45,0.95,n));
+            float a=smoothstep(0.6,0.0,r)*0.42*n;
             gl_FragColor=vec4(col,a);
           }`,
       }),
     [],
   );
+  useFrame(({ clock }) => {
+    if (!ref.current) return;
+    ref.current.rotation.z = clock.elapsedTime * 0.015;
+    (ref.current.material as THREE.ShaderMaterial).uniforms.uTime.value = clock.elapsedTime;
+  });
   return (
     <mesh ref={ref} position={[0, 0, -8]}>
-      <planeGeometry args={[34, 22]} />
+      <planeGeometry args={[40, 26]} />
       <primitive object={mat} attach="material" />
     </mesh>
   );
 }
 
-/* world: marketplace city */
-function MarketplaceWorld({ color, born }: { color: string; born: number }) {
-  const grp = useRef<THREE.Group>(null!);
-  useFrame((_, dt) => {
-    if (grp.current) grp.current.rotation.y += dt * 0.15;
+function ImpactParticles({ trigger }: { trigger: boolean }) {
+  const ref = useRef<THREE.Points>(null!);
+  const startedAt = useRef<number | null>(null);
+  const { positions, velocities } = useMemo(() => {
+    const N = 60;
+    const pos = new Float32Array(N * 3);
+    const vel = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const s = 0.6 + Math.random() * 0.8;
+      vel[i * 3] = Math.cos(a) * s;
+      vel[i * 3 + 1] = Math.random() * 0.6 + 0.15;
+      vel[i * 3 + 2] = Math.sin(a) * s;
+    }
+    return { positions: pos, velocities: vel };
+  }, []);
+  useFrame(({ clock }, dt) => {
+    if (!trigger || !ref.current) return;
+    if (startedAt.current === null) {
+      startedAt.current = clock.elapsedTime;
+      const arr = ref.current.geometry.attributes.position.array as Float32Array;
+      for (let i = 0; i < arr.length; i += 3) {
+        arr[i] = 0; arr[i + 1] = -1.4; arr[i + 2] = 0;
+      }
+    }
+    const arr = ref.current.geometry.attributes.position.array as Float32Array;
+    for (let i = 0; i < arr.length / 3; i++) {
+      arr[i * 3]     += velocities[i * 3]     * dt;
+      arr[i * 3 + 1] += velocities[i * 3 + 1] * dt - dt * 0.4;
+      arr[i * 3 + 2] += velocities[i * 3 + 2] * dt;
+    }
+    ref.current.geometry.attributes.position.needsUpdate = true;
+    const t = clock.elapsedTime - startedAt.current;
+    (ref.current.material as THREE.PointsMaterial).opacity = Math.max(0, 1 - t / 0.8);
   });
+  if (!trigger) return null;
+  return (
+    <points ref={ref}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} count={positions.length / 3} />
+      </bufferGeometry>
+      <pointsMaterial color="#67e8f9" size={0.05} transparent opacity={1} depthWrite={false} blending={THREE.AdditiveBlending} />
+    </points>
+  );
+}
+
+function BackgroundScene({
+  guardianState,
+  impact,
+  quality,
+}: {
+  guardianState: GuardianState;
+  impact: boolean;
+  quality: Quality;
+}) {
+  return (
+    <>
+      <color attach="background" args={["#000000"]} />
+      <fog attach="fog" args={["#000000", 14, 32]} />
+      <ambientLight intensity={0.2} />
+      <pointLight position={[6, 6, 6]} intensity={1} color="#a855f7" />
+      <pointLight position={[-6, -3, 4]} intensity={0.8} color="#22d3ee" />
+
+      <Nebula />
+      <Stars
+        radius={70}
+        depth={50}
+        count={quality === "low" ? 1500 : quality === "medium" ? 3500 : 6000}
+        factor={4}
+        fade
+        speed={0.5}
+      />
+      <Sparkles
+        count={quality === "low" ? 30 : 80}
+        scale={[18, 10, 8]}
+        size={1.4}
+        speed={0.25}
+        color="#67e8f9"
+        opacity={0.6}
+      />
+
+      <PrototypeGuardian state={guardianState} sitAnchor={[0, -0.8, 0]} />
+      <ImpactParticles trigger={impact} />
+
+      {quality !== "low" && (
+        <EffectComposer>
+          <Bloom intensity={0.55} luminanceThreshold={0.25} luminanceSmoothing={0.6} mipmapBlur />
+        </EffectComposer>
+      )}
+    </>
+  );
+}
+
+/* ----------------------------------------------------------------
+   Mini world scenes (one per glass box)
+   ---------------------------------------------------------------- */
+
+function MarketplaceMini() {
+  const grp = useRef<THREE.Group>(null!);
   const buildings = useMemo(
     () =>
-      Array.from({ length: 9 }).map((_, i) => ({
-        x: ((i % 3) - 1) * 0.32,
-        z: (Math.floor(i / 3) - 1) * 0.32,
-        h: 0.25 + Math.random() * 0.45,
+      Array.from({ length: 12 }).map((_, i) => ({
+        x: ((i % 4) - 1.5) * 0.36,
+        z: (Math.floor(i / 4) - 1) * 0.36,
+        h: 0.3 + Math.random() * 0.7,
+        s: 0.7 + Math.random() * 1.5,
       })),
     [],
   );
+  useFrame(({ clock }, dt) => {
+    if (!grp.current) return;
+    grp.current.rotation.y += dt * 0.18;
+    grp.current.children.forEach((c, i) => {
+      const m = (c as THREE.Mesh).material as THREE.MeshStandardMaterial | undefined;
+      if (m && "emissiveIntensity" in m) {
+        m.emissiveIntensity = 0.6 + Math.sin(clock.elapsedTime * buildings[i % buildings.length]?.s + i) * 0.4 + 0.4;
+      }
+    });
+  });
   return (
-    <group ref={grp} scale={born}>
+    <group ref={grp} position={[0, -0.2, 0]}>
       <mesh position={[0, -0.05, 0]}>
-        <cylinderGeometry args={[0.85, 0.95, 0.06, 32]} />
-        <meshStandardMaterial color="#0b1730" emissive={color} emissiveIntensity={0.35} metalness={0.7} roughness={0.3} />
+        <cylinderGeometry args={[1.15, 1.25, 0.05, 48]} />
+        <meshStandardMaterial color="#06122a" emissive="#1e88ff" emissiveIntensity={0.35} metalness={0.8} roughness={0.25} />
       </mesh>
       {buildings.map((b, i) => (
         <mesh key={i} position={[b.x, b.h / 2 - 0.02, b.z]}>
-          <boxGeometry args={[0.18, b.h, 0.18]} />
-          <meshStandardMaterial color="#0a1f3a" emissive={color} emissiveIntensity={0.9} metalness={0.6} roughness={0.25} />
+          <boxGeometry args={[0.2, b.h, 0.2]} />
+          <meshStandardMaterial color="#091a36" emissive="#22d3ee" emissiveIntensity={1} metalness={0.7} roughness={0.2} />
         </mesh>
       ))}
-      <pointLight color={color} intensity={1.4} distance={2.5} />
+      <pointLight color="#22d3ee" intensity={1.2} distance={3} position={[0, 0.5, 0]} />
     </group>
   );
 }
 
-/* world: communities neural sphere */
-function CommunitiesWorld({ color, born }: { color: string; born: number }) {
+function CommunitiesMini() {
   const grp = useRef<THREE.Group>(null!);
   const nodes = useMemo(() => {
     const out: THREE.Vector3[] = [];
-    for (let i = 0; i < 14; i++) {
-      const phi = Math.acos(1 - (2 * (i + 0.5)) / 14);
+    for (let i = 0; i < 22; i++) {
+      const phi = Math.acos(1 - (2 * (i + 0.5)) / 22);
       const theta = Math.PI * (1 + Math.sqrt(5)) * i;
       out.push(
         new THREE.Vector3(
-          0.55 * Math.cos(theta) * Math.sin(phi),
-          0.55 * Math.sin(theta) * Math.sin(phi),
-          0.55 * Math.cos(phi),
+          0.75 * Math.cos(theta) * Math.sin(phi),
+          0.75 * Math.sin(theta) * Math.sin(phi),
+          0.75 * Math.cos(phi),
         ),
       );
     }
@@ -144,73 +254,68 @@ function CommunitiesWorld({ color, born }: { color: string; born: number }) {
     const pts: THREE.Vector3[] = [];
     for (let i = 0; i < nodes.length; i++) {
       for (let j = i + 1; j < nodes.length; j++) {
-        if (nodes[i].distanceTo(nodes[j]) < 0.7) {
-          pts.push(nodes[i], nodes[j]);
-        }
+        if (nodes[i].distanceTo(nodes[j]) < 0.85) pts.push(nodes[i], nodes[j]);
       }
     }
     const g = new THREE.BufferGeometry().setFromPoints(pts);
-    return new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.35 }));
-  }, [nodes, color]);
+    return new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: "#a855f7", transparent: true, opacity: 0.5 }));
+  }, [nodes]);
   useFrame((_, dt) => {
-    if (grp.current) {
-      grp.current.rotation.y += dt * 0.25;
-      grp.current.rotation.x += dt * 0.08;
-    }
+    if (!grp.current) return;
+    grp.current.rotation.y += dt * 0.35;
+    grp.current.rotation.x += dt * 0.08;
   });
   return (
-    <group ref={grp} scale={born}>
+    <group ref={grp}>
       <mesh>
-        <sphereGeometry args={[0.45, 24, 24]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.6} transparent opacity={0.15} />
+        <sphereGeometry args={[0.55, 24, 24]} />
+        <meshStandardMaterial color="#a855f7" emissive="#a855f7" emissiveIntensity={0.5} transparent opacity={0.12} />
       </mesh>
       {nodes.map((p, i) => (
         <mesh key={i} position={p}>
           <sphereGeometry args={[0.05, 12, 12]} />
-          <meshStandardMaterial color="#ffffff" emissive={color} emissiveIntensity={2.4} />
+          <meshStandardMaterial color="#ffffff" emissive="#67e8f9" emissiveIntensity={2.6} />
         </mesh>
       ))}
       <primitive object={lines} />
-      <pointLight color={color} intensity={1.2} distance={2} />
+      <pointLight color="#a855f7" intensity={1.4} distance={2.5} />
     </group>
   );
 }
 
-/* world: security shield */
-function SecurityWorld({ color, born }: { color: string; born: number }) {
+function SecurityMini() {
   const r1 = useRef<THREE.Mesh>(null!);
   const r2 = useRef<THREE.Mesh>(null!);
   const r3 = useRef<THREE.Mesh>(null!);
   useFrame((_, dt) => {
-    if (r1.current) r1.current.rotation.x += dt * 0.6;
-    if (r2.current) r2.current.rotation.y += dt * 0.5;
-    if (r3.current) r3.current.rotation.z += dt * 0.4;
+    if (r1.current) r1.current.rotation.x += dt * 0.7;
+    if (r2.current) r2.current.rotation.y += dt * 0.55;
+    if (r3.current) r3.current.rotation.z += dt * 0.45;
   });
   return (
-    <group scale={born}>
+    <group>
       <mesh ref={r1}>
-        <torusGeometry args={[0.7, 0.025, 16, 100]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={2} metalness={0.8} roughness={0.2} />
+        <torusGeometry args={[0.95, 0.028, 16, 100]} />
+        <meshStandardMaterial color="#60a5fa" emissive="#60a5fa" emissiveIntensity={2.2} metalness={0.85} roughness={0.18} />
       </mesh>
       <mesh ref={r2}>
-        <torusGeometry args={[0.55, 0.022, 16, 100]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={2} metalness={0.8} roughness={0.2} />
+        <torusGeometry args={[0.75, 0.025, 16, 100]} />
+        <meshStandardMaterial color="#60a5fa" emissive="#60a5fa" emissiveIntensity={2.2} metalness={0.85} roughness={0.18} />
       </mesh>
       <mesh ref={r3}>
-        <torusGeometry args={[0.4, 0.02, 16, 100]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={2} metalness={0.8} roughness={0.2} />
+        <torusGeometry args={[0.55, 0.022, 16, 100]} />
+        <meshStandardMaterial color="#60a5fa" emissive="#60a5fa" emissiveIntensity={2.2} metalness={0.85} roughness={0.18} />
       </mesh>
       <mesh>
-        <icosahedronGeometry args={[0.22, 1]} />
-        <meshStandardMaterial color="#ffffff" emissive={color} emissiveIntensity={3} />
+        <icosahedronGeometry args={[0.3, 1]} />
+        <meshStandardMaterial color="#ffffff" emissive="#60a5fa" emissiveIntensity={3} />
       </mesh>
-      <pointLight color={color} intensity={2} distance={2.5} />
+      <pointLight color="#60a5fa" intensity={2} distance={3} />
     </group>
   );
 }
 
-/* world: AI core */
-function AIWorld({ color, born }: { color: string; born: number }) {
+function AIMini() {
   const core = useRef<THREE.Mesh>(null!);
   useFrame((_, dt) => {
     if (core.current) {
@@ -219,276 +324,163 @@ function AIWorld({ color, born }: { color: string; born: number }) {
     }
   });
   return (
-    <group scale={born}>
+    <group>
       <mesh ref={core}>
-        <icosahedronGeometry args={[0.5, 1]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={1.8} metalness={0.7} roughness={0.2} wireframe />
+        <icosahedronGeometry args={[0.7, 1]} />
+        <meshStandardMaterial color="#67e8f9" emissive="#67e8f9" emissiveIntensity={1.8} metalness={0.7} roughness={0.2} wireframe />
       </mesh>
       <mesh>
-        <sphereGeometry args={[0.28, 24, 24]} />
-        <meshStandardMaterial color="#ffffff" emissive={color} emissiveIntensity={2.2} />
+        <sphereGeometry args={[0.38, 24, 24]} />
+        <meshStandardMaterial color="#ffffff" emissive="#67e8f9" emissiveIntensity={2.2} />
       </mesh>
-      <Sparkles count={28} scale={1.6} size={1.5} speed={0.6} color={color} />
-      <pointLight color={color} intensity={1.4} distance={2.4} />
+      <Sparkles count={40} scale={2.2} size={1.6} speed={0.7} color="#67e8f9" />
+      <pointLight color="#67e8f9" intensity={1.5} distance={3} />
     </group>
   );
 }
 
-/* world: business analytics */
-function BusinessWorld({ color, born }: { color: string; born: number }) {
+function BusinessMini() {
   const grp = useRef<THREE.Group>(null!);
-  const bars = useMemo(() => [0.35, 0.55, 0.42, 0.7, 0.48, 0.62], []);
+  const bars = useMemo(() => [0.4, 0.65, 0.5, 0.85, 0.55, 0.72, 0.45], []);
   useFrame(({ clock }) => {
     if (!grp.current) return;
-    grp.current.rotation.y = Math.sin(clock.elapsedTime * 0.4) * 0.3;
+    grp.current.rotation.y = Math.sin(clock.elapsedTime * 0.4) * 0.35;
     grp.current.children.forEach((c, i) => {
       if ((c as THREE.Mesh).isMesh && i < bars.length) {
-        const h = bars[i] + Math.sin(clock.elapsedTime * 1.4 + i) * 0.08;
+        const h = bars[i] + Math.sin(clock.elapsedTime * 1.4 + i) * 0.1;
         c.scale.y = h / bars[i];
       }
     });
   });
   return (
-    <group ref={grp} scale={born}>
+    <group ref={grp} position={[0, -0.2, 0]}>
       {bars.map((h, i) => (
-        <mesh key={i} position={[(i - 2.5) * 0.16, h / 2 - 0.1, 0]}>
-          <boxGeometry args={[0.1, h, 0.1]} />
-          <meshStandardMaterial color={color} emissive={color} emissiveIntensity={1.4} metalness={0.6} roughness={0.3} />
+        <mesh key={i} position={[(i - 3) * 0.2, h / 2 - 0.05, 0]}>
+          <boxGeometry args={[0.14, h, 0.14]} />
+          <meshStandardMaterial color="#60a5fa" emissive="#fbbf24" emissiveIntensity={1.2} metalness={0.65} roughness={0.25} />
         </mesh>
       ))}
-      <mesh position={[0, -0.12, 0]}>
-        <cylinderGeometry args={[0.7, 0.7, 0.04, 32]} />
-        <meshStandardMaterial color="#1a1206" emissive={color} emissiveIntensity={0.5} metalness={0.8} roughness={0.2} />
+      <mesh position={[0, -0.08, 0]}>
+        <cylinderGeometry args={[0.95, 0.95, 0.04, 32]} />
+        <meshStandardMaterial color="#0a1228" emissive="#fbbf24" emissiveIntensity={0.4} metalness={0.85} roughness={0.2} />
       </mesh>
-      <pointLight color={color} intensity={1.2} distance={2.2} />
+      <pointLight color="#fbbf24" intensity={1.2} distance={3} />
     </group>
   );
 }
 
-function WorldByName({ id, color, born }: { id: string; color: string; born: number }) {
-  switch (id) {
-    case "marketplace": return <MarketplaceWorld color={color} born={born} />;
-    case "communities": return <CommunitiesWorld color={color} born={born} />;
-    case "security":    return <SecurityWorld color={color} born={born} />;
-    case "ai":          return <AIWorld color={color} born={born} />;
-    case "business":    return <BusinessWorld color={color} born={born} />;
-    default: return null;
-  }
+function MiniWorldCanvas({ kind }: { kind: World["id"] }) {
+  return (
+    <Canvas
+      dpr={[1, 1.5]}
+      camera={{ position: [0, 0.6, 2.6], fov: 45 }}
+      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+    >
+      <ambientLight intensity={0.4} />
+      <Float speed={1.2} rotationIntensity={0.2} floatIntensity={0.3}>
+        {kind === "marketplace" && <MarketplaceMini />}
+        {kind === "communities" && <CommunitiesMini />}
+        {kind === "security" && <SecurityMini />}
+        {kind === "ai" && <AIMini />}
+        {kind === "business" && <BusinessMini />}
+      </Float>
+      <EffectComposer>
+        <Bloom intensity={0.7} luminanceThreshold={0.2} luminanceSmoothing={0.6} mipmapBlur />
+      </EffectComposer>
+    </Canvas>
+  );
 }
 
-/* ------------ Reality-birth wrapper -------------- */
+/* ----------------------------------------------------------------
+   World definitions + glass card
+   ---------------------------------------------------------------- */
 
-function FeatureWorld({
+type World = {
+  id: "marketplace" | "communities" | "security" | "ai" | "business";
+  label: string;
+  accent: string;
+};
+const WORLDS: World[] = [
+  { id: "marketplace", label: "Marketplace",    accent: "#22d3ee" },
+  { id: "communities", label: "Communities",    accent: "#a855f7" },
+  { id: "security",    label: "Nexus Security", accent: "#60a5fa" },
+  { id: "ai",          label: "AI Tools",       accent: "#67e8f9" },
+  { id: "business",    label: "Business",       accent: "#fbbf24" },
+];
+
+function WorldCard({
   world,
-  visible,
-  delay,
+  index,
+  appear,
+  labelAppear,
 }: {
   world: World;
-  visible: boolean;
-  delay: number;
+  index: number;
+  appear: boolean;
+  labelAppear: boolean;
 }) {
-  const grp = useRef<THREE.Group>(null!);
-  const startedAt = useRef<number | null>(null);
-  const [born, setBorn] = useState(0);
-  const [showLabel, setShowLabel] = useState(false);
-
-  useFrame(({ clock }, dt) => {
-    if (!visible) return;
-    if (startedAt.current === null) startedAt.current = clock.elapsedTime + delay;
-    const t = Math.max(0, clock.elapsedTime - startedAt.current);
-    // 1.7s reality-birth: expand from 0 → 1 with overshoot
-    const k = Math.min(1, t / 1.7);
-    const eased = k < 1 ? 1 - Math.pow(1 - k, 4) : 1;
-    setBorn(eased);
-    if (k >= 0.55 && !showLabel) setShowLabel(true);
-    if (grp.current) {
-      grp.current.position.y = world.position[1] + Math.sin(clock.elapsedTime * 0.6 + delay) * 0.05;
-      grp.current.rotation.y += dt * 0.05;
-    }
-  });
-
-  if (!visible) return null;
-
   return (
-    <group ref={grp} position={world.position}>
-      {/* portal burst */}
-      {born < 1 && (
-        <mesh>
-          <ringGeometry args={[0.8 * (1 - born), 0.85 * (1 - born) + 0.02, 48]} />
-          <meshBasicMaterial color={world.color} transparent opacity={(1 - born) * 0.8} side={THREE.DoubleSide} />
-        </mesh>
-      )}
-      <Float speed={1.2} rotationIntensity={0.2} floatIntensity={0.3}>
-        <WorldByName id={world.id} color={world.color} born={born} />
-      </Float>
-      {showLabel && (
-        <Html center position={[0, -1.05, 0]} distanceFactor={9} zIndexRange={[20, 0]}>
-          <motion.div
-            initial={{ opacity: 0, y: 8, filter: "blur(8px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="pointer-events-none whitespace-nowrap rounded-full border border-white/15 bg-black/60 backdrop-blur-md px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-white"
-            style={{ boxShadow: `0 0 24px -4px ${world.color}99` }}
-          >
-            {world.label}
-          </motion.div>
-        </Html>
-      )}
-    </group>
-  );
-}
-
-/* ------------ Dissolve particles ------------- */
-
-function DissolveBurst({ active, origin }: { active: boolean; origin: [number, number, number] }) {
-  const ref = useRef<THREE.Points>(null!);
-  const startedAt = useRef<number | null>(null);
-  const { positions, velocities } = useMemo(() => {
-    const N = 220;
-    const pos = new Float32Array(N * 3);
-    const vel = new Float32Array(N * 3);
-    for (let i = 0; i < N; i++) {
-      const dir = new THREE.Vector3(
-        (Math.random() - 0.5),
-        Math.random() * 1.2 + 0.2,
-        (Math.random() - 0.5),
-      ).normalize();
-      vel[i * 3] = dir.x * (0.6 + Math.random() * 0.6);
-      vel[i * 3 + 1] = dir.y * (0.4 + Math.random() * 0.5);
-      vel[i * 3 + 2] = dir.z * (0.6 + Math.random() * 0.6);
-    }
-    return { positions: pos, velocities: vel };
-  }, []);
-  useFrame(({ clock }, dt) => {
-    if (!active) return;
-    if (startedAt.current === null) {
-      startedAt.current = clock.elapsedTime;
-      const arr = ref.current.geometry.attributes.position.array as Float32Array;
-      for (let i = 0; i < arr.length; i += 3) {
-        arr[i] = origin[0]; arr[i + 1] = origin[1]; arr[i + 2] = origin[2];
+    <motion.div
+      initial={{ opacity: 0, y: 30, scale: 0.85, filter: "blur(14px)" }}
+      animate={
+        appear
+          ? { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }
+          : { opacity: 0, y: 30, scale: 0.85, filter: "blur(14px)" }
       }
-    }
-    const arr = ref.current.geometry.attributes.position.array as Float32Array;
-    for (let i = 0; i < arr.length / 3; i++) {
-      arr[i * 3]     += velocities[i * 3]     * dt;
-      arr[i * 3 + 1] += velocities[i * 3 + 1] * dt;
-      arr[i * 3 + 2] += velocities[i * 3 + 2] * dt;
-    }
-    ref.current.geometry.attributes.position.needsUpdate = true;
-    const t = clock.elapsedTime - startedAt.current;
-    const m = ref.current.material as THREE.PointsMaterial;
-    m.opacity = Math.max(0, 1 - t / 0.7);
-  });
-  if (!active) return null;
-  return (
-    <points ref={ref}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[positions, 3]} count={positions.length / 3} />
-      </bufferGeometry>
-      <pointsMaterial color="#67e8f9" size={0.06} transparent opacity={1} depthWrite={false} blending={THREE.AdditiveBlending} />
-    </points>
+      transition={{
+        duration: 0.9,
+        delay: index * 0.18,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="group relative w-full"
+    >
+      {/* glow ring */}
+      <div
+        className="absolute -inset-px rounded-3xl opacity-60 blur-xl transition-opacity duration-500 group-hover:opacity-100"
+        style={{ background: `radial-gradient(120% 80% at 50% 0%, ${world.accent}55, transparent 70%)` }}
+      />
+      <div
+        className="relative rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl overflow-hidden shadow-[0_20px_80px_-30px_rgba(0,0,0,0.8)]"
+        style={{ boxShadow: `inset 0 1px 0 rgba(255,255,255,0.08), 0 0 60px -25px ${world.accent}88` }}
+      >
+        {/* inner gradient sheen */}
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_60%_at_50%_0%,rgba(255,255,255,0.08),transparent_60%)]" />
+        <div className="relative aspect-square w-full">
+          {appear && <MiniWorldCanvas kind={world.id} />}
+        </div>
+      </div>
+
+      {/* label */}
+      <motion.div
+        initial={{ opacity: 0, y: 10, filter: "blur(10px)" }}
+        animate={
+          labelAppear
+            ? { opacity: 1, y: 0, filter: "blur(0px)" }
+            : { opacity: 0, y: 10, filter: "blur(10px)" }
+        }
+        transition={{ duration: 0.7, delay: 0.05 * index, ease: [0.22, 1, 0.36, 1] }}
+        className="mt-4 text-center"
+      >
+        <span
+          className="text-[13px] sm:text-sm font-medium tracking-[0.18em] uppercase text-white"
+          style={{ textShadow: `0 0 18px ${world.accent}99` }}
+        >
+          {world.label}
+        </span>
+      </motion.div>
+    </motion.div>
   );
 }
 
-/* ------------ Camera + rig ------------- */
+/* ----------------------------------------------------------------
+   Public hero component
+   ---------------------------------------------------------------- */
 
-function CameraRig({ shake }: { shake: boolean }) {
-  const { camera, mouse } = useThree();
-  const shakeUntil = useRef(0);
-  useEffect(() => {
-    if (shake) shakeUntil.current = performance.now() + 350;
-  }, [shake]);
-  useFrame(() => {
-    camera.position.x = THREE.MathUtils.lerp(camera.position.x, mouse.x * 0.4, 0.04);
-    camera.position.y = THREE.MathUtils.lerp(camera.position.y, 1.2 + mouse.y * 0.2, 0.04);
-    if (performance.now() < shakeUntil.current) {
-      camera.position.x += (Math.random() - 0.5) * 0.08;
-      camera.position.y += (Math.random() - 0.5) * 0.08;
-    }
-    camera.lookAt(0, 0.3, 0);
-  });
-  return null;
-}
-
-/* ------------ Scene ------------- */
-
-function Scene({
-  worldsVisible,
-  dissolveActive,
-  shake,
-  guardianState,
-  sitAnchor,
-  quality,
-}: {
-  worldsVisible: boolean;
-  dissolveActive: boolean;
-  shake: boolean;
-  guardianState: GuardianState;
-  sitAnchor: [number, number, number];
-  quality: Quality;
-}) {
-  return (
-    <>
-      <color attach="background" args={["#000000"]} />
-      <fog attach="fog" args={["#000000", 12, 28]} />
-      <ambientLight intensity={0.18} />
-      <pointLight position={[6, 6, 6]} intensity={1.1} color="#a855f7" />
-      <pointLight position={[-6, -3, 4]} intensity={0.9} color="#22d3ee" />
-
-      <Nebula />
-      <Stars
-        radius={60}
-        depth={40}
-        count={quality === "low" ? 1500 : quality === "medium" ? 3500 : 6000}
-        factor={4}
-        fade
-        speed={0.6}
-      />
-      <Sparkles
-        count={quality === "low" ? 30 : 90}
-        scale={[16, 8, 8]}
-        size={1.6}
-        speed={0.3}
-        color="#67e8f9"
-        opacity={0.7}
-      />
-
-      {WORLDS.map((w, i) => (
-        <FeatureWorld key={w.id} world={w} visible={worldsVisible} delay={i * 0.18} />
-      ))}
-
-      <DissolveBurst active={dissolveActive} origin={[0, -0.5, 0]} />
-
-      <PrototypeGuardian state={guardianState} sitAnchor={sitAnchor} />
-
-      <CameraRig shake={shake} />
-
-      {quality !== "low" && (
-        <EffectComposer>
-          <Bloom intensity={0.7} luminanceThreshold={0.2} luminanceSmoothing={0.6} mipmapBlur />
-        </EffectComposer>
-      )}
-    </>
-  );
-}
-
-/* ------------ Public component ------------- */
-
-export type Phase = "galaxy" | "guardian" | "dissolve" | "worlds" | "text" | "buttons" | "living";
-
-export function NexusCinematicHero({
-  onPhaseChange,
-  sitAnchor = [3.6, 0.6, 0],
-}: {
-  onPhaseChange?: (p: Phase) => void;
-  sitAnchor?: [number, number, number];
-}) {
+export function NexusCinematicHero() {
   const quality = useQuality();
-  const [phase, setPhase] = useState<Phase>("galaxy");
-
-  useEffect(() => {
-    onPhaseChange?.(phase);
-  }, [phase, onPhaseChange]);
+  const { mode, setMode } = useAppMode();
+  const [phase, setPhase] = useState<HeroPhase>("galaxy");
+  const [impact, setImpact] = useState(false);
 
   useEffect(() => {
     const seen = typeof window !== "undefined" && sessionStorage.getItem(INTRO_KEY) === "true";
@@ -496,71 +488,172 @@ export function NexusCinematicHero({
       setPhase("living");
       return;
     }
-    const timers: number[] = [];
-    timers.push(window.setTimeout(() => setPhase("guardian"), 300));   // 0.3s
-    timers.push(window.setTimeout(() => setPhase("dissolve"), 2000));  // 2.0s
-    timers.push(window.setTimeout(() => setPhase("worlds"), 2500));    // 2.5s
-    timers.push(window.setTimeout(() => setPhase("text"), 4200));      // 4.2s
-    timers.push(window.setTimeout(() => setPhase("buttons"), 5200));   // 5.2s
-    timers.push(window.setTimeout(() => {
-      setPhase("living");
-      sessionStorage.setItem(INTRO_KEY, "true");
-    }, 6000));                                                          // 6.0s
-    return () => timers.forEach(clearTimeout);
+    const t: number[] = [];
+    t.push(window.setTimeout(() => setPhase("guardian"), 300));
+    t.push(window.setTimeout(() => setImpact(true), 1050));
+    t.push(window.setTimeout(() => setImpact(false), 1450));
+    t.push(window.setTimeout(() => setPhase("worlds"), 2000));
+    t.push(window.setTimeout(() => setPhase("labels"), 3400));
+    t.push(window.setTimeout(() => setPhase("headline"), 4000));
+    t.push(window.setTimeout(() => setPhase("description"), 4600));
+    t.push(window.setTimeout(() => setPhase("buttons"), 5200));
+    t.push(
+      window.setTimeout(() => {
+        setPhase("living");
+        sessionStorage.setItem(INTRO_KEY, "true");
+      }, 5800),
+    );
+    return () => t.forEach(clearTimeout);
   }, []);
 
   const guardianState: GuardianState =
     phase === "galaxy" ? "hidden" :
     phase === "guardian" ? "waving" :
-    phase === "dissolve" ? "dissolving" :
-    phase === "living" ? "sitting" : "hidden";
+    "hidden";
 
-  const worldsVisible = phase === "worlds" || phase === "text" || phase === "buttons" || phase === "living";
+  const worldsAppear = ["worlds", "labels", "headline", "description", "buttons", "living"].includes(phase);
+  const labelsAppear = ["labels", "headline", "description", "buttons", "living"].includes(phase);
+  const headlineAppear = ["headline", "description", "buttons", "living"].includes(phase);
+  const descAppear = ["description", "buttons", "living"].includes(phase);
+  const buttonsAppear = ["buttons", "living"].includes(phase);
 
   return (
-    <div className="relative w-full h-full rounded-3xl overflow-hidden bg-black">
-      <Canvas
-        dpr={[1, quality === "high" ? 1.75 : quality === "medium" ? 1.4 : 1]}
-        camera={{ position: [0, 1.2, 7.5], fov: 50 }}
-        gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
-      >
-        <Scene
-          worldsVisible={worldsVisible}
-          dissolveActive={phase === "dissolve"}
-          shake={phase === "guardian"}
-          guardianState={guardianState}
-          sitAnchor={sitAnchor}
-          quality={quality}
-        />
-      </Canvas>
+    <section className="relative w-full overflow-hidden bg-black pt-24 sm:pt-28 pb-16 sm:pb-24 min-h-[100svh]">
+      {/* full-bleed galaxy canvas */}
+      <div className="pointer-events-none absolute inset-0">
+        <Canvas
+          dpr={[1, quality === "high" ? 1.6 : 1.3]}
+          camera={{ position: [0, 0.4, 7], fov: 55 }}
+          gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+        >
+          <BackgroundScene guardianState={guardianState} impact={impact} quality={quality} />
+        </Canvas>
+        {/* vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(0,0,0,0.85)_100%)]" />
+        {/* bottom fade into page */}
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-black" />
+      </div>
 
-      {/* corner vignette for cinematic feel */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_50%,rgba(0,0,0,0.85)_100%)]" />
-
-      {/* mini legend chips in living state */}
+      {/* guardian greeting bubble */}
       <AnimatePresence>
-        {phase === "living" && (
+        {phase === "guardian" && (
           <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="pointer-events-none absolute bottom-3 left-3 right-3 flex flex-wrap justify-center gap-1.5"
+            key="hi"
+            initial={{ opacity: 0, y: 14, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.9 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="pointer-events-none absolute top-[36%] left-1/2 -translate-x-1/2 z-10"
           >
-            {WORLDS.map((w) => (
-              <span
-                key={w.id}
-                className="rounded-full border border-white/10 bg-black/40 backdrop-blur-md px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-white/70"
-              >
-                <span
-                  className="mr-1.5 inline-block size-1.5 rounded-full align-middle"
-                  style={{ background: w.color, boxShadow: `0 0 8px ${w.color}` }}
-                />
-                {w.label}
-              </span>
-            ))}
+            <div className="rounded-full border border-white/15 bg-black/60 backdrop-blur-md px-5 py-2 text-sm text-white shadow-[0_0_40px_-10px_rgba(103,232,249,0.6)]">
+              Hi <span className="inline-block animate-[wave_1s_ease-in-out_infinite] origin-[70%_70%]">👋</span>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+
+      {/* foreground content */}
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6">
+        {/* 5 feature worlds */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5 lg:gap-6">
+          {WORLDS.map((w, i) => (
+            <WorldCard
+              key={w.id}
+              world={w}
+              index={i}
+              appear={worldsAppear}
+              labelAppear={labelsAppear}
+            />
+          ))}
+        </div>
+
+        {/* headline */}
+        <div className="mt-14 sm:mt-20 text-center max-w-4xl mx-auto">
+          <motion.h1
+            initial={{ opacity: 0, y: 24, filter: "blur(20px)" }}
+            animate={
+              headlineAppear
+                ? { opacity: 1, y: 0, filter: "blur(0px)" }
+                : { opacity: 0, y: 24, filter: "blur(20px)" }
+            }
+            transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+            className="text-4xl sm:text-6xl lg:text-7xl font-semibold tracking-[-0.035em] text-white leading-[1.02]"
+          >
+            <span className="block">The home of</span>
+            <motion.span
+              initial={{ opacity: 0, filter: "blur(20px)" }}
+              animate={
+                headlineAppear
+                  ? { opacity: 1, filter: "blur(0px)" }
+                  : { opacity: 0, filter: "blur(20px)" }
+              }
+              transition={{ duration: 1.1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="block bg-gradient-to-b from-white via-white to-white/60 bg-clip-text text-transparent"
+            >
+              internet business.
+            </motion.span>
+          </motion.h1>
+
+          {/* description */}
+          <motion.p
+            initial={{ opacity: 0, y: 16, filter: "blur(10px)" }}
+            animate={
+              descAppear
+                ? { opacity: 1, y: 0, filter: "blur(0px)" }
+                : { opacity: 0, y: 16, filter: "blur(10px)" }
+            }
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-6 text-base sm:text-lg text-white/65 max-w-2xl mx-auto leading-relaxed"
+          >
+            Discover thousands of communities, courses, and digital products —
+            or launch your own store in minutes. One platform, infinite possibilities.
+          </motion.p>
+
+          {/* buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 18, scale: 0.96 }}
+            animate={
+              buttonsAppear
+                ? { opacity: 1, y: 0, scale: 1 }
+                : { opacity: 0, y: 18, scale: 0.96 }
+            }
+            transition={{ duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}
+            className="mt-8 sm:mt-10 inline-flex flex-wrap items-center justify-center gap-3"
+          >
+            <button
+              onClick={() => setMode("nexus")}
+              className={`group relative inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition-all overflow-hidden ${
+                mode === "nexus"
+                  ? "bg-white text-black shadow-[0_0_50px_-8px_rgba(255,255,255,0.55)]"
+                  : "border border-white/15 bg-white/[0.04] text-white backdrop-blur-xl hover:bg-white/[0.08]"
+              }`}
+            >
+              <SparklesIcon className="size-4" />
+              Switch to Nexus
+              <span className="pointer-events-none absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition" style={{ boxShadow: "0 0 60px -10px rgba(34,211,238,0.6)" }} />
+            </button>
+            <button
+              onClick={() => setMode("security")}
+              className={`group relative inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition-all overflow-hidden ${
+                mode === "security"
+                  ? "bg-gradient-to-r from-cyan-400 to-teal-500 text-black shadow-[0_0_50px_-8px_oklch(0.86_0.16_200_/0.7)]"
+                  : "border border-cyan-300/20 bg-cyan-400/[0.05] text-white backdrop-blur-xl hover:bg-cyan-400/[0.1]"
+              }`}
+            >
+              <ShieldCheck className="size-4" />
+              Switch to Nexus Security
+            </button>
+          </motion.div>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes wave {
+          0%, 100% { transform: rotate(0deg); }
+          25% { transform: rotate(18deg); }
+          75% { transform: rotate(-12deg); }
+        }
+      `}</style>
+    </section>
   );
 }
