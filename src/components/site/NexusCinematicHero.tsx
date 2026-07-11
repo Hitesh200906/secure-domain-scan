@@ -177,14 +177,13 @@ function StarLayer({
 
 /** Subtle parallax rig — tiny mouse drift for depth perception. */
 function ParallaxRig() {
-  const { camera } = useFrame((state) => {
+  useFrame((state) => {
     const x = state.pointer.x * 0.15;
     const y = state.pointer.y * 0.08;
     state.camera.position.x += (x - state.camera.position.x) * 0.02;
     state.camera.position.y += (0.4 + y - state.camera.position.y) * 0.02;
     state.camera.lookAt(0, 0, 0);
-  }) as unknown as { camera: THREE.Camera };
-  void camera;
+  });
   return null;
 }
 
