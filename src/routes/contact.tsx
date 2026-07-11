@@ -9,7 +9,7 @@ import { useAuth } from "@/hooks/use-auth";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — Nexus Security" },
+      { title: "Contact — Nexefy Security" },
       { name: "description", content: "Talk to our security team. Request a custom audit or get answers about pricing, integrations, and compliance." },
     ],
   }),

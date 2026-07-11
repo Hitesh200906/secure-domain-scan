@@ -5,7 +5,7 @@ import { Pricing } from "@/components/site/Pricing";
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
-      { title: "Pricing — Nexus Security" },
+      { title: "Pricing — Nexefy Security" },
       {
         name: "description",
         content:

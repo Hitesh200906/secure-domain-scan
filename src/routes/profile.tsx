@@ -16,7 +16,7 @@ import { RoleBadge } from "@/components/ui/RoleBadge";
 
 
 export const Route = createFileRoute("/profile")({
-  head: () => ({ meta: [{ title: "Profile — Nexus" }] }),
+  head: () => ({ meta: [{ title: "Profile — Nexefy" }] }),
   validateSearch: (s: Record<string, unknown>) => ({ tab: (s.tab as string) || undefined }),
   component: ProfilePage,
 });
@@ -464,7 +464,7 @@ function ProfilePage() {
 
           {tab === "api" && (
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="grid gap-4">
-              <Card title="API Keys" desc="Use API keys to integrate Nexus into your stack.">
+              <Card title="API Keys" desc="Use API keys to integrate Nexefy into your stack.">
                 <div className="p-4 rounded-xl glass">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -796,7 +796,7 @@ function ChatBubble({ side, who, when, body }: { side: "user" | "admin"; who: st
   return (
     <div className={`flex ${side === "admin" ? "justify-start" : "justify-end"}`}>
       <div className={`max-w-[85%] rounded-2xl px-4 py-3 ${side === "admin" ? "glass border-primary/20" : "bg-primary/15 border border-primary/30"}`}>
-        <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-1">{side === "admin" ? "Nexus Team" : who} · {new Date(when).toLocaleString()}</div>
+        <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-1">{side === "admin" ? "Nexefy Team" : who} · {new Date(when).toLocaleString()}</div>
         <div className="text-sm whitespace-pre-wrap">{body}</div>
       </div>
     </div>

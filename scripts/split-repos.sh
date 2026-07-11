@@ -49,7 +49,7 @@ echo "[frontend] copied"
 
 # Drop a frontend-specific README pointer.
 cat > "$FRONTEND/README.md" <<'EOF'
-# Nexus Security — Frontend (React + Vite + TanStack Start)
+# Nexefy Security — Frontend (React + Vite + TanStack Start)
 
 Deployed to **Vercel**. Talks to the Express backend hosted on Render via
 `VITE_API_BASE_URL`.

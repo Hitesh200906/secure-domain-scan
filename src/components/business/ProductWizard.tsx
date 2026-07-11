@@ -383,7 +383,7 @@ function StepBasics({ data, set }: any) {
       <div className="grid md:grid-cols-2 gap-6">
         <div className="space-y-4">
           <Field label={`${isCommunity ? "Community" : "Product"} name *`}>
-            <Input value={data.name} onChange={(e: any) => set("name", e.target.value)} placeholder={isCommunity ? "Indie Hackers Club" : "Nexus Pro"} />
+            <Input value={data.name} onChange={(e: any) => set("name", e.target.value)} placeholder={isCommunity ? "Indie Hackers Club" : "Nexefy Pro"} />
           </Field>
           <Field label="Headline *" hint="One bold line that sells it.">
             <Input value={data.headline} onChange={(e: any) => set("headline", e.target.value)} placeholder="Ship secure code 10x faster" />

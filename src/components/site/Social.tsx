@@ -166,7 +166,7 @@ export function Social() {
         <SectionHeader
           eyebrow="Community"
           title="Join us on social"
-          description="Follow Nexus Security for live threat intel, research drops, and behind-the-scenes from our red team."
+          description="Follow Nexefy Security for live threat intel, research drops, and behind-the-scenes from our red team."
         />
         <div className="mt-10 sm:mt-16 grid md:grid-cols-3 gap-5 sm:gap-6">
           {socials.map((s, i) => (

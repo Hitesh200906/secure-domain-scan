@@ -10,7 +10,7 @@ import { signInWithGoogle } from "@/lib/auth-helpers";
 import { Input, GoogleIcon } from "./login";
 
 export const Route = createFileRoute("/signup")({
-  head: () => ({ meta: [{ title: "Sign up — Nexus Security" }] }),
+  head: () => ({ meta: [{ title: "Sign up — Nexefy Security" }] }),
   component: SignupPage,
 });
 

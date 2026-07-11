@@ -30,8 +30,8 @@ const featuredCommunities = [
 ];
 
 const creators = [
-  { name: "Steven Schwartz", handle: "Creator of Nexus AI", followers: "94k" },
-  { name: "Tiana Reyes", handle: "Creator of Nexus University", followers: "62k" },
+  { name: "Steven Schwartz", handle: "Creator of Nexefy AI", followers: "94k" },
+  { name: "Tiana Reyes", handle: "Creator of Nexefy University", followers: "62k" },
   { name: "Evan Stanfield", handle: "Creator of Clipping Culture", followers: "48k" },
   { name: "QTT", handle: "Creator of Rocket Labs", followers: "37k" },
   { name: "APP Builder", handle: "Creator of App Studio", followers: "29k" },
@@ -226,7 +226,7 @@ export function NexusHome() {
                   Start your business today
                 </h2>
                 <p className="mt-4 text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
-                  Join 50,000+ creators building their internet business on Nexus.
+                  Join 50,000+ creators building their internet business on Nexefy.
                 </p>
                 <div className="mt-7 sm:mt-8 flex flex-col sm:flex-row gap-3 justify-center">
                   <Link
