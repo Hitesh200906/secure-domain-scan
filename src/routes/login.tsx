@@ -8,7 +8,7 @@ import { signInWithGoogle } from "@/lib/auth-helpers";
 import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Login — Nexus Security" }] }),
+  head: () => ({ meta: [{ title: "Login — Nexefy Security" }] }),
   component: LoginPage,
 });
 

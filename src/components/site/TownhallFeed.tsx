@@ -10,7 +10,7 @@ type Tab = "all" | "following" | "joined";
 const samplePosts = [
   {
     author: "Steven Schwartz",
-    store: "Nexus AI",
+    store: "Nexefy AI",
     time: "2h",
     body: "Just shipped a new model fine-tune that scores 12% higher on extraction tasks. Drop your hardest prompts below 👇",
     likes: 248,
@@ -19,7 +19,7 @@ const samplePosts = [
   },
   {
     author: "Tiana Reyes",
-    store: "Nexus University",
+    store: "Nexefy University",
     time: "5h",
     body: "New cohort opens Monday. Three seats left for the live mentorship track. Who's in?",
     likes: 132,

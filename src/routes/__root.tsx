@@ -82,14 +82,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Nexus Security — AI-Powered Security Analysis" },
+      { title: "Nexefy Security — AI-Powered Security Analysis" },
       {
         name: "description",
         content:
           "Detect vulnerabilities before attackers do. AI-powered security audits, pen test reports, and continuous monitoring for modern teams.",
       },
-      { name: "author", content: "Nexus Security" },
-      { property: "og:title", content: "Nexus Security — AI-Powered Security Analysis" },
+      { name: "author", content: "Nexefy Security" },
+      { property: "og:title", content: "Nexefy Security — AI-Powered Security Analysis" },
       {
         property: "og:description",
         content:
@@ -97,10 +97,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Nexus Security — AI-Powered Security Analysis" },
-      { name: "description", content: "Nexus Security Suite offers AI-powered website security analysis and vulnerability detection." },
-      { property: "og:description", content: "Nexus Security Suite offers AI-powered website security analysis and vulnerability detection." },
-      { name: "twitter:description", content: "Nexus Security Suite offers AI-powered website security analysis and vulnerability detection." },
+      { name: "twitter:title", content: "Nexefy Security — AI-Powered Security Analysis" },
+      { name: "description", content: "Nexefy Security Suite offers AI-powered website security analysis and vulnerability detection." },
+      { property: "og:description", content: "Nexefy Security Suite offers AI-powered website security analysis and vulnerability detection." },
+      { name: "twitter:description", content: "Nexefy Security Suite offers AI-powered website security analysis and vulnerability detection." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d8f91d36-cedc-4a6b-9c54-def8ee63e816/id-preview-e6987258--5b3d93f4-3af9-46bc-b5ef-c0e5ca161e58.lovable.app-1780121394641.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d8f91d36-cedc-4a6b-9c54-def8ee63e816/id-preview-e6987258--5b3d93f4-3af9-46bc-b5ef-c0e5ca161e58.lovable.app-1780121394641.png" },
     ],

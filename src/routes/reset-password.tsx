@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Input } from "./login";
 
 export const Route = createFileRoute("/reset-password")({
-  head: () => ({ meta: [{ title: "Reset password — Nexus Security" }] }),
+  head: () => ({ meta: [{ title: "Reset password — Nexefy Security" }] }),
   component: ResetPasswordPage,
 });
 

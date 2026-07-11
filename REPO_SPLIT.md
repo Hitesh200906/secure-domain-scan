@@ -176,7 +176,7 @@ Then for each:
 cd ../Nexussecuritylovable
 git init -b main
 git add -A
-git commit -m "Initial commit: Express backend for Nexus Security"
+git commit -m "Initial commit: Express backend for Nexefy Security"
 gh repo create Nexussecuritylovable --private --source=. --remote=origin --push
 # or: git remote add origin git@github.com:<you>/Nexussecuritylovable.git && git push -u origin main
 
@@ -184,7 +184,7 @@ gh repo create Nexussecuritylovable --private --source=. --remote=origin --push
 cd ../nexus-security
 git init -b main
 git add -A
-git commit -m "Initial commit: React frontend for Nexus Security"
+git commit -m "Initial commit: React frontend for Nexefy Security"
 gh repo create nexus-security --private --source=. --remote=origin --push
 # or: git remote add origin git@github.com:<you>/nexus-security.git && git push -u origin main
 ```

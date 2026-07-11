@@ -18,11 +18,11 @@ import { useAuth } from "@/hooks/use-auth";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Nexus — The home of internet business" },
+      { title: "Nexefy — The home of internet business" },
       {
         name: "description",
         content:
-          "Discover thousands of communities, courses, and digital products — or launch your own store in minutes on Nexus.",
+          "Discover thousands of communities, courses, and digital products — or launch your own store in minutes on Nexefy.",
       },
     ],
   }),

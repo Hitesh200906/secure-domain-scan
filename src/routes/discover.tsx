@@ -11,8 +11,8 @@ import type { Store } from "@/lib/business";
 export const Route = createFileRoute("/discover")({
   head: () => ({
     meta: [
-      { title: "Discover — Nexus" },
-      { name: "description", content: "Discover top communities, tools, and creators on Nexus." },
+      { title: "Discover — Nexefy" },
+      { name: "description", content: "Discover top communities, tools, and creators on Nexefy." },
     ],
   }),
   component: DiscoverPage,
@@ -88,7 +88,7 @@ function storeToCard(s: Store): Card {
     id: s.id,
     title: s.name,
     owner: s.name,
-    description: s.description || "A new community on Nexus. Tap to explore products and join.",
+    description: s.description || "A new community on Nexefy. Tap to explore products and join.",
     gradient,
     emoji: s.name[0]?.toUpperCase() || "★",
     members: String(s.member_count ?? 0),
@@ -135,7 +135,7 @@ function DiscoverPage() {
   const grouped = useMemo(() => {
     if (cat !== "all" || query) return [{ title: cat === "all" ? "Results" : CATEGORIES.find(c=>c.key===cat)?.label || cat, cards: filtered }];
     const out: { title: string; cards: Card[] }[] = [];
-    if (userStores.length) out.push({ title: "Fresh from Nexus creators", cards: userStores });
+    if (userStores.length) out.push({ title: "Fresh from Nexefy creators", cards: userStores });
     for (const c of CATEGORIES.slice(1)) {
       const cards = CURATED.filter((x) => x.category === c.key);
       if (cards.length) out.push({ title: c.label, cards });

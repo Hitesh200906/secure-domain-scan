@@ -440,7 +440,7 @@ function LaunchOverlay({ phase, name }: { phase: "idle" | "forging" | "done"; na
             {done ? `Welcome, ${name}` : name}
           </div>
           <div className="mt-2 text-xs text-white/40">
-            {done ? "Redirecting to add your first product…" : "Securing your space on Nexus"}
+            {done ? "Redirecting to add your first product…" : "Securing your space on Nexefy"}
           </div>
         </div>
       </div>

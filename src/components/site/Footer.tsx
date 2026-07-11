@@ -59,7 +59,7 @@ export function Footer() {
 
         <div className="mt-14 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Nexus Security, Inc. All rights reserved.
+            © {new Date().getFullYear()} Nexefy Security, Inc. All rights reserved.
           </p>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />

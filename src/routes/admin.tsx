@@ -5,7 +5,7 @@ import { useAdmin } from "@/hooks/use-admin";
 import { hasAdminPasscode, verifyAdminPasscode } from "@/lib/auth-helpers";
 
 export const Route = createFileRoute("/admin")({
-  head: () => ({ meta: [{ title: "Admin Console — Nexus Security" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Admin Console — Nexefy Security" }, { name: "robots", content: "noindex" }] }),
   component: AdminGate,
 });
 

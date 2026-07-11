@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_authenticated/scan/new")({
     const plan: Plan = p === "starter" || p === "enterprise" ? p : "professional";
     return { plan };
   },
-  head: () => ({ meta: [{ title: "New Scan — Nexus Security" }] }),
+  head: () => ({ meta: [{ title: "New Scan — Nexefy Security" }] }),
   component: ScanNewPage,
 });
 

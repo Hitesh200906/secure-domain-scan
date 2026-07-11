@@ -5,7 +5,7 @@ import { SectionBackdrop } from "./SectionFx";
 const items = [
   {
     quote:
-      "Nexus replaced three vendors and a quarterly pen test. Our engineers ship faster knowing the platform has their back.",
+      "Nexefy replaced three vendors and a quarterly pen test. Our engineers ship faster knowing the platform has their back.",
     name: "Aarav Mehta",
     role: "CTO, Lendwise",
     badge: "Series B Fintech",
@@ -19,7 +19,7 @@ const items = [
   },
   {
     quote:
-      "We run continuous scans across 40+ client environments. Nothing has matched Nexus on signal-to-noise.",
+      "We run continuous scans across 40+ client environments. Nothing has matched Nexefy on signal-to-noise.",
     name: "Daniel Okafor",
     role: "Director of Security, Northwave Agency",
     badge: "Agency",

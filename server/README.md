@@ -1,4 +1,4 @@
-# Nexus Security — Backend (Express + TypeScript)
+# Nexefy Security — Backend (Express + TypeScript)
 
 Production-ready Node.js backend deployable to **Render**. The frontend (Vercel) calls this API
 via `VITE_API_BASE_URL` (see `src/lib/api-client.ts`).

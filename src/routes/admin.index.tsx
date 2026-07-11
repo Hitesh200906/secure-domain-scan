@@ -61,7 +61,7 @@ function AdminOverview() {
   }, []);
 
   return (
-    <AdminShell title="Control Center" description="Real-time overview of users, scans, support volume and revenue across the Nexus platform.">
+    <AdminShell title="Control Center" description="Real-time overview of users, scans, support volume and revenue across the Nexefy platform.">
       {!s ? (
         <div className="text-sm text-muted-foreground">Loading metrics…</div>
       ) : (

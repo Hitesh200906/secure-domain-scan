@@ -22,7 +22,7 @@ export function ModeToggle({ size = "lg" }: { size?: "lg" | "md" }) {
         }`}
       >
         <Sparkles className="size-3.5 sm:size-4 shrink-0" />
-        <span className="whitespace-nowrap"><span className="hidden xs:inline">Switch to </span>Nexus</span>
+        <span className="whitespace-nowrap"><span className="hidden xs:inline">Switch to </span>Nexefy</span>
       </button>
       <button
         onClick={() => setMode("security")}
@@ -33,7 +33,7 @@ export function ModeToggle({ size = "lg" }: { size?: "lg" | "md" }) {
         }`}
       >
         <ShieldCheck className="size-3.5 sm:size-4 shrink-0" />
-        <span className="whitespace-nowrap"><span className="hidden xs:inline">Switch to Nexus </span>Security</span>
+        <span className="whitespace-nowrap"><span className="hidden xs:inline">Switch to Nexefy </span>Security</span>
       </button>
     </motion.div>
   );
