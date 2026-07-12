@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef } from "react";
 import { motion } from "framer-motion";
 import { ModeToggle } from "./ModeToggle";
 import marketplaceAsset from "@/assets/marketplace-world.png.asset.json";
+import heroBgAsset from "@/assets/hero-bg.png.asset.json";
 
 /* ================================================================
    HERO — pure black space, twinkling stars, 5 floating "worlds"
