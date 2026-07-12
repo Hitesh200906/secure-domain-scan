@@ -125,9 +125,26 @@ export function Navbar() {
             ) : (
               <>
                 <Link to="/login" className="px-4 py-2 text-[13px] text-muted-foreground hover:text-white transition">Login</Link>
-                <Link to="/signup" className="relative inline-flex items-center gap-1.5 rounded-full bg-white text-black px-4 py-2 text-[13px] font-medium hover:bg-primary transition-all duration-300">
-                  Sign Up
-                  <span className="text-base leading-none">→</span>
+                <Link
+                  to="/signup"
+                  className="group relative inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-[13px] font-medium text-white overflow-hidden transition-all duration-300 hover:scale-[1.03]"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #1a1740 0%, #2a1e6b 45%, #5b3df5 100%)",
+                    boxShadow:
+                      "0 6px 24px -6px rgba(91,61,245,0.55), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.35)",
+                  }}
+                >
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 rounded-xl"
+                    style={{
+                      background:
+                        "linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 45%)",
+                    }}
+                  />
+                  <span className="relative">Sign Up</span>
+                  <span className="relative text-base leading-none transition-transform duration-300 group-hover:translate-x-0.5">→</span>
                 </Link>
               </>
             )}
