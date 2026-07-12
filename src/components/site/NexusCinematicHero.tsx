@@ -95,7 +95,7 @@ function WorldLabel({ text, accent }: { text: string; accent: string }) {
         className="relative"
       >
         <h3
-          className="relative text-2xl sm:text-3xl md:text-4xl font-semibold tracking-[0.18em] uppercase text-white"
+          className="relative whitespace-nowrap text-2xl sm:text-3xl md:text-4xl font-semibold tracking-[0.18em] uppercase text-white"
           style={{
             textShadow: `0 0 24px ${accent}80, 0 0 60px ${accent}40`,
           }}
@@ -224,25 +224,11 @@ const WORLDS: World[] = [
     delay: 0.1,
   },
   {
-    key: "security",
-    label: "Security",
-    description: "Enterprise-grade protection surrounding every store, member and transaction.",
-    accent: "#f472b6",
-    delay: 0.2,
-  },
-  {
-    key: "ai",
-    label: "AI Core",
-    description: "An intelligence layer that automates, personalizes and grows your business.",
-    accent: "#22d3ee",
-    delay: 0.3,
-  },
-  {
     key: "business",
     label: "Business",
     description: "Analytics, orders and revenue — everything you need to run the operation.",
     accent: "#facc15",
-    delay: 0.4,
+    delay: 0.2,
   },
 ];
 
@@ -253,7 +239,7 @@ export function NexusCinematicHero() {
 
       <div className="relative z-10 mx-auto flex w-full max-w-[1600px] flex-col px-4 sm:px-6">
         {/* Row of 5 worlds */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-10 lg:gap-14">
           {WORLDS.map((w) => (
             <WorldCard key={w.key} w={w} />
           ))}
