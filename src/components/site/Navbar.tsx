@@ -127,7 +127,7 @@ export function Navbar() {
                 <Link to="/login" className="px-4 py-2 text-[13px] text-muted-foreground hover:text-white transition">Login</Link>
                 <Link
                   to="/signup"
-                  className="group relative inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-[13px] font-medium text-[#F8FAFC] overflow-hidden transition-all duration-300 hover:-translate-y-0.5 border border-white/10"
+                  className="group relative inline-flex items-center gap-2 rounded-lg px-4 py-1.5 text-[13px] font-medium text-[#F8FAFC] overflow-hidden transition-all duration-300 hover:-translate-y-0.5 border border-white/10"
                   style={{
                     background:
                       "linear-gradient(90deg, #5A24B8 0%, #4730D8 42%, #1F55F5 100%)",
