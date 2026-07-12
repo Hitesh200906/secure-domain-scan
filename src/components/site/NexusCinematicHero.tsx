@@ -4,7 +4,9 @@ import { ModeToggle } from "./ModeToggle";
 import marketplaceAsset from "@/assets/marketplace-world.png.asset.json";
 
 /* ================================================================
-   HERO — black space, twinkling stars, marketplace showcase image.
+   HERO — pure black space, twinkling stars, 5 floating "worlds"
+   with animated labels + descriptions. Marketplace is live;
+   4 more slots are ready for the upcoming images.
    ================================================================ */
 
 type Star = { x: number; y: number; r: number; base: number; amp: number; speed: number; phase: number };
@@ -82,45 +84,195 @@ function StarField() {
   return <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" aria-hidden="true" />;
 }
 
-export function NexusCinematicHero() {
+/* -------------------- Animated label -------------------- */
+function WorldLabel({ text, accent }: { text: string; accent: string }) {
   return (
-    <section className="relative w-full overflow-hidden bg-black pt-24 sm:pt-28 pb-10 sm:pb-14 min-h-[100svh]">
-      <StarField />
+    <div className="relative inline-flex flex-col items-center">
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.4 }}
+        className="relative"
+      >
+        <h3
+          className="relative text-2xl sm:text-3xl md:text-4xl font-semibold tracking-[0.18em] uppercase text-white"
+          style={{
+            textShadow: `0 0 24px ${accent}80, 0 0 60px ${accent}40`,
+          }}
+        >
+          {text.split("").map((ch, i) => (
+            <motion.span
+              key={i}
+              className="inline-block"
+              animate={{ y: [0, -2, 0] }}
+              transition={{
+                duration: 2.4,
+                repeat: Infinity,
+                delay: i * 0.05,
+                ease: "easeInOut",
+              }}
+            >
+              {ch === " " ? "\u00A0" : ch}
+            </motion.span>
+          ))}
+        </h3>
+        {/* animated underline */}
+        <motion.span
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 0.9, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute -bottom-2 left-0 right-0 mx-auto h-px origin-center"
+          style={{
+            background: `linear-gradient(90deg, transparent, ${accent}, transparent)`,
+            boxShadow: `0 0 12px ${accent}`,
+          }}
+        />
+        {/* shimmer sweep */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 overflow-hidden"
+        >
+          <motion.span
+            className="absolute inset-y-0 w-1/3 -skew-x-12"
+            style={{
+              background: `linear-gradient(90deg, transparent, ${accent}55, transparent)`,
+            }}
+            animate={{ x: ["-120%", "260%"] }}
+            transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut", repeatDelay: 1.2 }}
+          />
+        </span>
+      </motion.div>
+    </div>
+  );
+}
 
-      {/* Marketplace showcase */}
-      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-center px-4 sm:px-6 min-h-[calc(100svh-9rem)]">
-        <div className="flex-1 flex flex-col items-center justify-center w-full">
-          <motion.div
-            initial={{ opacity: 0, y: 24, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-            className="relative w-full flex justify-center"
-          >
-            {/* soft glow behind */}
-            <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
-              <div className="size-[70%] rounded-full bg-sky-500/20 blur-[120px]" />
-            </div>
-            <motion.img
-              src={marketplaceAsset.url}
-              alt="Marketplace"
-              className="w-full max-w-[900px] h-auto object-contain drop-shadow-[0_20px_60px_rgba(56,189,248,0.35)] select-none"
-              draggable={false}
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </motion.div>
+/* -------------------- World card -------------------- */
+type World = {
+  key: string;
+  label: string;
+  description: string;
+  image?: string;
+  accent: string;
+  delay: number;
+};
 
-          <motion.h2
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="mt-6 sm:mt-8 text-center text-3xl sm:text-5xl md:text-6xl font-semibold tracking-[-0.04em] text-white"
-          >
-            Marketplace
-          </motion.h2>
+function WorldCard({ w }: { w: World }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40, scale: 0.94 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 1.1, delay: w.delay, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative flex flex-col items-center text-center"
+    >
+      {/* image area */}
+      <div className="relative w-full aspect-[4/3] flex items-center justify-center">
+        {/* accent halo */}
+        <div
+          className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center"
+          aria-hidden
+        >
+          <div
+            className="size-[70%] rounded-full blur-[80px] opacity-70 transition-opacity duration-500 group-hover:opacity-100"
+            style={{ backgroundColor: `${w.accent}33` }}
+          />
         </div>
 
-        <div className="mt-auto flex justify-center pb-2 sm:pb-4">
+        {w.image ? (
+          <motion.img
+            src={w.image}
+            alt={w.label}
+            draggable={false}
+            className="max-h-full max-w-full object-contain select-none"
+            style={{ filter: `drop-shadow(0 20px 50px ${w.accent}55)` }}
+            animate={{ y: [0, -8, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: w.delay }}
+          />
+        ) : (
+          <div
+            className="flex h-[70%] w-[70%] items-center justify-center rounded-3xl border border-dashed"
+            style={{ borderColor: `${w.accent}55`, background: `${w.accent}0a` }}
+          >
+            <span className="text-xs uppercase tracking-[0.3em] text-white/40">Coming soon</span>
+          </div>
+        )}
+      </div>
+
+      {/* label */}
+      <div className="mt-4 sm:mt-6">
+        <WorldLabel text={w.label} accent={w.accent} />
+      </div>
+
+      {/* description */}
+      <motion.p
+        initial={{ opacity: 0, y: 8 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, delay: w.delay + 0.6 }}
+        className="mt-4 max-w-xs text-sm sm:text-base text-white/60 leading-relaxed"
+      >
+        {w.description}
+      </motion.p>
+    </motion.div>
+  );
+}
+
+/* -------------------- Hero -------------------- */
+const WORLDS: World[] = [
+  {
+    key: "marketplace",
+    label: "Marketplace",
+    description:
+      "Buy, sell, create and scale — a living marketplace built for internet-native businesses.",
+    image: marketplaceAsset.url,
+    accent: "#38bdf8",
+    delay: 0,
+  },
+  {
+    key: "communities",
+    label: "Communities",
+    description: "Bring your people together in interconnected, always-on communities.",
+    accent: "#a78bfa",
+    delay: 0.1,
+  },
+  {
+    key: "security",
+    label: "Security",
+    description: "Enterprise-grade protection surrounding every store, member and transaction.",
+    accent: "#f472b6",
+    delay: 0.2,
+  },
+  {
+    key: "ai",
+    label: "AI Core",
+    description: "An intelligence layer that automates, personalizes and grows your business.",
+    accent: "#22d3ee",
+    delay: 0.3,
+  },
+  {
+    key: "business",
+    label: "Business",
+    description: "Analytics, orders and revenue — everything you need to run the operation.",
+    accent: "#facc15",
+    delay: 0.4,
+  },
+];
+
+export function NexusCinematicHero() {
+  return (
+    <section className="relative w-full overflow-hidden bg-black pt-24 sm:pt-28 pb-16 sm:pb-20">
+      <StarField />
+
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col px-4 sm:px-6">
+        {/* Grid of worlds */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 sm:gap-16 lg:gap-20">
+          {WORLDS.map((w) => (
+            <WorldCard key={w.key} w={w} />
+          ))}
+        </div>
+
+        {/* Switch buttons */}
+        <div className="mt-16 sm:mt-24 flex justify-center">
           <ModeToggle />
         </div>
       </div>
