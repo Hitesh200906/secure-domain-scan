@@ -167,8 +167,8 @@ export function NexusCinematicHero() {
         className="absolute inset-0 bg-cover bg-center"
         style={{
           backgroundImage: `url(${heroBgAsset.url})`,
-          filter: "blur(4px) saturate(1.1)",
-          opacity: 0.9,
+          filter: "blur(3px) saturate(1.15)",
+          opacity: 1,
           transform: "scale(1.05)",
         }}
       />
@@ -178,13 +178,17 @@ export function NexusCinematicHero() {
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 70%, rgba(0,0,0,0.7) 100%)",
+            "radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.28) 70%, rgba(0,0,0,0.6) 100%)",
         }}
       />
-      {/* Top fade into navbar black */}
+      {/* Top merge into navbar — long, smooth black-to-transparent so the navbar reads as part of the image */}
       <div
         aria-hidden="true"
-        className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 h-56 sm:h-72"
+        style={{
+          background:
+            "linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.92) 25%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0) 100%)",
+        }}
       />
       {/* Bottom fade */}
       <div
