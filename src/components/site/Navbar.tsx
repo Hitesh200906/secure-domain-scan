@@ -127,20 +127,28 @@ export function Navbar() {
                 <Link to="/login" className="px-4 py-2 text-[13px] text-muted-foreground hover:text-white transition">Login</Link>
                 <Link
                   to="/signup"
-                  className="group relative inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-[13px] font-medium text-white overflow-hidden transition-all duration-300 hover:scale-[1.03]"
+                  className="group relative inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-[13px] font-medium text-white overflow-hidden transition-all duration-300 hover:scale-[1.03] border border-[#60A5FA]/30 hover:border-[#60A5FA]/50"
                   style={{
                     background:
-                      "linear-gradient(135deg, #1a1740 0%, #2a1e6b 45%, #5b3df5 100%)",
+                      "linear-gradient(135deg, #2563EB 0%, #3B82F6 45%, #4F46E5 100%)",
                     boxShadow:
-                      "0 6px 24px -6px rgba(91,61,245,0.55), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.35)",
+                      "0 0 20px rgba(59,130,246,.35), 0 0 45px rgba(56,189,248,.18), inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.25)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background =
+                      "linear-gradient(135deg, #3B82F6 0%, #38BDF8 50%, #2563EB 100%)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background =
+                      "linear-gradient(135deg, #2563EB 0%, #3B82F6 45%, #4F46E5 100%)";
                   }}
                 >
                   <span
                     aria-hidden
-                    className="pointer-events-none absolute inset-0 rounded-xl"
+                    className="pointer-events-none absolute inset-0 rounded-lg"
                     style={{
                       background:
-                        "linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 45%)",
+                        "linear-gradient(180deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 50%)",
                     }}
                   />
                   <span className="relative">Sign Up</span>
