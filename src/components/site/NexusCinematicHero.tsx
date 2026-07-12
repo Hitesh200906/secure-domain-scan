@@ -251,9 +251,9 @@ export function NexusCinematicHero() {
     <section className="relative w-full overflow-hidden bg-black pt-24 sm:pt-28 pb-16 sm:pb-20">
       <StarField />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col px-4 sm:px-6">
-        {/* Grid of worlds */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 sm:gap-16 lg:gap-20">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1600px] flex-col px-4 sm:px-6">
+        {/* Row of 5 worlds */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8 lg:gap-10">
           {WORLDS.map((w) => (
             <WorldCard key={w.key} w={w} />
           ))}
