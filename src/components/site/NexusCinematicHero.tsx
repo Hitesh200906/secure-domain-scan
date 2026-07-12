@@ -167,24 +167,12 @@ function WorldCard({ w }: { w: World }) {
     >
       {/* image area */}
       <div className="relative w-full aspect-[4/3] flex items-center justify-center">
-        {/* accent halo */}
-        <div
-          className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center"
-          aria-hidden
-        >
-          <div
-            className="size-[70%] rounded-full blur-[80px] opacity-70 transition-opacity duration-500 group-hover:opacity-100"
-            style={{ backgroundColor: `${w.accent}33` }}
-          />
-        </div>
-
         {w.image ? (
           <motion.img
             src={w.image}
             alt={w.label}
             draggable={false}
             className="max-h-full max-w-full object-contain select-none"
-            style={{ filter: `drop-shadow(0 20px 50px ${w.accent}55)` }}
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: w.delay }}
           />
@@ -263,9 +251,9 @@ export function NexusCinematicHero() {
     <section className="relative w-full overflow-hidden bg-black pt-24 sm:pt-28 pb-16 sm:pb-20">
       <StarField />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col px-4 sm:px-6">
-        {/* Grid of worlds */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 sm:gap-16 lg:gap-20">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1600px] flex-col px-4 sm:px-6">
+        {/* Row of 5 worlds */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8 lg:gap-10">
           {WORLDS.map((w) => (
             <WorldCard key={w.key} w={w} />
           ))}
