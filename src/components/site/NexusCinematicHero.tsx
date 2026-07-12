@@ -167,18 +167,18 @@ export function NexusCinematicHero() {
         className="absolute inset-0 bg-cover bg-center"
         style={{
           backgroundImage: `url(${heroBgAsset.url})`,
-          filter: "blur(10px) saturate(1.05)",
-          opacity: 0.45,
-          transform: "scale(1.08)",
+          filter: "blur(4px) saturate(1.1)",
+          opacity: 0.9,
+          transform: "scale(1.05)",
         }}
       />
-      {/* Vignette + dark overlay for professional fade */}
+      {/* Subtle vignette for depth without hiding image */}
       <div
         aria-hidden="true"
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse at center, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.75) 60%, rgba(0,0,0,0.95) 100%)",
+            "radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 70%, rgba(0,0,0,0.7) 100%)",
         }}
       />
       {/* Top fade into navbar black */}
