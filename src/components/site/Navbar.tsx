@@ -127,33 +127,26 @@ export function Navbar() {
                 <Link to="/login" className="px-4 py-2 text-[13px] text-muted-foreground hover:text-white transition">Login</Link>
                 <Link
                   to="/signup"
-                  className="group relative inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-[13px] font-medium text-white overflow-hidden transition-all duration-300 hover:scale-[1.03] border border-[#60A5FA]/30 hover:border-[#60A5FA]/50"
+                  className="group relative inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-[13px] font-medium text-[#F8FAFC] overflow-hidden transition-all duration-300 hover:-translate-y-0.5 border border-white/10"
                   style={{
                     background:
-                      "linear-gradient(135deg, #2563EB 0%, #3B82F6 45%, #4F46E5 100%)",
+                      "linear-gradient(90deg, #5A24B8 0%, #4730D8 42%, #1F55F5 100%)",
                     boxShadow:
-                      "0 0 20px rgba(59,130,246,.35), 0 0 45px rgba(56,189,248,.18), inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.25)",
+                      "inset 0 1px 0 rgba(255,255,255,.08), 0 6px 16px rgba(0,0,0,.35), 0 0 18px rgba(47,96,255,.18)",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background =
-                      "linear-gradient(135deg, #3B82F6 0%, #38BDF8 50%, #2563EB 100%)";
+                    e.currentTarget.style.boxShadow =
+                      "inset 0 1px 0 rgba(255,255,255,.10), 0 10px 22px rgba(0,0,0,.40), 0 0 24px rgba(47,96,255,.30)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background =
-                      "linear-gradient(135deg, #2563EB 0%, #3B82F6 45%, #4F46E5 100%)";
+                    e.currentTarget.style.boxShadow =
+                      "inset 0 1px 0 rgba(255,255,255,.08), 0 6px 16px rgba(0,0,0,.35), 0 0 18px rgba(47,96,255,.18)";
                   }}
                 >
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0 rounded-lg"
-                    style={{
-                      background:
-                        "linear-gradient(180deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 50%)",
-                    }}
-                  />
                   <span className="relative">Sign Up</span>
-                  <span className="relative text-base leading-none transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+                  <span className="relative text-lg font-light leading-none transition-transform duration-300 group-hover:translate-x-1">→</span>
                 </Link>
+
               </>
             )}
           </div>
