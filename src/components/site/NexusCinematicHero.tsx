@@ -167,24 +167,12 @@ function WorldCard({ w }: { w: World }) {
     >
       {/* image area */}
       <div className="relative w-full aspect-[4/3] flex items-center justify-center">
-        {/* accent halo */}
-        <div
-          className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center"
-          aria-hidden
-        >
-          <div
-            className="size-[70%] rounded-full blur-[80px] opacity-70 transition-opacity duration-500 group-hover:opacity-100"
-            style={{ backgroundColor: `${w.accent}33` }}
-          />
-        </div>
-
         {w.image ? (
           <motion.img
             src={w.image}
             alt={w.label}
             draggable={false}
             className="max-h-full max-w-full object-contain select-none"
-            style={{ filter: `drop-shadow(0 20px 50px ${w.accent}55)` }}
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: w.delay }}
           />
