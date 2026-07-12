@@ -192,14 +192,8 @@ export function NexusCinematicHero() {
         className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent"
       />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[1600px] flex-col px-4 sm:px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-10 lg:gap-14">
-          {WORLDS.map((w) => (
-            <WorldCard key={w.key} w={w} />
-          ))}
-        </div>
-
-        <div className="mt-16 sm:mt-24 flex justify-center">
+      <div className="relative z-10 mx-auto flex min-h-[70vh] w-full max-w-[1600px] flex-col items-center justify-end px-4 sm:px-6">
+        <div className="flex justify-center">
           <ModeToggle />
         </div>
       </div>
