@@ -160,44 +160,44 @@ const WORLDS: World[] = [
 
 export function NexusCinematicHero() {
   return (
-    <section className="relative w-full overflow-hidden bg-black pt-24 sm:pt-28 pb-16 sm:pb-20">
-      {/* Background image */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: `url(${heroBgAsset.url})`,
-          filter: "blur(3px) saturate(1.15)",
-          opacity: 1,
-          transform: "scale(1.05)",
-        }}
-      />
-      {/* Subtle vignette for depth without hiding image */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.28) 70%, rgba(0,0,0,0.6) 100%)",
-        }}
-      />
-      {/* Top merge into navbar — long, smooth black-to-transparent so the navbar reads as part of the image */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-56 sm:h-72"
-        style={{
-          background:
-            "linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.92) 25%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0) 100%)",
-        }}
-      />
-      {/* Bottom fade */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent"
-      />
+    <section className="relative w-full bg-black">
+      {/* Image stage */}
+      <div className="relative w-full overflow-hidden pt-24 sm:pt-28 min-h-[70vh]">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${heroBgAsset.url})`,
+            filter: "blur(3px) saturate(1.15)",
+            opacity: 1,
+            transform: "scale(1.05)",
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.28) 70%, rgba(0,0,0,0.6) 100%)",
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 h-56 sm:h-72"
+          style={{
+            background:
+              "linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.92) 25%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0) 100%)",
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-transparent to-black"
+        />
+      </div>
 
-      <div className="relative z-10 mx-auto flex min-h-[70vh] w-full max-w-[1600px] flex-col items-center justify-end px-4 sm:px-6">
-        <div className="flex justify-center">
+      {/* Pure black region — switching buttons live here */}
+      <div className="relative bg-black py-12 sm:py-16">
+        <div className="mx-auto flex max-w-[1600px] justify-center px-4 sm:px-6">
           <ModeToggle />
         </div>
       </div>
