@@ -161,17 +161,44 @@ const WORLDS: World[] = [
 export function NexusCinematicHero() {
   return (
     <section className="relative w-full overflow-hidden bg-black pt-24 sm:pt-28 pb-16 sm:pb-20">
-      <StarField />
+      {/* Background image */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: `url(${heroBgAsset.url})`,
+          filter: "blur(10px) saturate(1.05)",
+          opacity: 0.45,
+          transform: "scale(1.08)",
+        }}
+      />
+      {/* Vignette + dark overlay for professional fade */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.75) 60%, rgba(0,0,0,0.95) 100%)",
+        }}
+      />
+      {/* Top fade into navbar black */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black to-transparent"
+      />
+      {/* Bottom fade */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent"
+      />
 
       <div className="relative z-10 mx-auto flex w-full max-w-[1600px] flex-col px-4 sm:px-6">
-        {/* Row of 5 worlds */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-10 lg:gap-14">
           {WORLDS.map((w) => (
             <WorldCard key={w.key} w={w} />
           ))}
         </div>
 
-        {/* Switch buttons */}
         <div className="mt-16 sm:mt-24 flex justify-center">
           <ModeToggle />
         </div>
