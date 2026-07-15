@@ -55,8 +55,24 @@ export function Navbar() {
       <div className="mx-auto max-w-7xl px-3 sm:px-6">
         <div className={`flex items-center justify-between rounded-2xl px-3 sm:px-6 py-2.5 sm:py-3 transition-all duration-300 ${scrolled ? "bg-black/80 backdrop-blur-xl border border-white/10 shadow-lg" : "bg-transparent border border-transparent"}`}>
           <Link to="/" className="flex items-center gap-2 group">
-            <img src={nexusLogo} alt="Nexefy" width={28} height={28} className="size-7 object-contain" />
-            <span className="text-[15px] font-semibold tracking-tight text-white">
+            <img
+              src={nexusLogo}
+              alt="Nexefy"
+              width={28}
+              height={28}
+              className="size-7 object-contain"
+              style={{
+                filter:
+                  "drop-shadow(0 0 6px rgba(71,48,216,.45)) drop-shadow(0 0 10px rgba(31,85,245,.35))",
+              }}
+            />
+            <span
+              className="text-[15px] font-semibold tracking-tight bg-clip-text text-transparent"
+              style={{
+                backgroundImage:
+                  "linear-gradient(90deg, #5A24B8 0%, #4730D8 42%, #1F55F5 100%)",
+              }}
+            >
               Nexefy
             </span>
           </Link>
