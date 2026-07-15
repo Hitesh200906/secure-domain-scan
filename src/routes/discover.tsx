@@ -323,7 +323,7 @@ function FloatingReflections() {
 function SearchBar({ q, setQ }: { q: string; setQ: (s: string) => void }) {
   return (
     <div
-      className="group relative flex items-center gap-2 rounded-[18px] border border-white/15 bg-white/[0.04] backdrop-blur-xl px-3 sm:px-4 py-2.5 sm:py-3"
+      className="group relative flex items-center gap-2 rounded-[18px] border border-blue-500/70 bg-white/[0.04] backdrop-blur-xl px-3 sm:px-4 py-2.5 sm:py-3"
     >
       <Search className="size-5 text-white/70 ml-1" />
       <input
