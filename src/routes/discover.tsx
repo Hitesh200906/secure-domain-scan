@@ -322,7 +322,7 @@ function FloatingReflections() {
 function SearchBar({ q, setQ }: { q: string; setQ: (s: string) => void }) {
   return (
     <div
-      className="group relative flex items-center gap-2 rounded-[18px] border border-[#3B82F6]/30 bg-white/[0.04] backdrop-blur-xl px-3 sm:px-4 py-2.5 sm:py-3 shadow-[0_10px_60px_-20px_rgba(59,130,246,0.55)]"
+      className="group relative flex items-center gap-2 rounded-[18px] border border-white/15 bg-white/[0.04] backdrop-blur-xl px-3 sm:px-4 py-2.5 sm:py-3"
     >
       <Search className="size-5 text-white/70 ml-1" />
       <input
@@ -334,14 +334,13 @@ function SearchBar({ q, setQ }: { q: string; setQ: (s: string) => void }) {
       <button className="hidden sm:grid size-9 place-items-center rounded-full text-white/60 hover:text-white hover:bg-white/[0.06] transition" aria-label="Voice search">
         <Mic className="size-4" />
       </button>
-      <button className="grid size-9 place-items-center rounded-full text-[#06B6D4] hover:bg-white/[0.06] transition" aria-label="AI search">
+      <button className="grid size-9 place-items-center rounded-full text-white/70 hover:text-white hover:bg-white/[0.06] transition" aria-label="AI search">
         <Sparkles className="size-4" />
       </button>
-      <div className="pointer-events-none absolute inset-0 rounded-[18px] opacity-0 group-focus-within:opacity-100 transition"
-        style={{ boxShadow: "0 0 0 1px rgba(59,130,246,0.5), 0 0 40px rgba(59,130,246,0.35)" }} />
     </div>
   );
 }
+
 
 /* ────────────────────────── quick filters ─────────────────────── */
 
