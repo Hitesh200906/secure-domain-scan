@@ -5,6 +5,7 @@ import {
   Search, Mic, Sparkles, Flame, Rocket, Star, Bot, Server, Palette, Briefcase,
   Gamepad2, Clapperboard, ShieldCheck, BadgeCheck, Users, ArrowUpRight, Circle,
   Cpu, GraduationCap, Wallet, Code2, Store as StoreIcon, Network, Loader2,
+  ShoppingCart, Brain, TrendingUp, PenTool,
 } from "lucide-react";
 import { Navbar } from "@/components/site/Navbar";
 import heroBg from "@/assets/hero-bg.png.asset.json";
@@ -79,16 +80,16 @@ const TRENDING: Card[] = [
 ];
 
 const CATEGORY_CIRCLES = [
-  { key: "Marketplace", icon: StoreIcon,     gradient: "from-blue-500 to-cyan-500" },
-  { key: "Communities", icon: Users,         gradient: "from-fuchsia-500 to-purple-600" },
-  { key: "AI",          icon: Bot,           gradient: "from-indigo-500 to-blue-600" },
-  { key: "Security",    icon: ShieldCheck,   gradient: "from-cyan-500 to-sky-600" },
-  { key: "Business",    icon: Briefcase,     gradient: "from-amber-500 to-orange-600" },
-  { key: "Education",   icon: GraduationCap, gradient: "from-emerald-500 to-teal-600" },
-  { key: "Gaming",      icon: Gamepad2,      gradient: "from-pink-500 to-rose-600" },
-  { key: "Finance",     icon: Wallet,        gradient: "from-yellow-500 to-amber-600" },
-  { key: "Design",      icon: Palette,       gradient: "from-purple-500 to-fuchsia-600" },
-  { key: "Development", icon: Code2,         gradient: "from-sky-500 to-indigo-600" },
+  { key: "Marketplace", icon: ShoppingCart },
+  { key: "Communities", icon: Users },
+  { key: "AI Tools",    icon: Brain },
+  { key: "Security",    icon: ShieldCheck },
+  { key: "Business",    icon: TrendingUp },
+  { key: "Education",   icon: GraduationCap },
+  { key: "Gaming",      icon: Gamepad2 },
+  { key: "Finance",     icon: Wallet },
+  { key: "Design",      icon: PenTool },
+  { key: "Development", icon: Code2 },
 ];
 
 const LIVE_TEMPLATES = [
@@ -322,7 +323,7 @@ function FloatingReflections() {
 function SearchBar({ q, setQ }: { q: string; setQ: (s: string) => void }) {
   return (
     <div
-      className="group relative flex items-center gap-2 rounded-[18px] border border-[#3B82F6]/30 bg-white/[0.04] backdrop-blur-xl px-3 sm:px-4 py-2.5 sm:py-3 shadow-[0_10px_60px_-20px_rgba(59,130,246,0.55)]"
+      className="group relative flex items-center gap-2 rounded-[18px] border border-white/15 bg-white/[0.04] backdrop-blur-xl px-3 sm:px-4 py-2.5 sm:py-3"
     >
       <Search className="size-5 text-white/70 ml-1" />
       <input
@@ -334,14 +335,13 @@ function SearchBar({ q, setQ }: { q: string; setQ: (s: string) => void }) {
       <button className="hidden sm:grid size-9 place-items-center rounded-full text-white/60 hover:text-white hover:bg-white/[0.06] transition" aria-label="Voice search">
         <Mic className="size-4" />
       </button>
-      <button className="grid size-9 place-items-center rounded-full text-[#06B6D4] hover:bg-white/[0.06] transition" aria-label="AI search">
+      <button className="grid size-9 place-items-center rounded-full text-white/70 hover:text-white hover:bg-white/[0.06] transition" aria-label="AI search">
         <Sparkles className="size-4" />
       </button>
-      <div className="pointer-events-none absolute inset-0 rounded-[18px] opacity-0 group-focus-within:opacity-100 transition"
-        style={{ boxShadow: "0 0 0 1px rgba(59,130,246,0.5), 0 0 40px rgba(59,130,246,0.35)" }} />
     </div>
   );
 }
+
 
 /* ────────────────────────── quick filters ─────────────────────── */
 
@@ -359,11 +359,12 @@ function QuickFilters({ active, onChange }: { active: string; onChange: (k: stri
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.02 * i, duration: 0.5 }}
-              whileHover={{ y: -3 }}
-              className={`snap-start shrink-0 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs backdrop-blur-xl transition ${
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 1.02 }}
+              className={`snap-start shrink-0 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs backdrop-blur-xl transition-colors ${
                 on
-                  ? "border-[#3B82F6]/60 bg-[#3B82F6]/15 text-white shadow-[0_0_30px_-8px_rgba(59,130,246,0.7)]"
-                  : "border-white/10 bg-white/[0.03] text-white/70 hover:text-white hover:border-white/25 hover:bg-white/[0.06] hover:shadow-[0_0_24px_-10px_rgba(124,58,237,0.6)]"
+                  ? "border-[#3B82F6]/60 bg-[#3B82F6]/15 text-white"
+                  : "border-white/10 bg-white/[0.03] text-white/70 hover:text-white hover:border-white/25 hover:bg-white/[0.06]"
               }`}
             >
               <Icon className="size-3.5" /> {f.label}
@@ -675,14 +676,12 @@ function CategoryCircles() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ delay: i * 0.04, duration: 0.6 }}
-              whileHover={{ y: -4, scale: 1.02 }}
-              className="group relative flex flex-col items-center justify-center gap-5 rounded-2xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/20 transition p-6 sm:p-8 aspect-square"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 1.01 }}
+              className="group relative flex flex-col items-center justify-center gap-6 rounded-2xl border border-white/10 bg-white/[0.03] transition-colors p-6 sm:p-8 aspect-square"
             >
-              <div className="relative grid place-items-center">
-                <div className={`absolute inset-0 rounded-full blur-2xl opacity-30 group-hover:opacity-60 transition bg-gradient-to-br ${c.gradient}`} />
-                <Icon className="relative size-14 sm:size-16 text-[#3B82F6]" strokeWidth={1.5} />
-              </div>
-              <div className="text-base sm:text-lg font-semibold text-white/90 group-hover:text-white transition">{c.key}</div>
+              <Icon className="size-14 sm:size-16 text-[#3B82F6]" strokeWidth={1.5} />
+              <div className="text-base sm:text-lg font-semibold text-white">{c.key}</div>
             </motion.button>
           );
         })}
