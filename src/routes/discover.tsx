@@ -1,10 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import {
-  Search, Flame, Users, Star, Eye, ChevronLeft, ChevronRight, BadgeCheck,
-  TrendingUp, Cpu, Briefcase, Sparkles, HeartHandshake, Palette, Sparkle, Store as StoreIcon, Loader2,
+  Search, Mic, Sparkles, Flame, Rocket, Star, Bot, Server, Palette, Briefcase,
+  Gamepad2, Clapperboard, ShieldCheck, BadgeCheck, Users, ArrowUpRight, Circle,
+  Cpu, GraduationCap, Wallet, Code2, Store as StoreIcon, Network, Loader2,
 } from "lucide-react";
 import { Navbar } from "@/components/site/Navbar";
+import heroBg from "@/assets/hero-bg.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import type { Store } from "@/lib/business";
 
@@ -12,11 +15,17 @@ export const Route = createFileRoute("/discover")({
   head: () => ({
     meta: [
       { title: "Discover — Nexefy" },
-      { name: "description", content: "Discover top communities, tools, and creators on Nexefy." },
+      { name: "description", content: "Discover premium communities, creators, AI tools, digital products and businesses built for the next generation on Nexefy." },
+      { property: "og:title", content: "Discover — Nexefy" },
+      { property: "og:description", content: "Explore thousands of premium communities, creators, AI tools and internet businesses." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: DiscoverPage,
 });
+
+/* ────────────────────────────── data ────────────────────────────── */
 
 type Card = {
   id: string;
@@ -26,329 +35,721 @@ type Card = {
   gradient: string;
   emoji: string;
   members: string;
-  views: string;
   rating?: number;
-  reviews?: number;
-  launched: string;
-  verified?: boolean;
-  badge?: string;
   category: string;
+  tags?: string[];
+  verified?: boolean;
   href: string;
+  height?: number; // for masonry
 };
 
-const CATEGORIES = [
-  { key: "all", label: "All", icon: Sparkles },
-  { key: "Trading", label: "Trading & investing", icon: TrendingUp },
-  { key: "Tech", label: "Tech, AI & coding", icon: Cpu },
-  { key: "Business", label: "Business coaching", icon: Briefcase },
-  { key: "Creator", label: "Creator economy", icon: Sparkle },
-  { key: "Faith", label: "Faith & mindset", icon: HeartHandshake },
-  { key: "Design", label: "Web design agency", icon: Palette },
+const QUICK_FILTERS = [
+  { key: "trending", label: "Trending", icon: Flame },
+  { key: "new", label: "New", icon: Rocket },
+  { key: "popular", label: "Popular", icon: Star },
+  { key: "ai", label: "AI", icon: Bot },
+  { key: "saas", label: "SaaS", icon: Server },
+  { key: "design", label: "Design", icon: Palette },
+  { key: "business", label: "Business", icon: Briefcase },
+  { key: "gaming", label: "Gaming", icon: Gamepad2 },
+  { key: "creators", label: "Creators", icon: Clapperboard },
+  { key: "security", label: "Security", icon: ShieldCheck },
 ] as const;
 
-const CURATED: Card[] = [
-  { id: "t1", category: "Trading", href: "/discover", title: "Apex Trading Floor", owner: "Apex Capital", description: "Daily live calls, options flow, and the strongest community of profitable traders on the internet.", gradient: "from-amber-500 via-orange-600 to-rose-600", emoji: "📈", members: "12.4k", views: "320k", rating: 4.9, reviews: 824, launched: "Launched 1y ago", verified: true, badge: "LIVE" },
-  { id: "t2", category: "Trading", href: "/discover", title: "Sniper Bet Picks", owner: "Sharp Tips", description: "AI-vetted sports betting picks with verified ROI. Daily slips delivered before tip-off.", gradient: "from-emerald-500 via-teal-600 to-cyan-700", emoji: "🎯", members: "5.6k", views: "84k", rating: 4.7, reviews: 312, launched: "Launched 8mo ago" },
-  { id: "t3", category: "Trading", href: "/discover", title: "Crypto Alpha Hub", owner: "ChainLabs", description: "On-chain analytics, presale alpha and a private chat of degens who actually print.", gradient: "from-orange-500 via-yellow-500 to-amber-600", emoji: "₿", members: "8.9k", views: "213k", rating: 4.8, reviews: 491, launched: "Launched 2y ago", verified: true },
-  { id: "a1", category: "Tech", href: "/discover", title: "WhopFlow", owner: "Kevin", description: "After seeing too many fake AI agencies pushing overpriced fluff with no substance, I decided to build this.", gradient: "from-sky-600 via-blue-700 to-indigo-800", emoji: "🚗", members: "13.6k", views: "79.9k", rating: 4.6, reviews: 77, launched: "Launched 1y ago" },
-  { id: "a2", category: "Tech", href: "/discover", title: "FatihMakes Academy", owner: "Fatih", description: "World's best voice assistant on your computer that improves day by day.", gradient: "from-violet-700 via-purple-800 to-indigo-900", emoji: "🎙️", members: "2.7k", views: "36.7k", rating: 5.0, reviews: 17, launched: "Launched 3mo ago" },
-  { id: "a3", category: "Tech", href: "/discover", title: "AI Agent Academy", owner: "Androo", description: "Learn to build, deploy, and scale AI agents that automate real business workflows.", gradient: "from-fuchsia-600 via-pink-600 to-rose-700", emoji: "🤖", members: "1.2k", views: "29.9k", rating: 5.0, reviews: 18, launched: "Launched 1mo ago", badge: "NEW" },
-  { id: "b1", category: "Business", href: "/discover", title: "Drop Service Accelerator", owner: "Parker Jay Smith", description: "Years of service business experience condensed into an 8-week playbook.", gradient: "from-zinc-700 via-slate-800 to-zinc-900", emoji: "📦", members: "305", views: "4.1k", rating: 5.0, reviews: 2, launched: "Launched 1y ago" },
-  { id: "b2", category: "Business", href: "/discover", title: "Cleaning Business University", owner: "Anthony Hartzog", description: "Build a successful remote cleaning business without ever picking up a mop.", gradient: "from-blue-600 via-sky-700 to-cyan-800", emoji: "🧼", members: "2.8k", views: "1.5k", rating: 5.0, reviews: 3, launched: "Launched 1y ago", badge: "HOT" },
-  { id: "b3", category: "Business", href: "/discover", title: "Elite Clean Academy", owner: "Amar", description: "Build a profitable cleaning business from scratch within 30 days flat.", gradient: "from-neutral-800 via-zinc-900 to-black", emoji: "🧽", members: "73", views: "735", rating: 5.0, reviews: 20, launched: "Launched 1y ago" },
-  { id: "c1", category: "Creator", href: "/discover", title: "ClipForge", owner: "Marcus Lee", description: "Short-form editing playbook used by creators with 100M+ views.", gradient: "from-purple-700 via-violet-800 to-fuchsia-900", emoji: "🎬", members: "4.2k", views: "98k", rating: 4.8, reviews: 156, launched: "Launched 6mo ago" },
-  { id: "c2", category: "Creator", href: "/discover", title: "The Creator Desk", owner: "Sofia Reyes", description: "A private studio of full-time creators sharing brand deals and rate sheets.", gradient: "from-rose-600 via-pink-700 to-red-800", emoji: "✨", members: "1.9k", views: "42k", rating: 4.9, reviews: 89, launched: "Launched 4mo ago", verified: true },
-  { id: "c3", category: "Creator", href: "/discover", title: "Butterfly Effect", owner: "Naomi", description: "From 0 to 1M followers playbook with weekly group calls and feedback.", gradient: "from-indigo-700 via-blue-800 to-slate-900", emoji: "🦋", members: "2.1k", views: "67k", rating: 4.7, reviews: 134, launched: "Launched 9mo ago" },
-  { id: "f1", category: "Faith", href: "/discover", title: "The Forge", owner: "Christian Coalition", description: "Iron sharpens iron. A men's brotherhood built on accountability and discipline.", gradient: "from-stone-700 via-neutral-800 to-zinc-900", emoji: "⚒️", members: "1.2k", views: "18k", rating: 4.9, reviews: 67, launched: "Launched 7mo ago" },
-  { id: "f2", category: "Faith", href: "/discover", title: "Glory Carriers", owner: "Pastor Daniel", description: "Awakening a new generation through worship, prayer, and prophetic teaching.", gradient: "from-amber-600 via-yellow-700 to-orange-800", emoji: "🔥", members: "3.4k", views: "54k", rating: 5.0, reviews: 201, launched: "Launched 1y ago", verified: true },
-  { id: "f3", category: "Faith", href: "/discover", title: "The Holy Cabin", owner: "Brother Eli", description: "Quiet retreats for the soul. Daily devotionals and scripture study.", gradient: "from-slate-800 via-zinc-900 to-neutral-950", emoji: "✝️", members: "890", views: "12k", rating: 4.8, reviews: 45, launched: "Launched 5mo ago" },
-  { id: "w1", category: "Design", href: "/discover", title: "Convert Sail", owner: "Studio Sail", description: "Done-for-you landing pages that have generated $50M+ for our clients.", gradient: "from-blue-500 via-cyan-600 to-sky-700", emoji: "⛵", members: "412", views: "9.8k", rating: 4.9, reviews: 28, launched: "Launched 8mo ago" },
-  { id: "w2", category: "Design", href: "/discover", title: "MotionViz", owner: "Viz Collective", description: "Premium motion design and 3D visualizations for product launches.", gradient: "from-red-700 via-rose-800 to-pink-900", emoji: "🎨", members: "287", views: "6.4k", rating: 4.8, reviews: 19, launched: "Launched 1y ago" },
-  { id: "w3", category: "Design", href: "/discover", title: "Technologiv", owner: "Karan Mehta", description: "Full-service agency: LLC setup, Stripe integration, branding, and ongoing support.", gradient: "from-amber-700 via-orange-800 to-red-900", emoji: "💼", members: "654", views: "21k", rating: 4.9, reviews: 92, launched: "Launched 2y ago", verified: true },
+const COLLECTIONS: { title: string; sub: string; gradient: string; emoji: string; count: number }[] = [
+  { title: "AI Tools",         sub: "Agents, copilots, models",          gradient: "from-indigo-600 via-blue-700 to-cyan-600", emoji: "🤖", count: 128 },
+  { title: "Creator Economy",  sub: "Studios, editors, playbooks",       gradient: "from-fuchsia-600 via-purple-700 to-indigo-800", emoji: "✨", count: 94 },
+  { title: "Cyber Security",   sub: "Scanners, hardening, audits",       gradient: "from-cyan-500 via-sky-700 to-indigo-900", emoji: "🛡️", count: 62 },
+  { title: "Web Development",  sub: "Templates, stacks, agencies",       gradient: "from-blue-500 via-indigo-700 to-purple-800", emoji: "💻", count: 210 },
+  { title: "Business",         sub: "Playbooks, coaching, ops",          gradient: "from-amber-500 via-orange-600 to-rose-700", emoji: "💼", count: 156 },
+  { title: "Crypto",           sub: "On-chain alpha & research",         gradient: "from-orange-500 via-amber-600 to-yellow-500", emoji: "₿",  count: 88 },
+  { title: "Startups",         sub: "Founders, growth, fundraising",     gradient: "from-emerald-500 via-teal-600 to-cyan-700", emoji: "🚀", count: 71 },
 ];
+
+const TRENDING: Card[] = [
+  { id: "t1", title: "Apex Trading Floor",     owner: "Apex Capital",   description: "Daily live calls, options flow, and the strongest community of profitable traders on the internet.", gradient: "from-amber-500 via-orange-600 to-rose-600",   emoji: "📈", members: "12.4k", rating: 4.9, category: "Trading",  tags: ["Live", "Options", "Signals"], verified: true, href: "/discover", height: 380 },
+  { id: "t2", title: "WhopFlow",               owner: "Kevin",          description: "Battle-tested AI agency stack: SOPs, prompts and client acquisition funnels.",                     gradient: "from-sky-600 via-blue-700 to-indigo-800",     emoji: "🌊", members: "13.6k", rating: 4.6, category: "AI",       tags: ["Agents", "Automation"], href: "/discover", height: 300 },
+  { id: "t3", title: "Crypto Alpha Hub",       owner: "ChainLabs",      description: "On-chain analytics, presale alpha and a private chat of degens who actually print.",              gradient: "from-orange-500 via-yellow-500 to-amber-600", emoji: "₿",  members: "8.9k",  rating: 4.8, category: "Crypto",   tags: ["On-chain", "Alpha"], verified: true, href: "/discover", height: 420 },
+  { id: "t4", title: "AI Agent Academy",       owner: "Androo",         description: "Learn to build, deploy and scale AI agents that automate real business workflows.",              gradient: "from-fuchsia-600 via-pink-600 to-rose-700",   emoji: "🤖", members: "1.2k",  rating: 5.0, category: "AI",       tags: ["Course", "Agents"], href: "/discover", height: 340 },
+  { id: "t5", title: "ClipForge",              owner: "Marcus Lee",     description: "Short-form editing playbook used by creators with 100M+ views.",                                 gradient: "from-purple-700 via-violet-800 to-fuchsia-900",emoji: "🎬", members: "4.2k",  rating: 4.8, category: "Creators", tags: ["Editing"], href: "/discover", height: 280 },
+  { id: "t6", title: "Convert Sail",           owner: "Studio Sail",    description: "Done-for-you landing pages that generated $50M+ for clients.",                                    gradient: "from-blue-500 via-cyan-600 to-sky-700",       emoji: "⛵", members: "412",   rating: 4.9, category: "Design",   tags: ["Landing", "CRO"], href: "/discover", height: 360 },
+  { id: "t7", title: "The Forge",              owner: "Christian Coalition", description: "Iron sharpens iron. A men's brotherhood built on discipline.",                            gradient: "from-stone-700 via-neutral-800 to-zinc-900",  emoji: "⚒️", members: "1.2k",  rating: 4.9, category: "Community",tags: ["Brotherhood"], href: "/discover", height: 320 },
+  { id: "t8", title: "MotionViz",              owner: "Viz Collective", description: "Premium motion design and 3D visualizations for product launches.",                              gradient: "from-red-700 via-rose-800 to-pink-900",       emoji: "🎨", members: "287",   rating: 4.8, category: "Design",   tags: ["3D", "Motion"], href: "/discover", height: 400 },
+  { id: "t9", title: "Elite Clean Academy",    owner: "Amar",           description: "Build a profitable cleaning business from scratch within 30 days flat.",                        gradient: "from-neutral-800 via-zinc-900 to-black",       emoji: "🧽", members: "73",    rating: 5.0, category: "Business", tags: ["Playbook"], href: "/discover", height: 300 },
+];
+
+const CATEGORY_CIRCLES = [
+  { key: "Marketplace", icon: StoreIcon,     gradient: "from-blue-500 to-cyan-500" },
+  { key: "Communities", icon: Users,         gradient: "from-fuchsia-500 to-purple-600" },
+  { key: "AI",          icon: Bot,           gradient: "from-indigo-500 to-blue-600" },
+  { key: "Security",    icon: ShieldCheck,   gradient: "from-cyan-500 to-sky-600" },
+  { key: "Business",    icon: Briefcase,     gradient: "from-amber-500 to-orange-600" },
+  { key: "Education",   icon: GraduationCap, gradient: "from-emerald-500 to-teal-600" },
+  { key: "Gaming",      icon: Gamepad2,      gradient: "from-pink-500 to-rose-600" },
+  { key: "Finance",     icon: Wallet,        gradient: "from-yellow-500 to-amber-600" },
+  { key: "Design",      icon: Palette,       gradient: "from-purple-500 to-fuchsia-600" },
+  { key: "Development", icon: Code2,         gradient: "from-sky-500 to-indigo-600" },
+];
+
+const LIVE_TEMPLATES = [
+  { icon: Rocket,     text: "launched a product",     color: "text-cyan-400" },
+  { icon: Users,      text: "joined a community",     color: "text-fuchsia-400" },
+  { icon: Sparkles,   text: "created a new store",    color: "text-blue-400" },
+  { icon: BadgeCheck, text: "was verified",           color: "text-emerald-400" },
+  { icon: Flame,      text: "hit a sales milestone",  color: "text-orange-400" },
+];
+const LIVE_NAMES = ["Kai", "Nova", "Iris", "Mira", "Zed", "Rune", "Ari", "Sasha", "Leo", "Juno", "Ren", "Vex"];
 
 const GRADIENTS = [
   "from-violet-600 via-fuchsia-700 to-pink-700",
   "from-emerald-500 via-teal-600 to-cyan-700",
-  "from-amber-500 via-orange-600 to-rose-600",
   "from-sky-600 via-blue-700 to-indigo-800",
   "from-rose-600 via-pink-700 to-red-800",
-  "from-purple-700 via-violet-800 to-fuchsia-900",
 ];
 
 function storeToCard(s: Store): Card {
   const idx = Math.abs(s.id.charCodeAt(0) + s.id.charCodeAt(1)) % GRADIENTS.length;
-  const gradient = s.theme_color && s.accent_color
-    ? `from-[${s.theme_color}] to-[${s.accent_color}]`
-    : GRADIENTS[idx];
-  const cat = s.category || "All";
-  const launchedDays = Math.max(1, Math.floor((Date.now() - new Date(s.created_at).getTime()) / 86400000));
-  const launched = launchedDays < 30 ? `Launched ${launchedDays}d ago` : launchedDays < 365 ? `Launched ${Math.floor(launchedDays/30)}mo ago` : `Launched ${Math.floor(launchedDays/365)}y ago`;
   return {
     id: s.id,
     title: s.name,
     owner: s.name,
-    description: s.description || "A new community on Nexefy. Tap to explore products and join.",
-    gradient,
+    description: s.description || "A new community on Nexefy. Tap to explore.",
+    gradient: GRADIENTS[idx],
     emoji: s.name[0]?.toUpperCase() || "★",
     members: String(s.member_count ?? 0),
-    views: "—",
-    launched,
+    category: s.category || "Community",
     verified: s.verified,
-    badge: launchedDays < 14 ? "NEW" : undefined,
-    category: cat,
     href: `/${s.slug}`,
   };
 }
 
+/* ────────────────────────────── page ────────────────────────────── */
+
 function DiscoverPage() {
   const [q, setQ] = useState("");
-  const [cat, setCat] = useState<string>("all");
+  const [active, setActive] = useState<string>("trending");
   const [userStores, setUserStores] = useState<Card[]>([]);
-  const [loadingStores, setLoadingStores] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase
-        .from("stores")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(60);
+      const { data } = await supabase.from("stores").select("*").order("created_at", { ascending: false }).limit(60);
       setUserStores(((data as Store[]) ?? []).map(storeToCard));
-      setLoadingStores(false);
+      setLoading(false);
     })();
   }, []);
 
-  const allCards = useMemo(() => [...userStores, ...CURATED], [userStores]);
-
-  const query = q.trim().toLowerCase();
-  const filtered = useMemo(() => allCards.filter((c) => {
-    if (cat !== "all" && c.category !== cat) return false;
-    if (!query) return true;
-    return (
-      c.title.toLowerCase().includes(query) ||
-      c.owner.toLowerCase().includes(query) ||
-      c.description.toLowerCase().includes(query)
-    );
-  }), [allCards, cat, query]);
-
-  const grouped = useMemo(() => {
-    if (cat !== "all" || query) return [{ title: cat === "all" ? "Results" : CATEGORIES.find(c=>c.key===cat)?.label || cat, cards: filtered }];
-    const out: { title: string; cards: Card[] }[] = [];
-    if (userStores.length) out.push({ title: "Fresh from Nexefy creators", cards: userStores });
-    for (const c of CATEGORIES.slice(1)) {
-      const cards = CURATED.filter((x) => x.category === c.key);
-      if (cards.length) out.push({ title: c.label, cards });
-    }
-    return out;
-  }, [cat, query, filtered, userStores]);
-
-  const featured = allCards[0];
+  const allTrending = useMemo(() => {
+    const merged = [...userStores.map((c, i) => ({ ...c, height: 280 + (i % 4) * 40 })), ...TRENDING];
+    if (!q.trim()) return merged;
+    const s = q.toLowerCase();
+    return merged.filter(c => c.title.toLowerCase().includes(s) || c.description.toLowerCase().includes(s) || c.category.toLowerCase().includes(s));
+  }, [userStores, q]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#050505] text-[#F8FAFC] overflow-x-hidden">
+      <AmbientBackdrop />
       <Navbar />
 
-      <main className="pt-24 sm:pt-28 pb-20">
-        <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
-          {/* Hero — centered */}
-          <section className="mb-10 text-center flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass text-[11px] uppercase tracking-widest text-muted-foreground">
-              <Flame className="size-3 text-primary" /> Discover
-            </div>
-            <h1 className="mt-4 text-3xl sm:text-5xl font-medium tracking-tight">
-              Find your next <span className="text-gradient-accent">obsession</span>
-            </h1>
-            <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-xl">
-              Explore thousands of communities, tools, and creators across every category.
-            </p>
-
-            <div className="mt-6 w-full max-w-xl relative">
-              <Search className="size-4 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <input
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="Search communities, creators, tools…"
-                className="w-full bg-white/5 border border-white/10 rounded-full pl-11 pr-4 py-3.5 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-white/20"
-              />
-            </div>
-          </section>
-
-          {/* Category slider */}
-          <CategoryStrip active={cat} onChange={setCat} />
-
-          {/* Featured banner */}
-          {featured && cat === "all" && !query && (
-            <FeaturedBanner c={featured} />
-          )}
-
-          {/* Stats */}
-          <div className="mt-8 mb-10 grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <Stat label="Communities" value={String(allCards.length)} />
-            <Stat label="Creators" value={String(new Set(allCards.map(c=>c.owner)).size)} />
-            <Stat label="Categories" value={String(CATEGORIES.length - 1)} />
-            <Stat label="Live now" value={String(allCards.filter(c=>c.badge==="LIVE").length || 3)} />
-          </div>
-
-          {loadingStores && userStores.length === 0 && (
-            <div className="py-8 text-center text-xs text-muted-foreground inline-flex items-center justify-center gap-2 w-full">
-              <Loader2 className="size-3 animate-spin" /> Loading fresh stores…
-            </div>
-          )}
-
-          {filtered.length === 0 ? (
-            <div className="text-center py-32 text-sm text-muted-foreground">
-              {query ? `No results for "${q}".` : "Nothing here yet."}
-            </div>
-          ) : (
-            grouped.map((s) => <Row key={s.title} title={s.title} cards={s.cards} />)
-          )}
+      <main className="relative">
+        <Hero q={q} setQ={setQ} />
+        <QuickFilters active={active} onChange={setActive} />
+        <FeaturedCollection />
+        <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 mt-24">
+          <TrendingMasonry cards={allTrending} loading={loading} />
+          <LiveActivity />
         </div>
+        <CreatorSpotlight />
+        <CategoryCircles />
+        <RecommendedRow cards={allTrending.slice(0, 8)} />
+        <div className="h-32" />
       </main>
     </div>
   );
 }
 
-function CategoryStrip({ active, onChange }: { active: string; onChange: (k: string) => void }) {
-  const ref = useRef<HTMLDivElement>(null);
+/* ────────────────────────── ambient bg ─────────────────────────── */
+
+function AmbientBackdrop() {
   return (
-    <div className="relative -mx-4 sm:mx-0 mb-6">
-      <div ref={ref} className="flex gap-2 overflow-x-auto scrollbar-hide px-4 sm:px-0 snap-x">
-        {CATEGORIES.map((c) => {
-          const Icon = c.icon;
-          const on = active === c.key;
-          return (
-            <button
-              key={c.key}
-              onClick={() => onChange(c.key)}
-              className={`snap-start shrink-0 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs transition ${
-                on ? "bg-white text-black border-white" : "border-white/10 text-muted-foreground hover:text-white hover:border-white/20"
-              }`}
-            >
-              <Icon className="size-3.5" /> {c.label}
-            </button>
-          );
-        })}
-      </div>
+    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#050505]">
+      {/* radial blue glow */}
+      <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[1200px] h-[1200px] rounded-full opacity-60"
+        style={{ background: "radial-gradient(closest-side, rgba(59,130,246,0.28), transparent 70%)" }} />
+      {/* purple ambient */}
+      <div className="absolute top-[40%] -left-40 w-[800px] h-[800px] rounded-full opacity-50"
+        style={{ background: "radial-gradient(closest-side, rgba(124,58,237,0.22), transparent 70%)" }} />
+      <div className="absolute bottom-0 right-0 w-[900px] h-[900px] rounded-full opacity-40"
+        style={{ background: "radial-gradient(closest-side, rgba(6,182,212,0.18), transparent 70%)" }} />
+      {/* subtle grid */}
+      <div className="absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+          backgroundSize: "64px 64px",
+        }} />
+      <Particles />
     </div>
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function Particles() {
+  const dots = useMemo(() => Array.from({ length: 28 }).map((_, i) => ({
+    id: i,
+    left: Math.random() * 100,
+    top: Math.random() * 100,
+    d: 8 + Math.random() * 14,
+    delay: Math.random() * 6,
+    size: 1 + Math.random() * 1.5,
+  })), []);
   return (
-    <div className="glass rounded-2xl p-4">
-      <div className="text-xs uppercase tracking-widest text-muted-foreground">{label}</div>
-      <div className="mt-1 text-2xl font-semibold">{value}</div>
-    </div>
+    <>
+      {dots.map(d => (
+        <motion.span
+          key={d.id}
+          className="absolute rounded-full bg-white/60"
+          style={{ left: `${d.left}%`, top: `${d.top}%`, width: d.size, height: d.size, filter: "blur(0.5px)" }}
+          animate={{ y: [-6, 6, -6], opacity: [0.25, 0.9, 0.25] }}
+          transition={{ duration: d.d, repeat: Infinity, ease: "easeInOut", delay: d.delay }}
+        />
+      ))}
+    </>
   );
 }
 
-function FeaturedBanner({ c }: { c: Card }) {
-  return (
-    <Link to={c.href as never} className={`mb-10 block relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br ${c.gradient}`}>
-      <div className="absolute inset-0 bg-black/30" />
-      <div className="relative p-6 sm:p-12 flex flex-col sm:flex-row items-start sm:items-center gap-5 sm:gap-6">
-        <div className="size-16 sm:size-20 rounded-2xl bg-white/15 backdrop-blur grid place-items-center text-3xl sm:text-4xl shrink-0">{c.emoji}</div>
-        <div className="flex-1 min-w-0">
-          <div className="text-[10px] uppercase tracking-widest text-white/80 mb-2 inline-flex items-center gap-2">
-            <Flame className="size-3" /> Featured
-          </div>
-          <h2 className="text-xl sm:text-3xl font-semibold text-white flex items-center gap-2">
-            <span className="truncate">{c.title}</span> {c.verified && <BadgeCheck className="size-5 text-white shrink-0" />}
-          </h2>
-          <p className="mt-2 text-sm text-white/85 max-w-2xl line-clamp-2">{c.description}</p>
-          <div className="mt-3 flex flex-wrap gap-3 sm:gap-4 text-xs text-white/80">
-            <span className="inline-flex items-center gap-1"><Users className="size-3" /> {c.members} members</span>
-            {c.rating && <span className="inline-flex items-center gap-1"><Star className="size-3 fill-amber-300 text-amber-300" /> {c.rating}</span>}
-            <span>{c.launched}</span>
-          </div>
-        </div>
-        <span className="rounded-full bg-white text-black px-5 py-2.5 text-sm font-medium shrink-0">Explore →</span>
-      </div>
-    </Link>
-  );
-}
+/* ─────────────────────────────── hero ──────────────────────────── */
 
-function Row({ title, cards }: { title: string; cards: Card[] }) {
-  const scroller = useRef<HTMLDivElement>(null);
-  const scrollBy = (dir: 1 | -1) => {
-    const el = scroller.current;
-    if (!el) return;
-    el.scrollBy({ left: dir * (el.clientWidth * 0.9), behavior: "smooth" });
-  };
-
+function Hero({ q, setQ }: { q: string; setQ: (s: string) => void }) {
   return (
-    <section className="mb-14">
-      <div className="flex items-end justify-between gap-4 mb-5">
-        <div className="min-w-0">
-          <h2 className="text-xl sm:text-2xl font-semibold tracking-tight truncate">{title}</h2>
-          <p className="mt-1 text-xs sm:text-sm text-muted-foreground">{cards.length} {cards.length === 1 ? "community" : "communities"}</p>
-        </div>
-        <div className="hidden sm:flex shrink-0 items-center gap-2">
-          <button onClick={() => scrollBy(-1)} className="size-9 grid place-items-center rounded-full border border-white/10 text-white/70 hover:text-white hover:border-white/20 transition" aria-label="Scroll left">
-            <ChevronLeft className="size-4" />
-          </button>
-          <button onClick={() => scrollBy(1)} className="size-9 grid place-items-center rounded-full border border-white/10 text-white/70 hover:text-white hover:border-white/20 transition" aria-label="Scroll right">
-            <ChevronRight className="size-4" />
-          </button>
-        </div>
+    <section className="relative pt-28 sm:pt-36 pb-16 sm:pb-20">
+      {/* blurred city bg */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${heroBg.url})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            filter: "blur(24px) saturate(120%)",
+            opacity: 0.35,
+            transform: "scale(1.1)",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#050505]/60 via-[#050505]/40 to-[#050505]" />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[600px] rounded-full"
+          style={{ background: "radial-gradient(closest-side, rgba(59,130,246,0.35), transparent 70%)" }} />
+        {/* floating glass reflections */}
+        <FloatingReflections />
       </div>
 
-      <div ref={scroller} className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
-        {cards.map((c) => <BigCard key={c.id} c={c} />)}
+      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] backdrop-blur px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-white/70"
+        >
+          <Sparkles className="size-3 text-[#06B6D4]" /> Discover
+        </motion.div>
+
+        <motion.h1
+          initial={{ opacity: 0, y: 22 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-6 text-4xl sm:text-6xl md:text-7xl font-semibold tracking-tight leading-[1.02]"
+          style={{
+            backgroundImage: "linear-gradient(180deg, #ffffff 0%, #cfe1ff 55%, #7fb0ff 100%)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            color: "transparent",
+          }}
+        >
+          Discover the future of
+          <br />
+          internet business
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.15 }}
+          className="mt-6 text-base sm:text-lg text-white/60 max-w-2xl mx-auto"
+        >
+          Explore thousands of premium communities, creators, AI tools, digital products
+          and businesses built for the next generation.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.25 }}
+          className="mt-10 mx-auto max-w-2xl"
+        >
+          <SearchBar q={q} setQ={setQ} />
+        </motion.div>
       </div>
     </section>
   );
 }
 
-function BigCard({ c }: { c: Card }) {
+function FloatingReflections() {
+  const shards = useMemo(() => [
+    { x: 8,  y: 22, w: 260, h: 90,  r: -12, delay: 0 },
+    { x: 78, y: 18, w: 180, h: 70,  r: 10,  delay: 1.2 },
+    { x: 62, y: 68, w: 240, h: 80,  r: -6,  delay: 2.4 },
+    { x: 12, y: 74, w: 200, h: 60,  r: 8,   delay: 3.6 },
+  ], []);
   return (
-    <Link
-      to={c.href as never}
-      className="group snap-start shrink-0 w-[88%] sm:w-[420px] lg:w-[460px] overflow-hidden rounded-2xl border border-white/[0.08] hover:border-white/20 bg-[oklch(0.06_0.008_220)] transition"
-    >
-      {/* Banner */}
-      <div className={`relative h-44 sm:h-52 bg-gradient-to-br ${c.gradient} overflow-hidden`}>
-        <div className="absolute inset-0 grid place-items-center text-7xl opacity-90 group-hover:scale-105 transition-transform duration-500">
-          {c.emoji}
-        </div>
-        {c.badge && (
-          <span className="absolute top-3 left-3 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-red-500 text-white px-2 py-1 rounded-md">
-            {c.badge === "LIVE" && <span className="size-1.5 rounded-full bg-white animate-pulse" />}
-            {c.badge}
-          </span>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-      </div>
+    <>
+      {shards.map((s, i) => (
+        <motion.div
+          key={i}
+          className="absolute rounded-2xl border border-white/10"
+          style={{
+            left: `${s.x}%`, top: `${s.y}%`, width: s.w, height: s.h,
+            transform: `rotate(${s.r}deg)`,
+            background: "linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01))",
+            backdropFilter: "blur(10px)",
+          }}
+          animate={{ y: [-8, 8, -8], opacity: [0.4, 0.7, 0.4] }}
+          transition={{ duration: 10 + i, repeat: Infinity, ease: "easeInOut", delay: s.delay }}
+        />
+      ))}
+    </>
+  );
+}
 
-      <div className="p-5">
-        {/* Header: bigger logo + owner + verify */}
-        <div className="flex items-start gap-3">
-          <div className={`size-12 rounded-full bg-gradient-to-br ${c.gradient} grid place-items-center text-lg shrink-0 shadow-lg ring-1 ring-white/10`}>
+function SearchBar({ q, setQ }: { q: string; setQ: (s: string) => void }) {
+  return (
+    <div
+      className="group relative flex items-center gap-2 rounded-[18px] border border-[#3B82F6]/30 bg-white/[0.04] backdrop-blur-xl px-3 sm:px-4 py-2.5 sm:py-3 shadow-[0_10px_60px_-20px_rgba(59,130,246,0.55)]"
+    >
+      <Search className="size-5 text-white/70 ml-1" />
+      <input
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder="Search communities, creators, AI tools, products..."
+        className="flex-1 bg-transparent text-[15px] sm:text-base text-white placeholder:text-white/40 focus:outline-none py-1.5"
+      />
+      <button className="hidden sm:grid size-9 place-items-center rounded-full text-white/60 hover:text-white hover:bg-white/[0.06] transition" aria-label="Voice search">
+        <Mic className="size-4" />
+      </button>
+      <button className="grid size-9 place-items-center rounded-full text-[#06B6D4] hover:bg-white/[0.06] transition" aria-label="AI search">
+        <Sparkles className="size-4" />
+      </button>
+      <div className="pointer-events-none absolute inset-0 rounded-[18px] opacity-0 group-focus-within:opacity-100 transition"
+        style={{ boxShadow: "0 0 0 1px rgba(59,130,246,0.5), 0 0 40px rgba(59,130,246,0.35)" }} />
+    </div>
+  );
+}
+
+/* ────────────────────────── quick filters ─────────────────────── */
+
+function QuickFilters({ active, onChange }: { active: string; onChange: (k: string) => void }) {
+  return (
+    <section className="mx-auto max-w-[1400px] px-4 sm:px-6 -mt-4">
+      <div className="flex gap-2.5 overflow-x-auto scrollbar-hide pb-2">
+        {QUICK_FILTERS.map((f, i) => {
+          const Icon = f.icon;
+          const on = active === f.key;
+          return (
+            <motion.button
+              key={f.key}
+              onClick={() => onChange(f.key)}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.02 * i, duration: 0.5 }}
+              whileHover={{ y: -3 }}
+              className={`snap-start shrink-0 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs backdrop-blur-xl transition ${
+                on
+                  ? "border-[#3B82F6]/60 bg-[#3B82F6]/15 text-white shadow-[0_0_30px_-8px_rgba(59,130,246,0.7)]"
+                  : "border-white/10 bg-white/[0.03] text-white/70 hover:text-white hover:border-white/25 hover:bg-white/[0.06] hover:shadow-[0_0_24px_-10px_rgba(124,58,237,0.6)]"
+              }`}
+            >
+              <Icon className="size-3.5" /> {f.label}
+            </motion.button>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────── featured collection ──────────────────── */
+
+function FeaturedCollection() {
+  return (
+    <section className="mx-auto max-w-[1400px] px-4 sm:px-6 mt-16">
+      <SectionHeader eyebrow="Featured" title="Handpicked collections" sub="Curated worlds from across the Nexefy universe." />
+      <div className="flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0 pb-3">
+        {COLLECTIONS.map((c, i) => (
+          <FeaturedCard key={c.title} c={c} i={i} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function FeaturedCard({ c, i }: { c: (typeof COLLECTIONS)[number]; i: number }) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  const mx = useMotionValue(0); const my = useMotionValue(0);
+  const rx = useSpring(useTransform(my, [-40, 40], [8, -8]), { stiffness: 180, damping: 18 });
+  const ry = useSpring(useTransform(mx, [-40, 40], [-8, 8]), { stiffness: 180, damping: 18 });
+
+  return (
+    <motion.a
+      ref={ref}
+      href="#"
+      onMouseMove={(e) => {
+        const r = ref.current?.getBoundingClientRect(); if (!r) return;
+        mx.set(e.clientX - r.left - r.width / 2);
+        my.set(e.clientY - r.top - r.height / 2);
+      }}
+      onMouseLeave={() => { mx.set(0); my.set(0); }}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ delay: 0.05 * i, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      style={{ rotateX: rx, rotateY: ry, transformStyle: "preserve-3d", perspective: 1000 }}
+      className="group snap-start shrink-0 w-[300px] sm:w-[360px] h-[420px] rounded-3xl overflow-hidden relative border border-white/10 bg-[#0A0F1C]"
+    >
+      <div className={`absolute inset-0 bg-gradient-to-br ${c.gradient}`} />
+      <div className="absolute inset-0 opacity-[0.15]"
+        style={{ backgroundImage: "radial-gradient(circle at 20% 20%, #fff 1px, transparent 1px)", backgroundSize: "22px 22px" }} />
+      <div className="absolute inset-0 grid place-items-center text-[140px] opacity-90 group-hover:scale-110 transition-transform duration-[900ms] ease-out">
+        {c.emoji}
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 p-5 flex items-start justify-between">
+        <span className="text-[10px] uppercase tracking-[0.2em] rounded-full border border-white/20 bg-white/10 backdrop-blur px-2.5 py-1 text-white/90">
+          Collection
+        </span>
+        <span className="text-[10px] rounded-full bg-black/40 border border-white/15 backdrop-blur px-2.5 py-1 text-white/80">{c.count}+</span>
+      </div>
+      <div className="absolute inset-x-0 bottom-0 p-6">
+        <h3 className="text-2xl font-semibold tracking-tight text-white">{c.title}</h3>
+        <p className="mt-1 text-sm text-white/70">{c.sub}</p>
+        <div className="mt-4 inline-flex items-center gap-2 text-xs text-white/80">
+          Explore <ArrowUpRight className="size-3.5 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+        </div>
+      </div>
+      <div className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition"
+        style={{ boxShadow: "inset 0 0 0 1px rgba(59,130,246,0.35), 0 30px 80px -30px rgba(59,130,246,0.45)" }} />
+    </motion.a>
+  );
+}
+
+/* ─────────────────────────── trending ──────────────────────────── */
+
+function TrendingMasonry({ cards, loading }: { cards: Card[]; loading: boolean }) {
+  return (
+    <section>
+      <SectionHeader eyebrow="Trending now" title="What everyone is on" sub="A live pulse of the fastest-growing worlds." />
+      {loading && cards.length === 0 ? (
+        <div className="py-16 text-center text-xs text-white/50 inline-flex items-center justify-center gap-2 w-full">
+          <Loader2 className="size-3 animate-spin" /> Loading…
+        </div>
+      ) : (
+        <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 [column-fill:_balance]">
+          {cards.map((c, i) => (
+            <TrendingCard key={c.id} c={c} i={i} />
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function TrendingCard({ c, i }: { c: Card; i: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ delay: (i % 6) * 0.05, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className="mb-5 break-inside-avoid group"
+    >
+      <Link
+        to={c.href as never}
+        className="block rounded-2xl overflow-hidden border border-white/[0.08] bg-[#0A0F1C] hover:border-white/25 transition"
+      >
+        <div className={`relative overflow-hidden bg-gradient-to-br ${c.gradient}`} style={{ height: c.height ?? 300 }}>
+          <div className="absolute inset-0 grid place-items-center text-8xl opacity-90 group-hover:scale-110 transition-transform duration-[900ms] ease-out">
             {c.emoji}
           </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5">
-              <div className="text-base font-semibold text-white truncate">{c.title}</div>
-              {c.verified && <BadgeCheck className="size-4 text-sky-400 shrink-0" />}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+          <div className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/30 backdrop-blur px-2.5 py-1 text-[10px] uppercase tracking-wider text-white/90">
+            <Circle className="size-1.5 fill-emerald-400 text-emerald-400" /> {c.category}
+          </div>
+          {c.rating && (
+            <div className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-black/40 border border-white/15 backdrop-blur px-2 py-1 text-[10px] text-white">
+              <Star className="size-3 fill-amber-300 text-amber-300" /> {c.rating}
             </div>
-            <div className="text-xs text-muted-foreground truncate">by {c.owner}</div>
+          )}
+          <div className="absolute inset-x-0 bottom-0 p-4 flex items-end justify-between gap-3">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className={`size-9 rounded-full bg-gradient-to-br ${c.gradient} grid place-items-center text-sm ring-1 ring-white/20`}>{c.emoji}</div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1 text-sm font-semibold text-white truncate">
+                  <span className="truncate">{c.title}</span>
+                  {c.verified && <BadgeCheck className="size-3.5 text-sky-400 shrink-0" />}
+                </div>
+                <div className="text-[11px] text-white/70">by {c.owner}</div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Description */}
-        <p className="mt-4 text-sm text-muted-foreground line-clamp-2 leading-relaxed">{c.description}</p>
+        <div className="p-4">
+          <p className="text-sm text-white/70 line-clamp-2 leading-relaxed">{c.description}</p>
+          <div className="mt-3 flex flex-wrap items-center gap-1.5">
+            {(c.tags ?? [c.category]).slice(0, 3).map(t => (
+              <span key={t} className="text-[10px] rounded-full bg-white/[0.05] border border-white/10 px-2 py-0.5 text-white/70">{t}</span>
+            ))}
+          </div>
+          <div className="mt-4 flex items-center justify-between">
+            <span className="text-[11px] text-white/60 inline-flex items-center gap-1"><Users className="size-3" /> {c.members} members</span>
+            <span className="rounded-full bg-white text-black px-3.5 py-1.5 text-[11px] font-semibold group-hover:bg-[#3B82F6] group-hover:text-white transition">
+              Join now
+            </span>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  );
+}
 
-        {/* Footer: category chip + Join now */}
-        <div className="mt-5 flex items-center justify-between gap-3">
-          <span className="text-[11px] rounded-full bg-white/[0.06] border border-white/10 px-3 py-1 text-white whitespace-nowrap truncate">
-            {c.category === "all" ? "Community" : c.category}
-          </span>
-          <span className="shrink-0 rounded-full bg-white text-black px-4 py-1.5 text-xs font-semibold group-hover:bg-primary group-hover:text-primary-foreground transition">
-            Join now
-          </span>
+/* ─────────────────────────── live activity ─────────────────────── */
+
+function LiveActivity() {
+  const [events, setEvents] = useState(() => Array.from({ length: 6 }).map((_, i) => makeEvent(i)));
+  useEffect(() => {
+    const t = setInterval(() => {
+      setEvents(prev => [makeEvent(Date.now()), ...prev].slice(0, 8));
+    }, 3200);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <aside className="hidden lg:block sticky top-28 self-start">
+      <div className="rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-5">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <span className="relative flex size-2">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
+              <span className="relative inline-flex size-2 rounded-full bg-emerald-400" />
+            </span>
+            <div className="text-sm font-medium">Live activity</div>
+          </div>
+          <div className="text-[10px] uppercase tracking-widest text-white/40">real-time</div>
+        </div>
+        <div className="space-y-2.5">
+          {events.map(ev => {
+            const Icon = ev.icon;
+            return (
+              <motion.div
+                key={ev.id}
+                layout
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="flex items-start gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] p-3 hover:bg-white/[0.05] transition"
+              >
+                <div className={`grid size-8 place-items-center rounded-lg bg-white/[0.06] ${ev.color}`}>
+                  <Icon className="size-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-[13px] text-white truncate">
+                    <span className="font-medium">{ev.name}</span>{" "}
+                    <span className="text-white/60">{ev.text}</span>
+                  </div>
+                  <div className="text-[10px] text-white/40 mt-0.5">just now</div>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
-    </Link>
+    </aside>
+  );
+}
+
+function makeEvent(seed: number) {
+  const t = LIVE_TEMPLATES[Math.abs(seed) % LIVE_TEMPLATES.length];
+  const n = LIVE_NAMES[Math.abs(seed * 3 + 7) % LIVE_NAMES.length];
+  return { id: `${seed}-${Math.random()}`, name: n, ...t };
+}
+
+/* ────────────────────── creator spotlight ─────────────────────── */
+
+function CreatorSpotlight() {
+  return (
+    <section className="mx-auto max-w-[1400px] px-4 sm:px-6 mt-28">
+      <SectionHeader eyebrow="Creator spotlight" title="Meet this week's featured builder" sub="A creator shipping at the frontier." />
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[#0A0F1C]"
+      >
+        {/* animated border */}
+        <div className="pointer-events-none absolute inset-0 rounded-[28px]"
+          style={{
+            background: "conic-gradient(from 0deg, transparent 0deg, rgba(59,130,246,0.55) 60deg, transparent 120deg, transparent 240deg, rgba(124,58,237,0.55) 300deg, transparent 360deg)",
+            WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+            WebkitMaskComposite: "xor" as unknown as string,
+            maskComposite: "exclude",
+            padding: 1,
+            animation: "spin 8s linear infinite",
+          }}
+        />
+        <div className="grid md:grid-cols-[1.4fr_1fr]">
+          <div className="relative h-72 md:h-auto">
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-700 via-blue-800 to-purple-900" />
+            <div className="absolute inset-0 grid place-items-center text-[170px] opacity-90">🛰️</div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+          </div>
+          <div className="p-8 sm:p-10 flex flex-col justify-center">
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <div className="size-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 grid place-items-center text-2xl ring-2 ring-white/20">A</div>
+                <BadgeCheck className="absolute -bottom-1 -right-1 size-5 text-sky-400 bg-[#0A0F1C] rounded-full" />
+              </div>
+              <div>
+                <div className="text-lg font-semibold">Aurora Studios</div>
+                <div className="text-xs text-white/60">Building the AI-native creator OS</div>
+              </div>
+            </div>
+            <p className="mt-5 text-sm text-white/70 leading-relaxed">
+              Shipping premium AI templates, curated agent packs and a private studio of full-time builders. Weekly drops, monthly demos, permanent alpha.
+            </p>
+            <div className="mt-6 grid grid-cols-3 gap-3">
+              <Stat n="42.1k" l="Followers" />
+              <Stat n="17" l="Products" />
+              <Stat n="6" l="Communities" />
+            </div>
+            <div className="mt-6 flex items-center gap-3">
+              <button className="rounded-full bg-white text-black px-5 py-2.5 text-sm font-semibold hover:bg-[#3B82F6] hover:text-white transition">Follow</button>
+              <button className="rounded-full border border-white/15 bg-white/[0.03] px-5 py-2.5 text-sm text-white hover:bg-white/[0.06] transition">View profile</button>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+      <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
+    </section>
+  );
+}
+
+function Stat({ n, l }: { n: string; l: string }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+      <div className="text-lg font-semibold">{n}</div>
+      <div className="text-[10px] uppercase tracking-widest text-white/50">{l}</div>
+    </div>
+  );
+}
+
+/* ────────────────────── category circles ──────────────────────── */
+
+function CategoryCircles() {
+  return (
+    <section className="mx-auto max-w-[1400px] px-4 sm:px-6 mt-28">
+      <SectionHeader eyebrow="Explore" title="Discover by category" sub="Every world, one tap away." />
+      <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-6">
+        {CATEGORY_CIRCLES.map((c, i) => {
+          const Icon = c.icon;
+          return (
+            <motion.button
+              key={c.key}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ delay: i * 0.04, duration: 0.6 }}
+              whileHover={{ y: -6, rotate: -2, scale: 1.03 }}
+              className="group flex flex-col items-center gap-3"
+            >
+              <div className="relative">
+                <div className={`absolute inset-0 rounded-full blur-xl opacity-40 group-hover:opacity-70 transition bg-gradient-to-br ${c.gradient}`} />
+                <div className={`relative size-24 sm:size-28 rounded-full grid place-items-center bg-gradient-to-br ${c.gradient} shadow-[0_20px_60px_-20px_rgba(59,130,246,0.5)] ring-1 ring-white/15`}>
+                  <div className="absolute inset-1 rounded-full bg-[#0A0F1C]/60 backdrop-blur-sm" />
+                  <Icon className="relative size-9 text-white" strokeWidth={1.6} />
+                </div>
+              </div>
+              <div className="text-sm text-white/85 group-hover:text-white transition">{c.key}</div>
+            </motion.button>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────── recommended ──────────────────────────── */
+
+function RecommendedRow({ cards }: { cards: Card[] }) {
+  return (
+    <section className="mx-auto max-w-[1400px] px-4 sm:px-6 mt-28">
+      <SectionHeader
+        eyebrow="For you"
+        title="Recommended by Nexefy AI"
+        sub="Personalized picks based on what's moving now."
+      />
+      <div className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0 pb-3">
+        {cards.map((c, i) => (
+          <motion.div
+            key={c.id}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ delay: i * 0.04, duration: 0.6 }}
+            whileHover={{ y: -4 }}
+            className="snap-start shrink-0 w-[280px] rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-4 hover:border-white/25 transition"
+          >
+            <div className={`relative h-36 rounded-xl overflow-hidden bg-gradient-to-br ${c.gradient}`}>
+              <div className="absolute inset-0 grid place-items-center text-6xl opacity-90">{c.emoji}</div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+              <span className="absolute top-2 left-2 inline-flex items-center gap-1 text-[10px] uppercase tracking-wider rounded-full border border-white/20 bg-black/30 backdrop-blur px-2 py-0.5 text-white/90">
+                <Cpu className="size-3" /> AI pick
+              </span>
+            </div>
+            <div className="mt-3 flex items-center gap-1.5">
+              <div className="text-sm font-semibold truncate">{c.title}</div>
+              {c.verified && <BadgeCheck className="size-3.5 text-sky-400 shrink-0" />}
+            </div>
+            <div className="text-[11px] text-white/60 truncate">by {c.owner}</div>
+            <p className="mt-2 text-xs text-white/60 line-clamp-2">{c.description}</p>
+            <div className="mt-3 flex items-center justify-between">
+              <span className="text-[10px] text-white/50 inline-flex items-center gap-1"><Users className="size-3" /> {c.members}</span>
+              <Link to={c.href as never} className="text-[11px] text-[#06B6D4] hover:text-white transition inline-flex items-center gap-1">
+                Open <ArrowUpRight className="size-3" />
+              </Link>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────── section header ──────────────────────── */
+
+function SectionHeader({ eyebrow, title, sub }: { eyebrow: string; title: string; sub?: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 14 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.7 }}
+      className="mb-8 flex items-end justify-between gap-4"
+    >
+      <div>
+        <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.24em] text-white/50">
+          <Network className="size-3 text-[#3B82F6]" /> {eyebrow}
+        </div>
+        <h2 className="mt-2 text-2xl sm:text-3xl font-semibold tracking-tight">{title}</h2>
+        {sub && <p className="mt-1 text-sm text-white/55">{sub}</p>}
+      </div>
+    </motion.div>
   );
 }
