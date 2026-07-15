@@ -65,7 +65,7 @@ function LoginPage() {
       <div className="absolute inset-0 hero-gradient -z-10" />
       <div className="absolute inset-0 grid-bg opacity-30 -z-10" />
       <button
-        onClick={() => (window.history.length > 1 ? navigate({ to: ".." as any }) || window.history.back() : navigate({ to: "/" }))}
+        onClick={() => { if (window.history.length > 1) window.history.back(); else navigate({ to: "/" }); }}
         className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10 inline-flex items-center gap-1.5 rounded-full glass px-3 py-1.5 text-xs text-muted-foreground hover:text-white hover:border-white/20 transition"
         aria-label="Go back"
       >
