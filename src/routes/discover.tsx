@@ -155,7 +155,7 @@ function DiscoverPage() {
         <Hero q={q} setQ={setQ} />
         <QuickFilters active={active} onChange={setActive} />
         <FeaturedCollection />
-        <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 mt-24">
+        <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 lg:gap-8 mt-24 items-stretch">
           <TrendingMasonry cards={allTrending} loading={loading} />
           <LiveActivity />
         </div>
