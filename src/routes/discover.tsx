@@ -358,11 +358,12 @@ function QuickFilters({ active, onChange }: { active: string; onChange: (k: stri
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.02 * i, duration: 0.5 }}
-              whileHover={{ y: -3 }}
-              className={`snap-start shrink-0 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs backdrop-blur-xl transition ${
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 1.02 }}
+              className={`snap-start shrink-0 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs backdrop-blur-xl transition-colors ${
                 on
-                  ? "border-[#3B82F6]/60 bg-[#3B82F6]/15 text-white shadow-[0_0_30px_-8px_rgba(59,130,246,0.7)]"
-                  : "border-white/10 bg-white/[0.03] text-white/70 hover:text-white hover:border-white/25 hover:bg-white/[0.06] hover:shadow-[0_0_24px_-10px_rgba(124,58,237,0.6)]"
+                  ? "border-[#3B82F6]/60 bg-[#3B82F6]/15 text-white"
+                  : "border-white/10 bg-white/[0.03] text-white/70 hover:text-white hover:border-white/25 hover:bg-white/[0.06]"
               }`}
             >
               <Icon className="size-3.5" /> {f.label}
