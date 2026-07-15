@@ -676,14 +676,12 @@ function CategoryCircles() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ delay: i * 0.04, duration: 0.6 }}
-              whileHover={{ y: -4, scale: 1.02 }}
-              className="group relative flex flex-col items-center justify-center gap-5 rounded-2xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/20 transition p-6 sm:p-8 aspect-square"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 1.01 }}
+              className="group relative flex flex-col items-center justify-center gap-6 rounded-2xl border border-white/10 bg-white/[0.03] transition-colors p-6 sm:p-8 aspect-square"
             >
-              <div className="relative grid place-items-center">
-                <div className={`absolute inset-0 rounded-full blur-2xl opacity-30 group-hover:opacity-60 transition bg-gradient-to-br ${c.gradient}`} />
-                <Icon className="relative size-14 sm:size-16 text-[#3B82F6]" strokeWidth={1.5} />
-              </div>
-              <div className="text-base sm:text-lg font-semibold text-white/90 group-hover:text-white transition">{c.key}</div>
+              <Icon className="size-14 sm:size-16 text-[#3B82F6]" strokeWidth={1.5} />
+              <div className="text-base sm:text-lg font-semibold text-white">{c.key}</div>
             </motion.button>
           );
         })}
