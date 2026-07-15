@@ -528,8 +528,8 @@ function LiveActivity() {
   }, []);
 
   return (
-    <aside className="hidden lg:block sticky top-28 self-start">
-      <div className="rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-5">
+    <aside className="hidden lg:block h-full">
+      <div className="h-full flex flex-col rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-5">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <span className="relative flex size-2">
