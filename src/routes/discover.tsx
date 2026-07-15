@@ -444,14 +444,17 @@ function FeaturedCard({ c, i }: { c: (typeof COLLECTIONS)[number]; i: number }) 
 function TrendingMasonry({ cards, loading }: { cards: Card[]; loading: boolean }) {
   return (
     <section>
-      <SectionHeader eyebrow="Trending now" title="What everyone is on" sub="A live pulse of the fastest-growing worlds." />
+      <div className="flex items-end justify-between mb-6">
+        <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">Trending Now</h2>
+        <button className="text-sm text-white/60 hover:text-white transition">View all</button>
+      </div>
       {loading && cards.length === 0 ? (
         <div className="py-16 text-center text-xs text-white/50 inline-flex items-center justify-center gap-2 w-full">
           <Loader2 className="size-3 animate-spin" /> Loading…
         </div>
       ) : (
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 [column-fill:_balance]">
-          {cards.map((c, i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+          {cards.slice(0, 12).map((c, i) => (
             <TrendingCard key={c.id} c={c} i={i} />
           ))}
         </div>
@@ -463,54 +466,48 @@ function TrendingMasonry({ cards, loading }: { cards: Card[]; loading: boolean }
 function TrendingCard({ c, i }: { c: Card; i: number }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ delay: (i % 6) * 0.05, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      className="mb-5 break-inside-avoid group"
+      transition={{ delay: (i % 4) * 0.06, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="group"
     >
       <Link
         to={c.href as never}
-        className="block rounded-2xl overflow-hidden border border-white/[0.08] bg-[#0A0F1C] hover:border-white/25 transition"
+        className="flex flex-col h-full rounded-2xl overflow-hidden border border-white/[0.08] bg-[#0A0F1C] hover:border-white/25 hover:shadow-[0_20px_60px_-20px_rgba(59,130,246,0.35)] transition"
       >
-        <div className={`relative overflow-hidden bg-gradient-to-br ${c.gradient}`} style={{ height: c.height ?? 300 }}>
-          <div className="absolute inset-0 grid place-items-center text-8xl opacity-90 group-hover:scale-110 transition-transform duration-[900ms] ease-out">
+        <div className={`relative overflow-hidden bg-gradient-to-br ${c.gradient} aspect-[4/3]`}>
+          <div className="absolute inset-0 grid place-items-center text-7xl opacity-90 group-hover:scale-110 transition-transform duration-[900ms] ease-out">
             {c.emoji}
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-          <div className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/30 backdrop-blur px-2.5 py-1 text-[10px] uppercase tracking-wider text-white/90">
-            <Circle className="size-1.5 fill-emerald-400 text-emerald-400" /> {c.category}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20" />
+          <div className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-md bg-black/60 backdrop-blur border border-white/10 px-2 py-1 text-[10px] uppercase tracking-wider font-medium text-white/90">
+            {c.verified && <Star className="size-2.5 fill-white text-white" />}
+            {c.category}
           </div>
-          {c.rating && (
-            <div className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-black/40 border border-white/15 backdrop-blur px-2 py-1 text-[10px] text-white">
-              <Star className="size-3 fill-amber-300 text-amber-300" /> {c.rating}
-            </div>
-          )}
-          <div className="absolute inset-x-0 bottom-0 p-4 flex items-end justify-between gap-3">
-            <div className="flex items-center gap-2 min-w-0">
-              <div className={`size-9 rounded-full bg-gradient-to-br ${c.gradient} grid place-items-center text-sm ring-1 ring-white/20`}>{c.emoji}</div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-1 text-sm font-semibold text-white truncate">
-                  <span className="truncate">{c.title}</span>
-                  {c.verified && <BadgeCheck className="size-3.5 text-sky-400 shrink-0" />}
-                </div>
-                <div className="text-[11px] text-white/70">by {c.owner}</div>
-              </div>
-            </div>
+          <div className={`absolute -bottom-4 left-4 size-9 rounded-full bg-gradient-to-br ${c.gradient} grid place-items-center text-xs font-semibold ring-2 ring-[#0A0F1C]`}>
+            {c.owner[0]?.toUpperCase()}
           </div>
         </div>
 
-        <div className="p-4">
-          <p className="text-sm text-white/70 line-clamp-2 leading-relaxed">{c.description}</p>
-          <div className="mt-3 flex flex-wrap items-center gap-1.5">
-            {(c.tags ?? [c.category]).slice(0, 3).map(t => (
-              <span key={t} className="text-[10px] rounded-full bg-white/[0.05] border border-white/10 px-2 py-0.5 text-white/70">{t}</span>
-            ))}
-          </div>
-          <div className="mt-4 flex items-center justify-between">
-            <span className="text-[11px] text-white/60 inline-flex items-center gap-1"><Users className="size-3" /> {c.members} members</span>
-            <span className="rounded-full bg-white text-black px-3.5 py-1.5 text-[11px] font-semibold group-hover:bg-[#3B82F6] group-hover:text-white transition">
-              Join now
+        <div className="flex flex-col flex-1 p-4 pt-6">
+          <h3 className="text-[15px] font-semibold text-white truncate">{c.title}</h3>
+          <div className="text-[11px] text-white/50 mt-0.5">by {c.owner}</div>
+          <p className="mt-2.5 text-[13px] text-white/60 line-clamp-2 leading-relaxed">{c.description}</p>
+
+          <div className="mt-auto pt-4 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-3 text-[11px] text-white/60 min-w-0">
+              <span className="inline-flex items-center gap-1 whitespace-nowrap">
+                <span className="text-white font-semibold text-[12px]">{c.members}</span> Members
+              </span>
+              {c.rating && (
+                <span className="inline-flex items-center gap-1 whitespace-nowrap">
+                  {c.rating} <Star className="size-3 fill-amber-300 text-amber-300" />
+                </span>
+              )}
+            </div>
+            <span className="rounded-lg bg-white/[0.06] border border-white/10 text-white px-3 py-1.5 text-[11px] font-semibold group-hover:bg-white group-hover:text-black transition">
+              Join
             </span>
           </div>
         </div>
