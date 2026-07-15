@@ -1,98 +1,76 @@
-# Implementation Plan
+# Forge — Business Operating System Build Plan
 
-Six discrete fixes. No architecture changes beyond the role tier extension.
+This is a very large scope (20+ full modules). To keep quality high and avoid half-finished pages, I'll ship it in **numbered phases**. Each phase is self-contained, production-ready, and preserves every existing route, API, and backend contract.
 
-## 1. Database: 3-tier admin roles + master-admin seed
+Please confirm the phase order (or tell me to reorder / skip) before I start.
 
-Single migration:
-- Drop existing `app_role` enum value list, recreate as `('master_admin','super_admin','admin','user')` (or `ALTER TYPE ADD VALUE` if enum already exists — check first).
-- Ensure `public.user_roles` exists with `(user_id, role)` unique; add GRANTs + RLS already in `has_role` policy.
-- Add helper `public.get_user_role(_user_id uuid) returns app_role` (returns highest role).
-- Add helper `public.is_master_admin(_user_id uuid) returns boolean`.
-- Trigger on `auth.users` INSERT: if `email = 'hitesh.tanwar8318@gmail.com'`, insert `master_admin` row in `user_roles`. Also backfill the row for existing user with that email.
-- Audit log entries for any role change via `log_role_change()` trigger on `user_roles`.
+---
 
-## 2. Backend: role-aware endpoints
+## Foundation (Phase 0 — done in one pass, required first)
 
-`server/src/routes/admin.ts`:
-- `GET /api/admin/me/role` → returns `{ role: 'master_admin'|'super_admin'|'admin'|null }`.
-- `POST /api/admin/promote` body `{ user_id, role }` — enforce:
-  - master_admin can set any role
-  - super_admin can set `admin` only, cannot touch master/super
-  - admin: forbidden
-- `DELETE /api/admin/admins/:user_id` — same hierarchy rules; cannot remove master.
-- All actions write `audit_logs` entries (`role.grant`, `role.revoke`).
+Shared visual + interaction layer that every page reuses.
 
-Extend `api-client.ts` with `getMyRole`, `promoteAdmin`, `revokeAdmin`.
+- **Design tokens** in `src/styles.css`: layered darks (`#090909 / #111 / #171717 / #262626`), text (`#F5F5F5 / #9CA3AF`), 6 accent tokens (blue / purple / emerald / orange / pink / cyan), motion tokens, elevation.
+- **Rebrand shell to "Forge"** inside the Business workspace only (public marketing site stays "Nexefy" — separate product surface).
+- **New sidebar** (`BusinessShell` rewrite): grouped nav (Overview / Commerce / Growth / Ops / Settings), collapsible, active-branch aware, keyboard nav, mini mode.
+- **Command palette** (`⌘K`) — global search, route jump, quick actions.
+- **Primitives**: `PageHeader`, `EmptyState`, `SkeletonTable`, `DataTable` (sort/filter/paginate/bulk), `Drawer`, `ConfirmDialog`, `Toast` wiring, `StatCard`, `Chart` wrappers, `Breadcrumbs`.
+- **Notification center** dropdown scaffold (feeds real `notifications` table).
 
-## 3. Frontend: session & redirect behavior
+## Phase 1 — Dashboard
+Bento overview: revenue / MRR / ARR / orders today / visitors / conversion / pending payouts, growth + traffic charts, recent orders, recent members, unread messages, top products, AI insights, goal tracker, store health score, quick actions, upcoming launches. Real data where tables exist; realistic empty states elsewhere.
 
-- `src/hooks/use-admin.ts`: replace boolean with `{ role, isAdmin, isSuperAdmin, isMasterAdmin }` using new `/api/admin/me/role` (single source of truth).
-- New `src/routes/login.tsx` & `signup.tsx`: if `useAuth().user` present → `<Navigate to="/dashboard" replace />`. Signup confirmed users land on `/dashboard` (already via `emailRedirectTo`).
-- `src/components/site/Navbar.tsx`: logo `to="/"` becomes `to={user ? "/dashboard" : "/"}`; same for "Home" links.
-- `src/routes/index.tsx` (`/`): if `useAuth().user`, redirect to `/dashboard` via `useEffect` + `navigate({to:'/dashboard', replace:true})`. Session already persists via Supabase default `localStorage`; verify `useAuth` calls `getSession()` on mount (it does).
+## Phase 2 — My Store
+Full editor: identity, branding, theme, SEO, custom domain, visibility, verification, featured products/community, pinned announcements, live preview pane, draft mode. Keeps existing `stores` schema.
 
-## 4. Pricing fix
+## Phase 3 — Products
+Type picker (course / community / software / template / download / membership / bundle / service / subscription / one-time / free / preorder / private), rich editor, media, pricing + coupons + variants, inventory, publish/draft, reviews, refunds, duplicate/archive, bulk ops. Extends existing `products` table only additively.
 
-Diagnose: `Pricing.tsx` calls `api.publicPricing()` → `${VITE_API_BASE_URL}/api/public/pricing`. In preview/Lovable hosting the Express backend isn't reachable, so the call fails and `setPlans([])` leaves the grid empty.
+## Phase 4 — Community
+Channels, posts, comments, reactions, threads, announcements, events, leaderboards, roles, moderation, scheduled posts, media gallery, search, analytics. New tables added under existing store scoping.
 
-Fix:
-- Add 3 hardcoded fallback plans (Starter/Professional/Enterprise) inside `Pricing.tsx`.
-- If API response is empty or fails → use fallback. Pricing section always renders.
-- Same fallback used on `/pricing` route.
+## Phase 5 — Members (CRM)
+Directory + rich profile: orders, subscriptions, tags, notes, LTV, activity timeline, warnings, ban/suspend, invite, roles, bulk actions, export.
 
-## 5. Role badges everywhere
+## Phase 6 — Orders
+Table with status/customer/payment/coupon/tax/refund, detail view with timeline + invoice/receipt, notes, export, filters, bulk.
 
-New component `src/components/ui/RoleBadge.tsx`:
-- Props: `role: 'master_admin'|'super_admin'|'admin'|null`, `size?: 'sm'|'md'`.
-- Master = red gradient with verified checkmark icon, "MASTER ADMIN".
-- Super = gold gradient + checkmark, "SUPER ADMIN".
-- Admin = blue glass, "ADMIN".
-- Null → renders nothing.
+## Phase 7 — Analytics
+Revenue / traffic / product / retention / funnel / conversion / geo / device / referrer / affiliate / community / growth dashboards, custom date ranges, exports, live tiles.
 
-Wire into:
-- Dashboard header (next to greeting)
-- Profile page (next to name)
-- Navbar avatar dropdown (under email)
-- `admin.users.tsx` user list rows
-- `admin.admins.tsx` rows
-- `admin.tickets.tsx` ticket author / assignee
-- `admin.reports.tsx` author column
-- `admin.logs.tsx` actor column
+## Phase 8 — Messages
+Inbox: customer chat, internal notes, AI reply suggestions, templates, attachments, labels, pin/archive, typing + read receipts.
 
-For lists we need role lookups — extend the listing endpoints to include `role` field per user (join `user_roles` server-side, return highest role).
+## Phase 9 — Affiliates
+Dashboard, applications + approval flow, referral link generator, commission rules, tracking, payouts, leaderboard, assets, coupons, fraud flags.
 
-## 6. Admin pages: hierarchy enforcement + master indicator
+## Phase 10 — Payouts
+Balance / pending / completed, withdrawal request flow, payment methods (bank / crypto), invoices, tax docs, history, verification state.
 
-`admin.admins.tsx`:
-- Show role badge per admin row.
-- Promote/Demote buttons visible per current viewer's role.
-- Master admin row: actions disabled with tooltip "Cannot modify Master Admin".
-- Add "Add admin" form: master_admin can pick `super_admin`/`admin`; super_admin can pick `admin` only.
+## Phase 11 — Settings
+Tabs: General, Branding, Billing, Security, Domains, Email, Notifications, Integrations, Developers (API keys, webhooks), Roles & Permissions, Team, Localization, Taxes, Privacy/Compliance, Audit logs, Backup, Danger zone.
 
-## Verification checklist
+## Phase 12 — Support
+Tickets, knowledge base, docs, live chat, system status, FAQ, feature requests, bug reports, roadmap, community, AI assistant.
 
-- [ ] `bun run build` (frontend) and `cd server && npm run build` clean
-- [ ] Hard refresh `/dashboard` while signed in → stays
-- [ ] Logo click while signed in → `/dashboard`
-- [ ] Pricing visible on `/` and `/pricing` even with no backend
-- [ ] Sign in as `hitesh.tanwar8318@gmail.com` → MASTER ADMIN red badge visible
-- [ ] audit_logs gets row when role changed
+## Phase 13 — Advanced modules
+AI Assistant, Automation Center (triggers/actions/workflows), Campaign Manager, Team Management, App Marketplace, full Notification Center inbox page.
+
+---
 
 ## Technical notes
 
-- `app_role` enum: if already created (likely from earlier user_roles setup), use `ALTER TYPE app_role ADD VALUE IF NOT EXISTS 'master_admin'; ADD VALUE 'super_admin';` in a separate migration block (enum new values can't be used in same tx as creation, so commit then use).
-- The `has_role` RPC already exists per `cloud-db-workflow` notes; we add `is_master_admin` separately.
-- The master-admin seed trigger fires on `auth.users` insert — also run a one-time `INSERT ... ON CONFLICT DO NOTHING` for the existing user.
-- Backend role check helper added in `server/src/middleware/role.ts` to DRY hierarchy checks.
+- **No backend contract changes** in Phase 0–2. Later phases add new tables *additively* with proper RLS + GRANTs; existing tables/policies untouched.
+- All routes stay: existing `/business/*` files are refactored in place, none removed.
+- Server work uses `createServerFn` + `requireSupabaseAuth` per project conventions.
+- Public marketing site (`/`, `/discover`, `/$slug`) is untouched.
 
-## Files touched (summary)
+---
 
-DB migration (1), `server/src/routes/admin.ts`, `server/src/middleware/role.ts` (new),
-`src/lib/api-client.ts`, `src/hooks/use-admin.ts`, `src/components/ui/RoleBadge.tsx` (new),
-`src/components/site/Navbar.tsx`, `src/routes/index.tsx`, `src/routes/login.tsx`,
-`src/routes/signup.tsx`, `src/routes/dashboard.tsx`, `src/routes/profile.tsx`,
-`src/components/site/Pricing.tsx`, `src/routes/pricing.tsx`,
-`src/routes/admin.admins.tsx`, `src/routes/admin.users.tsx`,
-`src/routes/admin.tickets.tsx`, `src/routes/admin.reports.tsx`,
-`src/routes/admin.logs.tsx`.
+## What I need from you
+
+1. **Go / adjust order?** Default: I'll build Phase 0 now, then Phase 1 (Dashboard), and pause for your review before continuing.
+2. **Scope per turn**: Phase 0 + 1 in this turn, then one phase per follow-up message — OK?
+3. Any module you want prioritized or dropped?
+
+Reply "go" to start with Phase 0 + Dashboard.
