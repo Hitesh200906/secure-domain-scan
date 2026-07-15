@@ -453,8 +453,8 @@ function TrendingMasonry({ cards, loading }: { cards: Card[]; loading: boolean }
           <Loader2 className="size-3 animate-spin" /> Loading…
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
-          {cards.slice(0, 12).map((c, i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          {cards.slice(0, 6).map((c, i) => (
             <TrendingCard key={c.id} c={c} i={i} />
           ))}
         </div>
