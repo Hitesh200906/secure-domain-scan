@@ -24,10 +24,24 @@ import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BusinessIndexRouteImport } from './routes/business.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as BusinessTeamRouteImport } from './routes/business.team'
+import { Route as BusinessSupportRouteImport } from './routes/business.support'
 import { Route as BusinessStoreRouteImport } from './routes/business.store'
+import { Route as BusinessSettingsRouteImport } from './routes/business.settings'
 import { Route as BusinessProductsRouteImport } from './routes/business.products'
+import { Route as BusinessPayoutsRouteImport } from './routes/business.payouts'
 import { Route as BusinessOrdersRouteImport } from './routes/business.orders'
+import { Route as BusinessNotificationsRouteImport } from './routes/business.notifications'
+import { Route as BusinessMessagesRouteImport } from './routes/business.messages'
+import { Route as BusinessMembersRouteImport } from './routes/business.members'
+import { Route as BusinessMarketplaceRouteImport } from './routes/business.marketplace'
 import { Route as BusinessCreateRouteImport } from './routes/business.create'
+import { Route as BusinessCommunityRouteImport } from './routes/business.community'
+import { Route as BusinessCampaignsRouteImport } from './routes/business.campaigns'
+import { Route as BusinessAutomationRouteImport } from './routes/business.automation'
+import { Route as BusinessAnalyticsRouteImport } from './routes/business.analytics'
+import { Route as BusinessAiRouteImport } from './routes/business.ai'
+import { Route as BusinessAffiliatesRouteImport } from './routes/business.affiliates'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminTicketsRouteImport } from './routes/admin.tickets'
 import { Route as AdminScansRouteImport } from './routes/admin.scans'
@@ -112,9 +126,24 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const BusinessTeamRoute = BusinessTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessSupportRoute = BusinessSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => BusinessRoute,
+} as any)
 const BusinessStoreRoute = BusinessStoreRouteImport.update({
   id: '/store',
   path: '/store',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessSettingsRoute = BusinessSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => BusinessRoute,
 } as any)
 const BusinessProductsRoute = BusinessProductsRouteImport.update({
@@ -122,14 +151,69 @@ const BusinessProductsRoute = BusinessProductsRouteImport.update({
   path: '/products',
   getParentRoute: () => BusinessRoute,
 } as any)
+const BusinessPayoutsRoute = BusinessPayoutsRouteImport.update({
+  id: '/payouts',
+  path: '/payouts',
+  getParentRoute: () => BusinessRoute,
+} as any)
 const BusinessOrdersRoute = BusinessOrdersRouteImport.update({
   id: '/orders',
   path: '/orders',
   getParentRoute: () => BusinessRoute,
 } as any)
+const BusinessNotificationsRoute = BusinessNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessMessagesRoute = BusinessMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessMembersRoute = BusinessMembersRouteImport.update({
+  id: '/members',
+  path: '/members',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessMarketplaceRoute = BusinessMarketplaceRouteImport.update({
+  id: '/marketplace',
+  path: '/marketplace',
+  getParentRoute: () => BusinessRoute,
+} as any)
 const BusinessCreateRoute = BusinessCreateRouteImport.update({
   id: '/create',
   path: '/create',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessCommunityRoute = BusinessCommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessCampaignsRoute = BusinessCampaignsRouteImport.update({
+  id: '/campaigns',
+  path: '/campaigns',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessAutomationRoute = BusinessAutomationRouteImport.update({
+  id: '/automation',
+  path: '/automation',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessAnalyticsRoute = BusinessAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessAiRoute = BusinessAiRouteImport.update({
+  id: '/ai',
+  path: '/ai',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessAffiliatesRoute = BusinessAffiliatesRouteImport.update({
+  id: '/affiliates',
+  path: '/affiliates',
   getParentRoute: () => BusinessRoute,
 } as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
@@ -198,10 +282,24 @@ export interface FileRoutesByFullPath {
   '/admin/scans': typeof AdminScansRoute
   '/admin/tickets': typeof AdminTicketsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/business/affiliates': typeof BusinessAffiliatesRoute
+  '/business/ai': typeof BusinessAiRoute
+  '/business/analytics': typeof BusinessAnalyticsRoute
+  '/business/automation': typeof BusinessAutomationRoute
+  '/business/campaigns': typeof BusinessCampaignsRoute
+  '/business/community': typeof BusinessCommunityRoute
   '/business/create': typeof BusinessCreateRoute
+  '/business/marketplace': typeof BusinessMarketplaceRoute
+  '/business/members': typeof BusinessMembersRoute
+  '/business/messages': typeof BusinessMessagesRoute
+  '/business/notifications': typeof BusinessNotificationsRoute
   '/business/orders': typeof BusinessOrdersRoute
+  '/business/payouts': typeof BusinessPayoutsRoute
   '/business/products': typeof BusinessProductsRoute
+  '/business/settings': typeof BusinessSettingsRoute
   '/business/store': typeof BusinessStoreRouteWithChildren
+  '/business/support': typeof BusinessSupportRoute
+  '/business/team': typeof BusinessTeamRoute
   '/admin/': typeof AdminIndexRoute
   '/business/': typeof BusinessIndexRoute
   '/scan/new': typeof AuthenticatedScanNewRoute
@@ -225,10 +323,24 @@ export interface FileRoutesByTo {
   '/admin/scans': typeof AdminScansRoute
   '/admin/tickets': typeof AdminTicketsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/business/affiliates': typeof BusinessAffiliatesRoute
+  '/business/ai': typeof BusinessAiRoute
+  '/business/analytics': typeof BusinessAnalyticsRoute
+  '/business/automation': typeof BusinessAutomationRoute
+  '/business/campaigns': typeof BusinessCampaignsRoute
+  '/business/community': typeof BusinessCommunityRoute
   '/business/create': typeof BusinessCreateRoute
+  '/business/marketplace': typeof BusinessMarketplaceRoute
+  '/business/members': typeof BusinessMembersRoute
+  '/business/messages': typeof BusinessMessagesRoute
+  '/business/notifications': typeof BusinessNotificationsRoute
   '/business/orders': typeof BusinessOrdersRoute
+  '/business/payouts': typeof BusinessPayoutsRoute
   '/business/products': typeof BusinessProductsRoute
+  '/business/settings': typeof BusinessSettingsRoute
   '/business/store': typeof BusinessStoreRouteWithChildren
+  '/business/support': typeof BusinessSupportRoute
+  '/business/team': typeof BusinessTeamRoute
   '/admin': typeof AdminIndexRoute
   '/business': typeof BusinessIndexRoute
   '/scan/new': typeof AuthenticatedScanNewRoute
@@ -256,10 +368,24 @@ export interface FileRoutesById {
   '/admin/scans': typeof AdminScansRoute
   '/admin/tickets': typeof AdminTicketsRoute
   '/admin/users': typeof AdminUsersRoute
+  '/business/affiliates': typeof BusinessAffiliatesRoute
+  '/business/ai': typeof BusinessAiRoute
+  '/business/analytics': typeof BusinessAnalyticsRoute
+  '/business/automation': typeof BusinessAutomationRoute
+  '/business/campaigns': typeof BusinessCampaignsRoute
+  '/business/community': typeof BusinessCommunityRoute
   '/business/create': typeof BusinessCreateRoute
+  '/business/marketplace': typeof BusinessMarketplaceRoute
+  '/business/members': typeof BusinessMembersRoute
+  '/business/messages': typeof BusinessMessagesRoute
+  '/business/notifications': typeof BusinessNotificationsRoute
   '/business/orders': typeof BusinessOrdersRoute
+  '/business/payouts': typeof BusinessPayoutsRoute
   '/business/products': typeof BusinessProductsRoute
+  '/business/settings': typeof BusinessSettingsRoute
   '/business/store': typeof BusinessStoreRouteWithChildren
+  '/business/support': typeof BusinessSupportRoute
+  '/business/team': typeof BusinessTeamRoute
   '/admin/': typeof AdminIndexRoute
   '/business/': typeof BusinessIndexRoute
   '/_authenticated/scan/new': typeof AuthenticatedScanNewRoute
@@ -287,10 +413,24 @@ export interface FileRouteTypes {
     | '/admin/scans'
     | '/admin/tickets'
     | '/admin/users'
+    | '/business/affiliates'
+    | '/business/ai'
+    | '/business/analytics'
+    | '/business/automation'
+    | '/business/campaigns'
+    | '/business/community'
     | '/business/create'
+    | '/business/marketplace'
+    | '/business/members'
+    | '/business/messages'
+    | '/business/notifications'
     | '/business/orders'
+    | '/business/payouts'
     | '/business/products'
+    | '/business/settings'
     | '/business/store'
+    | '/business/support'
+    | '/business/team'
     | '/admin/'
     | '/business/'
     | '/scan/new'
@@ -314,10 +454,24 @@ export interface FileRouteTypes {
     | '/admin/scans'
     | '/admin/tickets'
     | '/admin/users'
+    | '/business/affiliates'
+    | '/business/ai'
+    | '/business/analytics'
+    | '/business/automation'
+    | '/business/campaigns'
+    | '/business/community'
     | '/business/create'
+    | '/business/marketplace'
+    | '/business/members'
+    | '/business/messages'
+    | '/business/notifications'
     | '/business/orders'
+    | '/business/payouts'
     | '/business/products'
+    | '/business/settings'
     | '/business/store'
+    | '/business/support'
+    | '/business/team'
     | '/admin'
     | '/business'
     | '/scan/new'
@@ -344,10 +498,24 @@ export interface FileRouteTypes {
     | '/admin/scans'
     | '/admin/tickets'
     | '/admin/users'
+    | '/business/affiliates'
+    | '/business/ai'
+    | '/business/analytics'
+    | '/business/automation'
+    | '/business/campaigns'
+    | '/business/community'
     | '/business/create'
+    | '/business/marketplace'
+    | '/business/members'
+    | '/business/messages'
+    | '/business/notifications'
     | '/business/orders'
+    | '/business/payouts'
     | '/business/products'
+    | '/business/settings'
     | '/business/store'
+    | '/business/support'
+    | '/business/team'
     | '/admin/'
     | '/business/'
     | '/_authenticated/scan/new'
@@ -477,11 +645,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/business/team': {
+      id: '/business/team'
+      path: '/team'
+      fullPath: '/business/team'
+      preLoaderRoute: typeof BusinessTeamRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/support': {
+      id: '/business/support'
+      path: '/support'
+      fullPath: '/business/support'
+      preLoaderRoute: typeof BusinessSupportRouteImport
+      parentRoute: typeof BusinessRoute
+    }
     '/business/store': {
       id: '/business/store'
       path: '/store'
       fullPath: '/business/store'
       preLoaderRoute: typeof BusinessStoreRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/settings': {
+      id: '/business/settings'
+      path: '/settings'
+      fullPath: '/business/settings'
+      preLoaderRoute: typeof BusinessSettingsRouteImport
       parentRoute: typeof BusinessRoute
     }
     '/business/products': {
@@ -491,6 +680,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BusinessProductsRouteImport
       parentRoute: typeof BusinessRoute
     }
+    '/business/payouts': {
+      id: '/business/payouts'
+      path: '/payouts'
+      fullPath: '/business/payouts'
+      preLoaderRoute: typeof BusinessPayoutsRouteImport
+      parentRoute: typeof BusinessRoute
+    }
     '/business/orders': {
       id: '/business/orders'
       path: '/orders'
@@ -498,11 +694,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BusinessOrdersRouteImport
       parentRoute: typeof BusinessRoute
     }
+    '/business/notifications': {
+      id: '/business/notifications'
+      path: '/notifications'
+      fullPath: '/business/notifications'
+      preLoaderRoute: typeof BusinessNotificationsRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/messages': {
+      id: '/business/messages'
+      path: '/messages'
+      fullPath: '/business/messages'
+      preLoaderRoute: typeof BusinessMessagesRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/members': {
+      id: '/business/members'
+      path: '/members'
+      fullPath: '/business/members'
+      preLoaderRoute: typeof BusinessMembersRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/marketplace': {
+      id: '/business/marketplace'
+      path: '/marketplace'
+      fullPath: '/business/marketplace'
+      preLoaderRoute: typeof BusinessMarketplaceRouteImport
+      parentRoute: typeof BusinessRoute
+    }
     '/business/create': {
       id: '/business/create'
       path: '/create'
       fullPath: '/business/create'
       preLoaderRoute: typeof BusinessCreateRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/community': {
+      id: '/business/community'
+      path: '/community'
+      fullPath: '/business/community'
+      preLoaderRoute: typeof BusinessCommunityRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/campaigns': {
+      id: '/business/campaigns'
+      path: '/campaigns'
+      fullPath: '/business/campaigns'
+      preLoaderRoute: typeof BusinessCampaignsRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/automation': {
+      id: '/business/automation'
+      path: '/automation'
+      fullPath: '/business/automation'
+      preLoaderRoute: typeof BusinessAutomationRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/analytics': {
+      id: '/business/analytics'
+      path: '/analytics'
+      fullPath: '/business/analytics'
+      preLoaderRoute: typeof BusinessAnalyticsRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/ai': {
+      id: '/business/ai'
+      path: '/ai'
+      fullPath: '/business/ai'
+      preLoaderRoute: typeof BusinessAiRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/affiliates': {
+      id: '/business/affiliates'
+      path: '/affiliates'
+      fullPath: '/business/affiliates'
+      preLoaderRoute: typeof BusinessAffiliatesRouteImport
       parentRoute: typeof BusinessRoute
     }
     '/admin/users': {
@@ -620,18 +886,46 @@ const BusinessStoreRouteWithChildren = BusinessStoreRoute._addFileChildren(
 )
 
 interface BusinessRouteChildren {
+  BusinessAffiliatesRoute: typeof BusinessAffiliatesRoute
+  BusinessAiRoute: typeof BusinessAiRoute
+  BusinessAnalyticsRoute: typeof BusinessAnalyticsRoute
+  BusinessAutomationRoute: typeof BusinessAutomationRoute
+  BusinessCampaignsRoute: typeof BusinessCampaignsRoute
+  BusinessCommunityRoute: typeof BusinessCommunityRoute
   BusinessCreateRoute: typeof BusinessCreateRoute
+  BusinessMarketplaceRoute: typeof BusinessMarketplaceRoute
+  BusinessMembersRoute: typeof BusinessMembersRoute
+  BusinessMessagesRoute: typeof BusinessMessagesRoute
+  BusinessNotificationsRoute: typeof BusinessNotificationsRoute
   BusinessOrdersRoute: typeof BusinessOrdersRoute
+  BusinessPayoutsRoute: typeof BusinessPayoutsRoute
   BusinessProductsRoute: typeof BusinessProductsRoute
+  BusinessSettingsRoute: typeof BusinessSettingsRoute
   BusinessStoreRoute: typeof BusinessStoreRouteWithChildren
+  BusinessSupportRoute: typeof BusinessSupportRoute
+  BusinessTeamRoute: typeof BusinessTeamRoute
   BusinessIndexRoute: typeof BusinessIndexRoute
 }
 
 const BusinessRouteChildren: BusinessRouteChildren = {
+  BusinessAffiliatesRoute: BusinessAffiliatesRoute,
+  BusinessAiRoute: BusinessAiRoute,
+  BusinessAnalyticsRoute: BusinessAnalyticsRoute,
+  BusinessAutomationRoute: BusinessAutomationRoute,
+  BusinessCampaignsRoute: BusinessCampaignsRoute,
+  BusinessCommunityRoute: BusinessCommunityRoute,
   BusinessCreateRoute: BusinessCreateRoute,
+  BusinessMarketplaceRoute: BusinessMarketplaceRoute,
+  BusinessMembersRoute: BusinessMembersRoute,
+  BusinessMessagesRoute: BusinessMessagesRoute,
+  BusinessNotificationsRoute: BusinessNotificationsRoute,
   BusinessOrdersRoute: BusinessOrdersRoute,
+  BusinessPayoutsRoute: BusinessPayoutsRoute,
   BusinessProductsRoute: BusinessProductsRoute,
+  BusinessSettingsRoute: BusinessSettingsRoute,
   BusinessStoreRoute: BusinessStoreRouteWithChildren,
+  BusinessSupportRoute: BusinessSupportRoute,
+  BusinessTeamRoute: BusinessTeamRoute,
   BusinessIndexRoute: BusinessIndexRoute,
 }
 
@@ -657,13 +951,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
