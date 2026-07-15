@@ -652,8 +652,20 @@ function Stat({ n, l }: { n: string; l: string }) {
 function CategoryCircles() {
   return (
     <section className="mx-auto max-w-[1400px] px-4 sm:px-6 mt-28">
-      <SectionHeader eyebrow="Explore" title="Discover by category" sub="Every world, one tap away." />
-      <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-6">
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.7 }}
+        className="mb-10 text-left"
+      >
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white/70">
+          Explore
+        </div>
+        <h2 className="mt-4 text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">Discover by category</h2>
+        <p className="mt-3 text-base sm:text-lg text-white/55">Every world, one tap away.</p>
+      </motion.div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-5">
         {CATEGORY_CIRCLES.map((c, i) => {
           const Icon = c.icon;
           return (
@@ -663,17 +675,14 @@ function CategoryCircles() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ delay: i * 0.04, duration: 0.6 }}
-              whileHover={{ y: -6, rotate: -2, scale: 1.03 }}
-              className="group flex flex-col items-center gap-3"
+              whileHover={{ y: -4, scale: 1.02 }}
+              className="group relative flex flex-col items-center justify-center gap-5 rounded-2xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/20 transition p-6 sm:p-8 aspect-square"
             >
-              <div className="relative">
-                <div className={`absolute inset-0 rounded-full blur-xl opacity-40 group-hover:opacity-70 transition bg-gradient-to-br ${c.gradient}`} />
-                <div className={`relative size-24 sm:size-28 rounded-full grid place-items-center bg-gradient-to-br ${c.gradient} shadow-[0_20px_60px_-20px_rgba(59,130,246,0.5)] ring-1 ring-white/15`}>
-                  <div className="absolute inset-1 rounded-full bg-[#0A0F1C]/60 backdrop-blur-sm" />
-                  <Icon className="relative size-9 text-white" strokeWidth={1.6} />
-                </div>
+              <div className="relative grid place-items-center">
+                <div className={`absolute inset-0 rounded-full blur-2xl opacity-30 group-hover:opacity-60 transition bg-gradient-to-br ${c.gradient}`} />
+                <Icon className="relative size-14 sm:size-16 text-[#3B82F6]" strokeWidth={1.5} />
               </div>
-              <div className="text-sm text-white/85 group-hover:text-white transition">{c.key}</div>
+              <div className="text-base sm:text-lg font-semibold text-white/90 group-hover:text-white transition">{c.key}</div>
             </motion.button>
           );
         })}
