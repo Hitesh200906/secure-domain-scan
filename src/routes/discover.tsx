@@ -80,16 +80,16 @@ const TRENDING: Card[] = [
 ];
 
 const CATEGORY_CIRCLES = [
-  { key: "Marketplace", icon: StoreIcon,     gradient: "from-blue-500 to-cyan-500" },
-  { key: "Communities", icon: Users,         gradient: "from-fuchsia-500 to-purple-600" },
-  { key: "AI",          icon: Bot,           gradient: "from-indigo-500 to-blue-600" },
-  { key: "Security",    icon: ShieldCheck,   gradient: "from-cyan-500 to-sky-600" },
-  { key: "Business",    icon: Briefcase,     gradient: "from-amber-500 to-orange-600" },
-  { key: "Education",   icon: GraduationCap, gradient: "from-emerald-500 to-teal-600" },
-  { key: "Gaming",      icon: Gamepad2,      gradient: "from-pink-500 to-rose-600" },
-  { key: "Finance",     icon: Wallet,        gradient: "from-yellow-500 to-amber-600" },
-  { key: "Design",      icon: Palette,       gradient: "from-purple-500 to-fuchsia-600" },
-  { key: "Development", icon: Code2,         gradient: "from-sky-500 to-indigo-600" },
+  { key: "Marketplace", icon: ShoppingCart },
+  { key: "Communities", icon: Users },
+  { key: "AI Tools",    icon: Brain },
+  { key: "Security",    icon: ShieldCheck },
+  { key: "Business",    icon: TrendingUp },
+  { key: "Education",   icon: GraduationCap },
+  { key: "Gaming",      icon: Gamepad2 },
+  { key: "Finance",     icon: Wallet },
+  { key: "Design",      icon: PenTool },
+  { key: "Development", icon: Code2 },
 ];
 
 const LIVE_TEMPLATES = [
