@@ -155,7 +155,7 @@ function DiscoverPage() {
         <Hero q={q} setQ={setQ} />
         <QuickFilters active={active} onChange={setActive} />
         <FeaturedCollection />
-        <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 mt-24">
+        <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 lg:gap-8 mt-24 items-stretch">
           <TrendingMasonry cards={allTrending} loading={loading} />
           <LiveActivity />
         </div>
@@ -453,8 +453,8 @@ function TrendingMasonry({ cards, loading }: { cards: Card[]; loading: boolean }
           <Loader2 className="size-3 animate-spin" /> Loading…
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
-          {cards.slice(0, 12).map((c, i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          {cards.slice(0, 6).map((c, i) => (
             <TrendingCard key={c.id} c={c} i={i} />
           ))}
         </div>
@@ -528,8 +528,8 @@ function LiveActivity() {
   }, []);
 
   return (
-    <aside className="hidden lg:block sticky top-28 self-start">
-      <div className="rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-5">
+    <aside className="hidden lg:block h-full">
+      <div className="h-full flex flex-col rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-5">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <span className="relative flex size-2">
@@ -540,7 +540,7 @@ function LiveActivity() {
           </div>
           <div className="text-[10px] uppercase tracking-widest text-white/40">real-time</div>
         </div>
-        <div className="space-y-2.5">
+        <div className="space-y-2.5 flex-1 overflow-y-auto pr-1">
           {events.map(ev => {
             const Icon = ev.icon;
             return (
