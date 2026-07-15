@@ -5,6 +5,7 @@ import {
   Search, Mic, Sparkles, Flame, Rocket, Star, Bot, Server, Palette, Briefcase,
   Gamepad2, Clapperboard, ShieldCheck, BadgeCheck, Users, ArrowUpRight, Circle,
   Cpu, GraduationCap, Wallet, Code2, Store as StoreIcon, Network, Loader2,
+  ShoppingCart, Brain, TrendingUp, PenTool,
 } from "lucide-react";
 import { Navbar } from "@/components/site/Navbar";
 import heroBg from "@/assets/hero-bg.png.asset.json";
