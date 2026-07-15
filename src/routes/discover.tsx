@@ -540,7 +540,7 @@ function LiveActivity() {
           </div>
           <div className="text-[10px] uppercase tracking-widest text-white/40">real-time</div>
         </div>
-        <div className="space-y-2.5">
+        <div className="space-y-2.5 flex-1 overflow-y-auto pr-1">
           {events.map(ev => {
             const Icon = ev.icon;
             return (
