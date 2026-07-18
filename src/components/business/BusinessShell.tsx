@@ -194,18 +194,8 @@ export function BusinessShell({ store, children }: { store: Store | null; childr
     <div className="flex h-full flex-col bg-[#0b0b0b]">
       <div className="shrink-0 px-3 pt-4 pb-3 border-b border-white/[0.06]">
         <StoreSwitcher store={store} />
-        <button
-          onClick={() => setPaletteOpen(true)}
-          className="mt-3 w-full flex items-center gap-2 rounded-lg border border-white/[0.08] bg-[#111] hover:bg-[#151515] transition px-2.5 py-1.5 text-[12px] text-neutral-500"
-        >
-          <Search className="size-3.5" />
-          <span>Search or run…</span>
-          <span className="ml-auto flex items-center gap-0.5 text-[10px] text-neutral-600">
-            <kbd className="rounded border border-white/10 bg-black/40 px-1 py-0.5 font-sans"><CmdIcon className="size-2.5 inline" /></kbd>
-            <kbd className="rounded border border-white/10 bg-black/40 px-1 py-0.5 font-sans">K</kbd>
-          </span>
-        </button>
       </div>
+
 
       <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-4 scrollbar-thin">
         {NAV_GROUPS.filter((g) => g.label !== "Workspace").map((group) => {
