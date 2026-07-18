@@ -600,25 +600,25 @@ function RevenueChart({ daily }: { daily: { d: string; v: number }[] }) {
 function HeroDecor() {
   const bars = [38, 52, 44, 68, 58, 82, 74, 92, 70, 88, 96, 84];
   return (
-    <div className="pointer-events-none absolute inset-y-0 right-0 w-[46%] hidden md:flex items-center justify-center overflow-hidden rounded-r-[24px]">
+    <div className="pointer-events-none absolute inset-y-0 right-0 w-[42%] hidden md:flex items-center justify-center p-4 overflow-hidden rounded-r-[24px]">
       <div
-        className="relative w-[360px] rounded-2xl border border-white/[0.08] bg-[#0d0d0f] p-5 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.8)]"
+        className="relative w-full max-w-[280px] rounded-xl border border-white/[0.06] bg-[#0b0b0d] p-3.5 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.8)]"
         style={{ animation: "heroCardFloat 6s ease-in-out infinite" }}
       >
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-[10px] uppercase tracking-[0.18em] text-neutral-500">Revenue</div>
-            <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-[22px] font-semibold text-white tabular-nums">$24,880</span>
-              <span className="text-[11px] font-medium text-emerald-400">+12.5%</span>
+            <div className="text-[9px] uppercase tracking-[0.18em] text-neutral-500">Revenue</div>
+            <div className="mt-0.5 flex items-baseline gap-1.5">
+              <span className="text-[17px] font-semibold text-white tabular-nums">$24,880</span>
+              <span className="text-[10px] font-medium text-emerald-400">+12.5%</span>
             </div>
           </div>
           <div className="flex gap-1">
             {["7D", "30D", "90D"].map((t, i) => (
               <span
                 key={t}
-                className={`text-[9px] px-1.5 py-0.5 rounded-md border ${
+                className={`text-[8px] px-1 py-0.5 rounded border ${
                   i === 1
                     ? "bg-white/10 border-white/15 text-white"
                     : "border-white/5 text-neutral-500"
@@ -631,37 +631,26 @@ function HeroDecor() {
         </div>
 
         {/* Line chart */}
-        <div className="mt-4 h-[110px] relative">
-          <svg viewBox="0 0 320 110" className="w-full h-full overflow-visible">
+        <div className="mt-2.5 h-[70px] relative">
+          <svg viewBox="0 0 320 110" preserveAspectRatio="none" className="w-full h-full overflow-visible">
             <defs>
               <linearGradient id="heroLineFill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.35" />
-                <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+                <stop offset="0%" stopColor="#1e40af" stopOpacity="0.4" />
+                <stop offset="100%" stopColor="#1e40af" stopOpacity="0" />
               </linearGradient>
               <linearGradient id="heroLineStroke" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#60a5fa" />
-                <stop offset="100%" stopColor="#818cf8" />
+                <stop offset="0%" stopColor="#2563eb" />
+                <stop offset="100%" stopColor="#3730a3" />
               </linearGradient>
             </defs>
-            {/* grid */}
             {[0, 1, 2, 3].map((i) => (
-              <line
-                key={i}
-                x1="0"
-                x2="320"
-                y1={20 + i * 25}
-                y2={20 + i * 25}
-                stroke="rgba(255,255,255,0.04)"
-                strokeDasharray="2 4"
-              />
+              <line key={i} x1="0" x2="320" y1={20 + i * 25} y2={20 + i * 25} stroke="rgba(255,255,255,0.04)" strokeDasharray="2 4" />
             ))}
-            {/* area */}
             <path
               d="M 0 80 L 30 70 L 60 75 L 90 55 L 120 60 L 150 40 L 180 50 L 210 28 L 240 35 L 270 18 L 300 25 L 320 12 L 320 110 L 0 110 Z"
               fill="url(#heroLineFill)"
               style={{ animation: "heroPathGrow 1.6s ease-out both" }}
             />
-            {/* line */}
             <path
               d="M 0 80 L 30 70 L 60 75 L 90 55 L 120 60 L 150 40 L 180 50 L 210 28 L 240 35 L 270 18 L 300 25 L 320 12"
               fill="none"
@@ -673,25 +662,20 @@ function HeroDecor() {
               strokeDashoffset="600"
               style={{ animation: "heroLineDraw 2s ease-out 0.15s forwards" }}
             />
-            {/* moving dot */}
-            <circle r="3.5" fill="#93c5fd" stroke="#0d0d0f" strokeWidth="1.5">
-              <animateMotion
-                dur="6s"
-                repeatCount="indefinite"
-                path="M 0 80 L 30 70 L 60 75 L 90 55 L 120 60 L 150 40 L 180 50 L 210 28 L 240 35 L 270 18 L 300 25 L 320 12"
-              />
+            <circle r="3" fill="#60a5fa" stroke="#0b0b0d" strokeWidth="1.5">
+              <animateMotion dur="6s" repeatCount="indefinite" path="M 0 80 L 30 70 L 60 75 L 90 55 L 120 60 L 150 40 L 180 50 L 210 28 L 240 35 L 270 18 L 300 25 L 320 12" />
             </circle>
           </svg>
         </div>
 
         {/* Bars */}
-        <div className="mt-3 flex items-end justify-between gap-1 h-[54px]">
+        <div className="mt-2 flex items-end justify-between gap-[3px] h-[36px]">
           {bars.map((b, i) => (
             <div
               key={i}
               className="flex-1 rounded-sm"
               style={{
-                background: "linear-gradient(180deg, #60a5fa, #1d4ed8)",
+                background: "linear-gradient(180deg, #2563eb, #1e3a8a)",
                 height: `${b}%`,
                 transformOrigin: "bottom",
                 animation: `heroBarGrow 1.4s cubic-bezier(0.16,1,0.3,1) ${i * 0.06}s both`,
@@ -701,35 +685,32 @@ function HeroDecor() {
         </div>
 
         {/* Stats row */}
-        <div className="mt-4 grid grid-cols-3 gap-2">
+        <div className="mt-2.5 grid grid-cols-3 gap-1.5">
           {[
             { l: "Orders", v: "356", d: "+8.2%" },
             { l: "Users", v: "1.2K", d: "+18%" },
             { l: "Conv", v: "4.3%", d: "+2.1%" },
           ].map((s) => (
-            <div
-              key={s.l}
-              className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-2 py-1.5"
-            >
-              <div className="text-[9px] uppercase tracking-wider text-neutral-500">{s.l}</div>
-              <div className="mt-0.5 text-[13px] font-semibold text-white tabular-nums">{s.v}</div>
-              <div className="text-[9px] text-emerald-400">{s.d}</div>
+            <div key={s.l} className="rounded-md border border-white/[0.06] bg-white/[0.02] px-1.5 py-1">
+              <div className="text-[8px] uppercase tracking-wider text-neutral-500">{s.l}</div>
+              <div className="mt-0.5 text-[11px] font-semibold text-white tabular-nums">{s.v}</div>
+              <div className="text-[8px] text-emerald-400">{s.d}</div>
             </div>
           ))}
         </div>
 
         {/* Live pill */}
-        <div className="absolute -top-2 right-4 flex items-center gap-1.5 rounded-full border border-white/10 bg-[#0d0d0f] px-2 py-0.5">
+        <div className="absolute -top-1.5 right-3 flex items-center gap-1 rounded-full border border-white/10 bg-[#0b0b0d] px-1.5 py-0.5">
           <span className="relative flex size-1.5">
             <span className="absolute inset-0 rounded-full bg-emerald-400 opacity-70 animate-ping" />
             <span className="relative rounded-full bg-emerald-400 size-1.5" />
           </span>
-          <span className="text-[9px] uppercase tracking-wider text-neutral-400">Live</span>
+          <span className="text-[8px] uppercase tracking-wider text-neutral-400">Live</span>
         </div>
       </div>
 
       <style>{`
-        @keyframes heroCardFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        @keyframes heroCardFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
         @keyframes heroBarGrow { from { transform: scaleY(0); opacity: 0; } to { transform: scaleY(1); opacity: 1; } }
         @keyframes heroLineDraw { to { stroke-dashoffset: 0; } }
         @keyframes heroPathGrow { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -737,6 +718,7 @@ function HeroDecor() {
     </div>
   );
 }
+
 
 
 
