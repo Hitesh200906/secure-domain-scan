@@ -599,87 +599,22 @@ import heroCube from "@/assets/hero-cube-3d.png";
 
 function HeroDecor() {
   return (
-    <div className="pointer-events-none absolute inset-y-0 right-0 w-[55%] overflow-hidden rounded-r-[24px]">
-      {/* Ambient radial glow */}
-      <div
-        className="absolute right-[8%] top-1/2 -translate-y-1/2 size-[420px] rounded-full blur-[80px] opacity-70"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(59,130,246,0.55), rgba(29,78,216,0.2) 45%, transparent 72%)",
-          animation: "heroDecorPulse 4s ease-in-out infinite",
-        }}
-      />
-
-      {/* Orbit rings */}
-      <div
-        className="absolute right-[6%] top-1/2 -translate-y-1/2 size-[380px] rounded-full border border-blue-400/15"
-        style={{ animation: "heroDecorSpin 28s linear infinite" }}
-      />
-      <div
-        className="absolute right-[10%] top-1/2 -translate-y-1/2 size-[300px] rounded-full border border-blue-400/10"
-        style={{ animation: "heroDecorSpin 40s linear infinite reverse" }}
-      />
-
-      {/* Signal lines */}
-      <svg
-        viewBox="0 0 800 400"
-        preserveAspectRatio="none"
-        className="absolute inset-0 w-full h-full opacity-60 mix-blend-screen"
-      >
-        <defs>
-          <linearGradient id="heroWaveG" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#60a5fa" stopOpacity="0" />
-            <stop offset="55%" stopColor="#93c5fd" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="#60a5fa" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        {Array.from({ length: 5 }).map((_, i) => (
-          <path
-            key={i}
-            d={`M 0 ${120 + i * 40} Q 300 ${60 + i * 30} 550 ${180 + i * 20} T 900 ${140 + i * 25}`}
-            fill="none"
-            stroke="url(#heroWaveG)"
-            strokeWidth="1"
-          >
-            <animate attributeName="stroke-dasharray" values="2 260;80 160;2 260" dur={`${9 + i}s`} repeatCount="indefinite" />
-            <animate attributeName="stroke-dashoffset" from="0" to="500" dur={`${10 + i}s`} repeatCount="indefinite" />
-          </path>
-        ))}
-      </svg>
-
-      {/* Hero 3D cube image */}
+    <div className="pointer-events-none absolute inset-y-0 right-0 w-1/2 overflow-hidden rounded-r-[24px] flex items-center justify-center">
       <img
         src={heroCube}
         alt=""
         width={1024}
         height={1024}
-        className="absolute right-[-4%] top-1/2 -translate-y-1/2 h-[115%] w-auto object-contain drop-shadow-[0_0_60px_rgba(59,130,246,0.45)]"
+        className="max-h-[110%] w-auto object-contain"
         style={{ animation: "heroDecorFloat 6s ease-in-out infinite" }}
       />
-
-      {/* Sparkles */}
-      {Array.from({ length: 7 }).map((_, i) => (
-        <span
-          key={i}
-          className="absolute size-1 rounded-full bg-blue-200"
-          style={{
-            top: `${12 + i * 11}%`,
-            right: `${6 + (i % 3) * 18}%`,
-            animation: `heroDecorSpark ${3.5 + i * 0.5}s ease-in-out ${i * 0.35}s infinite`,
-            filter: "blur(0.5px)",
-          }}
-        />
-      ))}
-
       <style>{`
-        @keyframes heroDecorFloat { 0%,100% { transform: translateY(-50%); } 50% { transform: translateY(calc(-50% - 10px)); } }
-        @keyframes heroDecorPulse { 0%,100% { opacity: 0.45; } 50% { opacity: 0.8; } }
-        @keyframes heroDecorSpin { to { transform: translateY(-50%) rotate(360deg); } }
-        @keyframes heroDecorSpark { 0%,100% { opacity: 0.2; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-8px); } }
+        @keyframes heroDecorFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
       `}</style>
     </div>
   );
 }
+
 
 
 
