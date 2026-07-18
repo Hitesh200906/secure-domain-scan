@@ -641,12 +641,12 @@ function HeroDecor() {
           <svg viewBox="0 0 320 110" preserveAspectRatio="none" className="w-full h-full overflow-visible">
             <defs>
               <linearGradient id="heroLineFill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#1e40af" stopOpacity="0.4" />
-                <stop offset="100%" stopColor="#1e40af" stopOpacity="0" />
+                <stop offset="0%" stopColor="#1d4ed8" stopOpacity="0.4" />
+                <stop offset="100%" stopColor="#1d4ed8" stopOpacity="0" />
               </linearGradient>
               <linearGradient id="heroLineStroke" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#2563eb" />
-                <stop offset="100%" stopColor="#3730a3" />
+                <stop offset="0%" stopColor="#3b82f6" />
+                <stop offset="100%" stopColor="#2563eb" />
               </linearGradient>
             </defs>
             {[0, 1, 2, 3].map((i) => (
@@ -681,7 +681,7 @@ function HeroDecor() {
               key={i}
               className="flex-1 rounded-sm"
               style={{
-                background: "linear-gradient(180deg, #2563eb, #1e3a8a)",
+                background: "linear-gradient(180deg, #3b82f6, #1d4ed8)",
                 height: `${b}%`,
                 transformOrigin: "bottom",
                 animation: `heroBarGrow 1.4s cubic-bezier(0.16,1,0.3,1) ${i * 0.06}s both`,
