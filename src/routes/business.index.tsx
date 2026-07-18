@@ -594,167 +594,108 @@ function RevenueChart({ daily }: { daily: { d: string; v: number }[] }) {
   );
 }
 
+import heroCube from "@/assets/hero-cube.png.asset.json";
+
 function HeroDecor() {
   return (
-    <div className="pointer-events-none absolute inset-y-0 right-0 w-1/2 overflow-hidden">
-      {/* ambient flowing waves */}
-      <svg viewBox="0 0 600 320" preserveAspectRatio="none" className="absolute inset-0 w-full h-full opacity-60">
+    <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[24px]">
+      {/* Reference image scene */}
+      <div
+        className="absolute inset-0 bg-no-repeat bg-cover bg-right opacity-[0.9]"
+        style={{
+          backgroundImage: `url(${heroCube.url})`,
+          maskImage:
+            "linear-gradient(to left, black 0%, black 45%, transparent 92%)",
+          WebkitMaskImage:
+            "linear-gradient(to left, black 0%, black 45%, transparent 92%)",
+          animation: "heroDecorFloat 6s ease-in-out infinite",
+        }}
+      />
+      {/* Ambient glow behind cube */}
+      <div
+        className="absolute right-[14%] top-1/2 -translate-y-1/2 size-[320px] rounded-full blur-3xl opacity-60"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(59,130,246,0.35), rgba(29,78,216,0.15) 45%, transparent 70%)",
+          animation: "heroDecorPulse 3.6s ease-in-out infinite",
+        }}
+      />
+      {/* Flowing signal lines */}
+      <svg
+        viewBox="0 0 800 400"
+        preserveAspectRatio="none"
+        className="absolute inset-0 w-full h-full opacity-70 mix-blend-screen"
+      >
         <defs>
-          <linearGradient id="heroGlow" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#4c6ef5" stopOpacity="0.35" />
-            <stop offset="100%" stopColor="#1e40af" stopOpacity="0" />
-          </linearGradient>
-          <linearGradient id="waveG" x1="0" y1="0" x2="1" y2="0">
+          <linearGradient id="heroWaveG" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#60a5fa" stopOpacity="0" />
-            <stop offset="50%" stopColor="#60a5fa" stopOpacity="0.55" />
+            <stop offset="55%" stopColor="#93c5fd" stopOpacity="0.55" />
             <stop offset="100%" stopColor="#60a5fa" stopOpacity="0" />
           </linearGradient>
         </defs>
-        <circle cx="480" cy="160" r="200" fill="url(#heroGlow)" />
-        {Array.from({ length: 8 }).map((_, i) => (
+        {Array.from({ length: 5 }).map((_, i) => (
           <path
             key={i}
-            d={`M 0 ${50 + i * 28} Q 200 ${10 + i * 20} 400 ${80 + i * 22} T 800 ${60 + i * 24}`}
+            d={`M 0 ${120 + i * 40} Q 300 ${60 + i * 30} 550 ${180 + i * 20} T 900 ${140 + i * 25}`}
             fill="none"
-            stroke="url(#waveG)"
-            strokeOpacity={0.35 - i * 0.03}
+            stroke="url(#heroWaveG)"
             strokeWidth="1"
           >
-            <animate attributeName="stroke-dashoffset" from="0" to="400" dur={`${8 + i}s`} repeatCount="indefinite" />
-            <animate attributeName="stroke-dasharray" values="2 200;60 100;2 200" dur={`${8 + i}s`} repeatCount="indefinite" />
+            <animate
+              attributeName="stroke-dasharray"
+              values="2 260;80 160;2 260"
+              dur={`${9 + i}s`}
+              repeatCount="indefinite"
+            />
+            <animate
+              attributeName="stroke-dashoffset"
+              from="0"
+              to="500"
+              dur={`${10 + i}s`}
+              repeatCount="indefinite"
+            />
           </path>
         ))}
       </svg>
 
-      {/* Live 3D isometric structure */}
+      {/* Floating chart chip */}
       <div
-        className="absolute right-[6%] top-1/2 -translate-y-1/2 hidden md:block"
-        style={{ perspective: "900px" }}
+        className="absolute right-[6%] top-[22%] hidden md:flex items-center gap-2 rounded-xl border border-blue-400/25 bg-blue-500/[0.06] backdrop-blur-md px-2.5 py-2"
+        style={{ animation: "heroDecorFloat 5s ease-in-out infinite reverse" }}
       >
-        <div
-          className="relative"
-          style={{
-            width: 220,
-            height: 220,
-            transformStyle: "preserve-3d",
-            transform: "rotateX(58deg) rotateZ(-42deg)",
-            animation: "heroSpin 22s linear infinite",
-          }}
-        >
-          {/* pedestal base rings */}
-          {[0, 1, 2].map((i) => (
-            <div
-              key={`ring-${i}`}
-              className="absolute left-1/2 top-1/2"
-              style={{
-                width: 220 - i * 24,
-                height: 220 - i * 24,
-                marginLeft: -(220 - i * 24) / 2,
-                marginTop: -(220 - i * 24) / 2,
-                transform: `translateZ(${i * 6}px)`,
-                borderRadius: 12,
-                background:
-                  "linear-gradient(135deg, rgba(30,58,138,0.55), rgba(15,23,42,0.85))",
-                border: "1px solid rgba(96,165,250,0.35)",
-                boxShadow:
-                  "0 0 30px rgba(59,130,246,0.25), inset 0 0 30px rgba(59,130,246,0.15)",
-              }}
-            />
-          ))}
-
-          {/* glowing floor light */}
-          <div
-            className="absolute left-1/2 top-1/2"
-            style={{
-              width: 150,
-              height: 150,
-              marginLeft: -75,
-              marginTop: -75,
-              transform: "translateZ(20px)",
-              borderRadius: 8,
-              background:
-                "radial-gradient(circle, rgba(96,165,250,0.9), rgba(59,130,246,0.2) 60%, transparent 75%)",
-              filter: "blur(2px)",
-              animation: "heroPulse 3.2s ease-in-out infinite",
-            }}
+        <svg viewBox="0 0 40 20" className="w-10 h-5 text-blue-300">
+          <polyline
+            points="0,15 8,10 14,12 22,5 30,8 40,3"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
-
-          {/* Central cube (6 faces) */}
-          <div
-            className="absolute left-1/2 top-1/2"
-            style={{
-              width: 110,
-              height: 110,
-              marginLeft: -55,
-              marginTop: -55,
-              transformStyle: "preserve-3d",
-              transform: "translateZ(90px)",
-              animation: "heroFloat 4s ease-in-out infinite",
-            }}
-          >
-            {[
-              { t: "translateZ(55px)" },
-              { t: "translateZ(-55px)" },
-              { t: "rotateY(90deg) translateZ(55px)" },
-              { t: "rotateY(-90deg) translateZ(55px)" },
-              { t: "rotateX(90deg) translateZ(55px)" },
-              { t: "rotateX(-90deg) translateZ(55px)" },
-            ].map((f, i) => (
-              <div
-                key={i}
-                className="absolute inset-0"
-                style={{
-                  transform: f.t,
-                  background:
-                    "linear-gradient(135deg, rgba(96,165,250,0.55), rgba(29,78,216,0.35))",
-                  border: "1px solid rgba(147,197,253,0.55)",
-                  boxShadow:
-                    "inset 0 0 24px rgba(147,197,253,0.35), 0 0 20px rgba(59,130,246,0.35)",
-                  backdropFilter: "blur(2px)",
-                }}
-              />
-            ))}
-          </div>
-
-          {/* Orbiting mini cubes */}
-          {[0, 1, 2].map((i) => (
-            <div
-              key={`orbit-${i}`}
-              className="absolute left-1/2 top-1/2"
-              style={{
-                width: 0,
-                height: 0,
-                transformStyle: "preserve-3d",
-                animation: `heroOrbit ${9 + i * 3}s linear infinite`,
-                animationDelay: `${-i * 2}s`,
-              }}
-            >
-              <div
-                style={{
-                  position: "absolute",
-                  width: 18,
-                  height: 18,
-                  left: -9,
-                  top: -9,
-                  transform: `translateX(${120 + i * 10}px) translateZ(${60 + i * 12}px)`,
-                  background: "linear-gradient(135deg,#93c5fd,#3b82f6)",
-                  border: "1px solid rgba(191,219,254,0.7)",
-                  boxShadow: "0 0 12px rgba(96,165,250,0.8)",
-                  borderRadius: 3,
-                }}
-              />
-            </div>
-          ))}
-        </div>
+        </svg>
       </div>
 
+      {/* Subtle particles */}
+      {Array.from({ length: 6 }).map((_, i) => (
+        <span
+          key={i}
+          className="absolute size-1 rounded-full bg-blue-300/70"
+          style={{
+            top: `${15 + i * 12}%`,
+            right: `${8 + (i % 3) * 15}%`,
+            animation: `heroDecorSpark ${4 + i}s ease-in-out ${i * 0.4}s infinite`,
+            filter: "blur(0.5px)",
+          }}
+        />
+      ))}
+
       <style>{`
-        @keyframes heroSpin { to { transform: rotateX(58deg) rotateZ(318deg); } }
-        @keyframes heroFloat { 0%,100% { transform: translateZ(90px); } 50% { transform: translateZ(120px); } }
-        @keyframes heroPulse { 0%,100% { opacity:0.7; } 50% { opacity:1; } }
-        @keyframes heroOrbit { to { transform: rotateZ(360deg); } }
+        @keyframes heroDecorFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        @keyframes heroDecorPulse { 0%,100% { opacity: 0.45; transform: translateY(-50%) scale(1); } 50% { opacity: 0.75; transform: translateY(-50%) scale(1.06); } }
+        @keyframes heroDecorSpark { 0%,100% { opacity: 0.2; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-8px); } }
       `}</style>
     </div>
   );
 }
+
 
