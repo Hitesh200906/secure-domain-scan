@@ -181,33 +181,16 @@ export function BusinessShell({ store, children }: { store: Store | null; childr
         onClick={onNav}
         className={`group relative flex items-center gap-3 rounded-full pl-1.5 pr-4 py-1.5 text-[13.5px] font-medium transition ${
           active
-            ? "text-white"
-            : "text-neutral-400 hover:text-white"
+            ? "text-white bg-white/[0.05]"
+            : "text-neutral-400 hover:text-white hover:bg-white/[0.03]"
         }`}
-        style={
-          active
-            ? {
-                background:
-                  "radial-gradient(120% 140% at 0% 50%, rgba(59,130,246,0.22) 0%, rgba(31,85,245,0.10) 40%, rgba(10,10,20,0.6) 100%)",
-                boxShadow: "inset 0 0 0 1px rgba(59,130,246,0.25), 0 6px 20px -12px rgba(31,85,245,0.7)",
-              }
-            : undefined
-        }
       >
         <span
           className={`grid place-items-center size-8 rounded-xl shrink-0 transition ${
             active
-              ? "text-blue-300"
-              : "text-neutral-500 group-hover:text-neutral-300 bg-white/[0.02] border border-white/[0.06]"
+              ? "text-blue-300 bg-blue-500/10"
+              : "text-neutral-500 group-hover:text-neutral-300 bg-white/[0.02]"
           }`}
-          style={
-            active
-              ? {
-                  background: "linear-gradient(160deg, rgba(31,85,245,0.28), rgba(15,20,40,0.4))",
-                  boxShadow: "inset 0 0 0 1px rgba(96,165,250,0.35), 0 0 14px -4px rgba(59,130,246,0.6)",
-                }
-              : undefined
-          }
         >
           <Icon className="size-[15px]" />
         </span>
@@ -215,6 +198,7 @@ export function BusinessShell({ store, children }: { store: Store | null; childr
       </Link>
     );
   };
+
 
 
   const SidebarBody = ({ onNav }: { onNav?: () => void }) => (
