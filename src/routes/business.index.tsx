@@ -389,7 +389,31 @@ function BusinessDashboard() {
             <Link to="/business/analytics" className="text-[11px] text-neutral-400 hover:text-white">View all</Link>
           </div>
           <div className="space-y-4">
-            {orders.slice(0, 3).map((o, i) => {
+            {isEmpty ? demoActivity.map((a, i) => {
+              const isCustomer = a.kind === "customer";
+              const isSale = a.kind === "sale";
+              return (
+                <div key={i} className="flex items-start gap-3">
+                  <div className={`size-8 rounded-lg border grid place-items-center shrink-0 ${
+                    isCustomer ? "bg-purple-500/15 border-purple-500/25" :
+                    isSale ? "bg-emerald-500/15 border-emerald-500/25" :
+                    "bg-amber-500/15 border-amber-500/25"
+                  }`}>
+                    {isCustomer ? <UserPlus className="size-3.5 text-purple-300" /> :
+                     isSale ? <Package className="size-3.5 text-emerald-300" /> :
+                     <Landmark className="size-3.5 text-amber-300" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[12.5px] text-white">{a.title}</div>
+                    <div className="text-[10.5px] text-neutral-500 truncate">{a.sub}</div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    {a.right && <div className="text-[12px] tabular-nums text-white">{a.right}</div>}
+                    {a.ago && <div className="text-[10px] text-neutral-500">{a.ago}</div>}
+                  </div>
+                </div>
+              );
+            }) : orders.slice(0, 3).map((o, i) => {
               const p = products.find(p => p.id === o.product_id);
               const isCustomer = i % 3 === 0;
               const isSale = i % 3 === 1;
@@ -419,7 +443,7 @@ function BusinessDashboard() {
                 </div>
               );
             })}
-            {orders.length === 0 && (
+            {!isEmpty && orders.length === 0 && (
               <div className="flex items-start gap-3">
                 <div className="size-8 rounded-lg bg-white/[0.04] border border-white/10 grid place-items-center shrink-0">
                   <Activity className="size-3.5 text-neutral-400" />
@@ -428,6 +452,7 @@ function BusinessDashboard() {
               </div>
             )}
           </div>
+
         </Panel>
       </section>
     </div>
