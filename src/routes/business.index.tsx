@@ -595,7 +595,7 @@ function RevenueChart({ daily }: { daily: { d: string; v: number }[] }) {
   );
 }
 
-import heroCube from "@/assets/hero-cube-3d.png";
+
 
 function HeroDecor() {
   const bars = [38, 52, 44, 68, 58, 82, 74, 92, 70, 88, 96, 84];
