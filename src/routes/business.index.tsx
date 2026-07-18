@@ -311,7 +311,7 @@ function BusinessDashboard() {
             <EmptyLine text="No sales yet." />
           ) : (
             <div className="space-y-3.5">
-              {topProducts.map((t) => (
+              {topProducts.map((t: any) => (
                 <div key={t.product.id} className="flex items-center gap-3">
                   <div className="size-10 rounded-lg bg-gradient-to-br from-purple-500/40 to-blue-500/40 border border-white/10 grid place-items-center text-[13px] font-semibold">
                     {t.product.name[0]?.toUpperCase()}
