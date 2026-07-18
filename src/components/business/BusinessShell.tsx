@@ -103,9 +103,8 @@ function StoreSwitcher({ store }: { store: Store | null }) {
         <Logo s={store} />
         <div className="flex-1 min-w-0 text-left">
           <div className="text-[13px] font-semibold truncate text-white">{store?.name ?? "Workspace"}</div>
-          {store?.slug && <div className="text-[10.5px] text-neutral-500 truncate">forge.app/{store.slug}</div>}
         </div>
-        <ChevronsUpDown className="size-3.5 text-neutral-500 shrink-0" />
+        <span className="text-[11px] font-medium text-neutral-400 hover:text-white transition shrink-0">Switch</span>
       </button>
 
       {open && (
