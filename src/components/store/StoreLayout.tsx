@@ -5,9 +5,10 @@ import {
   Home as HomeIcon, Plus, BadgeCheck, Loader2,
   Users, Package, Star,
   MessagesSquare, Megaphone, MessageCircle,
-  BookOpen, HelpCircle, Info, Eye, Trash2, GripVertical, X, Check, Search,
-  Hash, Download, Calendar, Map, Rocket, Sparkles,
-  Globe, Youtube, Instagram, Music2, ArrowUpRight, Activity, Clock, ShieldCheck,
+  BookOpen, HelpCircle, Info, Eye, Trash2, X, Check, Search,
+  Download, Calendar, Rocket, Sparkles,
+  Globe, Youtube, Instagram, Music2, Bell, Settings, Share2, ArrowRight,
+  Activity, Clock, ShieldCheck, TrendingUp, Twitter,
 } from "lucide-react";
 import {
   APP_CATALOG, APP_MAP, type AppKey, type StoreApp,
@@ -20,13 +21,31 @@ type ActiveView = "home" | { kind: "app"; key: AppKey };
 
 // Tokens
 const BG = "#050505";
+const SIDEBAR_BG = "#070707";
 const CARD = "#0B0B0B";
+const HOVER = "#111111";
+const SELECTED = "#111827";
 const BORDER = "rgba(255,255,255,0.06)";
-const HOVER = "rgba(255,255,255,0.03)";
+const BORDER_SOFT = "rgba(255,255,255,0.05)";
 const TEXT = "#FFFFFF";
 const SEC = "#A1A1AA";
 const MUTED = "#71717A";
-const ACCENT = "#3B6EFF"; // subtle blue accent
+const BLUE = "#3B82F6";
+const BLUE_DARK = "#1D4ED8";
+
+type NavKey = "home" | AppKey;
+const NAV: { key: NavKey; label: string; Icon: any; badge?: number }[] = [
+  { key: "home", label: "Home", Icon: HomeIcon },
+  { key: "chat", label: "Chat", Icon: MessagesSquare },
+  { key: "announcements", label: "Announcements", Icon: Megaphone, badge: 2 },
+  { key: "forum", label: "Forum", Icon: MessageCircle },
+  { key: "resources", label: "Resources", Icon: BookOpen },
+  { key: "downloads" as any, label: "Downloads", Icon: Download },
+  { key: "events" as any, label: "Events", Icon: Calendar },
+  { key: "faq", label: "FAQ", Icon: HelpCircle },
+  { key: "reviews", label: "Reviews", Icon: Star },
+  { key: "about", label: "About", Icon: Info },
+];
 
 export function StoreLayout({
   store, isOwner, viewerId, onJoin,
@@ -51,6 +70,7 @@ export function StoreLayout({
 
   const enabledApps = useMemo(() => apps.filter(a => a.enabled), [apps]);
   const installedKeys = new Set(apps.map(a => a.app_key));
+  const enabledKeys = new Set(enabledApps.map(a => a.app_key));
   const available = APP_CATALOG.filter(a => !installedKeys.has(a.key));
 
   const handleInstall = async (key: AppKey) => {
@@ -71,115 +91,140 @@ export function StoreLayout({
     await reload();
   };
 
-  const NAV: { key: AppKey; label: string; Icon: any; badge?: number }[] = [
-    { key: "chat", label: "Chat", Icon: MessagesSquare },
-    { key: "announcements", label: "Announcements", Icon: Megaphone, badge: 2 },
-    { key: "forum", label: "Forum", Icon: MessageCircle },
-    { key: "resources", label: "Resources", Icon: BookOpen },
-    { key: "faq", label: "FAQ", Icon: HelpCircle },
-    { key: "reviews", label: "Reviews", Icon: Star },
-    { key: "about", label: "About", Icon: Info },
-  ];
-  const enabledKeys = new Set(enabledApps.map(a => a.app_key));
+  const isActive = (k: NavKey) =>
+    (k === "home" && active === "home") ||
+    (typeof active !== "string" && active.kind === "app" && active.key === (k as AppKey));
 
   return (
     <div
-      className="-m-4 sm:-m-6 lg:-m-8 min-h-[calc(100vh-5rem)] flex fade-in-page"
+      className="-m-4 sm:-m-6 lg:-m-8 min-h-[calc(100vh-5rem)] flex"
       style={{ background: BG, color: TEXT }}
     >
       <style>{`
-        @keyframes fadeInPage { from { opacity: 0 } to { opacity: 1 } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
-        .fade-in-page { animation: fadeInPage .35s ease both }
-        .slide-up { animation: slideUp .45s ease both }
-        .slide-up-1 { animation-delay: .04s }
-        .slide-up-2 { animation-delay: .08s }
-        .slide-up-3 { animation-delay: .12s }
-        .slide-up-4 { animation-delay: .16s }
-        .lift { transition: transform .2s ease, background-color .2s ease, border-color .2s ease }
+        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes slideUp8 { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
+        .anim-fade { animation: fadeIn .22s ease both }
+        .anim-slide { animation: slideUp8 .32s ease both }
+        .anim-1 { animation-delay: .04s }
+        .anim-2 { animation-delay: .08s }
+        .anim-3 { animation-delay: .12s }
+        .anim-4 { animation-delay: .16s }
+        .t-220 { transition: transform .22s ease, background-color .22s ease, border-color .22s ease, color .22s ease }
         .lift:hover { transform: translateY(-2px) }
       `}</style>
 
-      {/* LEFT COLUMN */}
+      {/* LEFT SIDEBAR (sticky, non-scroll) */}
       <aside
-        className="hidden lg:flex w-[280px] shrink-0 flex-col border-r"
-        style={{ borderColor: BORDER, background: BG }}
+        className="hidden lg:flex shrink-0 flex-col"
+        style={{
+          width: 290,
+          background: SIDEBAR_BG,
+          borderRight: `1px solid ${BORDER_SOFT}`,
+          padding: 24,
+          position: "sticky",
+          top: 72,
+          height: "calc(100vh - 72px)",
+          alignSelf: "flex-start",
+        }}
       >
-        {/* Identity panel */}
-        <div className="p-6">
+        {/* STORE CARD */}
+        <div
+          className="anim-fade"
+          style={{
+            background: CARD,
+            border: `1px solid ${BORDER_SOFT}`,
+            borderRadius: 22,
+            padding: 20,
+          }}
+        >
           <div className="flex items-start gap-3">
             <div
-              className="size-12 rounded-2xl overflow-hidden shrink-0 border"
-              style={{ borderColor: BORDER, background: CARD }}
+              className="shrink-0 overflow-hidden"
+              style={{ width: 72, height: 72, borderRadius: 18, background: HOVER, border: `1px solid ${BORDER_SOFT}` }}
             >
               {store.logo_url
-                ? <img src={store.logo_url} alt={store.name} className="size-full object-cover" />
-                : <div className="size-full grid place-items-center text-lg font-semibold" style={{ color: TEXT }}>{store.name[0]?.toUpperCase()}</div>}
+                ? <img src={store.logo_url} alt={store.name} className="w-full h-full object-cover" />
+                : <div className="w-full h-full grid place-items-center text-2xl font-bold">{store.name[0]?.toUpperCase()}</div>}
             </div>
             <div className="min-w-0 flex-1 pt-0.5">
               <div className="flex items-center gap-1.5">
-                <div className="font-medium truncate" style={{ color: TEXT }}>{store.name}</div>
-                {store.verified && <BadgeCheck className="size-4 shrink-0" style={{ color: ACCENT }} />}
+                <div className="truncate font-bold" style={{ fontSize: 22, color: TEXT, letterSpacing: -0.3 }}>{store.name}</div>
+                {store.verified && <BadgeCheck className="size-4 shrink-0" style={{ color: BLUE }} />}
               </div>
-              <div className="text-xs mt-0.5" style={{ color: MUTED }}>@{store.slug}</div>
+              <div className="mt-1 flex items-center gap-1.5">
+                <span
+                  className="inline-flex text-[10px] font-medium px-2 py-0.5 rounded-full"
+                  style={{ background: "rgba(59,130,246,0.14)", color: "#93b4ff" }}
+                >
+                  {store.category ?? "Business"}
+                </span>
+                <span className="text-[11px] truncate" style={{ color: MUTED }}>@{store.slug}</span>
+              </div>
             </div>
           </div>
 
           {store.description && (
-            <p className="mt-4 text-[13px] leading-relaxed line-clamp-3" style={{ color: SEC }}>
+            <p className="mt-3 text-[12px] leading-relaxed line-clamp-2" style={{ color: SEC }}>
               {store.description}
             </p>
           )}
 
-          <div className="mt-5 grid grid-cols-3 gap-2">
-            <MiniStat label="Members" value={(store.member_count ?? 1).toLocaleString()} />
-            <MiniStat label="Rating" value="4.9" />
-            <MiniStat label="Products" value="3" />
-          </div>
-
-          {store.category && (
-            <div className="mt-4">
-              <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] border"
-                style={{ borderColor: BORDER, color: SEC, background: CARD }}>
-                {store.category}
-              </span>
-            </div>
-          )}
+          <button
+            className="mt-4 w-full t-220 text-xs font-medium"
+            style={{
+              background: "transparent",
+              border: `1px solid ${BORDER}`,
+              borderRadius: 12,
+              padding: "8px 12px",
+              color: SEC,
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = HOVER)}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+          >
+            View Store
+          </button>
         </div>
 
-        <div className="h-px mx-6" style={{ background: BORDER }} />
-
-        {/* Nav */}
-        <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
-          <SideItem icon={HomeIcon} active={active === "home"} onClick={() => setActive("home")}>Home</SideItem>
-
-          {loading ? (
-            <div className="px-3 py-2 text-xs flex items-center gap-2" style={{ color: MUTED }}>
-              <Loader2 className="size-3 animate-spin" /> Loading…
-            </div>
-          ) : (
-            NAV.map(({ key, label, Icon, badge }) => {
-              const installed = installedKeys.has(key) || enabledKeys.has(key);
-              const isActive = typeof active !== "string" && active.kind === "app" && active.key === key;
+        {/* NAV */}
+        <nav className="mt-6 flex-1 overflow-y-auto -mx-1 px-1" style={{ scrollbarWidth: "thin" }}>
+          <div className="space-y-1.5">
+            {loading && (
+              <div className="px-3 py-2 text-xs flex items-center gap-2" style={{ color: MUTED }}>
+                <Loader2 className="size-3 animate-spin" /> Loading…
+              </div>
+            )}
+            {!loading && NAV.map(({ key, label, Icon, badge }) => {
+              const asApp = key !== "home";
+              const app = asApp ? apps.find(a => a.app_key === key) : undefined;
+              const installed = key === "home" || installedKeys.has(key as AppKey) || key === "downloads" || key === "events";
               if (!installed && !manage) return null;
-              const app = apps.find(a => a.app_key === key);
+              const selected = isActive(key);
               return (
-                <div key={key} className="group flex items-center rounded-xl lift"
-                  style={{ background: isActive ? "rgba(255,255,255,0.04)" : "transparent" }}
-                >
+                <div key={key} className="group flex items-center" style={{ borderRadius: 14, background: selected ? SELECTED : "transparent", position: "relative" }}>
+                  {selected && (
+                    <span style={{ position: "absolute", left: 0, top: 8, bottom: 8, width: 3, background: BLUE, borderRadius: 2 }} />
+                  )}
                   <button
-                    onClick={() => installed && setActive({ kind: "app", key })}
-                    className="flex-1 flex items-center gap-3 px-3 py-2 text-sm text-left"
-                    style={{ color: isActive ? TEXT : SEC, opacity: app && !app.enabled ? 0.5 : 1 }}
-                    onMouseEnter={(e) => { if (!isActive) (e.currentTarget.parentElement as HTMLElement).style.background = HOVER; }}
-                    onMouseLeave={(e) => { if (!isActive) (e.currentTarget.parentElement as HTMLElement).style.background = "transparent"; }}
+                    onClick={() => {
+                      if (key === "home") setActive("home");
+                      else if (installed && key !== "downloads" && key !== "events") setActive({ kind: "app", key: key as AppKey });
+                    }}
+                    className="flex-1 flex items-center gap-3 t-220 text-left"
+                    style={{
+                      height: 48,
+                      borderRadius: 14,
+                      padding: "0 16px",
+                      color: selected ? TEXT : SEC,
+                      opacity: app && !app.enabled ? 0.5 : 1,
+                    }}
+                    onMouseEnter={(e) => { if (!selected) (e.currentTarget.parentElement as HTMLElement).style.background = HOVER; }}
+                    onMouseLeave={(e) => { if (!selected) (e.currentTarget.parentElement as HTMLElement).style.background = "transparent"; }}
                   >
-                    {manage && app && <GripVertical className="size-3" style={{ color: MUTED }} />}
-                    <Icon className="size-4" />
-                    <span className="truncate flex-1">{label}</span>
-                    {badge !== undefined && !manage && installed && (
-                      <span className="text-[10px] font-medium rounded-full px-1.5 py-0.5"
-                        style={{ background: "rgba(59,110,255,0.14)", color: "#93b4ff" }}>
+                    <Icon className="size-[18px]" />
+                    <span className="text-sm font-medium flex-1 truncate">{label}</span>
+                    {badge !== undefined && !manage && (
+                      <span className="text-[10px] font-semibold rounded-full px-1.5 py-0.5"
+                        style={{ background: "rgba(59,130,246,0.16)", color: "#93b4ff" }}>
                         {badge}
                       </span>
                     )}
@@ -189,25 +234,34 @@ export function StoreLayout({
                       <button onClick={() => toggleEnabled(app)} title={app.enabled ? "Disable" : "Enable"} className="size-7 grid place-items-center rounded-md hover:bg-white/5">
                         <Eye className="size-3.5" style={{ color: app.enabled ? SEC : MUTED }} />
                       </button>
-                      <button onClick={() => handleUninstall(app.id, APP_MAP[key].name)} title="Remove" className="size-7 grid place-items-center rounded-md hover:bg-rose-500/10">
+                      <button onClick={() => handleUninstall(app.id, APP_MAP[key as AppKey].name)} title="Remove" className="size-7 grid place-items-center rounded-md hover:bg-rose-500/10">
                         <Trash2 className="size-3.5" style={{ color: "#fb7185" }} />
                       </button>
                     </div>
                   )}
                 </div>
               );
-            })
-          )}
+            })}
+          </div>
         </nav>
 
+        {/* ADD FEATURE */}
         {isOwner && (
-          <div className="p-4 space-y-2 border-t" style={{ borderColor: BORDER }}>
+          <div className="pt-4 space-y-2">
             <button
               onClick={() => setShowAdd(true)}
-              className="w-full flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm lift"
-              style={{ border: `1px solid ${BORDER}`, color: SEC, background: "transparent" }}
+              className="w-full flex items-center justify-center gap-2 t-220 text-sm font-medium"
+              style={{
+                border: `1px solid rgba(255,255,255,0.08)`,
+                height: 54,
+                borderRadius: 16,
+                color: SEC,
+                background: "transparent",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#101010")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
             >
-              <Plus className="size-3.5" /> Add Feature
+              <Plus className="size-4" /> Add Feature
             </button>
             {apps.length > 0 && (
               <button
@@ -222,25 +276,33 @@ export function StoreLayout({
         )}
       </aside>
 
-      {/* CENTER + RIGHT */}
+      {/* CENTER SCROLL COLUMN + RIGHT RAIL */}
       <div className="flex-1 min-w-0 flex">
-        <main className="flex-1 min-w-0 overflow-y-auto">
-          {active === "home"
-            ? <HomeOverview store={store} isOwner={isOwner} viewerId={viewerId} onJoin={onJoin} onOpenApp={(k) => setActive({ kind: "app", key: k })} enabledKeys={enabledKeys} />
-            : (
-              <div className="p-8 max-w-5xl slide-up">
-                <div className="mb-4"><AppHeader appKey={(active as any).key} /></div>
-                <AppContent appKey={(active as any).key} store={store} isOwner={isOwner} />
-              </div>
-            )}
+        <main className="flex-1 min-w-0" style={{ padding: 36 }}>
+          <div style={{ maxWidth: 900, marginInline: "auto" }}>
+            {active === "home"
+              ? <HomeOverview store={store} isOwner={isOwner} viewerId={viewerId} onJoin={onJoin} enabledKeys={enabledKeys} onOpenApp={(k) => setActive({ kind: "app", key: k })} />
+              : (
+                <div className="anim-slide">
+                  <div className="mb-4"><AppHeader appKey={(active as any).key} /></div>
+                  <AppContent appKey={(active as any).key} store={store} isOwner={isOwner} />
+                </div>
+              )}
+          </div>
         </main>
 
         {active === "home" && (
           <aside
-            className="hidden xl:flex w-[320px] shrink-0 flex-col border-l overflow-y-auto"
-            style={{ borderColor: BORDER, background: BG }}
+            className="hidden xl:flex shrink-0 flex-col"
+            style={{
+              width: 320,
+              borderLeft: `1px solid ${BORDER_SOFT}`,
+              background: BG,
+              padding: 24,
+              gap: 16,
+            }}
           >
-            <RightRail store={store} isOwner={isOwner} viewerId={viewerId} onJoin={onJoin} />
+            <RightRail store={store} />
           </aside>
         )}
       </div>
@@ -257,41 +319,17 @@ export function StoreLayout({
   );
 }
 
-function MiniStat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-xl px-2.5 py-2 border" style={{ borderColor: BORDER, background: CARD }}>
-      <div className="text-[11px]" style={{ color: MUTED }}>{label}</div>
-      <div className="text-sm font-medium mt-0.5" style={{ color: TEXT }}>{value}</div>
-    </div>
-  );
-}
-
-function SideItem({ icon: Icon, active, onClick, children }: { icon: any; active?: boolean; onClick?: () => void; children: React.ReactNode }) {
-  return (
-    <button
-      onClick={onClick}
-      className="w-full flex items-center gap-3 rounded-xl px-3 py-2 text-sm lift"
-      style={{
-        background: active ? "rgba(255,255,255,0.04)" : "transparent",
-        color: active ? TEXT : SEC,
-      }}
-      onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = HOVER; }}
-      onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = "transparent"; }}
-    >
-      <Icon className="size-4" /> {children}
-    </button>
-  );
-}
+/* ---------------- CENTER ---------------- */
 
 function HomeOverview({
-  store, isOwner, viewerId, onJoin, onOpenApp, enabledKeys,
+  store, isOwner, viewerId, onJoin, enabledKeys, onOpenApp,
 }: {
   store: Store;
   isOwner: boolean;
   viewerId: string | null;
   onJoin?: () => void;
-  onOpenApp: (k: AppKey) => void;
   enabledKeys: Set<AppKey>;
+  onOpenApp: (k: AppKey) => void;
 }) {
   const initial = (store.name[0] ?? "S").toUpperCase();
   const memberCount = store.member_count ?? 1;
@@ -299,57 +337,48 @@ function HomeOverview({
   const quick: { key: string; label: string; sub: string; Icon: any; appKey?: AppKey }[] = [
     { key: "chat", label: "Chat", sub: "Talk with members", Icon: MessagesSquare, appKey: "chat" },
     { key: "ann", label: "Announcements", sub: "Latest updates", Icon: Megaphone, appKey: "announcements" },
-    { key: "res", label: "Resources", sub: "Tools & files", Icon: BookOpen, appKey: "resources" },
-    { key: "dl", label: "Downloads", sub: "Grab the files", Icon: Download },
+    { key: "dl", label: "Downloads", sub: "Files & assets", Icon: Download },
+    { key: "res", label: "Resources", sub: "Tools & guides", Icon: BookOpen, appKey: "resources" },
+    { key: "forum", label: "Forum", sub: "Join discussions", Icon: MessageCircle, appKey: "forum" },
     { key: "faq", label: "FAQ", sub: "Get answers", Icon: HelpCircle, appKey: "faq" },
-    { key: "forum", label: "Forum", sub: "Join discussion", Icon: MessageCircle, appKey: "forum" },
-    { key: "rev", label: "Reviews", sub: "What members say", Icon: Star, appKey: "reviews" },
     { key: "ev", label: "Events", sub: "Upcoming meetups", Icon: Calendar },
-    { key: "road", label: "Roadmap", sub: "What's coming", Icon: Map },
+    { key: "rev", label: "Reviews", sub: "Member feedback", Icon: Star, appKey: "reviews" },
   ];
 
   return (
-    <div className="max-w-5xl mx-auto px-6 sm:px-10 py-8">
-      {/* HERO BANNER */}
+    <div className="anim-fade">
+      {/* BANNER — art only, no text */}
       <div
-        className="relative rounded-[18px] overflow-hidden border slide-up"
-        style={{ borderColor: BORDER, background: CARD, height: 260 }}
+        className="relative overflow-hidden anim-slide"
+        style={{ height: 260, borderRadius: 24, border: `1px solid ${BORDER}` }}
       >
         {store.banner_url ? (
-          <img src={store.banner_url} alt="" className="absolute inset-0 size-full object-cover opacity-60" />
-        ) : null}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse 800px 400px at 50% 120%, rgba(59,110,255,0.18) 0%, rgba(0,0,0,0) 60%), linear-gradient(180deg, rgba(11,11,11,0.2) 0%, rgba(5,5,5,0.9) 100%)",
-          }}
-        />
-        {/* subtle grid */}
-        <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="p" width="42" height="42" patternUnits="userSpaceOnUse">
-              <path d="M 42 0 L 0 0 0 42" fill="none" stroke="white" strokeWidth="0.6" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#p)" />
-        </svg>
+          <img src={store.banner_url} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        ) : (
+          <CinematicArt />
+        )}
       </div>
 
-      {/* IDENTITY ROW — flat on background, no card */}
-      <div className="mt-6 flex flex-wrap items-center gap-5 slide-up slide-up-1">
+      {/* STORE HEADER — flat, no card */}
+      <div className="mt-6 flex flex-wrap items-center gap-5 anim-slide anim-1">
         <div
-          className="size-20 rounded-2xl overflow-hidden shrink-0 border"
-          style={{ borderColor: BORDER, background: CARD }}
+          className="shrink-0 overflow-hidden"
+          style={{ width: 96, height: 96, borderRadius: 24, border: `1px solid ${BORDER}`, background: CARD }}
         >
           {store.logo_url
-            ? <img src={store.logo_url} alt={store.name} className="size-full object-cover" />
-            : <div className="size-full grid place-items-center text-2xl font-semibold">{initial}</div>}
+            ? <img src={store.logo_url} alt={store.name} className="w-full h-full object-cover" />
+            : <div className="w-full h-full grid place-items-center text-3xl font-bold">{initial}</div>}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <h1 className="text-3xl font-semibold tracking-tight truncate" style={{ color: TEXT }}>{store.name}</h1>
-            {store.verified && <BadgeCheck className="size-5" style={{ color: ACCENT }} />}
+            <h1 className="truncate font-bold tracking-tight" style={{ fontSize: 30, color: TEXT }}>{store.name}</h1>
+            {store.verified && <BadgeCheck className="size-5 shrink-0" style={{ color: BLUE }} />}
+            <span
+              className="text-[10px] font-medium px-2 py-0.5 rounded-full"
+              style={{ background: "rgba(59,130,246,0.14)", color: "#93b4ff" }}
+            >
+              {store.category ?? "Business"}
+            </span>
           </div>
           <div className="mt-2 flex items-center gap-x-3 gap-y-1 text-xs flex-wrap" style={{ color: MUTED }}>
             <span>Created by <span style={{ color: SEC }}>@{store.slug}</span></span>
@@ -362,148 +391,131 @@ function HomeOverview({
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <IconBtn title="Share"><Share2 className="size-4" /></IconBtn>
+          <IconBtn title="Notifications"><Bell className="size-4" /></IconBtn>
+          {isOwner ? (
+            <Link to="/business/store/edit" className="grid place-items-center t-220"
+              style={{ width: 38, height: 38, borderRadius: 12, border: `1px solid ${BORDER}`, color: SEC }}
+              title="Settings"
+            >
+              <Settings className="size-4" />
+            </Link>
+          ) : <IconBtn title="Settings"><Settings className="size-4" /></IconBtn>}
           {!isOwner ? (
             <button
               onClick={onJoin}
               disabled={!viewerId}
-              className="rounded-xl px-4 py-2 text-sm font-medium lift disabled:opacity-50"
-              style={{ background: "#1e3a8a", color: TEXT }}
+              className="t-220 font-medium disabled:opacity-50"
+              style={{ background: BLUE, color: TEXT, padding: "10px 18px", borderRadius: 12, fontSize: 14 }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = BLUE_DARK)}
+              onMouseLeave={(e) => (e.currentTarget.style.background = BLUE)}
             >
-              Join Community
+              Join Store
             </button>
           ) : (
-            <Link
-              to="/business/store/edit"
-              className="rounded-xl px-4 py-2 text-sm font-medium lift"
-              style={{ background: "#1e3a8a", color: TEXT }}
+            <Link to="/business/store/edit" className="t-220 font-medium"
+              style={{ background: BLUE, color: TEXT, padding: "10px 18px", borderRadius: 12, fontSize: 14 }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = BLUE_DARK)}
+              onMouseLeave={(e) => (e.currentTarget.style.background = BLUE)}
             >
-              Edit store
+              Edit Store
             </Link>
           )}
-          <button
-            className="rounded-xl px-4 py-2 text-sm lift"
-            style={{ border: `1px solid ${BORDER}`, color: SEC, background: "transparent" }}
-          >
-            Learn More
-          </button>
         </div>
       </div>
 
       {/* WELCOME CARD */}
       <div
-        className="mt-8 rounded-[18px] border p-8 slide-up slide-up-2"
-        style={{ borderColor: BORDER, background: CARD }}
+        className="mt-8 anim-slide anim-2 relative overflow-hidden"
+        style={{ background: "#090909", borderRadius: 22, padding: 32, border: `1px solid ${BORDER}` }}
       >
-        <div className="flex items-start gap-4">
-          <div
-            className="size-11 rounded-xl grid place-items-center shrink-0 border"
-            style={{ borderColor: BORDER, background: "rgba(59,110,255,0.08)" }}
-          >
-            <Sparkles className="size-5" style={{ color: "#93b4ff" }} />
-          </div>
+        <div className="flex items-center gap-8 flex-wrap">
           <div className="min-w-0 flex-1">
-            <div className="text-xl font-semibold tracking-tight" style={{ color: TEXT }}>
+            <h2 className="font-bold tracking-tight" style={{ fontSize: 34, color: TEXT, letterSpacing: -0.5 }}>
               Welcome to {store.name}
-            </div>
-            <p className="mt-2 text-sm leading-relaxed max-w-xl" style={{ color: SEC }}>
-              A quiet, focused space for the community. Explore resources, join the conversation, and stay in the loop with everything new.
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed max-w-lg" style={{ color: SEC }}>
+              A calm, focused space for the community. Explore resources, join the conversation, and keep up with everything new — all in one place.
             </p>
-            <div className="mt-5 flex items-center gap-2">
+            <div className="mt-6 flex items-center gap-2 flex-wrap">
               {!isOwner ? (
                 <button
                   onClick={onJoin}
                   disabled={!viewerId}
-                  className="rounded-xl px-4 py-2 text-sm font-medium lift disabled:opacity-50"
-                  style={{ background: "#1e3a8a", color: TEXT }}
+                  className="t-220 font-medium disabled:opacity-50"
+                  style={{ background: BLUE, color: TEXT, padding: "10px 18px", borderRadius: 12, fontSize: 14 }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = BLUE_DARK)}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = BLUE)}
                 >
                   Join Community
                 </button>
               ) : null}
               <button
-                className="rounded-xl px-4 py-2 text-sm lift"
-                style={{ border: `1px solid ${BORDER}`, color: SEC, background: "transparent" }}
+                className="t-220 font-medium"
+                style={{ background: "transparent", border: `1px solid ${BORDER}`, color: SEC, padding: "10px 18px", borderRadius: 12, fontSize: 14 }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = HOVER)}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
               >
                 Learn More
               </button>
             </div>
           </div>
+          {/* Minimal illustration */}
+          <div className="shrink-0" style={{ width: 200, height: 140 }}>
+            <MinimalIllustration />
+          </div>
         </div>
       </div>
 
       {/* QUICK ACCESS */}
-      <div className="mt-10 slide-up slide-up-3">
-        <div className="flex items-center justify-between mb-4">
-          <div className="text-sm font-medium" style={{ color: TEXT }}>Quick access</div>
-          <div className="text-xs" style={{ color: MUTED }}>Jump to a section</div>
+      <div className="mt-10 anim-slide anim-3">
+        <div className="flex items-baseline justify-between mb-5">
+          <h3 className="font-semibold tracking-tight" style={{ fontSize: 18, color: TEXT }}>Quick Access</h3>
+          <span className="text-xs" style={{ color: MUTED }}>Jump to a section</span>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {quick.map(({ key, label, sub, Icon, appKey }) => (
             <button
               key={key}
               onClick={() => appKey && enabledKeys.has(appKey) && onOpenApp(appKey)}
-              className="text-left rounded-[18px] border p-4 lift group"
-              style={{ borderColor: BORDER, background: CARD }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.02)")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = CARD)}
+              className="group text-left t-220"
+              style={{ background: CARD, borderRadius: 18, padding: 22, border: `1px solid ${BORDER}` }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = HOVER; e.currentTarget.style.transform = "scale(1.02)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = CARD; e.currentTarget.style.transform = "scale(1)"; }}
             >
-              <div
-                className="size-9 rounded-lg grid place-items-center mb-3 border transition-transform"
-                style={{ borderColor: BORDER, background: "rgba(255,255,255,0.02)" }}
-              >
-                <Icon className="size-4" style={{ color: SEC }} />
+              <div className="flex items-start justify-between">
+                <div
+                  className="grid place-items-center"
+                  style={{ width: 40, height: 40, borderRadius: 12, background: "rgba(255,255,255,0.03)", border: `1px solid ${BORDER}` }}
+                >
+                  <Icon className="size-[18px]" style={{ color: SEC }} />
+                </div>
+                <ArrowRight className="size-4 opacity-0 group-hover:opacity-100 t-220" style={{ color: SEC }} />
               </div>
-              <div className="text-sm font-medium" style={{ color: TEXT }}>{label}</div>
-              <div className="text-[11px] mt-0.5" style={{ color: MUTED }}>{sub}</div>
+              <div className="mt-4 text-sm font-semibold" style={{ color: TEXT }}>{label}</div>
+              <div className="mt-1 text-[12px]" style={{ color: MUTED }}>{sub}</div>
             </button>
           ))}
         </div>
       </div>
 
-      {/* LATEST UPDATES — TIMELINE */}
-      <div className="mt-12 slide-up slide-up-4">
-        <div className="flex items-center justify-between mb-5">
-          <div className="text-sm font-medium" style={{ color: TEXT }}>Latest updates</div>
+      {/* LATEST UPDATES */}
+      <div className="mt-12 anim-slide anim-4">
+        <div className="flex items-baseline justify-between mb-5">
+          <h3 className="font-semibold tracking-tight" style={{ fontSize: 18, color: TEXT }}>Latest Updates</h3>
           <button className="text-xs" style={{ color: MUTED }}>View all</button>
         </div>
-        <div className="relative pl-6">
-          <div className="absolute left-2 top-1 bottom-1 w-px" style={{ background: BORDER }} />
-          <TimelineItem
-            Icon={Megaphone}
-            tag="Announcement"
-            title={`Welcome to ${store.name}`}
-            desc="A short note to help you get oriented and make the most of the space."
-            date="2d ago"
-            author="Founder"
-            pinned
-          />
-          <TimelineItem
-            Icon={BookOpen}
-            tag="Resource"
-            title="Starter pack (2025)"
-            desc="Essential tools and guides curated for members starting out."
-            date="5d ago"
-            author="Team"
-          />
-          <TimelineItem
-            Icon={Calendar}
-            tag="Event"
-            title="Community office hours"
-            desc="Weekly Thursdays. Bring your questions, we'll cover live."
-            date="1w ago"
-            author="Host"
-          />
-          <TimelineItem
-            Icon={Rocket}
-            tag="Release"
-            title="v1.4 improvements"
-            desc="Faster search, cleaner threads, better mobile spacing."
-            date="2w ago"
-            author="Engineering"
-          />
+        <div className="relative pl-7">
+          <div className="absolute left-[10px] top-2 bottom-2 w-px" style={{ background: BORDER }} />
+          <TimelineItem Icon={Megaphone} tag="Announcement" title={`Welcome to ${store.name}`} desc="A short note to help you get oriented and make the most of the space." date="2d ago" author="Founder" pinned />
+          <TimelineItem Icon={BookOpen} tag="Resource" title="Starter pack (2025)" desc="Essential tools and guides curated for members starting out." date="5d ago" author="Team" />
+          <TimelineItem Icon={Calendar} tag="Event" title="Community office hours" desc="Weekly Thursdays — bring questions, we'll cover live." date="1w ago" author="Host" />
+          <TimelineItem Icon={Package} tag="Product Release" title="New product live" desc="Fresh drop for members. Check the store to grab it." date="2w ago" author="Store" />
+          <TimelineItem Icon={Rocket} tag="Changelog" title="v1.4 improvements" desc="Faster search, cleaner threads, better mobile spacing." date="3w ago" author="Engineering" />
         </div>
       </div>
 
-      <div className="h-12" />
+      <div className="h-16" />
     </div>
   );
 }
@@ -514,31 +526,35 @@ function TimelineItem({
   Icon: any; tag: string; title: string; desc: string; date: string; author: string; pinned?: boolean;
 }) {
   return (
-    <div className="relative py-4">
+    <div className="relative py-3">
       <div
-        className="absolute -left-6 top-5 size-4 rounded-full border grid place-items-center"
-        style={{ borderColor: BORDER, background: BG }}
+        className="absolute -left-7 top-5 grid place-items-center"
+        style={{ width: 20, height: 20, borderRadius: 999, background: BG, border: `1px solid ${BORDER}` }}
       >
-        <div className="size-1.5 rounded-full" style={{ background: ACCENT }} />
+        <div style={{ width: 6, height: 6, borderRadius: 999, background: BLUE }} />
       </div>
-      <div className="rounded-[18px] border p-4 lift" style={{ borderColor: BORDER, background: CARD }}
-        onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.02)")}
+      <div
+        className="t-220"
+        style={{ background: CARD, borderRadius: 16, padding: 16, border: `1px solid ${BORDER}` }}
+        onMouseEnter={(e) => (e.currentTarget.style.background = HOVER)}
         onMouseLeave={(e) => (e.currentTarget.style.background = CARD)}
       >
         <div className="flex items-start gap-3">
-          <div className="size-9 rounded-lg grid place-items-center shrink-0 border"
-            style={{ borderColor: BORDER, background: "rgba(255,255,255,0.02)" }}>
+          <div className="shrink-0 grid place-items-center" style={{ width: 40, height: 40, borderRadius: 12, background: "rgba(255,255,255,0.03)", border: `1px solid ${BORDER}` }}>
             <Icon className="size-4" style={{ color: SEC }} />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="text-[10px] rounded-md px-1.5 py-0.5 border" style={{ borderColor: BORDER, color: SEC }}>{tag}</span>
-              {pinned && <span className="text-[10px] rounded-md px-1.5 py-0.5" style={{ background: "rgba(59,110,255,0.12)", color: "#93b4ff" }}>Pinned</span>}
+              {pinned && <span className="text-[10px] rounded-md px-1.5 py-0.5" style={{ background: "rgba(59,130,246,0.14)", color: "#93b4ff" }}>Pinned</span>}
               <span className="text-[11px] ml-auto" style={{ color: MUTED }}>{date}</span>
             </div>
-            <div className="mt-1.5 font-medium text-sm" style={{ color: TEXT }}>{title}</div>
+            <div className="mt-1.5 font-semibold text-sm" style={{ color: TEXT }}>{title}</div>
             <div className="mt-0.5 text-xs" style={{ color: SEC }}>{desc}</div>
-            <div className="mt-2 text-[11px]" style={{ color: MUTED }}>By {author}</div>
+            <div className="mt-2 flex items-center gap-2">
+              <div className="size-5 rounded-full" style={{ background: `linear-gradient(135deg, ${BLUE}, ${BLUE_DARK})` }} />
+              <span className="text-[11px]" style={{ color: MUTED }}>{author}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -546,47 +562,72 @@ function TimelineItem({
   );
 }
 
-function RightRail({
-  store, isOwner, viewerId, onJoin,
-}: {
-  store: Store; isOwner: boolean; viewerId: string | null; onJoin?: () => void;
-}) {
-  void isOwner; void viewerId; void onJoin;
+/* ---------------- RIGHT RAIL ---------------- */
+
+function RightRail({ store }: { store: Store }) {
   return (
-    <div className="p-6 space-y-4">
-      {/* Store overview */}
-      <RailCard title="Store Overview">
-        <RailRow label="Members" value={(store.member_count ?? 1).toLocaleString()} />
-        <RailRow label="Products" value="3" />
-        <RailRow label="Reviews" value="128" />
+    <div className="space-y-4">
+      <RailCard title="About Store">
         <RailRow label="Owner" value={`@${store.slug}`} />
         <RailRow label="Created" value="Jan 2025" />
-        <RailRow label="Category" value={store.category ?? "General"} />
-        <RailRow label="Status" value={
-          <span className="inline-flex items-center gap-1.5">
-            <span className="size-1.5 rounded-full bg-emerald-400" /> Active
-          </span>
-        } />
+        <RailRow label="Category" value={store.category ?? "Business"} />
+        <RailRow label="Members" value={(store.member_count ?? 1).toLocaleString()} />
+        <RailRow label="Products" value="3" />
+        <RailRow label="Rating" value="4.9" />
+        {store.description && (
+          <p className="text-[12px] leading-relaxed pt-2" style={{ color: SEC, borderTop: `1px solid ${BORDER}` }}>{store.description}</p>
+        )}
       </RailCard>
 
-      {/* Community status */}
       <RailCard title="Community Status">
-        <RailRow label={<span className="inline-flex items-center gap-2"><Activity className="size-3.5" style={{ color: MUTED }} /> Online</span>} value="42 members" />
-        <RailRow label={<span className="inline-flex items-center gap-2"><Clock className="size-3.5" style={{ color: MUTED }} /> Response</span>} value="< 1h avg" />
-        <RailRow label={<span className="inline-flex items-center gap-2"><ShieldCheck className="size-3.5" style={{ color: MUTED }} /> Health</span>} value={
-          <span style={{ color: "#93b4ff" }}>Excellent</span>
-        } />
+        <Progress label="Members Online" value={72} display="42 online" Icon={Activity} />
+        <Progress label="Community Health" value={92} display="Excellent" Icon={ShieldCheck} />
+        <Progress label="Avg. Response" value={85} display="< 1h" Icon={Clock} />
+        <Progress label="Activity Score" value={68} display="High" Icon={TrendingUp} />
       </RailCard>
 
-      {/* Social */}
       <RailCard title="Social">
         <div className="flex items-center gap-2 flex-wrap">
-          <SocialDot Icon={MessagesSquare} />
-          <SocialDot Icon={ArrowUpRight} label="X" />
-          <SocialDot Icon={Youtube} />
-          <SocialDot Icon={Instagram} />
-          <SocialDot Icon={Music2} />
-          <SocialDot Icon={Globe} />
+          <SocialDot Icon={MessagesSquare} label="Discord" />
+          <SocialDot Icon={Twitter} label="X" />
+          <SocialDot Icon={Instagram} label="Instagram" />
+          <SocialDot Icon={Music2} label="TikTok" />
+          <SocialDot Icon={Globe} label="Website" />
+          <SocialDot Icon={Youtube} label="YouTube" />
+        </div>
+      </RailCard>
+
+      <RailCard title="Top Members">
+        <div className="space-y-2.5">
+          {[
+            { name: "Owner", role: "Founder" },
+            { name: "Alex", role: "Admin" },
+            { name: "Jordan", role: "Moderator" },
+            { name: "Sam", role: "Top Creator" },
+          ].map((m, i) => (
+            <div key={m.name} className="flex items-center gap-3">
+              <div className="size-8 rounded-full shrink-0" style={{ background: `linear-gradient(135deg, hsl(${i * 60},60%,45%), hsl(${i * 60 + 30},60%,30%))` }} />
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-medium" style={{ color: TEXT }}>{m.name}</div>
+                <div className="text-[11px]" style={{ color: MUTED }}>{m.role}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </RailCard>
+
+      <RailCard title="Featured Product">
+        <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${BORDER}` }}>
+          <div className="h-24" style={{ background: `linear-gradient(135deg, ${BLUE_DARK}, #0a1633)` }} />
+          <div className="p-3">
+            <div className="text-sm font-semibold" style={{ color: TEXT }}>Starter Pack (2025)</div>
+            <div className="mt-1 flex items-center justify-between">
+              <span className="text-xs font-medium" style={{ color: "#93b4ff" }}>Free</span>
+              <span className="text-[11px] inline-flex items-center gap-1" style={{ color: MUTED }}>
+                <Download className="size-3" /> 1.2k
+              </span>
+            </div>
+          </div>
         </div>
       </RailCard>
     </div>
@@ -595,8 +636,8 @@ function RightRail({
 
 function RailCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-[18px] border p-5" style={{ borderColor: BORDER, background: CARD }}>
-      <div className="text-xs mb-3" style={{ color: MUTED }}>{title}</div>
+    <div style={{ background: CARD, borderRadius: 20, padding: 20, border: `1px solid ${BORDER}` }}>
+      <div className="text-xs mb-3 font-medium uppercase tracking-wider" style={{ color: MUTED, fontSize: 10, letterSpacing: 1 }}>{title}</div>
       <div className="space-y-2.5">{children}</div>
     </div>
   );
@@ -609,12 +650,27 @@ function RailRow({ label, value }: { label: React.ReactNode; value: React.ReactN
     </div>
   );
 }
+function Progress({ label, value, display, Icon }: { label: string; value: number; display: string; Icon: any }) {
+  return (
+    <div>
+      <div className="flex items-center justify-between text-xs mb-1.5">
+        <span className="inline-flex items-center gap-1.5" style={{ color: SEC }}>
+          <Icon className="size-3.5" style={{ color: MUTED }} /> {label}
+        </span>
+        <span className="font-medium" style={{ color: TEXT }}>{display}</span>
+      </div>
+      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.04)" }}>
+        <div style={{ width: `${value}%`, height: "100%", background: BLUE, borderRadius: 999 }} />
+      </div>
+    </div>
+  );
+}
 function SocialDot({ Icon, label }: { Icon: any; label?: string }) {
   return (
     <button
       title={label}
-      className="size-9 rounded-full grid place-items-center border lift"
-      style={{ borderColor: BORDER, background: "transparent", color: SEC }}
+      className="grid place-items-center t-220"
+      style={{ width: 36, height: 36, borderRadius: 999, border: `1px solid ${BORDER}`, background: "transparent", color: SEC }}
       onMouseEnter={(e) => (e.currentTarget.style.background = HOVER)}
       onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
     >
@@ -622,6 +678,78 @@ function SocialDot({ Icon, label }: { Icon: any; label?: string }) {
     </button>
   );
 }
+
+function IconBtn({ children, title }: { children: React.ReactNode; title?: string }) {
+  return (
+    <button title={title} className="grid place-items-center t-220"
+      style={{ width: 38, height: 38, borderRadius: 12, border: `1px solid ${BORDER}`, color: SEC, background: "transparent" }}
+      onMouseEnter={(e) => (e.currentTarget.style.background = HOVER)}
+      onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+    >
+      {children}
+    </button>
+  );
+}
+
+/* ---------------- ART ---------------- */
+
+function CinematicArt() {
+  return (
+    <div className="absolute inset-0" style={{ background: "#040509" }}>
+      {/* purple horizon */}
+      <div style={{
+        position: "absolute", inset: 0,
+        background: "radial-gradient(ellipse 900px 260px at 50% 100%, rgba(93,52,220,0.35) 0%, rgba(59,130,246,0.15) 30%, rgba(0,0,0,0) 65%)",
+      }} />
+      {/* blue atmosphere */}
+      <div style={{
+        position: "absolute", inset: 0,
+        background: "radial-gradient(ellipse 700px 300px at 50% 60%, rgba(59,130,246,0.14) 0%, rgba(0,0,0,0) 60%)",
+      }} />
+      {/* planet */}
+      <div style={{
+        position: "absolute", top: 40, left: "50%", transform: "translateX(-50%)",
+        width: 140, height: 140, borderRadius: 999,
+        background: "radial-gradient(circle at 35% 35%, #1b2547 0%, #0a0f22 55%, #05070f 100%)",
+        boxShadow: "inset -20px -12px 40px rgba(0,0,0,0.7), 0 0 60px rgba(59,130,246,0.10)",
+      }} />
+      {/* mountains */}
+      <svg viewBox="0 0 900 260" preserveAspectRatio="none" className="absolute bottom-0 inset-x-0 w-full" style={{ height: 140 }}>
+        <path d="M0,260 L90,150 L170,190 L280,110 L380,170 L470,120 L570,180 L680,140 L790,190 L900,150 L900,260 Z" fill="rgba(255,255,255,0.05)" />
+        <path d="M0,260 L70,190 L180,210 L280,150 L400,200 L510,170 L620,210 L720,180 L830,210 L900,190 L900,260 Z" fill="rgba(255,255,255,0.035)" />
+        <path d="M0,260 L120,220 L240,235 L380,205 L520,225 L660,215 L800,230 L900,220 L900,260 Z" fill="rgba(0,0,0,0.5)" />
+      </svg>
+      {/* vignette */}
+      <div style={{
+        position: "absolute", inset: 0,
+        background: "radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(0,0,0,0.55) 100%)",
+      }} />
+    </div>
+  );
+}
+
+function MinimalIllustration() {
+  return (
+    <svg viewBox="0 0 200 140" className="w-full h-full">
+      <defs>
+        <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0" stopColor="#3B82F6" stopOpacity="0.6" />
+          <stop offset="1" stopColor="#1D4ED8" stopOpacity="0.15" />
+        </linearGradient>
+      </defs>
+      <circle cx="150" cy="70" r="42" fill="none" stroke="rgba(255,255,255,0.06)" />
+      <circle cx="150" cy="70" r="28" fill="none" stroke="rgba(59,130,246,0.35)" />
+      <circle cx="150" cy="70" r="14" fill="url(#g1)" />
+      <rect x="20" y="40" width="70" height="8" rx="4" fill="rgba(255,255,255,0.08)" />
+      <rect x="20" y="58" width="50" height="8" rx="4" fill="rgba(255,255,255,0.05)" />
+      <rect x="20" y="76" width="60" height="8" rx="4" fill="rgba(255,255,255,0.05)" />
+      <circle cx="122" cy="30" r="3" fill="#3B82F6" />
+      <circle cx="180" cy="115" r="3" fill="rgba(255,255,255,0.4)" />
+    </svg>
+  );
+}
+
+/* ---------------- ADD APP MODAL ---------------- */
 
 function AddAppModal({
   available, installedCount, onClose, onInstall,
@@ -637,17 +765,17 @@ function AddAppModal({
 
   return (
     <div className="fixed inset-0 z-[100] grid place-items-center p-4 bg-black/70 backdrop-blur-sm" onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-4xl max-h-[85vh] rounded-[18px] border shadow-2xl flex flex-col overflow-hidden"
-        style={{ borderColor: BORDER, background: BG }}
+      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-4xl max-h-[85vh] flex flex-col overflow-hidden"
+        style={{ borderRadius: 22, border: `1px solid ${BORDER}`, background: BG }}
       >
-        <div className="p-5 border-b flex items-center justify-between" style={{ borderColor: BORDER }}>
+        <div className="p-5 flex items-center justify-between" style={{ borderBottom: `1px solid ${BORDER}` }}>
           <div>
             <div className="text-lg font-semibold" style={{ color: TEXT }}>Add a feature</div>
             <div className="text-xs mt-0.5" style={{ color: MUTED }}>Extend your store with prebuilt apps</div>
           </div>
           <button onClick={onClose} className="size-9 grid place-items-center rounded-full hover:bg-white/5"><X className="size-4" /></button>
         </div>
-        <div className="p-5 border-b" style={{ borderColor: BORDER }}>
+        <div className="p-5" style={{ borderBottom: `1px solid ${BORDER}` }}>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4" style={{ color: MUTED }} />
             <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search apps…"
@@ -662,8 +790,8 @@ function AddAppModal({
             </div>
           )}
           {filtered.map((def) => (
-            <div key={def.key} className="rounded-[18px] border p-4 flex flex-col"
-              style={{ borderColor: BORDER, background: CARD }}
+            <div key={def.key} className="flex flex-col p-4"
+              style={{ borderRadius: 18, border: `1px solid ${BORDER}`, background: CARD }}
             >
               <div className="flex items-start justify-between gap-3">
                 <img src={def.logo} alt="" loading="lazy" width={40} height={40} className="size-10 rounded-xl object-contain shrink-0" />
@@ -671,7 +799,7 @@ function AddAppModal({
                   disabled={busy === def.key}
                   onClick={async () => { setBusy(def.key); await onInstall(def.key); setBusy(null); }}
                   className="rounded-lg px-3 py-1.5 text-xs font-medium inline-flex items-center gap-1 disabled:opacity-50"
-                  style={{ background: "#1e3a8a", color: TEXT }}
+                  style={{ background: BLUE, color: TEXT }}
                 >
                   {busy === def.key ? <Loader2 className="size-3.5 animate-spin" /> : <Plus className="size-3.5" />}
                   Add
@@ -688,10 +816,13 @@ function AddAppModal({
             </div>
           ))}
         </div>
-        <div className="p-3 border-t text-[11px] text-center" style={{ borderColor: BORDER, color: MUTED }}>
+        <div className="p-3 text-[11px] text-center" style={{ borderTop: `1px solid ${BORDER}`, color: MUTED }}>
           {installedCount} app{installedCount === 1 ? "" : "s"} installed
         </div>
       </div>
     </div>
   );
 }
+
+/* placate lint */
+export const __ = { Sparkles };
