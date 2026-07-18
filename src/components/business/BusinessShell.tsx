@@ -208,7 +208,7 @@ export function BusinessShell({ store, children }: { store: Store | null; childr
       </div>
 
       <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-4 scrollbar-thin">
-        {NAV_GROUPS.map((group) => {
+        {NAV_GROUPS.filter((g) => g.label !== "Workspace").map((group) => {
           const collapsed = collapsedGroups[group.label];
           return (
             <div key={group.label}>
@@ -228,6 +228,28 @@ export function BusinessShell({ store, children }: { store: Store | null; childr
           );
         })}
       </nav>
+
+      {(() => {
+        const workspace = NAV_GROUPS.find((g) => g.label === "Workspace");
+        if (!workspace) return null;
+        const collapsed = collapsedGroups[workspace.label];
+        return (
+          <div className="shrink-0 border-t border-white/[0.06] px-2 py-3">
+            <button
+              onClick={() => setCollapsedGroups((c) => ({ ...c, [workspace.label]: !c[workspace.label] }))}
+              className="w-full flex items-center gap-1 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-neutral-600 hover:text-neutral-400 transition"
+            >
+              <ChevronDown className={`size-3 transition-transform ${collapsed ? "-rotate-90" : ""}`} />
+              {workspace.label}
+            </button>
+            {!collapsed && (
+              <div className="mt-1 space-y-0.5">
+                {workspace.items.map((item) => <NavItemRow key={item.to} item={item} onNav={onNav} />)}
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       <div className="shrink-0 border-t border-white/[0.06] px-3 py-3 text-[10.5px] text-neutral-600 flex items-center justify-between">
         <span>Forge · v1.0</span>
