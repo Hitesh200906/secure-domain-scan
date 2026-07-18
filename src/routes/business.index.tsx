@@ -36,7 +36,23 @@ function BusinessDashboard() {
     return () => cancelAnimationFrame(t);
   }, []);
 
+  const isEmpty = orders.length === 0 && products.length === 0;
+
   const metrics = useMemo(() => {
+    if (isEmpty) {
+      const daily = Array.from({ length: range }).map((_, i) => {
+        const d = new Date(); d.setDate(d.getDate() - (range - 1 - i));
+        const base = [1200, 1800, 1400, 2100, 2600, 3620, 3100][i % 7];
+        return { d: d.toISOString().slice(0, 10), v: base };
+      });
+      return {
+        gross: 12430, net: 11808.5, prevGross: 10050,
+        buyers: 1245, sales: 356,
+        dGross: 23.6, dSales: 12.4, dBuyers: 18.2,
+        conversion: 4.32, dConversion: 8.7,
+        daily,
+      };
+    }
     const start = new Date(); start.setDate(start.getDate() - range);
     const prevStart = new Date(); prevStart.setDate(prevStart.getDate() - range * 2);
     const inRange = orders.filter(o => new Date(o.created_at) >= start);
@@ -68,9 +84,15 @@ function BusinessDashboard() {
       conversion, dConversion: delta(conversion, prevConversion),
       daily,
     };
-  }, [orders, range]);
+  }, [orders, range, isEmpty]);
 
   const topProducts = useMemo(() => {
+    if (isEmpty) {
+      return [
+        { product: { id: "demo-1", name: "Notion Template Pack" } as Product, revenue: 3420, count: 152, growth: 24.5 },
+        { product: { id: "demo-2", name: "UI/UX Design System" } as Product, revenue: 2180, count: 98, growth: 16.8 },
+      ] as any;
+    }
     const map = new Map<string, { product: Product; revenue: number; count: number }>();
     products.forEach(p => map.set(p.id, { product: p, revenue: 0, count: 0 }));
     orders.forEach(o => {
@@ -78,11 +100,26 @@ function BusinessDashboard() {
       if (e) { e.revenue += Number(o.amount || 0); e.count += 1; }
     });
     return [...map.values()].filter(t => t.count > 0).sort((a, b) => b.revenue - a.revenue).slice(0, 4);
-  }, [orders, products]);
+  }, [orders, products, isEmpty]);
 
-  const available = metrics.net;
-  const pending = orders.filter(o => o.status === "pending").reduce((s, o) => s + Number(o.amount || 0), 0);
+  const available = isEmpty ? 5680.5 : metrics.net;
+  const pending = isEmpty ? 1240 : orders.filter(o => o.status === "pending").reduce((s, o) => s + Number(o.amount || 0), 0);
+  const demoPayouts = [
+    { last4: "4567", amount: 450, at: "Requested 18 Jul, 10:22" },
+    { last4: "8421", amount: 420, at: "Requested 18 Jul, 09:15" },
+    { last4: "1234", amount: 370, at: "Requested 17 Jul, 18:45" },
+  ];
   const pendingPayouts = orders.filter(o => o.status === "pending").slice(0, 3);
+  const demoOrders = [
+    { id: "ORD-8421", buyer: "John Doe", at: "18 Jul, 14:20", amount: 49, status: "Completed" },
+    { id: "ORD-8420", buyer: "Sarah Smith", at: "18 Jul, 13:15", amount: 79, status: "Completed" },
+    { id: "ORD-8419", buyer: "Alex Johnson", at: "18 Jul, 12:05", amount: 29, status: "Completed" },
+  ];
+  const demoActivity = [
+    { kind: "customer", title: "New customer registered", sub: "@johndoe", right: "", ago: "2m ago" },
+    { kind: "sale", title: "Product sold", sub: "Notion Template Pack", right: "$49.00", ago: "" },
+    { kind: "payout", title: "Payout initiated", sub: "To •••• 4567", right: "$450.00", ago: "8m ago" },
+  ];
 
   const dateRangeLabel = useMemo(() => {
     const end = new Date();
