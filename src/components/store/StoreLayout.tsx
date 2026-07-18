@@ -263,7 +263,7 @@ function HomeOverview({
     { key: "resources", label: "Resources", sub: "Tools & files", Icon: BookOpen },
     { key: "faq", label: "FAQ", sub: "Get answers", Icon: HelpCircle },
     { key: "forum", label: "Community", sub: "Join the discussion", Icon: Hash },
-  ].filter(q => has(q.key) || ["chat","announcements","resources","faq","forum"].includes(q.key));
+  ] as const;
 
   return (
     <div className="p-6 sm:p-8 max-w-6xl">
