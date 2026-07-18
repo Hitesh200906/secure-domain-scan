@@ -605,11 +605,10 @@ function RevenueChart({ daily }: { daily: { d: string; v: number }[] }) {
 function HeroDecor() {
   const bars = [38, 52, 44, 68, 58, 82, 74, 92, 70, 88, 96, 84];
   return (
-    <div className="pointer-events-none absolute inset-y-0 right-0 w-[42%] hidden md:flex items-center justify-center p-4 overflow-hidden rounded-r-[24px]">
+    <div className="w-full flex items-center justify-center">
       <div
-        className="relative w-full max-w-[280px] rounded-xl border border-white/[0.06] bg-[#0b0b0d] p-3.5 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.8)]"
-        style={{ animation: "heroCardFloat 6s ease-in-out infinite" }}
-      >
+        className="relative w-full max-w-[280px] rounded-xl border border-blue-500/20 bg-[#0b0b0d] p-3.5 shadow-[0_20px_60px_-20px_rgba(37,99,235,0.35)]"
+
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
