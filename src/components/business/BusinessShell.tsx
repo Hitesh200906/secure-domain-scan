@@ -2,64 +2,51 @@ import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   LayoutDashboard, Store as StoreIcon, Package, Users, ShoppingBag,
-  BarChart3, MessageSquare, Share2, Wallet, Settings, LifeBuoy, Menu, X, UsersRound,
-  ChevronsUpDown, Plus, Check, Sparkles, Zap, Megaphone, UserCog, Blocks, Bell,
-  Search, Command as CmdIcon, ChevronDown,
+  BarChart3, Share2, Wallet, Settings, LifeBuoy, Menu, X,
+  Check, UserCog, Blocks, Search, ChevronRight, ExternalLink, Plus,
 } from "lucide-react";
 import type { Store } from "@/lib/business";
 import { supabase } from "@/integrations/supabase/client";
 import { CommandPalette } from "./CommandPalette";
 
-type NavItem = { to: string; label: string; icon: any; exact?: boolean; accent?: string };
+type NavItem = { to: string; label: string; icon: any; exact?: boolean };
 type NavGroup = { label: string; items: NavItem[] };
 
 const NAV_GROUPS: NavGroup[] = [
   {
     label: "Overview",
     items: [
-      { to: "/business", label: "Dashboard", icon: LayoutDashboard, exact: true, accent: "text-blue-400" },
-      { to: "/business/notifications", label: "Notifications", icon: Bell, accent: "text-orange-400" },
+      { to: "/business", label: "Dashboard", icon: LayoutDashboard, exact: true },
+      { to: "/business/analytics", label: "Analytics", icon: BarChart3 },
     ],
   },
   {
     label: "Commerce",
     items: [
-      { to: "/business/store", label: "My Store", icon: StoreIcon, accent: "text-purple-400" },
-      { to: "/business/products", label: "Products", icon: Package, accent: "text-emerald-400" },
-      { to: "/business/orders", label: "Orders", icon: ShoppingBag, accent: "text-cyan-400" },
-      { to: "/business/payouts", label: "Payouts", icon: Wallet, accent: "text-emerald-400" },
+      { to: "/business/products", label: "Products", icon: Package },
+      { to: "/business/orders", label: "Orders", icon: ShoppingBag },
+      { to: "/business/payouts", label: "Payouts", icon: Wallet },
     ],
   },
   {
     label: "Growth",
     items: [
-      { to: "/business/community", label: "Community", icon: UsersRound, accent: "text-pink-400" },
-      { to: "/business/members", label: "Members", icon: Users, accent: "text-blue-400" },
-      { to: "/business/analytics", label: "Analytics", icon: BarChart3, accent: "text-cyan-400" },
-      { to: "/business/messages", label: "Messages", icon: MessageSquare, accent: "text-purple-400" },
-      { to: "/business/affiliates", label: "Affiliates", icon: Share2, accent: "text-orange-400" },
-      { to: "/business/campaigns", label: "Campaigns", icon: Megaphone, accent: "text-pink-400" },
-    ],
-  },
-  {
-    label: "Intelligence",
-    items: [
-      { to: "/business/ai", label: "AI Assistant", icon: Sparkles, accent: "text-purple-400" },
-      { to: "/business/automation", label: "Automation", icon: Zap, accent: "text-orange-400" },
+      { to: "/business/members", label: "Members", icon: Users },
+      { to: "/business/affiliates", label: "Affiliates", icon: Share2 },
     ],
   },
   {
     label: "Workspace",
     items: [
-      { to: "/business/team", label: "Team", icon: UserCog, accent: "text-blue-400" },
-      { to: "/business/marketplace", label: "App Marketplace", icon: Blocks, accent: "text-emerald-400" },
+      { to: "/business/team", label: "Team", icon: UserCog },
+      { to: "/business/marketplace", label: "Marketplace", icon: Blocks },
       { to: "/business/settings", label: "Settings", icon: Settings },
       { to: "/business/support", label: "Support", icon: LifeBuoy },
     ],
   },
 ];
 
-function StoreSwitcher({ store }: { store: Store | null }) {
+function StoreCard({ store }: { store: Store | null }) {
   const [open, setOpen] = useState(false);
   const [stores, setStores] = useState<Store[]>([]);
   const ref = useRef<HTMLDivElement>(null);
@@ -82,7 +69,7 @@ function StoreSwitcher({ store }: { store: Store | null }) {
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
-  const Logo = ({ s, size = "size-9" }: { s: Store | null; size?: string }) =>
+  const Logo = ({ s, size = "size-11" }: { s: Store | null; size?: string }) =>
     s?.logo_url ? (
       <img src={s.logo_url} alt={s.name} className={`${size} shrink-0 rounded-xl object-cover border border-white/10`} />
     ) : (
@@ -95,26 +82,42 @@ function StoreSwitcher({ store }: { store: Store | null }) {
     );
 
   return (
-    <div ref={ref} className="relative">
-      <div className="w-full flex items-center gap-3 px-1">
-        <button onClick={() => setOpen((v) => !v)} className="shrink-0 transition hover:opacity-90">
-          <Logo s={store} size="size-11" />
-        </button>
-        <button onClick={() => setOpen((v) => !v)} className="flex-1 min-w-0 text-left">
-          <div className="text-[17px] font-semibold tracking-tight truncate text-white leading-tight">{store?.name ?? "Workspace"}</div>
-        </button>
-        <button
-          onClick={() => setOpen((v) => !v)}
-          className="shrink-0 inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/20 transition px-2.5 py-1 text-[11px] font-medium text-neutral-300 hover:text-white"
-        >
-          <ChevronsUpDown className="size-3" />
-          Switch
-        </button>
+    <div ref={ref} className="relative space-y-2.5">
+      <div className="flex items-start gap-3">
+        <Logo s={store} size="size-11" />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[15px] font-semibold tracking-tight truncate text-white leading-tight">{store?.name ?? "Workspace"}</span>
+            <span className="shrink-0 inline-flex items-center rounded-md bg-blue-500/15 text-blue-300 border border-blue-500/25 px-1.5 py-0.5 text-[9.5px] font-medium uppercase tracking-wider">
+              Business
+            </span>
+          </div>
+          {store?.slug && (
+            <a
+              href={`/${store.slug}`}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-0.5 inline-flex items-center gap-1 text-[11.5px] text-neutral-400 hover:text-white transition"
+            >
+              View store <ExternalLink className="size-3" />
+            </a>
+          )}
+        </div>
       </div>
 
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/20 transition px-3 py-2 text-[12.5px] text-neutral-300 hover:text-white"
+      >
+        <span className="inline-flex items-center gap-1.5">
+          <svg viewBox="0 0 24 24" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M2 12h20"/></svg>
+          Switch workspace
+        </span>
+        <ChevronRight className={`size-3.5 transition-transform ${open ? "rotate-90" : ""}`} />
+      </button>
 
       {open && (
-        <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-50 rounded-xl border border-white/10 bg-[#111] backdrop-blur-xl shadow-2xl p-1.5 animate-in fade-in slide-in-from-top-1 duration-150">
+        <div className="absolute left-0 right-0 top-[calc(100%+2px)] z-50 rounded-xl border border-white/10 bg-[#111] backdrop-blur-xl shadow-2xl p-1.5 animate-in fade-in slide-in-from-top-1 duration-150">
           <div className="px-2 py-1.5 text-[10px] uppercase tracking-widest text-neutral-500">Your stores</div>
           <div className="max-h-72 overflow-y-auto">
             {stores.map((s) => {
@@ -157,7 +160,6 @@ export function BusinessShell({ store, children }: { store: Store | null; childr
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
-  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -177,89 +179,63 @@ export function BusinessShell({ store, children }: { store: Store | null; childr
       <Link
         to={item.to as any}
         onClick={onNav}
-        className={`group relative flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-[13px] font-medium transition ${
+        className={`group relative flex items-center gap-3 rounded-lg px-3 py-2 text-[13.5px] font-medium transition ${
           active
-            ? "bg-white/[0.06] text-white"
-            : "text-neutral-400 hover:bg-white/[0.03] hover:text-white"
+            ? "bg-blue-500/15 text-white border border-blue-500/25"
+            : "text-neutral-400 hover:bg-white/[0.03] hover:text-white border border-transparent"
         }`}
       >
-        {active && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-[2px] rounded-r-full bg-white" />}
-        <Icon className={`size-[15px] shrink-0 ${active ? item.accent ?? "text-white" : "text-neutral-500 group-hover:text-neutral-300"}`} />
+        <Icon className={`size-[16px] shrink-0 ${active ? "text-blue-400" : "text-neutral-500 group-hover:text-neutral-300"}`} />
         <span className="truncate">{item.label}</span>
       </Link>
     );
   };
 
   const SidebarBody = ({ onNav }: { onNav?: () => void }) => (
-    <div className="flex h-full flex-col bg-[#0b0b0b]">
-      <div className="shrink-0 px-3 pt-4 pb-3 border-b border-white/[0.06]">
-        <StoreSwitcher store={store} />
+    <div className="flex h-full flex-col bg-[#0a0a0a]">
+      <div className="shrink-0 px-4 pt-5 pb-4 border-b border-white/[0.06]">
+        <StoreCard store={store} />
       </div>
 
-
-      <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-4 scrollbar-thin">
-        {NAV_GROUPS.filter((g) => g.label !== "Workspace").map((group) => {
-          const collapsed = collapsedGroups[group.label];
-          return (
-            <div key={group.label}>
-              <button
-                onClick={() => setCollapsedGroups((c) => ({ ...c, [group.label]: !c[group.label] }))}
-                className="w-full flex items-center gap-1 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-neutral-600 hover:text-neutral-400 transition"
-              >
-                <ChevronDown className={`size-3 transition-transform ${collapsed ? "-rotate-90" : ""}`} />
-                {group.label}
-              </button>
-              {!collapsed && (
-                <div className="mt-1 space-y-0.5">
-                  {group.items.map((item) => <NavItemRow key={item.to} item={item} onNav={onNav} />)}
-                </div>
-              )}
+      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-5 scrollbar-thin">
+        {NAV_GROUPS.filter((g) => g.label !== "Workspace").map((group) => (
+          <div key={group.label}>
+            <div className="px-3 pb-2 text-[10px] uppercase tracking-[0.14em] text-neutral-600 font-medium">
+              {group.label}
             </div>
-          );
-        })}
+            <div className="space-y-0.5">
+              {group.items.map((item) => <NavItemRow key={item.to} item={item} onNav={onNav} />)}
+            </div>
+          </div>
+        ))}
       </nav>
 
       {(() => {
         const workspace = NAV_GROUPS.find((g) => g.label === "Workspace");
         if (!workspace) return null;
-        const collapsed = collapsedGroups[workspace.label];
         return (
-          <div className="shrink-0 border-t border-white/[0.06] px-2 py-3">
-            <button
-              onClick={() => setCollapsedGroups((c) => ({ ...c, [workspace.label]: !c[workspace.label] }))}
-              className="w-full flex items-center gap-1 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-neutral-600 hover:text-neutral-400 transition"
-            >
-              <ChevronDown className={`size-3 transition-transform ${collapsed ? "-rotate-90" : ""}`} />
+          <div className="shrink-0 border-t border-white/[0.06] px-3 py-4">
+            <div className="px-3 pb-2 text-[10px] uppercase tracking-[0.14em] text-neutral-600 font-medium">
               {workspace.label}
-            </button>
-            {!collapsed && (
-              <div className="mt-1 space-y-0.5">
-                {workspace.items.map((item) => <NavItemRow key={item.to} item={item} onNav={onNav} />)}
-              </div>
-            )}
+            </div>
+            <div className="space-y-0.5">
+              {workspace.items.map((item) => <NavItemRow key={item.to} item={item} onNav={onNav} />)}
+            </div>
           </div>
         );
       })()}
-
-      <div className="shrink-0 border-t border-white/[0.06] px-3 py-3 text-[10.5px] text-neutral-600 flex items-center justify-between">
-        <span>Forge · v1.0</span>
-        <span className="flex items-center gap-1">
-          <span className="size-1.5 rounded-full bg-emerald-400" />
-          Operational
-        </span>
-      </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#090909] text-[#F5F5F5] pt-20">
+    <div className="min-h-screen bg-[#050505] text-[#F5F5F5] pt-20">
       <div className="mx-auto max-w-[1600px] flex">
-        <aside className="hidden lg:block w-64 shrink-0 border-r border-white/[0.06] sticky top-20 h-[calc(100vh-5rem)]">
+        <aside className="hidden lg:block w-[260px] shrink-0 border-r border-white/[0.06] sticky top-20 h-[calc(100vh-5rem)]">
           <SidebarBody />
         </aside>
 
         <div className="flex-1 min-w-0">
-          <div className="lg:hidden flex items-center justify-between px-4 py-3 border-b border-white/[0.06] bg-[#0b0b0b]">
+          <div className="lg:hidden flex items-center justify-between px-4 py-3 border-b border-white/[0.06] bg-[#0a0a0a]">
             <button onClick={() => setOpen(true)} className="p-2 rounded-lg hover:bg-white/5">
               <Menu className="size-5" />
             </button>
@@ -277,7 +253,7 @@ export function BusinessShell({ store, children }: { store: Store | null; childr
         <>
           <div className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm lg:hidden" onClick={() => setOpen(false)} />
           <aside className="fixed left-0 top-0 z-[70] h-full w-72 border-r border-white/[0.06] lg:hidden">
-            <div className="flex items-center justify-between p-3 border-b border-white/[0.06] bg-[#0b0b0b]">
+            <div className="flex items-center justify-between p-3 border-b border-white/[0.06] bg-[#0a0a0a]">
               <span className="text-[13px] font-semibold">Menu</span>
               <button onClick={() => setOpen(false)} className="p-2 rounded-lg hover:bg-white/5"><X className="size-4" /></button>
             </div>
