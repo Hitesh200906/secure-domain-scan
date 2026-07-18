@@ -335,7 +335,26 @@ function BusinessDashboard() {
             <h2 className="text-[15px] font-medium">Recent Orders</h2>
             <Link to="/business/orders" className="text-[11px] text-neutral-400 hover:text-white">View all</Link>
           </div>
-          {orders.length === 0 ? (
+          {isEmpty ? (
+            <div className="space-y-3.5">
+              {demoOrders.map((o) => (
+                <div key={o.id} className="flex items-center gap-3">
+                  <div className="size-9 rounded-lg bg-white/[0.04] border border-white/10 grid place-items-center">
+                    <ShoppingBag className="size-4 text-neutral-400" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[13px] font-medium text-white truncate">#{o.id}</div>
+                    <div className="text-[10.5px] text-neutral-500 truncate">{o.buyer}</div>
+                  </div>
+                  <div className="text-[10.5px] text-neutral-500 shrink-0">{o.at}</div>
+                  <div className="text-right shrink-0">
+                    <div className="text-[13px] font-medium tabular-nums">${o.amount.toFixed(2)}</div>
+                    <div className="text-[10.5px] tabular-nums text-emerald-400">{o.status}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : orders.length === 0 ? (
             <EmptyLine text="No orders yet." />
           ) : (
             <div className="space-y-3.5">
@@ -361,6 +380,7 @@ function BusinessDashboard() {
               ))}
             </div>
           )}
+
         </Panel>
 
         <Panel className="lg:col-span-4 p-6">
