@@ -268,10 +268,20 @@ function BusinessDashboard() {
           <div className="text-3xl font-semibold tracking-tight tabular-nums text-white">${pending.toFixed(2)}</div>
           <div className="mt-1 text-[11px] text-neutral-500">{pendingPayouts.length} payout{pendingPayouts.length === 1 ? "" : "s"} pending</div>
           <div className="mt-4 space-y-2.5">
-            {pendingPayouts.length === 0 && (
+            {isEmpty ? demoPayouts.map((p) => (
+              <div key={p.last4} className="flex items-center gap-2.5">
+                <div className="size-7 rounded-lg bg-white/[0.04] border border-white/10 grid place-items-center">
+                  <Landmark className="size-3.5 text-neutral-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[11.5px] text-white truncate">Payout to •••• {p.last4}</div>
+                  <div className="text-[10px] text-neutral-500">{p.at}</div>
+                </div>
+                <div className="text-[12px] tabular-nums text-white">${p.amount.toFixed(2)}</div>
+              </div>
+            )) : pendingPayouts.length === 0 ? (
               <div className="text-[11px] text-neutral-500">No pending payouts.</div>
-            )}
-            {pendingPayouts.map((o) => (
+            ) : pendingPayouts.map((o) => (
               <div key={o.id} className="flex items-center gap-2.5">
                 <div className="size-7 rounded-lg bg-white/[0.04] border border-white/10 grid place-items-center">
                   <Landmark className="size-3.5 text-neutral-400" />
@@ -286,6 +296,7 @@ function BusinessDashboard() {
               </div>
             ))}
           </div>
+
         </Panel>
       </section>
 
