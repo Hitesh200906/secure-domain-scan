@@ -336,22 +336,22 @@ function HomeOverview({
         </svg>
       </div>
 
-      {/* IDENTITY ROW */}
+      {/* IDENTITY ROW — flat on background, no card */}
       <div className="mt-6 flex flex-wrap items-center gap-5 slide-up slide-up-1">
         <div
-          className="size-16 rounded-2xl overflow-hidden shrink-0 border"
+          className="size-20 rounded-2xl overflow-hidden shrink-0 border"
           style={{ borderColor: BORDER, background: CARD }}
         >
           {store.logo_url
             ? <img src={store.logo_url} alt={store.name} className="size-full object-cover" />
-            : <div className="size-full grid place-items-center text-xl font-semibold">{initial}</div>}
+            : <div className="size-full grid place-items-center text-2xl font-semibold">{initial}</div>}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-semibold tracking-tight truncate" style={{ color: TEXT }}>{store.name}</h1>
+            <h1 className="text-3xl font-semibold tracking-tight truncate" style={{ color: TEXT }}>{store.name}</h1>
             {store.verified && <BadgeCheck className="size-5" style={{ color: ACCENT }} />}
           </div>
-          <div className="mt-1 flex items-center gap-3 text-xs" style={{ color: MUTED }}>
+          <div className="mt-2 flex items-center gap-x-3 gap-y-1 text-xs flex-wrap" style={{ color: MUTED }}>
             <span>Created by <span style={{ color: SEC }}>@{store.slug}</span></span>
             <span>•</span>
             <span className="inline-flex items-center gap-1"><Users className="size-3" /> {memberCount.toLocaleString()} members</span>
