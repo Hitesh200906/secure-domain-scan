@@ -594,42 +594,41 @@ function RevenueChart({ daily }: { daily: { d: string; v: number }[] }) {
   );
 }
 
-import heroCube from "@/assets/hero-cube.png.asset.json";
+import heroCube from "@/assets/hero-cube-3d.png";
 
 function HeroDecor() {
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[24px]">
-      {/* Reference image scene */}
+    <div className="pointer-events-none absolute inset-y-0 right-0 w-[55%] overflow-hidden rounded-r-[24px]">
+      {/* Ambient radial glow */}
       <div
-        className="absolute inset-0 bg-no-repeat bg-cover bg-right opacity-[0.9]"
-        style={{
-          backgroundImage: `url(${heroCube.url})`,
-          maskImage:
-            "linear-gradient(to left, black 0%, black 45%, transparent 92%)",
-          WebkitMaskImage:
-            "linear-gradient(to left, black 0%, black 45%, transparent 92%)",
-          animation: "heroDecorFloat 6s ease-in-out infinite",
-        }}
-      />
-      {/* Ambient glow behind cube */}
-      <div
-        className="absolute right-[14%] top-1/2 -translate-y-1/2 size-[320px] rounded-full blur-3xl opacity-60"
+        className="absolute right-[8%] top-1/2 -translate-y-1/2 size-[420px] rounded-full blur-[80px] opacity-70"
         style={{
           background:
-            "radial-gradient(circle, rgba(59,130,246,0.35), rgba(29,78,216,0.15) 45%, transparent 70%)",
-          animation: "heroDecorPulse 3.6s ease-in-out infinite",
+            "radial-gradient(circle, rgba(59,130,246,0.55), rgba(29,78,216,0.2) 45%, transparent 72%)",
+          animation: "heroDecorPulse 4s ease-in-out infinite",
         }}
       />
-      {/* Flowing signal lines */}
+
+      {/* Orbit rings */}
+      <div
+        className="absolute right-[6%] top-1/2 -translate-y-1/2 size-[380px] rounded-full border border-blue-400/15"
+        style={{ animation: "heroDecorSpin 28s linear infinite" }}
+      />
+      <div
+        className="absolute right-[10%] top-1/2 -translate-y-1/2 size-[300px] rounded-full border border-blue-400/10"
+        style={{ animation: "heroDecorSpin 40s linear infinite reverse" }}
+      />
+
+      {/* Signal lines */}
       <svg
         viewBox="0 0 800 400"
         preserveAspectRatio="none"
-        className="absolute inset-0 w-full h-full opacity-70 mix-blend-screen"
+        className="absolute inset-0 w-full h-full opacity-60 mix-blend-screen"
       >
         <defs>
           <linearGradient id="heroWaveG" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#60a5fa" stopOpacity="0" />
-            <stop offset="55%" stopColor="#93c5fd" stopOpacity="0.55" />
+            <stop offset="55%" stopColor="#93c5fd" stopOpacity="0.6" />
             <stop offset="100%" stopColor="#60a5fa" stopOpacity="0" />
           </linearGradient>
         </defs>
@@ -641,61 +640,45 @@ function HeroDecor() {
             stroke="url(#heroWaveG)"
             strokeWidth="1"
           >
-            <animate
-              attributeName="stroke-dasharray"
-              values="2 260;80 160;2 260"
-              dur={`${9 + i}s`}
-              repeatCount="indefinite"
-            />
-            <animate
-              attributeName="stroke-dashoffset"
-              from="0"
-              to="500"
-              dur={`${10 + i}s`}
-              repeatCount="indefinite"
-            />
+            <animate attributeName="stroke-dasharray" values="2 260;80 160;2 260" dur={`${9 + i}s`} repeatCount="indefinite" />
+            <animate attributeName="stroke-dashoffset" from="0" to="500" dur={`${10 + i}s`} repeatCount="indefinite" />
           </path>
         ))}
       </svg>
 
-      {/* Floating chart chip */}
-      <div
-        className="absolute right-[6%] top-[22%] hidden md:flex items-center gap-2 rounded-xl border border-blue-400/25 bg-blue-500/[0.06] backdrop-blur-md px-2.5 py-2"
-        style={{ animation: "heroDecorFloat 5s ease-in-out infinite reverse" }}
-      >
-        <svg viewBox="0 0 40 20" className="w-10 h-5 text-blue-300">
-          <polyline
-            points="0,15 8,10 14,12 22,5 30,8 40,3"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </div>
+      {/* Hero 3D cube image */}
+      <img
+        src={heroCube}
+        alt=""
+        width={1024}
+        height={1024}
+        className="absolute right-[-4%] top-1/2 -translate-y-1/2 h-[115%] w-auto object-contain drop-shadow-[0_0_60px_rgba(59,130,246,0.45)]"
+        style={{ animation: "heroDecorFloat 6s ease-in-out infinite" }}
+      />
 
-      {/* Subtle particles */}
-      {Array.from({ length: 6 }).map((_, i) => (
+      {/* Sparkles */}
+      {Array.from({ length: 7 }).map((_, i) => (
         <span
           key={i}
-          className="absolute size-1 rounded-full bg-blue-300/70"
+          className="absolute size-1 rounded-full bg-blue-200"
           style={{
-            top: `${15 + i * 12}%`,
-            right: `${8 + (i % 3) * 15}%`,
-            animation: `heroDecorSpark ${4 + i}s ease-in-out ${i * 0.4}s infinite`,
+            top: `${12 + i * 11}%`,
+            right: `${6 + (i % 3) * 18}%`,
+            animation: `heroDecorSpark ${3.5 + i * 0.5}s ease-in-out ${i * 0.35}s infinite`,
             filter: "blur(0.5px)",
           }}
         />
       ))}
 
       <style>{`
-        @keyframes heroDecorFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-        @keyframes heroDecorPulse { 0%,100% { opacity: 0.45; transform: translateY(-50%) scale(1); } 50% { opacity: 0.75; transform: translateY(-50%) scale(1.06); } }
+        @keyframes heroDecorFloat { 0%,100% { transform: translateY(-50%); } 50% { transform: translateY(calc(-50% - 10px)); } }
+        @keyframes heroDecorPulse { 0%,100% { opacity: 0.45; } 50% { opacity: 0.8; } }
+        @keyframes heroDecorSpin { to { transform: translateY(-50%) rotate(360deg); } }
         @keyframes heroDecorSpark { 0%,100% { opacity: 0.2; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-8px); } }
       `}</style>
     </div>
   );
 }
+
 
 
