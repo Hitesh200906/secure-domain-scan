@@ -608,6 +608,8 @@ function HeroDecor() {
     <div className="w-full flex items-center justify-center">
       <div
         className="relative w-full max-w-[280px] rounded-xl border border-blue-500/20 bg-[#0b0b0d] p-3.5 shadow-[0_20px_60px_-20px_rgba(37,99,235,0.35)]"
+      >
+
 
         {/* Header */}
         <div className="flex items-center justify-between">
