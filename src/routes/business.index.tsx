@@ -36,7 +36,23 @@ function BusinessDashboard() {
     return () => cancelAnimationFrame(t);
   }, []);
 
+  const isEmpty = orders.length === 0 && products.length === 0;
+
   const metrics = useMemo(() => {
+    if (isEmpty) {
+      const daily = Array.from({ length: range }).map((_, i) => {
+        const d = new Date(); d.setDate(d.getDate() - (range - 1 - i));
+        const base = [1200, 1800, 1400, 2100, 2600, 3620, 3100][i % 7];
+        return { d: d.toISOString().slice(0, 10), v: base };
+      });
+      return {
+        gross: 12430, net: 11808.5, prevGross: 10050,
+        buyers: 1245, sales: 356,
+        dGross: 23.6, dSales: 12.4, dBuyers: 18.2,
+        conversion: 4.32, dConversion: 8.7,
+        daily,
+      };
+    }
     const start = new Date(); start.setDate(start.getDate() - range);
     const prevStart = new Date(); prevStart.setDate(prevStart.getDate() - range * 2);
     const inRange = orders.filter(o => new Date(o.created_at) >= start);
@@ -68,9 +84,15 @@ function BusinessDashboard() {
       conversion, dConversion: delta(conversion, prevConversion),
       daily,
     };
-  }, [orders, range]);
+  }, [orders, range, isEmpty]);
 
   const topProducts = useMemo(() => {
+    if (isEmpty) {
+      return [
+        { product: { id: "demo-1", name: "Notion Template Pack" } as Product, revenue: 3420, count: 152, growth: 24.5 },
+        { product: { id: "demo-2", name: "UI/UX Design System" } as Product, revenue: 2180, count: 98, growth: 16.8 },
+      ] as any;
+    }
     const map = new Map<string, { product: Product; revenue: number; count: number }>();
     products.forEach(p => map.set(p.id, { product: p, revenue: 0, count: 0 }));
     orders.forEach(o => {
@@ -78,11 +100,26 @@ function BusinessDashboard() {
       if (e) { e.revenue += Number(o.amount || 0); e.count += 1; }
     });
     return [...map.values()].filter(t => t.count > 0).sort((a, b) => b.revenue - a.revenue).slice(0, 4);
-  }, [orders, products]);
+  }, [orders, products, isEmpty]);
 
-  const available = metrics.net;
-  const pending = orders.filter(o => o.status === "pending").reduce((s, o) => s + Number(o.amount || 0), 0);
+  const available = isEmpty ? 5680.5 : metrics.net;
+  const pending = isEmpty ? 1240 : orders.filter(o => o.status === "pending").reduce((s, o) => s + Number(o.amount || 0), 0);
+  const demoPayouts = [
+    { last4: "4567", amount: 450, at: "Requested 18 Jul, 10:22" },
+    { last4: "8421", amount: 420, at: "Requested 18 Jul, 09:15" },
+    { last4: "1234", amount: 370, at: "Requested 17 Jul, 18:45" },
+  ];
   const pendingPayouts = orders.filter(o => o.status === "pending").slice(0, 3);
+  const demoOrders = [
+    { id: "ORD-8421", buyer: "John Doe", at: "18 Jul, 14:20", amount: 49, status: "Completed" },
+    { id: "ORD-8420", buyer: "Sarah Smith", at: "18 Jul, 13:15", amount: 79, status: "Completed" },
+    { id: "ORD-8419", buyer: "Alex Johnson", at: "18 Jul, 12:05", amount: 29, status: "Completed" },
+  ];
+  const demoActivity = [
+    { kind: "customer", title: "New customer registered", sub: "@johndoe", right: "", ago: "2m ago" },
+    { kind: "sale", title: "Product sold", sub: "Notion Template Pack", right: "$49.00", ago: "" },
+    { kind: "payout", title: "Payout initiated", sub: "To •••• 4567", right: "$450.00", ago: "8m ago" },
+  ];
 
   const dateRangeLabel = useMemo(() => {
     const end = new Date();
@@ -231,10 +268,20 @@ function BusinessDashboard() {
           <div className="text-3xl font-semibold tracking-tight tabular-nums text-white">${pending.toFixed(2)}</div>
           <div className="mt-1 text-[11px] text-neutral-500">{pendingPayouts.length} payout{pendingPayouts.length === 1 ? "" : "s"} pending</div>
           <div className="mt-4 space-y-2.5">
-            {pendingPayouts.length === 0 && (
+            {isEmpty ? demoPayouts.map((p) => (
+              <div key={p.last4} className="flex items-center gap-2.5">
+                <div className="size-7 rounded-lg bg-white/[0.04] border border-white/10 grid place-items-center">
+                  <Landmark className="size-3.5 text-neutral-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[11.5px] text-white truncate">Payout to •••• {p.last4}</div>
+                  <div className="text-[10px] text-neutral-500">{p.at}</div>
+                </div>
+                <div className="text-[12px] tabular-nums text-white">${p.amount.toFixed(2)}</div>
+              </div>
+            )) : pendingPayouts.length === 0 ? (
               <div className="text-[11px] text-neutral-500">No pending payouts.</div>
-            )}
-            {pendingPayouts.map((o) => (
+            ) : pendingPayouts.map((o) => (
               <div key={o.id} className="flex items-center gap-2.5">
                 <div className="size-7 rounded-lg bg-white/[0.04] border border-white/10 grid place-items-center">
                   <Landmark className="size-3.5 text-neutral-400" />
@@ -249,6 +296,7 @@ function BusinessDashboard() {
               </div>
             ))}
           </div>
+
         </Panel>
       </section>
 
@@ -263,7 +311,7 @@ function BusinessDashboard() {
             <EmptyLine text="No sales yet." />
           ) : (
             <div className="space-y-3.5">
-              {topProducts.map((t) => (
+              {topProducts.map((t: any) => (
                 <div key={t.product.id} className="flex items-center gap-3">
                   <div className="size-10 rounded-lg bg-gradient-to-br from-purple-500/40 to-blue-500/40 border border-white/10 grid place-items-center text-[13px] font-semibold">
                     {t.product.name[0]?.toUpperCase()}
@@ -287,7 +335,26 @@ function BusinessDashboard() {
             <h2 className="text-[15px] font-medium">Recent Orders</h2>
             <Link to="/business/orders" className="text-[11px] text-neutral-400 hover:text-white">View all</Link>
           </div>
-          {orders.length === 0 ? (
+          {isEmpty ? (
+            <div className="space-y-3.5">
+              {demoOrders.map((o) => (
+                <div key={o.id} className="flex items-center gap-3">
+                  <div className="size-9 rounded-lg bg-white/[0.04] border border-white/10 grid place-items-center">
+                    <ShoppingBag className="size-4 text-neutral-400" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[13px] font-medium text-white truncate">#{o.id}</div>
+                    <div className="text-[10.5px] text-neutral-500 truncate">{o.buyer}</div>
+                  </div>
+                  <div className="text-[10.5px] text-neutral-500 shrink-0">{o.at}</div>
+                  <div className="text-right shrink-0">
+                    <div className="text-[13px] font-medium tabular-nums">${o.amount.toFixed(2)}</div>
+                    <div className="text-[10.5px] tabular-nums text-emerald-400">{o.status}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : orders.length === 0 ? (
             <EmptyLine text="No orders yet." />
           ) : (
             <div className="space-y-3.5">
@@ -313,6 +380,7 @@ function BusinessDashboard() {
               ))}
             </div>
           )}
+
         </Panel>
 
         <Panel className="lg:col-span-4 p-6">
@@ -321,7 +389,31 @@ function BusinessDashboard() {
             <Link to="/business/analytics" className="text-[11px] text-neutral-400 hover:text-white">View all</Link>
           </div>
           <div className="space-y-4">
-            {orders.slice(0, 3).map((o, i) => {
+            {isEmpty ? demoActivity.map((a, i) => {
+              const isCustomer = a.kind === "customer";
+              const isSale = a.kind === "sale";
+              return (
+                <div key={i} className="flex items-start gap-3">
+                  <div className={`size-8 rounded-lg border grid place-items-center shrink-0 ${
+                    isCustomer ? "bg-purple-500/15 border-purple-500/25" :
+                    isSale ? "bg-emerald-500/15 border-emerald-500/25" :
+                    "bg-amber-500/15 border-amber-500/25"
+                  }`}>
+                    {isCustomer ? <UserPlus className="size-3.5 text-purple-300" /> :
+                     isSale ? <Package className="size-3.5 text-emerald-300" /> :
+                     <Landmark className="size-3.5 text-amber-300" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[12.5px] text-white">{a.title}</div>
+                    <div className="text-[10.5px] text-neutral-500 truncate">{a.sub}</div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    {a.right && <div className="text-[12px] tabular-nums text-white">{a.right}</div>}
+                    {a.ago && <div className="text-[10px] text-neutral-500">{a.ago}</div>}
+                  </div>
+                </div>
+              );
+            }) : orders.slice(0, 3).map((o, i) => {
               const p = products.find(p => p.id === o.product_id);
               const isCustomer = i % 3 === 0;
               const isSale = i % 3 === 1;
@@ -351,7 +443,7 @@ function BusinessDashboard() {
                 </div>
               );
             })}
-            {orders.length === 0 && (
+            {!isEmpty && orders.length === 0 && (
               <div className="flex items-start gap-3">
                 <div className="size-8 rounded-lg bg-white/[0.04] border border-white/10 grid place-items-center shrink-0">
                   <Activity className="size-3.5 text-neutral-400" />
@@ -360,6 +452,7 @@ function BusinessDashboard() {
               </div>
             )}
           </div>
+
         </Panel>
       </section>
     </div>
