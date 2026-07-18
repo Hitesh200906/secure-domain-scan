@@ -187,11 +187,6 @@ export function BusinessShell({ store, children }: { store: Store | null; childr
   const SidebarBody = ({ onNav }: { onNav?: () => void }) => (
     <div className="flex h-full flex-col bg-[#0b0b0b]">
       <div className="shrink-0 px-3 pt-4 pb-3 border-b border-white/[0.06]">
-        <div className="flex items-center gap-2 px-1 mb-3">
-          <div className="size-6 rounded-md bg-gradient-to-br from-[#4730D8] to-[#1F55F5] grid place-items-center text-[11px] font-bold">F</div>
-          <span className="text-[13px] font-semibold tracking-tight">Forge</span>
-          <span className="ml-auto text-[9px] uppercase tracking-widest text-neutral-600 border border-white/10 rounded px-1.5 py-0.5">beta</span>
-        </div>
         <StoreSwitcher store={store} />
         <button
           onClick={() => setPaletteOpen(true)}
