@@ -132,9 +132,9 @@ function BusinessDashboard() {
     <div className={`space-y-6 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}>
       {/* Command header */}
       <header className="relative overflow-hidden rounded-[24px] border border-white/[0.06] bg-[#0a0a0a] p-6 sm:p-8">
-        <HeroDecor />
+        <div className="relative grid gap-6 md:grid-cols-[minmax(0,1fr)_300px] md:items-center">
+          <div className="flex flex-col gap-6 min-w-0">
 
-        <div className="relative flex flex-col gap-6">
           <div>
             <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-white/60">
               <Command className="size-3" />
@@ -199,8 +199,13 @@ function BusinessDashboard() {
               </Link>
             </div>
           </div>
+          </div>
+          <div className="hidden md:flex items-center justify-center">
+            <HeroDecor />
+          </div>
         </div>
       </header>
+
 
       {/* Stat tiles */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -600,11 +605,12 @@ function RevenueChart({ daily }: { daily: { d: string; v: number }[] }) {
 function HeroDecor() {
   const bars = [38, 52, 44, 68, 58, 82, 74, 92, 70, 88, 96, 84];
   return (
-    <div className="pointer-events-none absolute inset-y-0 right-0 w-[42%] hidden md:flex items-center justify-center p-4 overflow-hidden rounded-r-[24px]">
+    <div className="w-full flex items-center justify-center">
       <div
-        className="relative w-full max-w-[280px] rounded-xl border border-white/[0.06] bg-[#0b0b0d] p-3.5 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.8)]"
-        style={{ animation: "heroCardFloat 6s ease-in-out infinite" }}
+        className="relative w-full max-w-[280px] rounded-xl border border-blue-500/20 bg-[#0b0b0d] p-3.5 shadow-[0_20px_60px_-20px_rgba(37,99,235,0.35)]"
       >
+
+
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -635,12 +641,12 @@ function HeroDecor() {
           <svg viewBox="0 0 320 110" preserveAspectRatio="none" className="w-full h-full overflow-visible">
             <defs>
               <linearGradient id="heroLineFill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#1e40af" stopOpacity="0.4" />
-                <stop offset="100%" stopColor="#1e40af" stopOpacity="0" />
+                <stop offset="0%" stopColor="#1d4ed8" stopOpacity="0.4" />
+                <stop offset="100%" stopColor="#1d4ed8" stopOpacity="0" />
               </linearGradient>
               <linearGradient id="heroLineStroke" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#2563eb" />
-                <stop offset="100%" stopColor="#3730a3" />
+                <stop offset="0%" stopColor="#3b82f6" />
+                <stop offset="100%" stopColor="#2563eb" />
               </linearGradient>
             </defs>
             {[0, 1, 2, 3].map((i) => (
@@ -675,7 +681,7 @@ function HeroDecor() {
               key={i}
               className="flex-1 rounded-sm"
               style={{
-                background: "linear-gradient(180deg, #2563eb, #1e3a8a)",
+                background: "linear-gradient(180deg, #3b82f6, #1d4ed8)",
                 height: `${b}%`,
                 transformOrigin: "bottom",
                 animation: `heroBarGrow 1.4s cubic-bezier(0.16,1,0.3,1) ${i * 0.06}s both`,
