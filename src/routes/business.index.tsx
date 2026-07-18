@@ -132,9 +132,9 @@ function BusinessDashboard() {
     <div className={`space-y-6 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}>
       {/* Command header */}
       <header className="relative overflow-hidden rounded-[24px] border border-white/[0.06] bg-[#0a0a0a] p-6 sm:p-8">
-        <HeroDecor />
+        <div className="relative grid gap-6 md:grid-cols-[minmax(0,1fr)_300px] md:items-center">
+          <div className="flex flex-col gap-6 min-w-0">
 
-        <div className="relative flex flex-col gap-6">
           <div>
             <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-white/60">
               <Command className="size-3" />
