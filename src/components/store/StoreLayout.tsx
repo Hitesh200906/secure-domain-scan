@@ -256,7 +256,7 @@ function HomeOverview({
   const rating = 4.9;
   const reviews = 128;
 
-  const has = (k: AppKey) => apps.some(a => a.app_key === k);
+  void apps;
   const quickAccess: { key: AppKey; label: string; sub: string; Icon: any }[] = [
     { key: "chat", label: "Start chat", sub: "Talk with members", Icon: MessagesSquare },
     { key: "announcements", label: "Latest update", sub: "See what's new", Icon: Megaphone },
