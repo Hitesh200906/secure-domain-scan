@@ -190,9 +190,10 @@ export function StoreLayout({
               if (!installed && !manage) return null;
               const selected = isActive(key);
               return (
-                <div key={key} className="group flex items-center" style={{ borderRadius: 14, background: selected ? SELECTED : "transparent", position: "relative", boxShadow: selected ? "inset 0 0 0 1px rgba(29,78,216,0.18), inset 8px 0 24px -12px rgba(29,78,216,0.35), inset -8px 0 24px -14px rgba(29,78,216,0.18)" : undefined, overflow: "hidden" }}>
+                <div key={key} className="group flex items-center" style={{ borderRadius: 14, background: selected ? SELECTED : "transparent", position: "relative", boxShadow: selected ? "inset 0 0 0 1px rgba(255,255,255,0.06)" : undefined, overflow: "hidden" }}>
                   {selected && (
-                    <span style={{ position: "absolute", left: 0, top: "40%", bottom: "40%", width: 3, background: BLUE_DARK, borderRadius: 2 }} />
+                    <span style={{ position: "absolute", left: 0, top: "40%", bottom: "40%", width: 3, background: "rgba(255,255,255,0.25)", borderRadius: 2 }} />
+
                   )}
                   <button
                     onClick={() => {
