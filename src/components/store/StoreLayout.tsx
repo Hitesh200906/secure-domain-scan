@@ -127,62 +127,52 @@ export function StoreLayout({
           alignSelf: "flex-start",
         }}
       >
-        {/* STORE CARD */}
-        <div
-          className="anim-fade"
-          style={{
-            background: CARD,
-            border: `1px solid ${BORDER_SOFT}`,
-            borderRadius: 22,
-            padding: 20,
-          }}
-        >
-          <div className="flex items-start gap-3">
-            <div
-              className="shrink-0 overflow-hidden"
-              style={{ width: 72, height: 72, borderRadius: 18, background: HOVER, border: `1px solid ${BORDER_SOFT}` }}
-            >
-              {store.logo_url
-                ? <img src={store.logo_url} alt={store.name} className="w-full h-full object-cover" />
-                : <div className="w-full h-full grid place-items-center text-2xl font-bold">{store.name[0]?.toUpperCase()}</div>}
-            </div>
-            <div className="min-w-0 flex-1 pt-0.5">
-              <div className="flex items-center gap-1.5">
-                <div className="truncate font-bold" style={{ fontSize: 22, color: TEXT, letterSpacing: -0.3 }}>{store.name}</div>
-                {store.verified && <BadgeCheck className="size-4 shrink-0" style={{ color: BLUE }} />}
-              </div>
-              <div className="mt-1 flex items-center gap-1.5">
-                <span
-                  className="inline-flex text-[10px] font-medium px-2 py-0.5 rounded-full"
-                  style={{ background: "rgba(59,130,246,0.14)", color: "#93b4ff" }}
-                >
-                  {store.category ?? "Business"}
-                </span>
-                <span className="text-[11px] truncate" style={{ color: MUTED }}>@{store.slug}</span>
-              </div>
-            </div>
-          </div>
-
-          {store.description && (
-            <p className="mt-3 text-[12px] leading-relaxed line-clamp-2" style={{ color: SEC }}>
-              {store.description}
-            </p>
-          )}
-
-          <button
-            className="mt-4 w-full t-220 text-xs font-medium"
-            style={{
-              background: "transparent",
-              border: `1px solid ${BORDER}`,
-              borderRadius: 12,
-              padding: "8px 12px",
-              color: SEC,
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = HOVER)}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+        {/* STORE IDENTITY — flat, no card */}
+        <div className="anim-fade flex flex-col items-center text-center">
+          <div
+            className="shrink-0 overflow-hidden"
+            style={{ width: 68, height: 68, borderRadius: 18, background: HOVER, border: `1px solid ${BORDER_SOFT}` }}
           >
-            View Store
-          </button>
+            {store.logo_url
+              ? <img src={store.logo_url} alt={store.name} className="w-full h-full object-cover" />
+              : <div className="w-full h-full grid place-items-center text-2xl font-bold">{store.name[0]?.toUpperCase()}</div>}
+          </div>
+          <div className="mt-3 flex items-center gap-1.5 min-w-0 max-w-full">
+            <div className="truncate font-bold" style={{ fontSize: 18, color: TEXT, letterSpacing: -0.3 }}>{store.name}</div>
+            {store.verified && <BadgeCheck className="size-4 shrink-0" style={{ color: BLUE }} />}
+          </div>
+          {isOwner ? (
+            <Link
+              to="/business"
+              className="mt-4 w-full t-220 text-xs font-medium inline-flex items-center justify-center"
+              style={{
+                background: "transparent",
+                border: `1px solid ${BORDER}`,
+                borderRadius: 12,
+                padding: "9px 12px",
+                color: SEC,
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = HOVER)}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+            >
+              Store Dashboard
+            </Link>
+          ) : (
+            <button
+              className="mt-4 w-full t-220 text-xs font-medium"
+              style={{
+                background: "transparent",
+                border: `1px solid ${BORDER}`,
+                borderRadius: 12,
+                padding: "9px 12px",
+                color: SEC,
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = HOVER)}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+            >
+              View Store
+            </button>
+          )}
         </div>
 
         {/* NAV */}
