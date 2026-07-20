@@ -8,6 +8,8 @@ import {
 import type { Store } from "@/lib/business";
 import { supabase } from "@/integrations/supabase/client";
 import { CommandPalette } from "./CommandPalette";
+import { BackButton } from "@/components/site/BackButton";
+
 
 type NavItem = { to: string; label: string; icon: any; exact?: boolean };
 type NavGroup = { label: string; items: NavItem[] };
@@ -238,9 +240,9 @@ export function BusinessShell({ store, children }: { store: Store | null; childr
   );
 
   return (
-    <div className="min-h-screen bg-[#050505] text-[#F5F5F5] pt-20">
+    <div className="min-h-screen bg-[#050505] text-[#F5F5F5]">
       <div className="mx-auto max-w-[1600px] flex">
-        <aside className="hidden lg:block w-[260px] shrink-0 border-r border-white/[0.06] sticky top-20 h-[calc(100vh-5rem)]">
+        <aside className="hidden lg:block w-[260px] shrink-0 border-r border-white/[0.06] sticky top-0 h-screen">
           <SidebarBody />
         </aside>
 
@@ -255,9 +257,13 @@ export function BusinessShell({ store, children }: { store: Store | null; childr
             </button>
           </div>
 
-          <main className="p-4 sm:p-6 lg:p-8">{children}</main>
+          <main className="p-4 sm:p-6 lg:p-8">
+            <div className="mb-4"><BackButton fallback="/" /></div>
+            {children}
+          </main>
         </div>
       </div>
+
 
       {open && (
         <>
