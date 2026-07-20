@@ -190,17 +190,57 @@ export function StoreLayout({
               if (!installed && !manage) return null;
               const selected = isActive(key);
               return (
-                <div key={key} className="group flex items-center" style={{ borderRadius: 14, background: selected ? SELECTED : "transparent", position: "relative", boxShadow: selected ? "inset 0 0 0 1px rgba(255,255,255,0.06)" : undefined, overflow: "hidden" }}>
+                <div
+                  key={key}
+                  className="group flex items-center relative"
+                  style={{
+                    borderRadius: 14,
+                    background: selected
+                      ? "linear-gradient(180deg, #0a0f1c 0%, #05070d 100%)"
+                      : "transparent",
+                    position: "relative",
+                    boxShadow: selected
+                      ? "inset 0 0 0 1px rgba(59,130,246,0.18), inset 0 1px 0 rgba(255,255,255,0.04), 0 8px 24px -12px rgba(59,130,246,0.35)"
+                      : undefined,
+                    overflow: "hidden",
+                  }}
+                >
                   {selected && (
-                    <span style={{ position: "absolute", left: 0, top: "40%", bottom: "40%", width: 3, background: "rgba(255,255,255,0.25)", borderRadius: 2 }} />
-
+                    <>
+                      {/* subtle blue glow pocket in the corner */}
+                      <span
+                        aria-hidden
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          background:
+                            "radial-gradient(120% 80% at 0% 50%, rgba(37,99,235,0.16), transparent 55%)",
+                          pointerEvents: "none",
+                        }}
+                      />
+                      {/* thin blue accent bar on the left */}
+                      <span
+                        aria-hidden
+                        style={{
+                          position: "absolute",
+                          left: 0,
+                          top: "22%",
+                          bottom: "22%",
+                          width: 2,
+                          background:
+                            "linear-gradient(180deg, rgba(59,130,246,0) 0%, #3b82f6 50%, rgba(59,130,246,0) 100%)",
+                          boxShadow: "0 0 8px rgba(59,130,246,0.6)",
+                          borderRadius: 2,
+                        }}
+                      />
+                    </>
                   )}
                   <button
                     onClick={() => {
                       if (key === "home") setActive("home");
                       else if (installed && key !== "downloads" && key !== "events") setActive({ kind: "app", key: key as AppKey });
                     }}
-                    className="flex-1 flex items-center gap-3 t-220 text-left"
+                    className="flex-1 flex items-center gap-3 t-220 text-left relative"
                     style={{
                       height: 48,
                       borderRadius: 14,
@@ -211,7 +251,7 @@ export function StoreLayout({
                     onMouseEnter={(e) => { if (!selected) (e.currentTarget.parentElement as HTMLElement).style.background = HOVER; }}
                     onMouseLeave={(e) => { if (!selected) (e.currentTarget.parentElement as HTMLElement).style.background = "transparent"; }}
                   >
-                    <Icon className="size-[18px]" />
+                    <Icon className="size-[18px]" style={selected ? { color: "#cfe0ff" } : undefined} />
                     <span className="text-sm font-medium flex-1 truncate">{label}</span>
                     {badge !== undefined && !manage && (
                       <span className="text-[10px] font-semibold rounded-full px-1.5 py-0.5"
@@ -220,6 +260,7 @@ export function StoreLayout({
                       </span>
                     )}
                   </button>
+
                   {manage && isOwner && app && (
                     <div className="flex items-center gap-1 pr-2">
                       <button onClick={() => toggleEnabled(app)} title={app.enabled ? "Disable" : "Enable"} className="size-7 grid place-items-center rounded-md hover:bg-white/5">
