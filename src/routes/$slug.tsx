@@ -5,6 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { StoreLayout } from "@/components/store/StoreLayout";
+import { BackButton } from "@/components/site/BackButton";
+
 
 export const Route = createFileRoute("/$slug")({ component: StorefrontPage });
 
@@ -45,12 +47,14 @@ function StorefrontPage() {
     toast.success(`Joined ${store.name}`);
   };
 
-  // Public/member view: don't show the global business shell — render store layout directly under navbar
+  // Public/member view: no global navbar/footer — dedicated storefront chrome
   return (
-    <div className="min-h-screen bg-background pt-20">
+    <div className="min-h-screen bg-background">
       <div className="p-4 sm:p-6 lg:p-8">
+        <div className="mb-4"><BackButton fallback="/discover" /></div>
         <StoreLayout store={store} isOwner={isOwner} viewerId={viewerId} onJoin={join} />
       </div>
     </div>
   );
 }
+

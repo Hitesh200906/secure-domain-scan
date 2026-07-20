@@ -135,13 +135,23 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const KNOWN_TOP_ROUTES = new Set([
+    "", "contact", "discover", "pricing", "login", "signup", "reset-password",
+    "dashboard", "profile", "admin", "business",
+  ]);
+  const firstSeg = pathname.split("/")[1] ?? "";
+  const isStorefront = firstSeg !== "" && !KNOWN_TOP_ROUTES.has(firstSeg);
   const isApp =
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/profile") ||
     pathname.startsWith("/scan") ||
+    pathname.startsWith("/business") ||
+    pathname.startsWith("/admin") ||
+    isStorefront ||
     pathname === "/login" ||
     pathname === "/signup" ||
     pathname === "/reset-password";
+
 
   return (
     <QueryClientProvider client={queryClient}>
