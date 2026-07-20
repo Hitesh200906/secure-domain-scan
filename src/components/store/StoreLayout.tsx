@@ -195,45 +195,24 @@ export function StoreLayout({
                   className="group flex items-center relative"
                   style={{
                     borderRadius: 14,
-                    background: selected
-                      ? "linear-gradient(180deg, #0a0f1c 0%, #05070d 100%)"
-                      : "transparent",
+                    background: selected ? "#000000" : "transparent",
                     position: "relative",
-                    boxShadow: selected
-                      ? "inset 0 0 0 1px rgba(59,130,246,0.18), inset 0 1px 0 rgba(255,255,255,0.04), 0 8px 24px -12px rgba(59,130,246,0.35)"
-                      : undefined,
                     overflow: "hidden",
                   }}
                 >
                   {selected && (
-                    <>
-                      {/* subtle blue glow pocket in the corner */}
-                      <span
-                        aria-hidden
-                        style={{
-                          position: "absolute",
-                          inset: 0,
-                          background:
-                            "radial-gradient(120% 80% at 0% 50%, rgba(37,99,235,0.16), transparent 55%)",
-                          pointerEvents: "none",
-                        }}
-                      />
-                      {/* thin blue accent bar on the left */}
-                      <span
-                        aria-hidden
-                        style={{
-                          position: "absolute",
-                          left: 0,
-                          top: "22%",
-                          bottom: "22%",
-                          width: 2,
-                          background:
-                            "linear-gradient(180deg, rgba(59,130,246,0) 0%, #3b82f6 50%, rgba(59,130,246,0) 100%)",
-                          boxShadow: "0 0 8px rgba(59,130,246,0.6)",
-                          borderRadius: 2,
-                        }}
-                      />
-                    </>
+                    <span
+                      aria-hidden
+                      style={{
+                        position: "absolute",
+                        left: 0,
+                        top: "30%",
+                        bottom: "30%",
+                        width: 2,
+                        background: "#3b82f6",
+                        borderRadius: 2,
+                      }}
+                    />
                   )}
                   <button
                     onClick={() => {
@@ -251,7 +230,7 @@ export function StoreLayout({
                     onMouseEnter={(e) => { if (!selected) (e.currentTarget.parentElement as HTMLElement).style.background = HOVER; }}
                     onMouseLeave={(e) => { if (!selected) (e.currentTarget.parentElement as HTMLElement).style.background = "transparent"; }}
                   >
-                    <Icon className="size-[18px]" style={selected ? { color: "#cfe0ff" } : undefined} />
+                    <Icon className="size-[18px]" />
                     <span className="text-sm font-medium flex-1 truncate">{label}</span>
                     {badge !== undefined && !manage && (
                       <span className="text-[10px] font-semibold rounded-full px-1.5 py-0.5"
@@ -260,6 +239,7 @@ export function StoreLayout({
                       </span>
                     )}
                   </button>
+
 
                   {manage && isOwner && app && (
                     <div className="flex items-center gap-1 pr-2">
