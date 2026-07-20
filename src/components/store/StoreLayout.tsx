@@ -206,8 +206,9 @@ export function StoreLayout({
                       style={{
                         position: "absolute",
                         left: 0,
-                        top: "10%",
-                        bottom: "10%",
+                        top: "-10%",
+                        bottom: "-10%",
+
 
                         width: 2,
                         background: "#3b82f6",
