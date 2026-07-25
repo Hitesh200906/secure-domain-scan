@@ -168,8 +168,8 @@ export function NexusCinematicHero() {
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: `url(${heroBgAsset.url})`,
-            filter: "blur(10px) saturate(0.9) brightness(0.35)",
-            opacity: 0.35,
+            filter: "blur(6px) saturate(0.95) brightness(0.55)",
+            opacity: 0.2,
             transform: "scale(1.08)",
           }}
         />
