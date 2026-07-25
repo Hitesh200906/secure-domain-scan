@@ -168,8 +168,8 @@ export function NexusCinematicHero() {
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: `url(${heroBgAsset.url})`,
-            filter: "blur(6px) saturate(0.95) brightness(0.55)",
-            opacity: 0.2,
+            filter: "blur(4px) saturate(1) brightness(0.85)",
+            opacity: 0.6,
             transform: "scale(1.08)",
           }}
         />
@@ -178,7 +178,7 @@ export function NexusCinematicHero() {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse at center, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0.95) 100%)",
+              "radial-gradient(ellipse at center, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.45) 70%, rgba(0,0,0,0.75) 100%)",
           }}
         />
         <div
