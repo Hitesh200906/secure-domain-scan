@@ -168,9 +168,9 @@ export function NexusCinematicHero() {
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: `url(${heroBgAsset.url})`,
-            filter: "blur(3px) saturate(1.15)",
-            opacity: 1,
-            transform: "scale(1.05)",
+            filter: "blur(10px) saturate(0.9) brightness(0.35)",
+            opacity: 0.35,
+            transform: "scale(1.08)",
           }}
         />
         <div
@@ -178,7 +178,7 @@ export function NexusCinematicHero() {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.28) 70%, rgba(0,0,0,0.6) 100%)",
+              "radial-gradient(ellipse at center, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0.95) 100%)",
           }}
         />
         <div
@@ -186,13 +186,14 @@ export function NexusCinematicHero() {
           className="pointer-events-none absolute inset-x-0 top-0 h-56 sm:h-72"
           style={{
             background:
-              "linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.92) 25%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0) 100%)",
+              "linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.95) 30%, rgba(0,0,0,0.7) 65%, rgba(0,0,0,0) 100%)",
           }}
         />
         <div
           aria-hidden="true"
           className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-transparent to-black"
         />
+
       </div>
 
       {/* Pure black region — switching buttons live here */}
