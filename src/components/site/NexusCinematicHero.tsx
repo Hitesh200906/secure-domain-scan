@@ -165,102 +165,167 @@ function OrbitalScene() {
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-      className="relative w-full h-[440px] sm:h-[520px] lg:h-[580px]"
+      className="relative w-full h-[520px] sm:h-[600px] lg:h-[640px]"
     >
-      {/* orbit rings */}
-      <div aria-hidden className="absolute inset-0 grid place-items-center">
-        <div className="relative w-[92%] h-[70%]">
-          <div className="absolute inset-0 rounded-[50%] border border-white/[0.07]" style={{ transform: "rotateX(68deg)" }} />
-          <div className="absolute inset-[10%] rounded-[50%] border border-white/[0.05]" style={{ transform: "rotateX(68deg)" }} />
-          <div className="absolute inset-[22%] rounded-[50%] border border-white/[0.04]" style={{ transform: "rotateX(68deg)" }} />
-        </div>
+      {/* faint orbital ellipses + starry dots */}
+      <div aria-hidden className="absolute inset-0 overflow-hidden">
+        <svg viewBox="0 0 800 600" className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+          <ellipse cx="400" cy="320" rx="360" ry="70" fill="none" stroke="rgba(255,255,255,0.06)" />
+          <ellipse cx="400" cy="330" rx="300" ry="52" fill="none" stroke="rgba(167,139,250,0.06)" />
+        </svg>
+        {[
+          { t: "6%", l: "12%" },  { t: "10%", l: "62%" }, { t: "22%", l: "92%" },
+          { t: "40%", l: "6%" },  { t: "58%", l: "48%" }, { t: "70%", l: "88%" },
+          { t: "84%", l: "20%" }, { t: "18%", l: "40%" },
+        ].map((p, i) => (
+          <span
+            key={i}
+            className="absolute h-[3px] w-[3px] rounded-full bg-white/40"
+            style={{ top: p.t, left: p.l, opacity: 0.35 + (i % 3) * 0.15 }}
+          />
+        ))}
       </div>
 
-      {/* central analytics card */}
+      {/* Corner icon tiles */}
+      <IconTile icon={ShoppingCart} label="Marketplace" style={{ top: "6%",  left: "8%"  }} delay={0.15} />
+      <IconTile icon={Users}        label="Communities" style={{ top: "42%", left: "2%"  }} delay={0.30} />
+      <IconTile icon={Shield}       label="Security"    style={{ top: "8%",  right: "6%" }} delay={0.20} />
+      <IconTile icon={BarChart3}    label="Analytics"   style={{ top: "56%", right: "4%" }} delay={0.35} />
+
+      {/* Central analytics card */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.4 }}
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[74%] max-w-[440px]"
+        className="absolute left-1/2 top-[14%] -translate-x-1/2 w-[62%] max-w-[460px]"
       >
         <div
-          className="relative rounded-2xl border border-white/10 p-5 overflow-hidden"
+          className="relative rounded-2xl border border-white/[0.08] p-5 sm:p-6 overflow-hidden backdrop-blur-md"
           style={{
-            background: "linear-gradient(180deg, rgba(20,14,40,0.88), rgba(6,4,18,0.92))",
-            boxShadow: "0 30px 80px -20px rgba(71,48,216,0.35), 0 0 0 1px rgba(255,255,255,0.03) inset",
+            background: "linear-gradient(180deg, rgba(18,14,32,0.72), rgba(8,6,18,0.82))",
+            boxShadow: "0 30px 80px -24px rgba(90,36,184,0.35), inset 0 1px 0 rgba(255,255,255,0.04)",
           }}
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-white/70 text-xs">
-              <span
-                className="inline-block h-6 w-6 rounded-md"
-                style={{ background: "linear-gradient(135deg,#5A24B8,#1F55F5)" }}
-              />
-              Nexefy
-            </div>
-            <div className="text-[10px] text-white/40">Live</div>
-          </div>
-          <div className="mt-4">
-            <div className="text-white/55 text-xs">Total Revenue</div>
-            <div className="mt-1 flex items-end gap-3">
-              <div className="text-white text-2xl sm:text-3xl font-semibold tracking-tight">$28,450</div>
-              <div className="flex items-center gap-1 text-emerald-400 text-xs mb-1">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" className="mb-4">
+            <path d="M4 4 L12 14 L20 4 M4 20 L12 10 L20 20" stroke="#a78bfa" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+
+          <div className="grid grid-cols-[auto_1fr] gap-x-5 items-end">
+            <div>
+              <div className="text-white/60 text-[13px]">Total Revenue</div>
+              <div className="mt-1 text-white text-[28px] sm:text-[34px] font-semibold tracking-tight leading-none">$28,450</div>
+              <div className="mt-3 inline-flex items-center gap-1 text-emerald-400 text-xs">
                 <TrendingUp className="size-3" /> 12.5%
               </div>
             </div>
-          </div>
-          {/* mini chart */}
-          <div className="mt-4 h-24 sm:h-28">
-            <svg viewBox="0 0 300 100" preserveAspectRatio="none" className="w-full h-full">
-              <defs>
-                <linearGradient id="lineGrad" x1="0" x2="1">
-                  <stop offset="0%" stopColor="#a78bfa" />
-                  <stop offset="100%" stopColor="#5A9DF5" />
-                </linearGradient>
-                <linearGradient id="fillGrad" x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0%" stopColor="#5A24B8" stopOpacity="0.35" />
-                  <stop offset="100%" stopColor="#5A24B8" stopOpacity="0" />
-                </linearGradient>
-              </defs>
-              {[20, 40, 60, 80].map((y) => (
-                <line key={y} x1="0" x2="300" y1={y} y2={y} stroke="rgba(255,255,255,0.05)" />
-              ))}
-              <path d="M0,78 L40,70 L80,72 L120,55 L160,58 L200,40 L240,32 L300,14" stroke="url(#lineGrad)" strokeWidth="2.2" fill="none" />
-              <path d="M0,78 L40,70 L80,72 L120,55 L160,58 L200,40 L240,32 L300,14 L300,100 L0,100 Z" fill="url(#fillGrad)" />
-              <circle cx="300" cy="14" r="3.5" fill="#a78bfa" />
-            </svg>
+
+            <div className="h-[110px] sm:h-[120px] min-w-0">
+              <svg viewBox="0 0 240 120" preserveAspectRatio="none" className="w-full h-full">
+                <defs>
+                  <linearGradient id="lineGrad" x1="0" x2="1">
+                    <stop offset="0%" stopColor="#a78bfa" />
+                    <stop offset="100%" stopColor="#7c5cf5" />
+                  </linearGradient>
+                  <linearGradient id="fillGrad" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stopColor="#7c5cf5" stopOpacity="0.28" />
+                    <stop offset="100%" stopColor="#7c5cf5" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                {[0, 30, 60, 90, 120].map((y) => (
+                  <line key={"h" + y} x1="0" x2="240" y1={y} y2={y} stroke="rgba(255,255,255,0.05)" />
+                ))}
+                {[0, 60, 120, 180, 240].map((x) => (
+                  <line key={"v" + x} x1={x} x2={x} y1="0" y2="120" stroke="rgba(255,255,255,0.05)" />
+                ))}
+                <path
+                  d="M0,95 L20,88 L40,92 L60,74 L80,80 L100,60 L120,66 L140,48 L160,52 L180,34 L200,28 L220,18 L240,10"
+                  stroke="url(#lineGrad)" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round"
+                />
+                <path
+                  d="M0,95 L20,88 L40,92 L60,74 L80,80 L100,60 L120,66 L140,48 L160,52 L180,34 L200,28 L220,18 L240,10 L240,120 L0,120 Z"
+                  fill="url(#fillGrad)"
+                />
+                <circle cx="240" cy="10" r="3.5" fill="#c4b5fd" />
+              </svg>
+            </div>
           </div>
         </div>
       </motion.div>
 
-      {/* orbs */}
-      {ORBS.map((o) => (
-        <motion.div
-          key={o.key}
-          initial={{ opacity: 0, y: 16, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.8, delay: o.delay, ease: [0.22, 1, 0.36, 1] }}
-          style={{ top: o.top, left: o.left }}
-          className="absolute"
+      {/* Black sphere on podium */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="absolute left-1/2 bottom-0 -translate-x-1/2 w-[62%] max-w-[420px]"
+      >
+        <div
+          className="mx-auto h-[46px] w-full rounded-[50%]"
+          style={{
+            background: "radial-gradient(ellipse at 50% 40%, #1a1a1a 0%, #0a0a0a 55%, #050505 100%)",
+            boxShadow: "0 30px 60px -20px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.05)",
+          }}
+        />
+        <div className="relative -mt-[190px] mx-auto w-[62%] aspect-square">
+          <div
+            className="absolute inset-0 rounded-full"
+            style={{
+              background: "radial-gradient(circle at 32% 28%, #2a2a2a 0%, #101010 40%, #050505 75%, #000 100%)",
+              boxShadow: "inset -18px -22px 40px rgba(0,0,0,0.9), inset 18px 22px 30px rgba(255,255,255,0.03), 0 30px 70px -20px rgba(0,0,0,0.9)",
+            }}
+          />
+          <div
+            className="absolute left-[-14%] right-[-14%] top-1/2 h-[18%] rounded-[50%] border-2"
+            style={{
+              borderColor: "#1a1a1a",
+              transform: "translateY(-50%) rotateX(72deg) rotate(-14deg)",
+              boxShadow: "0 6px 18px -6px rgba(0,0,0,0.8)",
+            }}
+          />
+          <span className="absolute left-[-10%] top-1/2 h-3 w-3 rounded-full bg-neutral-800 border border-neutral-700" style={{ transform: "translateY(-50%)" }} />
+          <span className="absolute right-[-8%] top-[46%] h-3 w-3 rounded-full bg-neutral-800 border border-neutral-700" />
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function IconTile({
+  icon: Icon,
+  label,
+  style,
+  delay,
+}: {
+  icon: typeof ShoppingCart;
+  label: string;
+  style: React.CSSProperties;
+  delay: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16, scale: 0.92 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
+      style={style}
+      className="absolute"
+    >
+      <motion.div
+        animate={{ y: [0, -6, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay }}
+      >
+        <div
+          className="grid place-items-center h-[104px] w-[104px] sm:h-[124px] sm:w-[124px] rounded-[22px] border border-white/[0.08]"
+          style={{
+            background: "linear-gradient(160deg, rgba(24,20,40,0.85) 0%, rgba(10,8,20,0.9) 60%, rgba(6,4,14,0.95) 100%)",
+            boxShadow: "0 24px 50px -22px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.04)",
+          }}
         >
-          <motion.div
-            animate={{ y: [0, -8, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: o.delay }}
-            className="flex flex-col items-center gap-2"
-          >
-            <div
-              className="grid place-items-center h-16 w-16 sm:h-20 sm:w-20 rounded-2xl border border-white/10"
-              style={{
-                background: "linear-gradient(180deg, rgba(30,20,60,0.9), rgba(10,8,24,0.9))",
-                boxShadow: "0 20px 40px -18px rgba(90,36,184,0.6), inset 0 1px 0 rgba(255,255,255,0.05)",
-              }}
-            >
-              <o.icon className="size-6 sm:size-7" style={{ color: "#b8a8ff" }} />
-            </div>
-            <div className="text-[11px] sm:text-xs text-white/70">{o.label}</div>
-          </motion.div>
-        </motion.div>
-      ))}
+          <div className="flex flex-col items-center gap-3">
+            <Icon className="size-8 sm:size-9" strokeWidth={1.6} style={{ color: "#a78bfa" }} />
+            <div className="text-white/85 text-[13px] sm:text-sm">{label}</div>
+          </div>
+        </div>
+      </motion.div>
     </motion.div>
   );
 }
