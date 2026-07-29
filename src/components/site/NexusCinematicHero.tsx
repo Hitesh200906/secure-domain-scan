@@ -144,9 +144,11 @@ function HeroCopy({ onNexefy, onSecurity }: { onNexefy: () => void; onSecurity: 
           onClick={onNexefy}
           className="group inline-flex items-center gap-2 rounded-2xl px-6 py-3.5 text-[15px] font-medium text-white transition-all duration-200 hover:-translate-y-0.5"
           style={{
-            background: `linear-gradient(135deg, ${T.purple} 0%, ${T.purpleDim} 100%)`,
-            boxShadow: "0 12px 32px -12px rgba(139,92,246,0.6)",
+            background: T.primary,
+            boxShadow: "0 12px 32px -12px rgba(79,107,255,0.6)",
           }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = T.primaryHi)}
+          onMouseLeave={(e) => (e.currentTarget.style.background = T.primary)}
         >
           <Sparkles className="size-4" />
           Switch to Nexefy
@@ -157,12 +159,12 @@ function HeroCopy({ onNexefy, onSecurity }: { onNexefy: () => void; onSecurity: 
           onClick={onSecurity}
           className="inline-flex items-center gap-2 rounded-2xl px-6 py-3.5 text-[15px] font-medium transition-all duration-200"
           style={{
-            background: T.card,
-            border: `1px solid ${T.border}`,
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.08)",
             color: T.text,
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.borderColor = T.purple)}
-          onMouseLeave={(e) => (e.currentTarget.style.borderColor = T.border)}
+          onMouseEnter={(e) => (e.currentTarget.style.borderColor = T.borderHi)}
+          onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")}
         >
           <ShieldCheck className="size-4" style={{ color: T.text2 }} />
           Switch to Nexefy Security
