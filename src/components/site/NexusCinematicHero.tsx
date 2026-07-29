@@ -16,18 +16,27 @@ import { useAppMode } from "@/lib/app-mode";
 
 /* ---------- Design tokens (scoped to hero) ---------- */
 const T = {
-  bg: "#050507",
-  bg2: "#0B0B10",
-  card: "#101017",
-  cardHi: "#16161F",
-  border: "rgba(255,255,255,0.08)",
-  borderHi: "rgba(255,255,255,0.12)",
-  text: "#F5F6FA",
-  text2: "#A0A3AD",
-  text3: "#6B6E78",
+  bg: "#05060A",
+  bg2: "#0A0C12",
+  card: "#111216",
+  cardHi: "#17191F",
+  border: "#2A2D36",
+  borderHi: "#4A3B8C",
+  text: "#F8FAFC",
+  text2: "#B6BAC6",
+  text3: "#8B90A0",
+  primary: "#4F6BFF",
+  primaryHi: "#6281FF",
   purple: "#8B5CF6",
+  purpleLight: "#A855F7",
   purpleDim: "#6D48E5",
-  success: "#22C55E",
+  success: "#34D399",
+  planet: "#1B1C20",
+  planetShadow: "#090A0D",
+  planetHi: "#3A3B40",
+  platform: "#15161A",
+  chartGrid: "#242833",
+  glass: "rgba(255,255,255,0.03)",
 };
 
 export function NexusCinematicHero() {
