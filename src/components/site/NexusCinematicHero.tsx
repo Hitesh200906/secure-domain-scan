@@ -330,7 +330,7 @@ function MiniChart() {
           <stop offset="100%" stopColor={T.purple} stopOpacity="0" />
         </linearGradient>
         <pattern id="grid" width="22" height="18" patternUnits="userSpaceOnUse">
-          <path d="M 22 0 L 0 0 0 18" fill="none" stroke="rgba(139,92,246,0.08)" strokeWidth="0.5" />
+          <path d="M 22 0 L 0 0 0 18" fill="none" stroke="#242833" strokeWidth="0.5" />
         </pattern>
       </defs>
       <rect width="220" height="90" fill="url(#grid)" />
