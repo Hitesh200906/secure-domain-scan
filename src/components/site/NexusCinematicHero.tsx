@@ -16,18 +16,27 @@ import { useAppMode } from "@/lib/app-mode";
 
 /* ---------- Design tokens (scoped to hero) ---------- */
 const T = {
-  bg: "#050507",
-  bg2: "#0B0B10",
-  card: "#101017",
-  cardHi: "#16161F",
-  border: "rgba(255,255,255,0.08)",
-  borderHi: "rgba(255,255,255,0.12)",
-  text: "#F5F6FA",
-  text2: "#A0A3AD",
-  text3: "#6B6E78",
+  bg: "#05060A",
+  bg2: "#0A0C12",
+  card: "#111216",
+  cardHi: "#17191F",
+  border: "#2A2D36",
+  borderHi: "#4A3B8C",
+  text: "#F8FAFC",
+  text2: "#B6BAC6",
+  text3: "#8B90A0",
+  primary: "#4F6BFF",
+  primaryHi: "#6281FF",
   purple: "#8B5CF6",
+  purpleLight: "#A855F7",
   purpleDim: "#6D48E5",
-  success: "#22C55E",
+  success: "#34D399",
+  planet: "#1B1C20",
+  planetShadow: "#090A0D",
+  planetHi: "#3A3B40",
+  platform: "#15161A",
+  chartGrid: "#242833",
+  glass: "rgba(255,255,255,0.03)",
 };
 
 export function NexusCinematicHero() {
@@ -38,28 +47,21 @@ export function NexusCinematicHero() {
       className="relative w-full overflow-hidden"
       style={{ background: T.bg }}
     >
-      {/* Ambient background */}
+      {/* Ambient background glows */}
       <div aria-hidden className="absolute inset-0 pointer-events-none">
         <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(70% 55% at 75% 45%, rgba(139,92,246,0.10) 0%, rgba(109,72,229,0.04) 45%, rgba(0,0,0,0) 80%)",
-          }}
+          className="absolute -top-40 -right-40 w-[520px] h-[520px] rounded-full"
+          style={{ background: T.primary, opacity: 0.12, filter: "blur(120px)" }}
         />
-        {/* tiny star dots */}
         <div
-          className="absolute inset-0 opacity-[0.5]"
-          style={{
-            backgroundImage:
-              "radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.35), transparent 50%), radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,0.25), transparent 50%), radial-gradient(1px 1px at 85% 60%, rgba(139,92,246,0.4), transparent 50%), radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,0.2), transparent 50%), radial-gradient(1px 1px at 55% 15%, rgba(255,255,255,0.3), transparent 50%)",
-          }}
+          className="absolute -bottom-40 -left-40 w-[560px] h-[560px] rounded-full"
+          style={{ background: T.purple, opacity: 0.10, filter: "blur(150px)" }}
         />
         <div
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(120% 80% at 50% 50%, transparent 60%, rgba(0,0,0,0.7) 100%)",
+              "radial-gradient(120% 80% at 50% 50%, transparent 65%, rgba(0,0,0,0.6) 100%)",
           }}
         />
       </div>
@@ -142,9 +144,11 @@ function HeroCopy({ onNexefy, onSecurity }: { onNexefy: () => void; onSecurity: 
           onClick={onNexefy}
           className="group inline-flex items-center gap-2 rounded-2xl px-6 py-3.5 text-[15px] font-medium text-white transition-all duration-200 hover:-translate-y-0.5"
           style={{
-            background: `linear-gradient(135deg, ${T.purple} 0%, ${T.purpleDim} 100%)`,
-            boxShadow: "0 12px 32px -12px rgba(139,92,246,0.6)",
+            background: T.primary,
+            boxShadow: "0 12px 32px -12px rgba(79,107,255,0.6)",
           }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = T.primaryHi)}
+          onMouseLeave={(e) => (e.currentTarget.style.background = T.primary)}
         >
           <Sparkles className="size-4" />
           Switch to Nexefy
@@ -155,12 +159,12 @@ function HeroCopy({ onNexefy, onSecurity }: { onNexefy: () => void; onSecurity: 
           onClick={onSecurity}
           className="inline-flex items-center gap-2 rounded-2xl px-6 py-3.5 text-[15px] font-medium transition-all duration-200"
           style={{
-            background: T.card,
-            border: `1px solid ${T.border}`,
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.08)",
             color: T.text,
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.borderColor = T.purple)}
-          onMouseLeave={(e) => (e.currentTarget.style.borderColor = T.border)}
+          onMouseEnter={(e) => (e.currentTarget.style.borderColor = T.borderHi)}
+          onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")}
         >
           <ShieldCheck className="size-4" style={{ color: T.text2 }} />
           Switch to Nexefy Security
@@ -326,7 +330,7 @@ function MiniChart() {
           <stop offset="100%" stopColor={T.purple} stopOpacity="0" />
         </linearGradient>
         <pattern id="grid" width="22" height="18" patternUnits="userSpaceOnUse">
-          <path d="M 22 0 L 0 0 0 18" fill="none" stroke="rgba(139,92,246,0.08)" strokeWidth="0.5" />
+          <path d="M 22 0 L 0 0 0 18" fill="none" stroke="#242833" strokeWidth="0.5" />
         </pattern>
       </defs>
       <rect width="220" height="90" fill="url(#grid)" />
@@ -356,7 +360,7 @@ function SpherePodium() {
         className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[320px] h-[54px] rounded-[50%]"
         style={{
           background:
-            "radial-gradient(closest-side, #1a1a22 0%, #0d0d12 70%, transparent 100%)",
+            "radial-gradient(closest-side, #15161A 0%, #090A0D 70%, transparent 100%)",
           boxShadow: "0 30px 60px -20px rgba(0,0,0,0.8)",
         }}
       />
@@ -364,7 +368,7 @@ function SpherePodium() {
         className="absolute bottom-[10px] left-1/2 -translate-x-1/2 w-[260px] h-[30px] rounded-[50%]"
         style={{
           background:
-            "radial-gradient(closest-side, #22222c 0%, #14141a 70%, transparent 100%)",
+            "radial-gradient(closest-side, #1B1C20 0%, #0A0B0E 70%, transparent 100%)",
         }}
       />
 
@@ -380,9 +384,9 @@ function SpherePodium() {
             className="absolute inset-0 rounded-full"
             style={{
               background:
-                "radial-gradient(circle at 35% 30%, #2a2a34 0%, #16161c 40%, #08080b 80%)",
+                "radial-gradient(circle at 35% 30%, #3A3B40 0%, #1B1C20 45%, #090A0D 85%)",
               boxShadow:
-                "inset -20px -30px 60px rgba(0,0,0,0.9), inset 15px 15px 40px rgba(139,92,246,0.05), 0 30px 60px -20px rgba(0,0,0,0.9)",
+                "inset -20px -30px 60px rgba(0,0,0,0.9), inset 15px 15px 40px rgba(79,107,255,0.05), 0 30px 60px -20px rgba(0,0,0,0.9)",
             }}
           />
           {/* subtle rim highlight */}
@@ -398,7 +402,7 @@ function SpherePodium() {
           <div
             className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[240px] h-[70px] rounded-[50%] pointer-events-none"
             style={{
-              border: "1.5px solid rgba(180,180,200,0.35)",
+              border: "1.5px solid rgba(182,186,198,0.35)",
               transform: "translate(-50%,-50%) rotate(-14deg)",
               boxShadow: "0 0 20px rgba(139,92,246,0.15)",
             }}
@@ -407,7 +411,7 @@ function SpherePodium() {
           <div
             className="absolute w-3 h-3 rounded-full"
             style={{
-              background: "#2a2a34",
+              background: T.planetHi,
               border: "1px solid rgba(255,255,255,0.2)",
               left: "-14px",
               top: "58%",
@@ -417,7 +421,7 @@ function SpherePodium() {
           <div
             className="absolute w-3 h-3 rounded-full"
             style={{
-              background: "#2a2a34",
+              background: T.planetHi,
               border: "1px solid rgba(255,255,255,0.2)",
               right: "-10px",
               top: "38%",
