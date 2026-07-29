@@ -360,7 +360,7 @@ function SpherePodium() {
         className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[320px] h-[54px] rounded-[50%]"
         style={{
           background:
-            "radial-gradient(closest-side, #1a1a22 0%, #0d0d12 70%, transparent 100%)",
+            "radial-gradient(closest-side, #15161A 0%, #090A0D 70%, transparent 100%)",
           boxShadow: "0 30px 60px -20px rgba(0,0,0,0.8)",
         }}
       />
@@ -368,7 +368,7 @@ function SpherePodium() {
         className="absolute bottom-[10px] left-1/2 -translate-x-1/2 w-[260px] h-[30px] rounded-[50%]"
         style={{
           background:
-            "radial-gradient(closest-side, #22222c 0%, #14141a 70%, transparent 100%)",
+            "radial-gradient(closest-side, #1B1C20 0%, #0A0B0E 70%, transparent 100%)",
         }}
       />
 
@@ -384,9 +384,9 @@ function SpherePodium() {
             className="absolute inset-0 rounded-full"
             style={{
               background:
-                "radial-gradient(circle at 35% 30%, #2a2a34 0%, #16161c 40%, #08080b 80%)",
+                "radial-gradient(circle at 35% 30%, #3A3B40 0%, #1B1C20 45%, #090A0D 85%)",
               boxShadow:
-                "inset -20px -30px 60px rgba(0,0,0,0.9), inset 15px 15px 40px rgba(139,92,246,0.05), 0 30px 60px -20px rgba(0,0,0,0.9)",
+                "inset -20px -30px 60px rgba(0,0,0,0.9), inset 15px 15px 40px rgba(79,107,255,0.05), 0 30px 60px -20px rgba(0,0,0,0.9)",
             }}
           />
           {/* subtle rim highlight */}
@@ -402,7 +402,7 @@ function SpherePodium() {
           <div
             className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[240px] h-[70px] rounded-[50%] pointer-events-none"
             style={{
-              border: "1.5px solid rgba(180,180,200,0.35)",
+              border: "1.5px solid rgba(182,186,198,0.35)",
               transform: "translate(-50%,-50%) rotate(-14deg)",
               boxShadow: "0 0 20px rgba(139,92,246,0.15)",
             }}
@@ -411,7 +411,7 @@ function SpherePodium() {
           <div
             className="absolute w-3 h-3 rounded-full"
             style={{
-              background: "#2a2a34",
+              background: T.planetHi,
               border: "1px solid rgba(255,255,255,0.2)",
               left: "-14px",
               top: "58%",
@@ -421,7 +421,7 @@ function SpherePodium() {
           <div
             className="absolute w-3 h-3 rounded-full"
             style={{
-              background: "#2a2a34",
+              background: T.planetHi,
               border: "1px solid rgba(255,255,255,0.2)",
               right: "-10px",
               top: "38%",
