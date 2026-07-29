@@ -1,503 +1,291 @@
 import { motion } from "framer-motion";
+import type { LucideIcon } from "lucide-react";
 import {
-  ShoppingCart,
+  ShoppingBag,
   Users,
-  Shield,
+  ShieldCheck,
   BarChart3,
   ArrowUpRight,
-  ShieldCheck,
   Sparkles,
-  Store,
   Zap,
   Globe,
-  Layers,
+  Store,
 } from "lucide-react";
 import { useAppMode } from "@/lib/app-mode";
 
-/* ---------- Design tokens (scoped to hero) ---------- */
+/* ---------- Design tokens ---------- */
 const T = {
   bg: "#05060A",
   bg2: "#0A0C12",
-  card: "#111216",
-  cardHi: "#17191F",
-  border: "#2A2D36",
-  borderHi: "#4A3B8C",
-  text: "#F8FAFC",
-  text2: "#B6BAC6",
-  text3: "#8B90A0",
-  primary: "#4F6BFF",
-  primaryHi: "#6281FF",
-  purple: "#8B5CF6",
-  purpleLight: "#A855F7",
-  purpleDim: "#6D48E5",
-  success: "#34D399",
-  planet: "#1B1C20",
-  planetShadow: "#090A0D",
-  planetHi: "#3A3B40",
-  platform: "#15161A",
-  chartGrid: "#242833",
-  glass: "rgba(255,255,255,0.03)",
+  card: "#0E1016",
+  cardHi: "#14171F",
+  border: "#1F232D",
+  borderHi: "#2A2F3B",
+  text: "#F5F7FA",
+  text2: "#A8ADBB",
+  text3: "#6B7080",
+  // Muted accent colors (used sparingly, one per card)
+  accentBlue: "#3B82F6",
+  accentViolet: "#8B5CF6",
+  accentEmerald: "#10B981",
+  accentAmber: "#F59E0B",
+  accentRose: "#F43F5E",
 };
 
 export function NexusCinematicHero() {
   const { setMode } = useAppMode();
 
   return (
-    <section
-      className="relative w-full overflow-hidden"
-      style={{ background: T.bg }}
-    >
-      {/* Ambient background glows */}
+    <section className="relative w-full overflow-hidden" style={{ background: T.bg }}>
+      {/* Ambient background */}
       <div aria-hidden className="absolute inset-0 pointer-events-none">
         <div
           className="absolute -top-40 -right-40 w-[520px] h-[520px] rounded-full"
-          style={{ background: T.primary, opacity: 0.12, filter: "blur(120px)" }}
+          style={{ background: T.accentBlue, opacity: 0.08, filter: "blur(140px)" }}
         />
         <div
           className="absolute -bottom-40 -left-40 w-[560px] h-[560px] rounded-full"
-          style={{ background: T.purple, opacity: 0.10, filter: "blur(150px)" }}
+          style={{ background: T.accentViolet, opacity: 0.07, filter: "blur(150px)" }}
         />
+        {/* subtle grid */}
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 opacity-[0.035]"
           style={{
-            background:
-              "radial-gradient(120% 80% at 50% 50%, transparent 65%, rgba(0,0,0,0.6) 100%)",
+            backgroundImage:
+              "linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px)",
+            backgroundSize: "56px 56px",
+            maskImage:
+              "radial-gradient(ellipse at center, black 40%, transparent 80%)",
           }}
         />
       </div>
 
-      <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-24 sm:pt-28 pb-16 sm:pb-20">
-        <div className="grid lg:grid-cols-[42%_58%] gap-12 lg:gap-8 items-center min-h-[640px]">
-          <HeroCopy onNexefy={() => setMode("nexus")} onSecurity={() => setMode("security")} />
-          <div className="relative w-full">
-            <OrbitalScene />
-          </div>
+      <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-24 sm:pt-28 pb-20">
+        {/* ---------- Copy block ---------- */}
+        <div className="mx-auto max-w-3xl text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[11px] uppercase tracking-[0.2em]"
+            style={{
+              background: T.card,
+              border: `1px solid ${T.border}`,
+              color: T.text2,
+            }}
+          >
+            <span
+              className="inline-block h-1.5 w-1.5 rounded-full"
+              style={{ background: T.accentBlue, boxShadow: `0 0 10px ${T.accentBlue}` }}
+            />
+            All-in-One Business Platform
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.08 }}
+            className="mt-7 font-semibold tracking-[-0.05em] leading-[0.9] text-[64px] sm:text-[92px] lg:text-[112px]"
+            style={{ color: T.text }}
+          >
+            NEXEFY
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="mt-5 mx-auto max-w-xl text-[15px] sm:text-[17px] leading-relaxed"
+            style={{ color: T.text2 }}
+          >
+            The operating system for modern internet business.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.32 }}
+            className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3"
+          >
+            <button
+              onClick={() => setMode("nexus")}
+              className="group inline-flex items-center gap-2 rounded-2xl px-6 py-3.5 text-[14px] font-medium text-white transition-all duration-200 hover:-translate-y-0.5"
+              style={{
+                background: `linear-gradient(180deg, ${T.accentBlue} 0%, #2857D6 100%)`,
+                boxShadow: `0 12px 32px -12px ${T.accentBlue}80`,
+              }}
+            >
+              <Sparkles className="size-4" />
+              Switch to Nexefy
+              <ArrowUpRight className="size-4 opacity-80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </button>
+
+            <button
+              onClick={() => setMode("security")}
+              className="inline-flex items-center gap-2 rounded-2xl px-6 py-3.5 text-[14px] font-medium transition-all duration-200"
+              style={{
+                background: T.card,
+                border: `1px solid ${T.border}`,
+                color: T.text,
+              }}
+            >
+              <ShieldCheck className="size-4" style={{ color: T.accentEmerald }} />
+              Switch to Nexefy Security
+            </button>
+          </motion.div>
         </div>
 
-        {/* Bottom feature cards */}
-        <BottomFeatures />
+        {/* ---------- 3D object cards ---------- */}
+        <div className="mt-20 sm:mt-24 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <Object3DCard
+            index={0}
+            icon={ShoppingBag}
+            title="Marketplace"
+            desc="Launch branded storefronts."
+            accent={T.accentBlue}
+          />
+          <Object3DCard
+            index={1}
+            icon={Users}
+            title="Communities"
+            desc="Chats, forums & memberships."
+            accent={T.accentViolet}
+          />
+          <Object3DCard
+            index={2}
+            icon={ShieldCheck}
+            title="Security"
+            desc="AI-powered protection."
+            accent={T.accentEmerald}
+          />
+          <Object3DCard
+            index={3}
+            icon={BarChart3}
+            title="Analytics"
+            desc="Real-time revenue insights."
+            accent={T.accentAmber}
+          />
+        </div>
+
+        {/* ---------- Bottom feature strip ---------- */}
+        <div className="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.25em]"
+          style={{ color: T.text3 }}>
+          <span className="inline-flex items-center gap-2"><Store className="size-3.5" /> 12k+ Stores</span>
+          <span>·</span>
+          <span className="inline-flex items-center gap-2"><Zap className="size-3.5" /> 99.99% Uptime</span>
+          <span>·</span>
+          <span className="inline-flex items-center gap-2"><Globe className="size-3.5" /> 140 Countries</span>
+        </div>
       </div>
     </section>
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* LEFT SIDE                                                           */
-/* ------------------------------------------------------------------ */
-function HeroCopy({ onNexefy, onSecurity }: { onNexefy: () => void; onSecurity: () => void }) {
-  return (
-    <div className="relative">
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[12px]"
-        style={{ background: T.card, border: `1px solid ${T.border}`, color: T.text2 }}
-      >
-        <span
-          className="inline-block h-1.5 w-1.5 rounded-full"
-          style={{ background: T.purple, boxShadow: `0 0 10px ${T.purple}` }}
-        />
-        All-in-One Business Platform
-      </motion.div>
-
-      <motion.h1
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.08 }}
-        className="mt-8 font-semibold tracking-[-0.05em] leading-[0.92] text-[64px] sm:text-[84px] lg:text-[96px]"
-        style={{ color: T.text }}
-      >
-        <span className="block">Build.</span>
-        <span className="block">Sell.</span>
-        <span
-          className="block"
-          style={{
-            background: `linear-gradient(180deg, #FFFFFF 0%, ${T.purple} 100%)`,
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
-        >
-          Scale.
-        </span>
-      </motion.h1>
-
-      <motion.p
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.25 }}
-        className="mt-7 max-w-[460px] text-[16px] sm:text-[17px] leading-relaxed"
-        style={{ color: T.text2 }}
-      >
-        Nexefy is the operating system for modern internet business — where
-        creators, brands and communities launch, manage and scale everything
-        from a single elegant platform.
-      </motion.p>
-
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.35 }}
-        className="mt-9 flex flex-col sm:flex-row items-start sm:items-center gap-3"
-      >
-        <button
-          onClick={onNexefy}
-          className="group inline-flex items-center gap-2 rounded-2xl px-6 py-3.5 text-[15px] font-medium text-white transition-all duration-200 hover:-translate-y-0.5"
-          style={{
-            background: T.primary,
-            boxShadow: "0 12px 32px -12px rgba(79,107,255,0.6)",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = T.primaryHi)}
-          onMouseLeave={(e) => (e.currentTarget.style.background = T.primary)}
-        >
-          <Sparkles className="size-4" />
-          Switch to Nexefy
-          <ArrowUpRight className="size-4 opacity-80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-        </button>
-
-        <button
-          onClick={onSecurity}
-          className="inline-flex items-center gap-2 rounded-2xl px-6 py-3.5 text-[15px] font-medium transition-all duration-200"
-          style={{
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            color: T.text,
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.borderColor = T.borderHi)}
-          onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")}
-        >
-          <ShieldCheck className="size-4" style={{ color: T.text2 }} />
-          Switch to Nexefy Security
-        </button>
-      </motion.div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* RIGHT — Orbital scene with sphere + floating cards                  */
-/* ------------------------------------------------------------------ */
-function OrbitalScene() {
-  return (
-    <div className="relative w-full h-[560px] sm:h-[620px] lg:h-[660px]">
-      {/* Ambient purple glow */}
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(45% 40% at 55% 60%, rgba(139,92,246,0.14) 0%, transparent 70%)",
-          filter: "blur(20px)",
-        }}
-      />
-
-      {/* Faint orbit ellipses behind everything */}
-      <svg
-        aria-hidden
-        className="absolute inset-0 w-full h-full"
-        viewBox="0 0 800 660"
-        preserveAspectRatio="none"
-      >
-        <ellipse cx="400" cy="340" rx="360" ry="80" stroke="rgba(139,92,246,0.14)" strokeWidth="1" fill="none" />
-        <ellipse cx="400" cy="360" rx="300" ry="55" stroke="rgba(139,92,246,0.10)" strokeWidth="1" fill="none" />
-      </svg>
-
-      {/* Corner icon tiles */}
-      <FloatTile
-        className="absolute left-[4%] top-[8%]"
-        icon={<ShoppingCart className="size-8" style={{ color: T.purple }} strokeWidth={1.75} />}
-        label="Marketplace"
-        delay={0}
-      />
-      <FloatTile
-        className="absolute right-[4%] top-[10%]"
-        icon={<Shield className="size-8" style={{ color: T.purple }} strokeWidth={1.75} />}
-        label="Security"
-        delay={0.5}
-      />
-      <FloatTile
-        className="absolute left-[6%] bottom-[22%]"
-        icon={<Users className="size-8" style={{ color: T.purple }} strokeWidth={1.75} />}
-        label="Communities"
-        delay={1}
-      />
-      <FloatTile
-        className="absolute right-[6%] bottom-[18%]"
-        icon={<BarChart3 className="size-8" style={{ color: T.purple }} strokeWidth={1.75} />}
-        label="Analytics"
-        delay={1.5}
-      />
-
-      {/* Center revenue panel */}
-      <RevenuePanel />
-
-      {/* Sphere with orbit + podium */}
-      <SpherePodium />
-    </div>
-  );
-}
-
-/* ---------- Floating corner tile ---------- */
-function FloatTile({
-  className,
-  icon,
-  label,
-  delay = 0,
+/* ---------- 3D-style object card ---------- */
+function Object3DCard({
+  index,
+  icon: Icon,
+  title,
+  desc,
+  accent,
 }: {
-  className?: string;
-  icon: React.ReactNode;
-  label: string;
-  delay?: number;
+  index: number;
+  icon: LucideIcon;
+  title: string;
+  desc: string;
+  accent: string;
 }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: [0, -6, 0] }}
-      transition={{
-        opacity: { duration: 0.8, delay: 0.2 + delay * 0.15 },
-        y: { duration: 6 + delay, repeat: Infinity, ease: "easeInOut", delay },
-      }}
-      className={className}
-    >
-      <div
-        className="flex flex-col items-center justify-center gap-3 w-[130px] h-[130px] rounded-[22px]"
-        style={{
-          background: `linear-gradient(160deg, ${T.card} 0%, ${T.bg2} 100%)`,
-          border: `1px solid ${T.border}`,
-          boxShadow:
-            "0 20px 50px -20px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.04)",
-        }}
-      >
-        {icon}
-        <span className="text-[13px]" style={{ color: T.text }}>
-          {label}
-        </span>
-      </div>
-    </motion.div>
-  );
-}
-
-/* ---------- Revenue panel (center top) ---------- */
-function RevenuePanel() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 14 }}
-      animate={{ opacity: 1, y: [0, -4, 0] }}
-      transition={{
-        opacity: { duration: 0.9, delay: 0.3 },
-        y: { duration: 8, repeat: Infinity, ease: "easeInOut" },
-      }}
-      className="absolute left-1/2 top-[6%] -translate-x-1/2 w-[62%] max-w-[440px]"
-    >
-      <div
-        className="rounded-[20px] px-5 py-4"
-        style={{
-          background: `linear-gradient(160deg, rgba(20,20,28,0.9) 0%, rgba(12,12,18,0.9) 100%)`,
-          border: `1px solid ${T.border}`,
-          backdropFilter: "blur(12px)",
-          boxShadow:
-            "0 30px 60px -25px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05)",
-        }}
-      >
-        {/* Logo mark */}
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="mb-3">
-          <path d="M4 20 L4 4 L12 14 L20 4 L20 20" stroke={T.purple} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-
-        <div className="grid grid-cols-[auto_1fr] gap-4 items-end">
-          <div>
-            <div className="text-[12px]" style={{ color: T.text2 }}>Total Revenue</div>
-            <div className="mt-1 text-[26px] font-semibold" style={{ color: T.text }}>
-              $28,450
-            </div>
-            <div className="mt-1 inline-flex items-center gap-1 text-[11px]" style={{ color: T.success }}>
-              <span>↑ 12.5%</span>
-            </div>
-          </div>
-          <MiniChart />
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-function MiniChart() {
-  return (
-    <svg viewBox="0 0 220 90" className="w-full h-[80px]" preserveAspectRatio="none">
-      <defs>
-        <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={T.purple} stopOpacity="0.35" />
-          <stop offset="100%" stopColor={T.purple} stopOpacity="0" />
-        </linearGradient>
-        <pattern id="grid" width="22" height="18" patternUnits="userSpaceOnUse">
-          <path d="M 22 0 L 0 0 0 18" fill="none" stroke="#242833" strokeWidth="0.5" />
-        </pattern>
-      </defs>
-      <rect width="220" height="90" fill="url(#grid)" />
-      <path
-        d="M0,70 L20,62 L40,66 L60,54 L80,58 L100,44 L120,48 L140,34 L160,38 L180,24 L200,18 L220,8"
-        fill="none"
-        stroke={T.purple}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M0,70 L20,62 L40,66 L60,54 L80,58 L100,44 L120,48 L140,34 L160,38 L180,24 L200,18 L220,8 L220,90 L0,90 Z"
-        fill="url(#chartFill)"
-      />
-      <circle cx="220" cy="8" r="3" fill={T.purple} />
-    </svg>
-  );
-}
-
-/* ---------- Sphere + orbit ring on podium ---------- */
-function SpherePodium() {
-  return (
-    <div className="absolute left-1/2 bottom-[6%] -translate-x-1/2 w-[360px] h-[280px]">
-      {/* Podium */}
-      <div
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[320px] h-[54px] rounded-[50%]"
-        style={{
-          background:
-            "radial-gradient(closest-side, #15161A 0%, #090A0D 70%, transparent 100%)",
-          boxShadow: "0 30px 60px -20px rgba(0,0,0,0.8)",
-        }}
-      />
-      <div
-        className="absolute bottom-[10px] left-1/2 -translate-x-1/2 w-[260px] h-[30px] rounded-[50%]"
-        style={{
-          background:
-            "radial-gradient(closest-side, #1B1C20 0%, #0A0B0E 70%, transparent 100%)",
-        }}
-      />
-
-      {/* Sphere */}
-      <motion.div
-        animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute left-1/2 bottom-[42px] -translate-x-1/2"
-      >
-        <div className="relative w-[180px] h-[180px]">
-          {/* sphere */}
-          <div
-            className="absolute inset-0 rounded-full"
-            style={{
-              background:
-                "radial-gradient(circle at 35% 30%, #3A3B40 0%, #1B1C20 45%, #090A0D 85%)",
-              boxShadow:
-                "inset -20px -30px 60px rgba(0,0,0,0.9), inset 15px 15px 40px rgba(79,107,255,0.05), 0 30px 60px -20px rgba(0,0,0,0.9)",
-            }}
-          />
-          {/* subtle rim highlight */}
-          <div
-            className="absolute inset-0 rounded-full pointer-events-none"
-            style={{
-              background:
-                "radial-gradient(circle at 30% 25%, rgba(255,255,255,0.06) 0%, transparent 30%)",
-            }}
-          />
-
-          {/* Orbit ring around sphere */}
-          <div
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[240px] h-[70px] rounded-[50%] pointer-events-none"
-            style={{
-              border: "1.5px solid rgba(182,186,198,0.35)",
-              transform: "translate(-50%,-50%) rotate(-14deg)",
-              boxShadow: "0 0 20px rgba(139,92,246,0.15)",
-            }}
-          />
-          {/* orbit satellites */}
-          <div
-            className="absolute w-3 h-3 rounded-full"
-            style={{
-              background: T.planetHi,
-              border: "1px solid rgba(255,255,255,0.2)",
-              left: "-14px",
-              top: "58%",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.6)",
-            }}
-          />
-          <div
-            className="absolute w-3 h-3 rounded-full"
-            style={{
-              background: T.planetHi,
-              border: "1px solid rgba(255,255,255,0.2)",
-              right: "-10px",
-              top: "38%",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.6)",
-            }}
-          />
-        </div>
-      </motion.div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* BOTTOM feature cards                                                */
-/* ------------------------------------------------------------------ */
-function BottomFeatures() {
-  const items = [
-    {
-      icon: Store,
-      title: "Launch a Store",
-      desc: "Set up branded storefronts in minutes with products, payments and payouts.",
-    },
-    {
-      icon: Users,
-      title: "Grow Communities",
-      desc: "Chats, forums, memberships and events — everything in one place.",
-    },
-    {
-      icon: Zap,
-      title: "Automate Workflows",
-      desc: "Powerful automations connect your store, community and analytics.",
-    },
-    {
-      icon: Globe,
-      title: "Scale Globally",
-      desc: "Multi-currency, global CDN and enterprise-grade infrastructure.",
-    },
-  ];
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.7 }}
-      className="mt-16 sm:mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.7, delay: index * 0.08 }}
+      whileHover={{ y: -6 }}
+      className="group relative rounded-2xl p-6 overflow-hidden transition-colors"
+      style={{
+        background: `linear-gradient(160deg, ${T.card} 0%, ${T.bg2} 100%)`,
+        border: `1px solid ${T.border}`,
+        boxShadow:
+          "0 30px 60px -30px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.03)",
+      }}
     >
-      {items.map((it) => (
+      {/* corner accent glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-16 -right-16 w-40 h-40 rounded-full opacity-40 group-hover:opacity-60 transition-opacity"
+        style={{ background: accent, filter: "blur(60px)" }}
+      />
+
+      {/* 3D floating object (icon on stacked plates) */}
+      <div className="relative h-[130px] flex items-center justify-center">
+        {/* podium */}
         <div
-          key={it.title}
-          className="rounded-2xl p-5 transition-all duration-200 hover:-translate-y-0.5"
+          className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[140px] h-[26px] rounded-[50%]"
           style={{
-            background: `linear-gradient(160deg, ${T.card} 0%, ${T.bg2} 100%)`,
-            border: `1px solid ${T.border}`,
-            boxShadow: "0 20px 40px -25px rgba(0,0,0,0.7)",
+            background:
+              "radial-gradient(closest-side, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0) 70%)",
           }}
+        />
+        {/* rotating ring */}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
+          className="absolute w-[120px] h-[120px] rounded-full"
+          style={{
+            border: `1px dashed ${T.borderHi}`,
+            maskImage:
+              "linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%)",
+          }}
+        />
+        {/* floating cube */}
+        <motion.div
+          animate={{ y: [0, -6, 0] }}
+          transition={{
+            duration: 5 + index * 0.4,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: index * 0.3,
+          }}
+          className="relative"
         >
           <div
-            className="grid place-items-center h-10 w-10 rounded-xl"
+            className="grid place-items-center w-[72px] h-[72px] rounded-2xl"
             style={{
-              background: "rgba(139,92,246,0.10)",
-              border: "1px solid rgba(139,92,246,0.25)",
+              background: `linear-gradient(145deg, ${T.cardHi} 0%, ${T.bg} 100%)`,
+              border: `1px solid ${T.borderHi}`,
+              boxShadow: `0 18px 40px -12px ${accent}55, inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.6)`,
             }}
           >
-            <it.icon className="size-5" style={{ color: T.purple }} />
+            <Icon className="size-8" style={{ color: accent }} strokeWidth={1.6} />
           </div>
-          <div className="mt-4 text-[15px] font-semibold" style={{ color: T.text }}>
-            {it.title}
-          </div>
-          <p className="mt-1.5 text-[13px] leading-relaxed" style={{ color: T.text2 }}>
-            {it.desc}
-          </p>
+          {/* rim highlight */}
+          <div
+            className="absolute inset-0 rounded-2xl pointer-events-none"
+            style={{
+              background:
+                "linear-gradient(160deg, rgba(255,255,255,0.08) 0%, transparent 40%)",
+            }}
+          />
+        </motion.div>
+      </div>
+
+      <div className="mt-5">
+        <div className="text-[15px] font-semibold" style={{ color: T.text }}>
+          {title}
         </div>
-      ))}
+        <p className="mt-1.5 text-[13px] leading-relaxed" style={{ color: T.text2 }}>
+          {desc}
+        </p>
+      </div>
+
+      {/* bottom accent line */}
+      <div
+        className="mt-5 h-px w-full opacity-40"
+        style={{
+          background: `linear-gradient(90deg, transparent 0%, ${accent} 50%, transparent 100%)`,
+        }}
+      />
     </motion.div>
   );
 }
-
-// Keep referenced symbol to prevent tree-shake surprises in dev
-void Layers;
