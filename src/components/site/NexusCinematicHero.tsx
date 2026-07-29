@@ -47,28 +47,21 @@ export function NexusCinematicHero() {
       className="relative w-full overflow-hidden"
       style={{ background: T.bg }}
     >
-      {/* Ambient background */}
+      {/* Ambient background glows */}
       <div aria-hidden className="absolute inset-0 pointer-events-none">
         <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(70% 55% at 75% 45%, rgba(139,92,246,0.10) 0%, rgba(109,72,229,0.04) 45%, rgba(0,0,0,0) 80%)",
-          }}
+          className="absolute -top-40 -right-40 w-[520px] h-[520px] rounded-full"
+          style={{ background: T.primary, opacity: 0.12, filter: "blur(120px)" }}
         />
-        {/* tiny star dots */}
         <div
-          className="absolute inset-0 opacity-[0.5]"
-          style={{
-            backgroundImage:
-              "radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.35), transparent 50%), radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,0.25), transparent 50%), radial-gradient(1px 1px at 85% 60%, rgba(139,92,246,0.4), transparent 50%), radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,0.2), transparent 50%), radial-gradient(1px 1px at 55% 15%, rgba(255,255,255,0.3), transparent 50%)",
-          }}
+          className="absolute -bottom-40 -left-40 w-[560px] h-[560px] rounded-full"
+          style={{ background: T.purple, opacity: 0.10, filter: "blur(150px)" }}
         />
         <div
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(120% 80% at 50% 50%, transparent 60%, rgba(0,0,0,0.7) 100%)",
+              "radial-gradient(120% 80% at 50% 50%, transparent 65%, rgba(0,0,0,0.6) 100%)",
           }}
         />
       </div>
