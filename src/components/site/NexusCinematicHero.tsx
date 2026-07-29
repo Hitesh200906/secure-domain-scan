@@ -190,7 +190,7 @@ function Object3DCard({
   accent,
 }: {
   index: number;
-  icon: React.ElementType;
+  icon: LucideIcon;
   title: string;
   desc: string;
   accent: string;
