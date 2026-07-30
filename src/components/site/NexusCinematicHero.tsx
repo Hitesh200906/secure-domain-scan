@@ -12,6 +12,11 @@ import {
   Store,
 } from "lucide-react";
 import { useAppMode } from "@/lib/app-mode";
+import heroLoop from "@/assets/hero-loop.mp4.asset.json";
+import imgMarketplace from "@/assets/card-marketplace.jpg";
+import imgCommunities from "@/assets/card-communities.jpg";
+import imgSecurity from "@/assets/card-security.jpg";
+import imgAnalytics from "@/assets/card-analytics.jpg";
 
 /* ---------- Design tokens ---------- */
 const T = {
@@ -37,8 +42,30 @@ export function NexusCinematicHero() {
 
   return (
     <section className="relative w-full overflow-hidden" style={{ background: T.bg }}>
+      {/* Background video */}
+      <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
+        <video
+          src={heroLoop.url}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ opacity: 0.45, filter: "blur(2px) brightness(0.7) saturate(1.05)" }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              `radial-gradient(ellipse 70% 60% at 50% 40%, rgba(5,6,10,0.45) 0%, ${T.bg} 85%)`,
+          }}
+        />
+      </div>
+
       {/* Ambient background */}
       <div aria-hidden className="absolute inset-0 pointer-events-none">
+
         <div
           className="absolute -top-40 -right-40 w-[520px] h-[520px] rounded-full"
           style={{ background: T.accentBlue, opacity: 0.08, filter: "blur(140px)" }}
@@ -136,10 +163,14 @@ export function NexusCinematicHero() {
         </div>
 
         {/* ---------- 3D object cards ---------- */}
-        <div className="mt-20 sm:mt-24 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div
+          className="mt-20 sm:mt-24 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+          style={{ perspective: "1400px" }}
+        >
           <Object3DCard
             index={0}
             icon={ShoppingBag}
+            image={imgMarketplace}
             title="Marketplace"
             desc="Launch branded storefronts."
             accent={T.accentBlue}
@@ -147,6 +178,7 @@ export function NexusCinematicHero() {
           <Object3DCard
             index={1}
             icon={Users}
+            image={imgCommunities}
             title="Communities"
             desc="Chats, forums & memberships."
             accent={T.accentViolet}
@@ -154,6 +186,7 @@ export function NexusCinematicHero() {
           <Object3DCard
             index={2}
             icon={ShieldCheck}
+            image={imgSecurity}
             title="Security"
             desc="AI-powered protection."
             accent={T.accentEmerald}
@@ -161,11 +194,13 @@ export function NexusCinematicHero() {
           <Object3DCard
             index={3}
             icon={BarChart3}
+            image={imgAnalytics}
             title="Analytics"
             desc="Real-time revenue insights."
             accent={T.accentAmber}
           />
         </div>
+
 
         {/* ---------- Bottom feature strip ---------- */}
         <div className="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.25em]"
@@ -185,107 +220,108 @@ export function NexusCinematicHero() {
 function Object3DCard({
   index,
   icon: Icon,
+  image,
   title,
   desc,
   accent,
 }: {
   index: number;
   icon: LucideIcon;
+  image: string;
   title: string;
   desc: string;
   accent: string;
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 24, rotateX: 10 }}
+      whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.7, delay: index * 0.08 }}
-      whileHover={{ y: -6 }}
-      className="group relative rounded-2xl p-6 overflow-hidden transition-colors"
+      whileHover={{ y: -10, rotateX: 6, rotateY: -6, scale: 1.02 }}
+      className="group relative rounded-2xl overflow-hidden"
       style={{
+        transformStyle: "preserve-3d",
         background: `linear-gradient(160deg, ${T.card} 0%, ${T.bg2} 100%)`,
         border: `1px solid ${T.border}`,
-        boxShadow:
-          "0 30px 60px -30px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.03)",
+        boxShadow: `0 40px 80px -40px rgba(0,0,0,0.95), 0 0 0 1px rgba(255,255,255,0.02), inset 0 1px 0 rgba(255,255,255,0.05)`,
       }}
     >
       {/* corner accent glow */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-16 -right-16 w-40 h-40 rounded-full opacity-40 group-hover:opacity-60 transition-opacity"
+        className="pointer-events-none absolute -top-16 -right-16 w-40 h-40 rounded-full opacity-40 group-hover:opacity-70 transition-opacity"
         style={{ background: accent, filter: "blur(60px)" }}
       />
 
-      {/* 3D floating object (icon on stacked plates) */}
-      <div className="relative h-[130px] flex items-center justify-center">
-        {/* podium */}
-        <div
-          className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[140px] h-[26px] rounded-[50%]"
-          style={{
-            background:
-              "radial-gradient(closest-side, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0) 70%)",
-          }}
-        />
-        {/* rotating ring */}
+      {/* 3D image plate */}
+      <div className="relative m-3 rounded-xl overflow-hidden" style={{ transform: "translateZ(40px)" }}>
         <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
-          className="absolute w-[120px] h-[120px] rounded-full"
-          style={{
-            border: `1px dashed ${T.borderHi}`,
-            maskImage:
-              "linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%)",
-          }}
-        />
-        {/* floating cube */}
-        <motion.div
-          animate={{ y: [0, -6, 0] }}
+          animate={{ y: [0, -5, 0] }}
           transition={{
-            duration: 5 + index * 0.4,
+            duration: 6 + index * 0.5,
             repeat: Infinity,
             ease: "easeInOut",
             delay: index * 0.3,
           }}
-          className="relative"
         >
-          <div
-            className="grid place-items-center w-[72px] h-[72px] rounded-2xl"
-            style={{
-              background: `linear-gradient(145deg, ${T.cardHi} 0%, ${T.bg} 100%)`,
-              border: `1px solid ${T.borderHi}`,
-              boxShadow: `0 18px 40px -12px ${accent}55, inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.6)`,
-            }}
-          >
-            <Icon className="size-8" style={{ color: accent }} strokeWidth={1.6} />
-          </div>
-          {/* rim highlight */}
-          <div
-            className="absolute inset-0 rounded-2xl pointer-events-none"
-            style={{
-              background:
-                "linear-gradient(160deg, rgba(255,255,255,0.08) 0%, transparent 40%)",
-            }}
+          <img
+            src={image}
+            alt={`${title} 3D illustration`}
+            loading="lazy"
+            width={944}
+            height={704}
+            className="w-full h-[150px] object-cover transition-transform duration-700 group-hover:scale-105"
           />
         </motion.div>
+        {/* fade into card */}
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: `linear-gradient(180deg, rgba(5,6,10,0) 35%, ${T.card} 100%), radial-gradient(120% 90% at 50% 0%, ${accent}22 0%, transparent 60%)`,
+          }}
+        />
+        {/* glass rim */}
+        <div
+          aria-hidden
+          className="absolute inset-0 rounded-xl pointer-events-none"
+          style={{
+            border: `1px solid ${T.borderHi}`,
+            boxShadow: `inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -20px 40px -20px ${accent}44`,
+          }}
+        />
+        {/* floating icon badge */}
+        <div
+          className="absolute bottom-3 left-3 grid place-items-center w-11 h-11 rounded-xl"
+          style={{
+            transform: "translateZ(30px)",
+            background: `linear-gradient(145deg, ${T.cardHi} 0%, ${T.bg} 100%)`,
+            border: `1px solid ${T.borderHi}`,
+            boxShadow: `0 14px 30px -10px ${accent}66, inset 0 1px 0 rgba(255,255,255,0.08)`,
+          }}
+        >
+          <Icon className="size-5" style={{ color: accent }} strokeWidth={1.7} />
+        </div>
       </div>
 
-      <div className="mt-5">
+      <div className="px-6 pb-6 pt-2" style={{ transform: "translateZ(20px)" }}>
         <div className="text-[15px] font-semibold" style={{ color: T.text }}>
           {title}
         </div>
         <p className="mt-1.5 text-[13px] leading-relaxed" style={{ color: T.text2 }}>
           {desc}
         </p>
+
+        {/* bottom accent line */}
+        <div
+          className="mt-5 h-px w-full opacity-50"
+          style={{
+            background: `linear-gradient(90deg, transparent 0%, ${accent} 50%, transparent 100%)`,
+          }}
+        />
       </div>
 
-      {/* bottom accent line */}
-      <div
-        className="mt-5 h-px w-full opacity-40"
-        style={{
-          background: `linear-gradient(90deg, transparent 0%, ${accent} 50%, transparent 100%)`,
-        }}
-      />
     </motion.div>
   );
 }
