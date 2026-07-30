@@ -163,10 +163,14 @@ export function NexusCinematicHero() {
         </div>
 
         {/* ---------- 3D object cards ---------- */}
-        <div className="mt-20 sm:mt-24 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div
+          className="mt-20 sm:mt-24 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+          style={{ perspective: "1400px" }}
+        >
           <Object3DCard
             index={0}
             icon={ShoppingBag}
+            image={imgMarketplace}
             title="Marketplace"
             desc="Launch branded storefronts."
             accent={T.accentBlue}
@@ -174,6 +178,7 @@ export function NexusCinematicHero() {
           <Object3DCard
             index={1}
             icon={Users}
+            image={imgCommunities}
             title="Communities"
             desc="Chats, forums & memberships."
             accent={T.accentViolet}
@@ -181,6 +186,7 @@ export function NexusCinematicHero() {
           <Object3DCard
             index={2}
             icon={ShieldCheck}
+            image={imgSecurity}
             title="Security"
             desc="AI-powered protection."
             accent={T.accentEmerald}
@@ -188,11 +194,13 @@ export function NexusCinematicHero() {
           <Object3DCard
             index={3}
             icon={BarChart3}
+            image={imgAnalytics}
             title="Analytics"
             desc="Real-time revenue insights."
             accent={T.accentAmber}
           />
         </div>
+
 
         {/* ---------- Bottom feature strip ---------- */}
         <div className="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.25em]"
