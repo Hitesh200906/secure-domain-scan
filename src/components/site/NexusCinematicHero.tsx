@@ -17,7 +17,7 @@ const T = {
 };
 
 export function NexusCinematicHero() {
-  const { mode, setMode } = useAppMode();
+  const { setMode } = useAppMode();
 
   return (
     <section className="relative w-full overflow-hidden" style={{ background: T.bg }}>
