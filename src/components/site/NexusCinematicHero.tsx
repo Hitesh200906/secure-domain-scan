@@ -42,8 +42,30 @@ export function NexusCinematicHero() {
 
   return (
     <section className="relative w-full overflow-hidden" style={{ background: T.bg }}>
+      {/* Background video */}
+      <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
+        <video
+          src={heroLoop.url}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ opacity: 0.45, filter: "blur(2px) brightness(0.7) saturate(1.05)" }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              `radial-gradient(ellipse 70% 60% at 50% 40%, rgba(5,6,10,0.45) 0%, ${T.bg} 85%)`,
+          }}
+        />
+      </div>
+
       {/* Ambient background */}
       <div aria-hidden className="absolute inset-0 pointer-events-none">
+
         <div
           className="absolute -top-40 -right-40 w-[520px] h-[520px] rounded-full"
           style={{ background: T.accentBlue, opacity: 0.08, filter: "blur(140px)" }}
