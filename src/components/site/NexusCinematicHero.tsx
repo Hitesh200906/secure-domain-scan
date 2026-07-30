@@ -12,6 +12,11 @@ import {
   Store,
 } from "lucide-react";
 import { useAppMode } from "@/lib/app-mode";
+import heroLoop from "@/assets/hero-loop.mp4.asset.json";
+import imgMarketplace from "@/assets/card-marketplace.jpg";
+import imgCommunities from "@/assets/card-communities.jpg";
+import imgSecurity from "@/assets/card-security.jpg";
+import imgAnalytics from "@/assets/card-analytics.jpg";
 
 /* ---------- Design tokens ---------- */
 const T = {
