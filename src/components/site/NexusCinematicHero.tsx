@@ -29,11 +29,26 @@ export function NexusCinematicHero() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[11px] uppercase tracking-[0.2em]"
+              className="inline-flex items-center gap-2.5 rounded-full px-3.5 py-1.5 text-[11px] uppercase tracking-[0.2em]"
               style={{ background: "#000000", border: `1px solid ${T.border}`, color: T.text2 }}
             >
+              <span className="relative flex size-1.5">
+                <motion.span
+                  className="absolute inline-flex h-full w-full rounded-full"
+                  style={{ background: T.blue }}
+                  animate={{ scale: [1, 3.2, 1], opacity: [0.7, 0, 0.7] }}
+                  transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut" }}
+                />
+                <motion.span
+                  className="relative inline-flex size-1.5 rounded-full"
+                  style={{ background: T.blue }}
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+                />
+              </span>
               All-in-One Business Platform
             </motion.div>
+
 
             <motion.h1
               initial={{ opacity: 0, y: 14 }}
