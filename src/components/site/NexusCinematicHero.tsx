@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe, Store } from "lucide-react";
 import { useAppMode } from "@/lib/app-mode";
-import imgMarketplace from "@/assets/card-marketplace-v2.png.asset.json";
-import imgCommunities from "@/assets/card-communities-v2.png.asset.json";
-import imgSecurity from "@/assets/card-security-v2.png.asset.json";
-import imgRewards from "@/assets/card-rewards.png.asset.json";
+import imgMarketplace from "@/assets/card-marketplace-v3.png.asset.json";
+import imgCommunities from "@/assets/card-communities-v3.png.asset.json";
+import imgSecurity from "@/assets/card-security-v3.png.asset.json";
+import imgRewards from "@/assets/card-rewards-v3.png.asset.json";
 
 const T = {
   bg: "#000000",
