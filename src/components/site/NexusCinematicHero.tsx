@@ -28,20 +28,20 @@ export function NexusCinematicHero() {
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: `url(${heroDesk.url})`,
-            opacity: 0.3,
-            filter: "blur(7px) brightness(0.7)",
+            opacity: 0.85,
+            filter: "blur(5px) brightness(2.1) contrast(1.05)",
             transform: "scale(1.08)",
             WebkitMaskImage:
-              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.55) 14%, #000 40%, #000 60%, rgba(0,0,0,0.5) 86%, transparent 100%)",
+              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 12%, #000 35%, #000 65%, rgba(0,0,0,0.55) 88%, transparent 100%)",
             maskImage:
-              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.55) 14%, #000 40%, #000 60%, rgba(0,0,0,0.5) 86%, transparent 100%)",
+              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 12%, #000 35%, #000 65%, rgba(0,0,0,0.55) 88%, transparent 100%)",
           }}
         />
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.45) 22%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.6) 88%, #000 100%)",
+              "linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.35) 20%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.45) 88%, #000 100%)",
           }}
         />
       </div>
