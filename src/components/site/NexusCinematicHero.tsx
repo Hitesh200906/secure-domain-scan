@@ -78,9 +78,15 @@ export function NexusCinematicHero() {
             >
               <button
                 onClick={() => setMode("nexus")}
-                className="group inline-flex items-center gap-2 rounded-2xl px-6 py-3.5 text-[14px] font-medium transition-all duration-200 hover:-translate-y-0.5"
-                style={{ background: "#000000", border: `1px solid ${T.border}`, color: T.text }}
+                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl px-6 py-3.5 text-[14px] font-medium transition-all duration-300 hover:-translate-y-0.5 hover:border-white/25"
+                style={{
+                  background: "linear-gradient(180deg,#141620 0%,#000000 100%)",
+                  border: `1px solid ${T.border}`,
+                  color: T.text,
+                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)",
+                }}
               >
+                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                 <Sparkles className="size-4" />
                 Switch to Nexefy
                 <ArrowUpRight className="size-4 opacity-80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -88,12 +94,19 @@ export function NexusCinematicHero() {
 
               <button
                 onClick={() => setMode("security")}
-                className="inline-flex items-center gap-2 rounded-2xl px-6 py-3.5 text-[14px] font-medium text-white transition-all duration-200 hover:-translate-y-0.5"
-                style={{ background: T.blue, border: `1px solid ${T.blue}` }}
+                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl px-6 py-3.5 text-[14px] font-medium text-white transition-all duration-300 hover:-translate-y-0.5"
+                style={{
+                  background: `linear-gradient(180deg, color-mix(in oklab, ${T.blue} 88%, white) 0%, ${T.blue} 55%, color-mix(in oklab, ${T.blue} 80%, black) 100%)`,
+                  border: `1px solid ${T.blue}`,
+                  boxShadow: `inset 0 1px 0 rgba(255,255,255,0.28), 0 10px 30px -14px ${T.blue}`,
+                }}
               >
+                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                 <ShieldCheck className="size-4" />
                 Switch to Nexefy Security
+                <ArrowUpRight className="size-4 opacity-90 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
+
             </motion.div>
           </div>
 
