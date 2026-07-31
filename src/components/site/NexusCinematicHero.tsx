@@ -5,6 +5,7 @@ import imgMarketplace from "@/assets/card-marketplace-v3.png.asset.json";
 import imgCommunities from "@/assets/card-communities-v3.png.asset.json";
 import imgSecurity from "@/assets/card-security-v3.png.asset.json";
 import imgRewards from "@/assets/card-rewards-v3.png.asset.json";
+import heroDesk from "@/assets/hero-desk.png.asset.json";
 
 const T = {
   bg: "#000000",
