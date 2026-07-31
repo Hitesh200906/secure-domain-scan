@@ -5,6 +5,7 @@ import imgMarketplace from "@/assets/card-marketplace-v3.png.asset.json";
 import imgCommunities from "@/assets/card-communities-v3.png.asset.json";
 import imgSecurity from "@/assets/card-security-v3.png.asset.json";
 import imgRewards from "@/assets/card-rewards-v3.png.asset.json";
+import heroDesk from "@/assets/hero-desk.png.asset.json";
 
 const T = {
   bg: "#000000",
@@ -21,14 +22,49 @@ export function NexusCinematicHero() {
 
   return (
     <section className="relative w-full overflow-hidden" style={{ background: T.bg }}>
+      {/* ambient background image — blended into navbar above and page below */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${heroDesk.url})`,
+            opacity: 0.3,
+            filter: "blur(7px) brightness(0.7)",
+            transform: "scale(1.08)",
+            WebkitMaskImage:
+              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.55) 14%, #000 40%, #000 60%, rgba(0,0,0,0.5) 86%, transparent 100%)",
+            maskImage:
+              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.55) 14%, #000 40%, #000 60%, rgba(0,0,0,0.5) 86%, transparent 100%)",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.45) 22%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.6) 88%, #000 100%)",
+          }}
+        />
+      </div>
+
       <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-24 sm:pt-28 pb-20">
         {/* ---------- Two-column top ---------- */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <div className="text-left">
             <motion.div
               initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                boxShadow: [
+                  "0 0 0px rgba(79,107,255,0)",
+                  "0 0 22px rgba(79,107,255,0.35)",
+                  "0 0 0px rgba(79,107,255,0)",
+                ],
+              }}
+              transition={{
+                duration: 0.6,
+                boxShadow: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
+              }}
               className="inline-flex items-center gap-2.5 rounded-full px-3.5 py-1.5 text-[11px] uppercase tracking-[0.2em]"
               style={{ background: "#000000", border: `1px solid ${T.border}`, color: T.text2 }}
             >
