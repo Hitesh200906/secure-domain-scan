@@ -115,7 +115,7 @@ export function NexusCinematicHero() {
         </div>
 
         {/* ---------- Feature cards ---------- */}
-        <div className="mt-20 sm:mt-24 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="mt-20 sm:mt-24 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
           <FeatureCard index={0} image={imgMarketplace.url} title="Marketplace" desc="Launch branded storefronts." />
           <FeatureCard index={1} image={imgCommunities.url} title="Communities" desc="Chats, forums & memberships." />
           <FeatureCard index={2} image={imgSecurity.url} title="Security" desc="AI-powered protection." />
@@ -158,20 +158,20 @@ function FeatureCard({
       className="group relative rounded-2xl overflow-hidden flex flex-col"
       style={{ background: T.card, border: `1px solid ${T.border}` }}
     >
-      <div className="relative w-full" style={{ height: 220 }}>
+      <div className="relative w-full aspect-[16/11]">
         <img
           src={image}
           alt={`${title} preview`}
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-contain"
         />
       </div>
 
-      <div className="px-5 py-5" style={{ background: T.card, minHeight: 94 }}>
-        <div className="text-[15px] font-semibold" style={{ color: T.text }}>
+      <div className="px-6 py-6" style={{ background: T.card }}>
+        <div className="text-[18px] sm:text-[20px] font-semibold" style={{ color: T.text }}>
           {title}
         </div>
-        <p className="mt-1.5 text-[13px] leading-relaxed" style={{ color: T.text2 }}>
+        <p className="mt-2 text-[14px] leading-relaxed" style={{ color: T.text2 }}>
           {desc}
         </p>
       </div>
