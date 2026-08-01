@@ -259,43 +259,51 @@ function RevenueCard() {
             <div className="mt-1 text-[26px] font-semibold tracking-[-0.02em]" style={{ color: T.text }}>
               <AnimatedNumber value={28450} prefix="$" />
             </div>
-            <div className="mt-3 flex items-center gap-2.5">
+            <div className="mt-2 flex items-center gap-2">
               <span
-                className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[12px] font-medium"
+                className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-medium"
                 style={{ background: "rgba(16,185,129,0.12)", color: "#34D399" }}
               >
-                ↑ 12.5%
+                ↑ <AnimatedNumber value={12.5} decimals={1} suffix="%" />
               </span>
-              <span className="text-[12px]" style={{ color: T.text2 }}>vs last month</span>
+              <span className="text-[10px]" style={{ color: T.text2 }}>vs last month</span>
             </div>
 
-            <div className="my-5 h-px w-full" style={{ background: T.border }} />
+            <div className="my-3.5 h-px w-full" style={{ background: T.border }} />
 
-            <div className="text-[12px]" style={{ color: T.text3 }}>Breakdown</div>
-            <ul className="mt-3 space-y-2.5">
+            <div className="text-[10px]" style={{ color: T.text3 }}>Breakdown</div>
+            <ul className="mt-2 space-y-1.5">
               {[
-                { label: "Subscriptions", value: "$16,250", dot: "#A855F7" },
-                { label: "Sales", value: "$8,150", dot: "#2563EB" },
-                { label: "Tips", value: "$4,050", dot: "#06B6D4" },
-              ].map((r) => (
-                <li key={r.label} className="flex items-center justify-between gap-4 text-[13.5px]">
-                  <span className="inline-flex items-center gap-2" style={{ color: T.text2 }}>
-                    <span className="size-2 rounded-full" style={{ background: r.dot }} />
+                { label: "Subscriptions", value: 16250, dot: "#A855F7" },
+                { label: "Sales", value: 8150, dot: "#2563EB" },
+                { label: "Tips", value: 4050, dot: "#06B6D4" },
+              ].map((r, i) => (
+                <motion.li
+                  key={r.label}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.7 + i * 0.12 }}
+                  className="flex items-center justify-between gap-3 text-[11px]"
+                >
+                  <span className="inline-flex items-center gap-1.5" style={{ color: T.text2 }}>
+                    <span className="size-1.5 rounded-full" style={{ background: r.dot }} />
                     {r.label}
                   </span>
-                  <span style={{ color: T.text }}>{r.value}</span>
-                </li>
+                  <span style={{ color: T.text }}>
+                    <AnimatedNumber value={r.value} prefix="$" delay={0.7 + i * 0.12} />
+                  </span>
+                </motion.li>
               ))}
             </ul>
           </div>
 
           <div className="min-w-0">
-            <div className="flex gap-2">
-              <div className="flex flex-col justify-between py-1 text-[10.5px]" style={{ color: T.text3 }}>
+            <div className="flex gap-1.5">
+              <div className="flex flex-col justify-between py-0.5 text-[8.5px]" style={{ color: T.text3 }}>
                 {["32K", "24K", "16K", "8K", "0"].map((t) => <span key={t}>{t}</span>)}
               </div>
               <div className="relative flex-1">
-                <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-[200px]" preserveAspectRatio="none">
+                <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-[140px]" preserveAspectRatio="none">
                   <defs>
                     <linearGradient id="revLine" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="0%" stopColor="#2563EB" />
@@ -310,7 +318,13 @@ function RevenueCard() {
                     <line key={i} x1="0" x2={w} y1={(i * h) / 4} y2={(i * h) / 4}
                       stroke="rgba(255,255,255,0.06)" strokeDasharray="4 6" />
                   ))}
-                  <path d={`${path} L${w},${h} L0,${h} Z`} fill="url(#revFill)" />
+                  <motion.path
+                    d={`${path} L${w},${h} L0,${h} Z`}
+                    fill="url(#revFill)"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1.2, delay: 1.2 }}
+                  />
                   <motion.path
                     d={path}
                     fill="none"
@@ -321,9 +335,17 @@ function RevenueCard() {
                     animate={{ pathLength: 1 }}
                     transition={{ duration: 1.8, delay: 0.6, ease: "easeOut" }}
                   />
-                  <circle cx={w} cy={h - (points[points.length - 1] / max) * h} r={6} fill="#A855F7" />
+                  <motion.circle
+                    cx={w}
+                    cy={h - (points[points.length - 1] / max) * h}
+                    r={6}
+                    fill="#A855F7"
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: [0, 1.4, 1], opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 2.3 }}
+                  />
                 </svg>
-                <div className="mt-2 flex justify-between text-[10.5px]" style={{ color: T.text3 }}>
+                <div className="mt-1.5 flex justify-between text-[8.5px]" style={{ color: T.text3 }}>
                   {["May 1", "May 8", "May 15", "May 22", "May 31"].map((d) => <span key={d}>{d}</span>)}
                 </div>
               </div>
@@ -334,3 +356,37 @@ function RevenueCard() {
     </motion.div>
   );
 }
+
+function AnimatedNumber({
+  value,
+  prefix = "",
+  suffix = "",
+  decimals = 0,
+  delay = 0.4,
+}: {
+  value: number;
+  prefix?: string;
+  suffix?: string;
+  decimals?: number;
+  delay?: number;
+}) {
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    const controls = animate(0, value, {
+      duration: 1.6,
+      delay,
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: (v) => setDisplay(v),
+    });
+    return () => controls.stop();
+  }, [value, delay]);
+
+  const formatted =
+    decimals > 0
+      ? display.toFixed(decimals)
+      : Math.round(display).toLocaleString("en-US");
+
+  return <span>{prefix}{formatted}{suffix}</span>;
+}
+
