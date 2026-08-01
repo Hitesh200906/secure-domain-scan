@@ -4,7 +4,7 @@ import { useAppMode } from "@/lib/app-mode";
 import imgMarketplace from "@/assets/card-marketplace-v6.png.asset.json";
 import imgSecurity from "@/assets/card-security-v9.png.asset.json";
 import imgRewards from "@/assets/card-rewards-v9.png.asset.json";
-import heroDesk from "@/assets/hero-desk-2.png.asset.json";
+import heroDesk from "@/assets/hero-bg-v5.png.asset.json";
 
 const T = {
   bg: "#000000",
@@ -24,11 +24,11 @@ export function NexusCinematicHero() {
       {/* ambient background image — blended into navbar above and page below */}
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
         <div
-          className="absolute inset-0 bg-contain bg-no-repeat bg-center sm:bg-cover"
+          className="absolute inset-0 bg-cover bg-no-repeat bg-center"
           style={{
             backgroundImage: `url(${heroDesk.url})`,
-            opacity: 0.2,
-            filter: "blur(3px) brightness(2.1) contrast(1.05)",
+            opacity: 0.45,
+            filter: "blur(2px) brightness(0.9)",
           }}
         />
       </div>
@@ -66,7 +66,7 @@ export function NexusCinematicHero() {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.08 }}
-              className="mt-7 font-semibold tracking-[-0.05em] leading-[0.9] text-[56px] sm:text-[88px] lg:text-[104px]"
+              className="mt-7 font-semibold tracking-[-0.05em] leading-[0.9] text-[40px] sm:text-[60px] lg:text-[72px]"
               style={{ color: T.text }}
             >
               NEXEFY
