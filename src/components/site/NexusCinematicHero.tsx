@@ -26,18 +26,21 @@ export function NexusCinematicHero() {
       {/* ambient background image — blended into navbar above and page below */}
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
         <div
-          className="absolute inset-0 bg-contain bg-no-repeat bg-center"
+          className="absolute inset-0 bg-contain bg-no-repeat"
           style={{
             backgroundImage: `url(${heroDesk.url})`,
-            opacity: 0.8,
+            backgroundPosition: "center 22%",
+            opacity: 0.5,
+            WebkitMaskImage:
+              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.65) 10%, #000 26%, #000 66%, rgba(0,0,0,0.5) 84%, transparent 100%)",
+            maskImage:
+              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.65) 10%, #000 26%, #000 66%, rgba(0,0,0,0.5) 84%, transparent 100%)",
           }}
         />
       </div>
 
+      <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-16 sm:pt-20 pb-40 sm:pb-56">
 
-
-
-      <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-24 sm:pt-28 pb-20">
         {/* ---------- Two-column top ---------- */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <div className="text-left">
