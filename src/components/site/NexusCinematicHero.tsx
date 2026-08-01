@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe, Store } from "lucide-react";
 import { useAppMode } from "@/lib/app-mode";
 import imgMarketplace from "@/assets/card-marketplace-v7.png.asset.json";
-import imgSecurity from "@/assets/card-security-v10.png.asset.json";
-import imgRewards from "@/assets/card-rewards-v9.png.asset.json";
+import imgSecurity from "@/assets/card-security-v11.png.asset.json";
+import imgRewards from "@/assets/card-rewards-v10.png.asset.json";
 import heroDesk from "@/assets/hero-bg-v6.png.asset.json";
 
 const T = {
@@ -30,7 +30,7 @@ export function NexusCinematicHero() {
           style={{
             backgroundImage: `url(${heroDesk.url})`,
             backgroundPosition: "center 22%",
-            opacity: 0.5,
+            opacity: 0.4,
             WebkitMaskImage:
               "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.65) 10%, #000 26%, #000 66%, rgba(0,0,0,0.5) 84%, transparent 100%)",
             maskImage:
@@ -42,7 +42,7 @@ export function NexusCinematicHero() {
       <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-16 sm:pt-20 pb-40 sm:pb-56">
 
         {/* ---------- Two-column top ---------- */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+        <div className="grid grid-cols-1 gap-10 items-center">
           <div className="text-left">
             <motion.div
               initial={{ opacity: 0, y: 8 }}
@@ -129,10 +129,6 @@ export function NexusCinematicHero() {
             </motion.div>
           </div>
 
-          {/* right side — 3D revenue card */}
-          <div className="hidden lg:flex justify-center">
-            <RevenueCard3D />
-          </div>
         </div>
 
         {/* ---------- Feature cards ---------- */}
@@ -205,84 +201,3 @@ function FeatureCard({
   );
 }
 
-function RevenueCard3D() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.9, delay: 0.25 }}
-      className="relative w-full max-w-[440px] [perspective:1400px]"
-    >
-      <motion.div
-        animate={{ y: [0, -10, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-        className="relative rounded-[26px] p-6 sm:p-7 backdrop-blur-xl"
-        style={{
-          transform: "rotateX(10deg) rotateY(-14deg) rotateZ(1.5deg)",
-          transformStyle: "preserve-3d",
-          background: "linear-gradient(160deg, rgba(23,25,31,0.92) 0%, rgba(5,6,10,0.95) 60%, rgba(0,0,0,0.98) 100%)",
-          border: `1px solid ${T.border}`,
-          boxShadow:
-            "0 60px 120px -50px rgba(0,0,0,1), inset 0 1px 0 rgba(255,255,255,0.07), 0 0 80px -50px rgba(79,107,255,0.6)",
-        }}
-      >
-        {/* glossy sheen */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-[26px]"
-          style={{ background: "linear-gradient(120deg, rgba(255,255,255,0.06) 0%, transparent 45%)" }}
-        />
-
-        <div
-          className="flex size-10 items-center justify-center rounded-xl"
-          style={{
-            background: `linear-gradient(180deg, ${T.blue} 0%, ${T.navy} 100%)`,
-            boxShadow: `0 10px 24px -14px ${T.blue}`,
-          }}
-        >
-          <Sparkles className="size-5 text-white" />
-        </div>
-
-        <div className="mt-7 text-[13px]" style={{ color: T.text2 }}>Total Revenue</div>
-        <div className="mt-1 text-[38px] font-semibold tracking-tight" style={{ color: T.text }}>
-          $28,450
-        </div>
-        <div
-          className="mt-3 inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[12.5px] font-medium"
-          style={{ background: "rgba(16,185,129,0.12)", color: "#34D399" }}
-        >
-          <ArrowUpRight className="size-3.5" /> 12.5%
-        </div>
-
-        {/* chart */}
-        <div className="mt-6 h-[120px] w-full rounded-xl" style={{ border: `1px solid ${T.border}`, background: "rgba(0,0,0,0.5)" }}>
-          <svg viewBox="0 0 320 120" className="h-full w-full" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="hrFill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={T.blue} stopOpacity="0.35" />
-                <stop offset="100%" stopColor={T.blue} stopOpacity="0" />
-              </linearGradient>
-              <linearGradient id="hrLine" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#7C5CFF" />
-                <stop offset="100%" stopColor="#4F6BFF" />
-              </linearGradient>
-            </defs>
-            <path d="M8 104 L56 88 L96 66 L132 78 L172 54 L212 62 L252 34 L312 14 L312 118 L8 118 Z" fill="url(#hrFill)" />
-            <motion.path
-              d="M8 104 L56 88 L96 66 L132 78 L172 54 L212 62 L252 34 L312 14"
-              fill="none"
-              stroke="url(#hrLine)"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 1.6, delay: 0.6, ease: "easeInOut" }}
-            />
-            <circle cx="312" cy="14" r="4" fill="#7FB2FF" />
-          </svg>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-}
