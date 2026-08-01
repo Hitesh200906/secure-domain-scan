@@ -39,10 +39,10 @@ export function NexusCinematicHero() {
         />
       </div>
 
-      <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-32 sm:pt-40 pb-40 sm:pb-56">
+      <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-24 sm:pt-28 pb-40 sm:pb-56">
 
         {/* ---------- Two-column top ---------- */}
-        <div className="grid grid-cols-1 gap-10 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_minmax(0,560px)] gap-12 lg:gap-10 items-center">
           <div className="text-left">
             <motion.div
               initial={{ opacity: 0, y: 8 }}
@@ -73,8 +73,15 @@ export function NexusCinematicHero() {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.08 }}
-              className="mt-7 font-semibold tracking-[-0.05em] leading-[0.9] text-[30px] sm:text-[42px] lg:text-[52px]"
-              style={{ color: T.text, textShadow: "0 4px 40px rgba(0,0,0,0.8)" }}
+              className="mt-7 font-semibold leading-[0.9] text-[42px] sm:text-[62px] lg:text-[78px]"
+              style={{
+                letterSpacing: "0.14em",
+                background: `linear-gradient(180deg, #FFFFFF 0%, #C9D2FF 45%, ${T.blue} 105%)`,
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+                filter: "drop-shadow(0 8px 40px rgba(79,107,255,0.35))",
+              }}
             >
               NEXEFY
             </motion.h1>
@@ -129,7 +136,9 @@ export function NexusCinematicHero() {
             </motion.div>
           </div>
 
+          <RevenueCard />
         </div>
+
 
         {/* ---------- Feature cards ---------- */}
         <div className="mt-20 sm:mt-24 grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6">
@@ -201,3 +210,124 @@ function FeatureCard({
   );
 }
 
+
+function RevenueCard() {
+  const points = [4, 5.5, 7, 10, 9.5, 13, 12, 16, 18, 17.5, 22, 24, 23.5, 28, 31];
+  const w = 520, h = 260;
+  const max = 34;
+  const path = points
+    .map((p, i) => {
+      const x = (i / (points.length - 1)) * w;
+      const y = h - (p / max) * h;
+      return `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(" ");
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 26 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.9, delay: 0.35 }}
+      className="relative w-full"
+    >
+      <motion.div
+        animate={{ y: [0, -10, 0] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        className="relative rounded-[26px] overflow-hidden backdrop-blur-xl"
+        style={{
+          background: "linear-gradient(160deg, rgba(18,20,28,0.92) 0%, rgba(6,7,11,0.92) 100%)",
+          border: `1px solid ${T.border}`,
+          boxShadow: "0 40px 100px -40px rgba(0,0,0,0.95), inset 0 1px 0 rgba(255,255,255,0.06)",
+        }}
+      >
+        <div className="flex justify-end px-6 pt-6">
+          <div
+            className="inline-flex items-center gap-2 rounded-xl px-3 py-1.5 text-[12px]"
+            style={{ border: `1px solid ${T.border}`, color: T.text2 }}
+          >
+            This Month
+            <span className="text-[10px]">▾</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-6 px-6 pb-7 pt-2">
+          <div>
+            <div className="text-[13px]" style={{ color: T.text2 }}>Total Revenue</div>
+            <div className="mt-1 text-[38px] font-semibold tracking-[-0.02em]" style={{ color: T.text }}>
+              $28,450
+            </div>
+            <div className="mt-3 flex items-center gap-2.5">
+              <span
+                className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[12px] font-medium"
+                style={{ background: "rgba(16,185,129,0.12)", color: "#34D399" }}
+              >
+                ↑ 12.5%
+              </span>
+              <span className="text-[12px]" style={{ color: T.text2 }}>vs last month</span>
+            </div>
+
+            <div className="my-5 h-px w-full" style={{ background: T.border }} />
+
+            <div className="text-[12px]" style={{ color: T.text3 }}>Breakdown</div>
+            <ul className="mt-3 space-y-2.5">
+              {[
+                { label: "Subscriptions", value: "$16,250", dot: "#A855F7" },
+                { label: "Sales", value: "$8,150", dot: "#2563EB" },
+                { label: "Tips", value: "$4,050", dot: "#06B6D4" },
+              ].map((r) => (
+                <li key={r.label} className="flex items-center justify-between gap-4 text-[13.5px]">
+                  <span className="inline-flex items-center gap-2" style={{ color: T.text2 }}>
+                    <span className="size-2 rounded-full" style={{ background: r.dot }} />
+                    {r.label}
+                  </span>
+                  <span style={{ color: T.text }}>{r.value}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="min-w-0">
+            <div className="flex gap-2">
+              <div className="flex flex-col justify-between py-1 text-[10.5px]" style={{ color: T.text3 }}>
+                {["32K", "24K", "16K", "8K", "0"].map((t) => <span key={t}>{t}</span>)}
+              </div>
+              <div className="relative flex-1">
+                <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-[200px]" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="revLine" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#2563EB" />
+                      <stop offset="100%" stopColor="#A855F7" />
+                    </linearGradient>
+                    <linearGradient id="revFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#7C3AED" stopOpacity="0.35" />
+                      <stop offset="100%" stopColor="#7C3AED" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <line key={i} x1="0" x2={w} y1={(i * h) / 4} y2={(i * h) / 4}
+                      stroke="rgba(255,255,255,0.06)" strokeDasharray="4 6" />
+                  ))}
+                  <path d={`${path} L${w},${h} L0,${h} Z`} fill="url(#revFill)" />
+                  <motion.path
+                    d={path}
+                    fill="none"
+                    stroke="url(#revLine)"
+                    strokeWidth={3}
+                    strokeLinecap="round"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 1.8, delay: 0.6, ease: "easeOut" }}
+                  />
+                  <circle cx={w} cy={h - (points[points.length - 1] / max) * h} r={6} fill="#A855F7" />
+                </svg>
+                <div className="mt-2 flex justify-between text-[10.5px]" style={{ color: T.text3 }}>
+                  {["May 1", "May 8", "May 15", "May 22", "May 31"].map((d) => <span key={d}>{d}</span>)}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
