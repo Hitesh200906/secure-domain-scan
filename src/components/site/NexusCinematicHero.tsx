@@ -378,7 +378,7 @@ function AnimatedNumber({
       duration: 1.6,
       delay,
       ease: [0.16, 1, 0.3, 1],
-      onUpdate: (v) => setDisplay(v),
+      onUpdate: (v: number) => setDisplay(v),
     });
     return () => controls.stop();
   }, [value, delay]);
