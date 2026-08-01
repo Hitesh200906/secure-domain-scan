@@ -86,7 +86,7 @@ export function NexusCinematicHero() {
               className="mt-5 max-w-xl text-[15px] sm:text-[17px] leading-relaxed"
               style={{ color: T.text2 }}
             >
-              The operating system for modern internet business.
+              The all-in-one business platform where creators, founders, developers, and teams launch and grow without limits.
             </motion.p>
 
             <motion.div
