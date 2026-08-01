@@ -27,24 +27,24 @@ export function NexusCinematicHero() {
           className="absolute inset-0 bg-cover bg-no-repeat bg-center"
           style={{
             backgroundImage: `url(${heroDesk.url})`,
-            opacity: 0.3,
-            filter: "blur(3px) brightness(0.7) saturate(0.9)",
+            opacity: 0.85,
+            filter: "blur(2px) brightness(0.85)",
             maskImage:
-              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 14%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.55) 78%, transparent 100%)",
+              "linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0.85) 72%, transparent 100%)",
             WebkitMaskImage:
-              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 14%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.55) 78%, transparent 100%)",
+              "linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0.85) 72%, transparent 100%)",
           }}
         />
-        {/* darkening veil + seamless blend into the next section */}
+        {/* light veil for text legibility + seamless blend into the next section */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(120% 80% at 50% 40%, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.72) 100%)",
+              "radial-gradient(110% 75% at 30% 45%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.2) 100%)",
           }}
         />
         <div
-          className="absolute inset-x-0 bottom-0 h-56"
+          className="absolute inset-x-0 bottom-0 h-48"
           style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0) 0%, #000000 100%)" }}
         />
       </div>
