@@ -39,19 +39,8 @@ export function NexusCinematicHero() {
           <div className="text-left">
             <motion.div
               initial={{ opacity: 0, y: 8 }}
-              animate={{
-                opacity: 1,
-                y: 0,
-                boxShadow: [
-                  "0 0 0px rgba(79,107,255,0)",
-                  "0 0 22px rgba(79,107,255,0.35)",
-                  "0 0 0px rgba(79,107,255,0)",
-                ],
-              }}
-              transition={{
-                duration: 0.6,
-                boxShadow: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
-              }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
               className="inline-flex items-center gap-2.5 rounded-full px-3.5 py-1.5 text-[11px] uppercase tracking-[0.2em]"
               style={{ background: "#000000", border: `1px solid ${T.border}`, color: T.text2 }}
             >

@@ -51,9 +51,9 @@ export function Navbar() {
   };
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "py-2 bg-black" : "py-4 bg-black"}`}>
+    <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "py-2" : "py-4"}`}>
       <div className="mx-auto max-w-7xl px-3 sm:px-6">
-        <div className="flex items-center justify-between rounded-2xl px-3 sm:px-6 py-2.5 sm:py-3 bg-transparent border border-transparent transition-all duration-300">
+        <div className={`flex items-center justify-between rounded-2xl px-3 sm:px-6 py-2.5 sm:py-3 transition-all duration-300 ${scrolled ? "bg-black/80 backdrop-blur-xl border border-white/10 shadow-lg" : "bg-transparent border border-transparent"}`}>
           <Link to="/" className="flex items-center gap-2 group">
             <span
               aria-label="Nexefy"
