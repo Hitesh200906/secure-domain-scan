@@ -39,10 +39,10 @@ export function NexusCinematicHero() {
         />
       </div>
 
-      <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-32 sm:pt-40 pb-40 sm:pb-56">
+      <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-24 sm:pt-28 pb-40 sm:pb-56">
 
         {/* ---------- Two-column top ---------- */}
-        <div className="grid grid-cols-1 gap-10 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_minmax(0,560px)] gap-12 lg:gap-10 items-center">
           <div className="text-left">
             <motion.div
               initial={{ opacity: 0, y: 8 }}
@@ -73,8 +73,15 @@ export function NexusCinematicHero() {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.08 }}
-              className="mt-7 font-semibold tracking-[-0.05em] leading-[0.9] text-[30px] sm:text-[42px] lg:text-[52px]"
-              style={{ color: T.text, textShadow: "0 4px 40px rgba(0,0,0,0.8)" }}
+              className="mt-7 font-semibold leading-[0.9] text-[42px] sm:text-[62px] lg:text-[78px]"
+              style={{
+                letterSpacing: "0.14em",
+                background: `linear-gradient(180deg, #FFFFFF 0%, #C9D2FF 45%, ${T.blue} 105%)`,
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+                filter: "drop-shadow(0 8px 40px rgba(79,107,255,0.35))",
+              }}
             >
               NEXEFY
             </motion.h1>
