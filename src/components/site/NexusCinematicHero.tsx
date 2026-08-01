@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe, Store } from "lucide-react";
 import { useAppMode } from "@/lib/app-mode";
 import imgMarketplace from "@/assets/card-marketplace-v3.png.asset.json";
-import imgCommunities from "@/assets/card-communities-v3.png.asset.json";
 import imgSecurity from "@/assets/card-security-v3.png.asset.json";
 import imgRewards from "@/assets/card-rewards-v3.png.asset.json";
 import heroDesk from "@/assets/hero-desk-2.png.asset.json";
@@ -186,7 +185,7 @@ function FeatureCard({
           src={image}
           alt={`${title} preview`}
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-contain"
+          className="absolute inset-0 h-full w-full object-cover object-top"
         />
       </div>
 
