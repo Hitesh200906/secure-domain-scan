@@ -14,7 +14,7 @@ const T = {
   text2: "#A8ADBB",
   text3: "#6B7080",
   blue: "#4F6BFF",
-  navy: "#000080",
+  navy: "#0000DD",
 
 };
 
@@ -26,10 +26,10 @@ export function NexusCinematicHero() {
       {/* ambient background image — blended into navbar above and page below */}
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
         <div
-          className="absolute inset-0 bg-cover bg-no-repeat bg-center"
+          className="absolute inset-0 bg-contain bg-no-repeat bg-center"
           style={{
             backgroundImage: `url(${heroDesk.url})`,
-            opacity: 1,
+            opacity: 0.8,
           }}
         />
       </div>
@@ -113,8 +113,8 @@ export function NexusCinematicHero() {
                 className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl px-6 py-3.5 text-[14px] font-medium text-white transition-all duration-300 hover:-translate-y-0.5"
                 style={{
                   background: `linear-gradient(180deg, color-mix(in oklab, ${T.navy} 82%, white) 0%, ${T.navy} 55%, color-mix(in oklab, ${T.navy} 78%, black) 100%)`,
-                  border: `1px solid color-mix(in oklab, ${T.navy} 70%, white)`,
-                  boxShadow: `inset 0 1px 0 rgba(255,255,255,0.18), 0 10px 30px -16px ${T.navy}`,
+                  border: `1px solid color-mix(in oklab, ${T.navy} 45%, white)`,
+                  boxShadow: `inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.35), 0 10px 30px -16px ${T.navy}`,
                 }}
               >
                 <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
