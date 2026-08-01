@@ -5,7 +5,7 @@ import imgMarketplace from "@/assets/card-marketplace-v3.png.asset.json";
 import imgCommunities from "@/assets/card-communities-v3.png.asset.json";
 import imgSecurity from "@/assets/card-security-v3.png.asset.json";
 import imgRewards from "@/assets/card-rewards-v3.png.asset.json";
-import heroDesk from "@/assets/hero-desk.png.asset.json";
+import heroDesk from "@/assets/hero-desk-2.png.asset.json";
 
 const T = {
   bg: "#000000",
@@ -28,8 +28,8 @@ export function NexusCinematicHero() {
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: `url(${heroDesk.url})`,
-            opacity: 0.85,
-            filter: "blur(5px) brightness(2.1) contrast(1.05)",
+            opacity: 0.2,
+            filter: "blur(4px) brightness(2.2) contrast(1.05)",
             transform: "scale(1.08)",
             WebkitMaskImage:
               "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 12%, #000 35%, #000 65%, rgba(0,0,0,0.55) 88%, transparent 100%)",
@@ -194,7 +194,7 @@ function FeatureCard({
       className="group relative rounded-2xl overflow-hidden flex flex-col"
       style={{ background: T.card, border: `1px solid ${T.border}` }}
     >
-      <div className="relative w-full aspect-[16/11]">
+      <div className="relative w-full aspect-[16/7]">
         <img
           src={image}
           alt={`${title} preview`}
