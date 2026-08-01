@@ -14,7 +14,7 @@ const T = {
   text2: "#A8ADBB",
   text3: "#6B7080",
   blue: "#4F6BFF",
-  navy: "#1B2E6B",
+  navy: "#000080",
 
 };
 
@@ -29,7 +29,7 @@ export function NexusCinematicHero() {
           className="absolute inset-0 bg-cover bg-no-repeat bg-center"
           style={{
             backgroundImage: `url(${heroDesk.url})`,
-            opacity: 0.35,
+            opacity: 0.3,
             maskImage:
               "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.45) 12%, #000 34%, #000 62%, rgba(0,0,0,0.4) 88%, transparent 100%)",
             WebkitMaskImage:
