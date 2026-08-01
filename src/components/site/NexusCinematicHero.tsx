@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { motion, animate } from "framer-motion";
+import { useEffect, useState } from "react";
 import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe, Store } from "lucide-react";
 import { useAppMode } from "@/lib/app-mode";
 import imgMarketplace from "@/assets/card-marketplace-v7.png.asset.json";
