@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe, Store } from "lucide-react";
 import { useAppMode } from "@/lib/app-mode";
 import imgMarketplace from "@/assets/card-marketplace-v3.png.asset.json";
-import imgSecurity from "@/assets/card-security-v3.png.asset.json";
-import imgRewards from "@/assets/card-rewards-v3.png.asset.json";
+import imgSecurity from "@/assets/card-security-v4.png.asset.json";
+import imgRewards from "@/assets/card-rewards-v4.png.asset.json";
 import heroDesk from "@/assets/hero-desk-2.png.asset.json";
 
 const T = {
@@ -180,7 +180,7 @@ function FeatureCard({
       className="group relative rounded-2xl overflow-hidden flex flex-col"
       style={{ background: T.card, border: `1px solid ${T.border}` }}
     >
-      <div className="relative w-full aspect-[16/7]">
+      <div className="relative w-full basis-[80%] grow-0 aspect-[16/9]">
         <img
           src={image}
           alt={`${title} preview`}
@@ -189,11 +189,11 @@ function FeatureCard({
         />
       </div>
 
-      <div className="px-6 py-6" style={{ background: T.card }}>
-        <div className="text-[18px] sm:text-[20px] font-semibold" style={{ color: T.text }}>
+      <div className="basis-[20%] px-5 py-3.5" style={{ background: T.card }}>
+        <div className="text-[16px] sm:text-[17px] font-semibold leading-tight" style={{ color: T.text }}>
           {title}
         </div>
-        <p className="mt-2 text-[14px] leading-relaxed" style={{ color: T.text2 }}>
+        <p className="mt-1 text-[12.5px] leading-snug" style={{ color: T.text2 }}>
           {desc}
         </p>
       </div>
