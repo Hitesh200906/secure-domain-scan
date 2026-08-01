@@ -229,7 +229,7 @@ function RevenueCard() {
       initial={{ opacity: 0, y: 26 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.9, delay: 0.35 }}
-      className="relative w-full max-w-full"
+      className="relative w-full max-w-full px-2 py-8 sm:px-6 sm:py-10 lg:pl-8 lg:pr-4"
       style={{ perspective: "1400px" }}
     >
       <motion.div
