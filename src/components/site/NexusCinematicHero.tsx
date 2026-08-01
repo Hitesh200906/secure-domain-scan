@@ -199,7 +199,7 @@ function FeatureCard({
         />
       </div>
 
-      <div className="basis-[20%] px-5 py-3.5" style={{ background: T.card }}>
+      <div className="basis-[20%] px-5 py-3.5" style={{ background: "rgba(0,0,0,0.7)" }}>
         <div className="text-[16px] sm:text-[17px] font-semibold leading-tight" style={{ color: T.text }}>
           {title}
         </div>
