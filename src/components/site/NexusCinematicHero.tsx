@@ -14,6 +14,8 @@ const T = {
   text2: "#A8ADBB",
   text3: "#6B7080",
   blue: "#4F6BFF",
+  navy: "#1B2E6B",
+
 };
 
 export function NexusCinematicHero() {
@@ -28,9 +30,16 @@ export function NexusCinematicHero() {
           style={{
             backgroundImage: `url(${heroDesk.url})`,
             opacity: 0.35,
+            maskImage:
+              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.45) 12%, #000 34%, #000 62%, rgba(0,0,0,0.4) 88%, transparent 100%)",
+            WebkitMaskImage:
+              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.45) 12%, #000 34%, #000 62%, rgba(0,0,0,0.4) 88%, transparent 100%)",
           }}
         />
+        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black via-black/70 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-black via-black/80 to-transparent" />
       </div>
+
 
 
       <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-24 sm:pt-28 pb-20">
@@ -66,7 +75,7 @@ export function NexusCinematicHero() {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.08 }}
-              className="mt-7 font-semibold tracking-[-0.05em] leading-[0.9] text-[40px] sm:text-[60px] lg:text-[72px]"
+              className="mt-7 font-semibold tracking-[-0.05em] leading-[0.9] text-[30px] sm:text-[42px] lg:text-[52px]"
               style={{ color: T.text, textShadow: "0 4px 40px rgba(0,0,0,0.8)" }}
             >
               NEXEFY
@@ -108,9 +117,9 @@ export function NexusCinematicHero() {
                 onClick={() => setMode("security")}
                 className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl px-6 py-3.5 text-[14px] font-medium text-white transition-all duration-300 hover:-translate-y-0.5"
                 style={{
-                  background: `linear-gradient(180deg, color-mix(in oklab, ${T.blue} 88%, white) 0%, ${T.blue} 55%, color-mix(in oklab, ${T.blue} 80%, black) 100%)`,
-                  border: `1px solid ${T.blue}`,
-                  boxShadow: `inset 0 1px 0 rgba(255,255,255,0.28), 0 10px 30px -14px ${T.blue}`,
+                  background: `linear-gradient(180deg, color-mix(in oklab, ${T.navy} 82%, white) 0%, ${T.navy} 55%, color-mix(in oklab, ${T.navy} 78%, black) 100%)`,
+                  border: `1px solid color-mix(in oklab, ${T.navy} 70%, white)`,
+                  boxShadow: `inset 0 1px 0 rgba(255,255,255,0.18), 0 10px 30px -16px ${T.navy}`,
                 }}
               >
                 <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
@@ -122,8 +131,10 @@ export function NexusCinematicHero() {
             </motion.div>
           </div>
 
-          {/* right side intentionally empty */}
-          <div aria-hidden className="hidden lg:block" />
+          {/* right side — 3D revenue card */}
+          <div className="hidden lg:flex justify-center">
+            <RevenueCard3D />
+          </div>
         </div>
 
         {/* ---------- Feature cards ---------- */}
