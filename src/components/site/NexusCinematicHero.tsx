@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe, Store } from "lucide-react";
 import { useAppMode } from "@/lib/app-mode";
 import imgMarketplace from "@/assets/card-marketplace-v7.png.asset.json";
-import imgSecurity from "@/assets/card-security-v10.png.asset.json";
-import imgRewards from "@/assets/card-rewards-v9.png.asset.json";
+import imgSecurity from "@/assets/card-security-v11.png.asset.json";
+import imgRewards from "@/assets/card-rewards-v10.png.asset.json";
 import heroDesk from "@/assets/hero-bg-v6.png.asset.json";
 
 const T = {
@@ -30,7 +30,7 @@ export function NexusCinematicHero() {
           style={{
             backgroundImage: `url(${heroDesk.url})`,
             backgroundPosition: "center 22%",
-            opacity: 0.5,
+            opacity: 0.4,
             WebkitMaskImage:
               "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.65) 10%, #000 26%, #000 66%, rgba(0,0,0,0.5) 84%, transparent 100%)",
             maskImage:
@@ -42,7 +42,7 @@ export function NexusCinematicHero() {
       <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-16 sm:pt-20 pb-40 sm:pb-56">
 
         {/* ---------- Two-column top ---------- */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+        <div className="grid grid-cols-1 gap-10 items-center">
           <div className="text-left">
             <motion.div
               initial={{ opacity: 0, y: 8 }}
@@ -129,10 +129,6 @@ export function NexusCinematicHero() {
             </motion.div>
           </div>
 
-          {/* right side — 3D revenue card */}
-          <div className="hidden lg:flex justify-center">
-            <RevenueCard3D />
-          </div>
         </div>
 
         {/* ---------- Feature cards ---------- */}
