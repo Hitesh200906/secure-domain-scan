@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe, Store } from "lucide-react";
 import { useAppMode } from "@/lib/app-mode";
 import imgMarketplace from "@/assets/card-marketplace-v3.png.asset.json";
-import imgCommunities from "@/assets/card-communities-v3.png.asset.json";
 import imgSecurity from "@/assets/card-security-v3.png.asset.json";
 import imgRewards from "@/assets/card-rewards-v3.png.asset.json";
 import heroDesk from "@/assets/hero-desk-2.png.asset.json";
@@ -25,23 +24,11 @@ export function NexusCinematicHero() {
       {/* ambient background image — blended into navbar above and page below */}
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
         <div
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-contain bg-no-repeat bg-center sm:bg-cover"
           style={{
             backgroundImage: `url(${heroDesk.url})`,
             opacity: 0.2,
-            filter: "blur(4px) brightness(2.2) contrast(1.05)",
-            transform: "scale(1.08)",
-            WebkitMaskImage:
-              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 12%, #000 35%, #000 65%, rgba(0,0,0,0.55) 88%, transparent 100%)",
-            maskImage:
-              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 12%, #000 35%, #000 65%, rgba(0,0,0,0.55) 88%, transparent 100%)",
-          }}
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.35) 20%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.45) 88%, #000 100%)",
+            filter: "blur(3px) brightness(2.1) contrast(1.05)",
           }}
         />
       </div>
@@ -151,11 +138,10 @@ export function NexusCinematicHero() {
         </div>
 
         {/* ---------- Feature cards ---------- */}
-        <div className="mt-20 sm:mt-24 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+        <div className="mt-20 sm:mt-24 grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6">
           <FeatureCard index={0} image={imgMarketplace.url} title="Marketplace" desc="Launch branded storefronts." />
-          <FeatureCard index={1} image={imgCommunities.url} title="Communities" desc="Chats, forums & memberships." />
-          <FeatureCard index={2} image={imgSecurity.url} title="Security" desc="AI-powered protection." />
-          <FeatureCard index={3} image={imgRewards.url} title="Nexefy Rewards" desc="Earn from the clips you create." />
+          <FeatureCard index={1} image={imgSecurity.url} title="Security" desc="AI-powered protection." />
+          <FeatureCard index={2} image={imgRewards.url} title="Nexefy Rewards" desc="Earn from the clips you create." />
         </div>
 
         {/* ---------- Bottom feature strip ---------- */}
@@ -199,7 +185,7 @@ function FeatureCard({
           src={image}
           alt={`${title} preview`}
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-contain"
+          className="absolute inset-0 h-full w-full object-cover object-top"
         />
       </div>
 
