@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe, Store } from "lucide-react";
 import { useAppMode } from "@/lib/app-mode";
-import imgMarketplace from "@/assets/card-marketplace-v6.png.asset.json";
+import imgMarketplace from "@/assets/card-marketplace-v7.png.asset.json";
 import imgSecurity from "@/assets/card-security-v10.png.asset.json";
 import imgRewards from "@/assets/card-rewards-v9.png.asset.json";
 import heroDesk from "@/assets/hero-bg-v6.png.asset.json";
@@ -137,7 +137,7 @@ export function NexusCinematicHero() {
 
         {/* ---------- Feature cards ---------- */}
         <div className="mt-20 sm:mt-24 grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6">
-          <FeatureCard index={0} image={imgMarketplace.url} title="Marketplace" desc="Launch branded storefronts." />
+          <FeatureCard index={0} image={imgMarketplace.url} fit="contain" title="Marketplace" desc="Launch branded storefronts." />
           <FeatureCard index={1} image={imgSecurity.url} title="Security" desc="AI-powered protection." />
           <FeatureCard index={2} image={imgRewards.url} title="Nexefy Rewards" desc="Earn from the clips you create." />
         </div>
@@ -163,11 +163,13 @@ function FeatureCard({
   image,
   title,
   desc,
+  fit = "cover",
 }: {
   index: number;
   image: string;
   title: string;
   desc: string;
+  fit?: "cover" | "contain";
 }) {
   return (
     <motion.div
