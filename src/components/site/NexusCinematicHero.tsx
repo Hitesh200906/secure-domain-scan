@@ -39,7 +39,7 @@ export function NexusCinematicHero() {
         />
       </div>
 
-      <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-16 sm:pt-20 pb-40 sm:pb-56">
+      <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-32 sm:pt-40 pb-40 sm:pb-56">
 
         {/* ---------- Two-column top ---------- */}
         <div className="grid grid-cols-1 gap-10 items-center">
@@ -116,7 +116,7 @@ export function NexusCinematicHero() {
                 className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl px-6 py-3.5 text-[14px] font-medium text-white transition-all duration-300 hover:-translate-y-0.5"
                 style={{
                   background: `linear-gradient(180deg, color-mix(in oklab, ${T.navy} 82%, white) 0%, ${T.navy} 55%, color-mix(in oklab, ${T.navy} 78%, black) 100%)`,
-                  border: `1px solid color-mix(in oklab, ${T.navy} 45%, white)`,
+                  border: "none",
                   boxShadow: `inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.35), 0 10px 30px -16px ${T.navy}`,
                 }}
               >
