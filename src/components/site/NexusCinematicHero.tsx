@@ -4,7 +4,7 @@ import { useAppMode } from "@/lib/app-mode";
 import imgMarketplace from "@/assets/card-marketplace-v6.png.asset.json";
 import imgSecurity from "@/assets/card-security-v9.png.asset.json";
 import imgRewards from "@/assets/card-rewards-v9.png.asset.json";
-import heroDesk from "@/assets/hero-bg-v5.png.asset.json";
+import heroDesk from "@/assets/hero-bg-v6.png.asset.json";
 
 const T = {
   bg: "#000000",
@@ -27,25 +27,8 @@ export function NexusCinematicHero() {
           className="absolute inset-0 bg-cover bg-no-repeat bg-center"
           style={{
             backgroundImage: `url(${heroDesk.url})`,
-            opacity: 0.85,
-            filter: "blur(2px) brightness(0.85)",
-            maskImage:
-              "linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0.85) 72%, transparent 100%)",
-            WebkitMaskImage:
-              "linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0.85) 72%, transparent 100%)",
+            opacity: 0.35,
           }}
-        />
-        {/* light veil for text legibility + seamless blend into the next section */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(110% 75% at 30% 45%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.2) 100%)",
-          }}
-        />
-        <div
-          className="absolute inset-x-0 bottom-0 h-48"
-          style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0) 0%, #000000 100%)" }}
         />
       </div>
 
