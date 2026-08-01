@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X, LogOut, User as UserIcon, LayoutDashboard, Lock, MessageSquare, Store as StoreIcon } from "lucide-react";
-import nexusLogo from "@/assets/nexus-logo.png";
+import nexusLogo from "@/assets/nexefy-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/use-admin";
 import { RoleBadge } from "@/components/ui/RoleBadge";
@@ -55,22 +55,13 @@ export function Navbar() {
       <div className="mx-auto max-w-7xl px-3 sm:px-6">
         <div className={`flex items-center justify-between rounded-2xl px-3 sm:px-6 py-2.5 sm:py-3 bg-black backdrop-blur-xl transition-all duration-300 ${scrolled ? "border border-white/10 shadow-lg" : "border border-transparent"}`}>
           <Link to="/" className="flex items-center gap-2 group">
-            <span
-              aria-label="Nexefy"
-              className="block size-7"
+            <img
+              src={nexusLogo}
+              alt="Nexefy"
+              className="block size-7 object-contain"
               style={{
-                background:
-                  "linear-gradient(135deg, #5A24B8 0%, #4730D8 45%, #1F55F5 100%)",
-                WebkitMaskImage: `url(${nexusLogo})`,
-                maskImage: `url(${nexusLogo})`,
-                WebkitMaskRepeat: "no-repeat",
-                maskRepeat: "no-repeat",
-                WebkitMaskPosition: "center",
-                maskPosition: "center",
-                WebkitMaskSize: "contain",
-                maskSize: "contain",
                 filter:
-                  "drop-shadow(0 0 6px rgba(71,48,216,.45)) drop-shadow(0 0 10px rgba(31,85,245,.35))",
+                  "drop-shadow(0 0 8px rgba(37,99,235,.45)) drop-shadow(0 0 14px rgba(31,85,245,.25))",
               }}
             />
             <span className="text-[15px] font-semibold tracking-tight text-white">
