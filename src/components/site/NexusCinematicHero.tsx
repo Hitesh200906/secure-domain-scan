@@ -136,7 +136,9 @@ export function NexusCinematicHero() {
             </motion.div>
           </div>
 
+          <RevenueCard />
         </div>
+
 
         {/* ---------- Feature cards ---------- */}
         <div className="mt-20 sm:mt-24 grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6">
