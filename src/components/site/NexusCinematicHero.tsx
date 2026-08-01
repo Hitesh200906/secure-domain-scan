@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { motion, animate } from "framer-motion";
+import { useEffect, useState } from "react";
 import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe, Store } from "lucide-react";
 import { useAppMode } from "@/lib/app-mode";
 import imgMarketplace from "@/assets/card-marketplace-v7.png.asset.json";
@@ -42,7 +43,7 @@ export function NexusCinematicHero() {
       <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-24 sm:pt-28 pb-40 sm:pb-56">
 
         {/* ---------- Two-column top ---------- */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_minmax(0,560px)] gap-12 lg:gap-10 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-12 lg:gap-6 items-center">
           <div className="text-left">
             <motion.div
               initial={{ opacity: 0, y: 8 }}
@@ -228,71 +229,82 @@ function RevenueCard() {
       initial={{ opacity: 0, y: 26 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.9, delay: 0.35 }}
-      className="relative w-full"
+      className="relative w-full max-w-full"
+      style={{ perspective: "1400px" }}
     >
       <motion.div
-        animate={{ y: [0, -10, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-        className="relative rounded-[26px] overflow-hidden backdrop-blur-xl"
+        animate={{ y: [0, -10, 0], rotateY: [-11, -7, -11], rotateX: [6, 4, 6] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="relative rounded-[22px] overflow-hidden backdrop-blur-xl origin-center"
         style={{
-          background: "linear-gradient(160deg, rgba(18,20,28,0.92) 0%, rgba(6,7,11,0.92) 100%)",
+          transformStyle: "preserve-3d",
+          background: "linear-gradient(160deg, #0A0B0F 0%, #000000 100%)",
           border: `1px solid ${T.border}`,
-          boxShadow: "0 40px 100px -40px rgba(0,0,0,0.95), inset 0 1px 0 rgba(255,255,255,0.06)",
+          boxShadow:
+            "0 50px 110px -40px rgba(0,0,0,1), -24px 24px 60px -40px rgba(79,107,255,0.35), inset 0 1px 0 rgba(255,255,255,0.05)",
         }}
       >
-        <div className="flex justify-end px-6 pt-6">
+        <div className="flex justify-end px-4 pt-4">
           <div
-            className="inline-flex items-center gap-2 rounded-xl px-3 py-1.5 text-[12px]"
+            className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[10px]"
             style={{ border: `1px solid ${T.border}`, color: T.text2 }}
           >
             This Month
-            <span className="text-[10px]">▾</span>
+            <span className="text-[9px]">▾</span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-6 px-6 pb-7 pt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-4 px-4 pb-5 pt-1">
           <div>
-            <div className="text-[13px]" style={{ color: T.text2 }}>Total Revenue</div>
-            <div className="mt-1 text-[38px] font-semibold tracking-[-0.02em]" style={{ color: T.text }}>
-              $28,450
+            <div className="text-[10.5px]" style={{ color: T.text2 }}>Total Revenue</div>
+            <div className="mt-1 text-[26px] font-semibold tracking-[-0.02em]" style={{ color: T.text }}>
+              <AnimatedNumber value={28450} prefix="$" />
             </div>
-            <div className="mt-3 flex items-center gap-2.5">
+            <div className="mt-2 flex items-center gap-2">
               <span
-                className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[12px] font-medium"
+                className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-medium"
                 style={{ background: "rgba(16,185,129,0.12)", color: "#34D399" }}
               >
-                ↑ 12.5%
+                ↑ <AnimatedNumber value={12.5} decimals={1} suffix="%" />
               </span>
-              <span className="text-[12px]" style={{ color: T.text2 }}>vs last month</span>
+              <span className="text-[10px]" style={{ color: T.text2 }}>vs last month</span>
             </div>
 
-            <div className="my-5 h-px w-full" style={{ background: T.border }} />
+            <div className="my-3.5 h-px w-full" style={{ background: T.border }} />
 
-            <div className="text-[12px]" style={{ color: T.text3 }}>Breakdown</div>
-            <ul className="mt-3 space-y-2.5">
+            <div className="text-[10px]" style={{ color: T.text3 }}>Breakdown</div>
+            <ul className="mt-2 space-y-1.5">
               {[
-                { label: "Subscriptions", value: "$16,250", dot: "#A855F7" },
-                { label: "Sales", value: "$8,150", dot: "#2563EB" },
-                { label: "Tips", value: "$4,050", dot: "#06B6D4" },
-              ].map((r) => (
-                <li key={r.label} className="flex items-center justify-between gap-4 text-[13.5px]">
-                  <span className="inline-flex items-center gap-2" style={{ color: T.text2 }}>
-                    <span className="size-2 rounded-full" style={{ background: r.dot }} />
+                { label: "Subscriptions", value: 16250, dot: "#A855F7" },
+                { label: "Sales", value: 8150, dot: "#2563EB" },
+                { label: "Tips", value: 4050, dot: "#06B6D4" },
+              ].map((r, i) => (
+                <motion.li
+                  key={r.label}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.7 + i * 0.12 }}
+                  className="flex items-center justify-between gap-3 text-[11px]"
+                >
+                  <span className="inline-flex items-center gap-1.5" style={{ color: T.text2 }}>
+                    <span className="size-1.5 rounded-full" style={{ background: r.dot }} />
                     {r.label}
                   </span>
-                  <span style={{ color: T.text }}>{r.value}</span>
-                </li>
+                  <span style={{ color: T.text }}>
+                    <AnimatedNumber value={r.value} prefix="$" delay={0.7 + i * 0.12} />
+                  </span>
+                </motion.li>
               ))}
             </ul>
           </div>
 
           <div className="min-w-0">
-            <div className="flex gap-2">
-              <div className="flex flex-col justify-between py-1 text-[10.5px]" style={{ color: T.text3 }}>
+            <div className="flex gap-1.5">
+              <div className="flex flex-col justify-between py-0.5 text-[8.5px]" style={{ color: T.text3 }}>
                 {["32K", "24K", "16K", "8K", "0"].map((t) => <span key={t}>{t}</span>)}
               </div>
               <div className="relative flex-1">
-                <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-[200px]" preserveAspectRatio="none">
+                <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-[140px]" preserveAspectRatio="none">
                   <defs>
                     <linearGradient id="revLine" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="0%" stopColor="#2563EB" />
@@ -307,7 +319,13 @@ function RevenueCard() {
                     <line key={i} x1="0" x2={w} y1={(i * h) / 4} y2={(i * h) / 4}
                       stroke="rgba(255,255,255,0.06)" strokeDasharray="4 6" />
                   ))}
-                  <path d={`${path} L${w},${h} L0,${h} Z`} fill="url(#revFill)" />
+                  <motion.path
+                    d={`${path} L${w},${h} L0,${h} Z`}
+                    fill="url(#revFill)"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1.2, delay: 1.2 }}
+                  />
                   <motion.path
                     d={path}
                     fill="none"
@@ -318,9 +336,17 @@ function RevenueCard() {
                     animate={{ pathLength: 1 }}
                     transition={{ duration: 1.8, delay: 0.6, ease: "easeOut" }}
                   />
-                  <circle cx={w} cy={h - (points[points.length - 1] / max) * h} r={6} fill="#A855F7" />
+                  <motion.circle
+                    cx={w}
+                    cy={h - (points[points.length - 1] / max) * h}
+                    r={6}
+                    fill="#A855F7"
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: [0, 1.4, 1], opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 2.3 }}
+                  />
                 </svg>
-                <div className="mt-2 flex justify-between text-[10.5px]" style={{ color: T.text3 }}>
+                <div className="mt-1.5 flex justify-between text-[8.5px]" style={{ color: T.text3 }}>
                   {["May 1", "May 8", "May 15", "May 22", "May 31"].map((d) => <span key={d}>{d}</span>)}
                 </div>
               </div>
@@ -331,3 +357,37 @@ function RevenueCard() {
     </motion.div>
   );
 }
+
+function AnimatedNumber({
+  value,
+  prefix = "",
+  suffix = "",
+  decimals = 0,
+  delay = 0.4,
+}: {
+  value: number;
+  prefix?: string;
+  suffix?: string;
+  decimals?: number;
+  delay?: number;
+}) {
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    const controls = animate(0, value, {
+      duration: 1.6,
+      delay,
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: (v: number) => setDisplay(v),
+    });
+    return () => controls.stop();
+  }, [value, delay]);
+
+  const formatted =
+    decimals > 0
+      ? display.toFixed(decimals)
+      : Math.round(display).toLocaleString("en-US");
+
+  return <span>{prefix}{formatted}{suffix}</span>;
+}
+
