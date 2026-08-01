@@ -29,16 +29,11 @@ export function NexusCinematicHero() {
           className="absolute inset-0 bg-cover bg-no-repeat bg-center"
           style={{
             backgroundImage: `url(${heroDesk.url})`,
-            opacity: 0.3,
-            maskImage:
-              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.45) 12%, #000 34%, #000 62%, rgba(0,0,0,0.4) 88%, transparent 100%)",
-            WebkitMaskImage:
-              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.45) 12%, #000 34%, #000 62%, rgba(0,0,0,0.4) 88%, transparent 100%)",
+            opacity: 1,
           }}
         />
-        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black via-black/70 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-black via-black/80 to-transparent" />
       </div>
+
 
 
 
