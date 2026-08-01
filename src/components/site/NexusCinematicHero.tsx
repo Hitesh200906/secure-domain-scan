@@ -7,7 +7,7 @@ import imgSecurity from "@/assets/card-security-v11.png.asset.json";
 import imgRewards from "@/assets/card-rewards-v10.png.asset.json";
 import heroDesk from "@/assets/hero-bg-v6.png.asset.json";
 
-const T = {
+export const T = {
   bg: "#000000",
   card: "#000000",
   border: "#1F232D",
@@ -164,7 +164,7 @@ export function NexusCinematicHero() {
   );
 }
 
-function FeatureCard({
+export function FeatureCard({
   index,
   image,
   title,
@@ -212,7 +212,7 @@ function FeatureCard({
 }
 
 
-function RevenueCard() {
+export function RevenueCard() {
   const points = [4, 5.5, 7, 10, 9.5, 13, 12, 16, 18, 17.5, 22, 24, 23.5, 28, 31];
   const w = 520, h = 260;
   const max = 34;
