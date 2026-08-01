@@ -184,12 +184,12 @@ function FeatureCard({
         boxShadow: "0 24px 60px -30px rgba(0,0,0,0.9)",
       }}
     >
-      <div className="relative w-full basis-[80%] grow-0 aspect-[16/9]">
+      <div className={`relative w-full basis-[80%] grow-0 ${fit === "contain" ? "aspect-[3/2]" : "aspect-[16/9]"}`}>
         <img
           src={image}
           alt={`${title} preview`}
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover object-top"
+          className={`absolute inset-0 h-full w-full object-top ${fit === "contain" ? "object-contain" : "object-cover"}`}
         />
       </div>
 
