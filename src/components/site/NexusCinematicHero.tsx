@@ -25,23 +25,11 @@ export function NexusCinematicHero() {
       {/* ambient background image — blended into navbar above and page below */}
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
         <div
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-contain bg-no-repeat bg-center sm:bg-cover"
           style={{
             backgroundImage: `url(${heroDesk.url})`,
             opacity: 0.2,
-            filter: "blur(4px) brightness(2.2) contrast(1.05)",
-            transform: "scale(1.08)",
-            WebkitMaskImage:
-              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 12%, #000 35%, #000 65%, rgba(0,0,0,0.55) 88%, transparent 100%)",
-            maskImage:
-              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 12%, #000 35%, #000 65%, rgba(0,0,0,0.55) 88%, transparent 100%)",
-          }}
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.35) 20%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.45) 88%, #000 100%)",
+            filter: "blur(3px) brightness(2.1) contrast(1.05)",
           }}
         />
       </div>
