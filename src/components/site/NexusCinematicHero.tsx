@@ -27,11 +27,28 @@ export function NexusCinematicHero() {
           className="absolute inset-0 bg-cover bg-no-repeat bg-center"
           style={{
             backgroundImage: `url(${heroDesk.url})`,
-            opacity: 0.45,
-            filter: "blur(2px) brightness(0.9)",
+            opacity: 0.3,
+            filter: "blur(3px) brightness(0.7) saturate(0.9)",
+            maskImage:
+              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 14%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.55) 78%, transparent 100%)",
+            WebkitMaskImage:
+              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 14%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.55) 78%, transparent 100%)",
           }}
         />
+        {/* darkening veil + seamless blend into the next section */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(120% 80% at 50% 40%, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.72) 100%)",
+          }}
+        />
+        <div
+          className="absolute inset-x-0 bottom-0 h-56"
+          style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0) 0%, #000000 100%)" }}
+        />
       </div>
+
 
       <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-24 sm:pt-28 pb-20">
         {/* ---------- Two-column top ---------- */}
@@ -41,8 +58,8 @@ export function NexusCinematicHero() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2.5 rounded-full px-3.5 py-1.5 text-[11px] uppercase tracking-[0.2em]"
-              style={{ background: "#000000", border: `1px solid ${T.border}`, color: T.text2 }}
+              className="inline-flex items-center gap-2.5 rounded-full px-3.5 py-1.5 text-[11px] uppercase tracking-[0.2em] backdrop-blur-md"
+              style={{ background: "rgba(0,0,0,0.55)", border: `1px solid ${T.border}`, color: T.text2 }}
             >
               <span className="relative flex size-1.5">
                 <motion.span
@@ -67,7 +84,7 @@ export function NexusCinematicHero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.08 }}
               className="mt-7 font-semibold tracking-[-0.05em] leading-[0.9] text-[40px] sm:text-[60px] lg:text-[72px]"
-              style={{ color: T.text }}
+              style={{ color: T.text, textShadow: "0 4px 40px rgba(0,0,0,0.8)" }}
             >
               NEXEFY
             </motion.h1>
@@ -90,9 +107,9 @@ export function NexusCinematicHero() {
             >
               <button
                 onClick={() => setMode("nexus")}
-                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl px-6 py-3.5 text-[14px] font-medium transition-all duration-300 hover:-translate-y-0.5 hover:border-white/25"
+                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl px-6 py-3.5 text-[14px] font-medium backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-white/25"
                 style={{
-                  background: "linear-gradient(180deg,#141620 0%,#000000 100%)",
+                  background: "linear-gradient(180deg,rgba(22,24,32,0.85) 0%,rgba(0,0,0,0.85) 100%)",
                   border: `1px solid ${T.border}`,
                   color: T.text,
                   boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)",
@@ -166,8 +183,12 @@ function FeatureCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.6, delay: index * 0.08 }}
-      className="group relative rounded-2xl overflow-hidden flex flex-col"
-      style={{ background: T.card, border: `1px solid ${T.border}` }}
+      className="group relative rounded-2xl overflow-hidden flex flex-col backdrop-blur-md transition-transform duration-300 hover:-translate-y-1"
+      style={{
+        background: "rgba(0,0,0,0.6)",
+        border: `1px solid ${T.border}`,
+        boxShadow: "0 24px 60px -30px rgba(0,0,0,0.9)",
+      }}
     >
       <div className="relative w-full basis-[80%] grow-0 aspect-[16/9]">
         <img
@@ -178,7 +199,7 @@ function FeatureCard({
         />
       </div>
 
-      <div className="basis-[20%] px-5 py-3.5" style={{ background: T.card }}>
+      <div className="basis-[20%] px-5 py-3.5" style={{ background: "rgba(0,0,0,0.7)" }}>
         <div className="text-[16px] sm:text-[17px] font-semibold leading-tight" style={{ color: T.text }}>
           {title}
         </div>
