@@ -228,33 +228,36 @@ function RevenueCard() {
       initial={{ opacity: 0, y: 26 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.9, delay: 0.35 }}
-      className="relative w-full"
+      className="relative w-full max-w-full"
+      style={{ perspective: "1400px" }}
     >
       <motion.div
-        animate={{ y: [0, -10, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-        className="relative rounded-[26px] overflow-hidden backdrop-blur-xl"
+        animate={{ y: [0, -10, 0], rotateY: [-11, -7, -11], rotateX: [6, 4, 6] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="relative rounded-[22px] overflow-hidden backdrop-blur-xl origin-center"
         style={{
-          background: "linear-gradient(160deg, rgba(18,20,28,0.92) 0%, rgba(6,7,11,0.92) 100%)",
+          transformStyle: "preserve-3d",
+          background: "linear-gradient(160deg, #0A0B0F 0%, #000000 100%)",
           border: `1px solid ${T.border}`,
-          boxShadow: "0 40px 100px -40px rgba(0,0,0,0.95), inset 0 1px 0 rgba(255,255,255,0.06)",
+          boxShadow:
+            "0 50px 110px -40px rgba(0,0,0,1), -24px 24px 60px -40px rgba(79,107,255,0.35), inset 0 1px 0 rgba(255,255,255,0.05)",
         }}
       >
-        <div className="flex justify-end px-6 pt-6">
+        <div className="flex justify-end px-4 pt-4">
           <div
-            className="inline-flex items-center gap-2 rounded-xl px-3 py-1.5 text-[12px]"
+            className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[10px]"
             style={{ border: `1px solid ${T.border}`, color: T.text2 }}
           >
             This Month
-            <span className="text-[10px]">▾</span>
+            <span className="text-[9px]">▾</span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-6 px-6 pb-7 pt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-4 px-4 pb-5 pt-1">
           <div>
-            <div className="text-[13px]" style={{ color: T.text2 }}>Total Revenue</div>
-            <div className="mt-1 text-[38px] font-semibold tracking-[-0.02em]" style={{ color: T.text }}>
-              $28,450
+            <div className="text-[10.5px]" style={{ color: T.text2 }}>Total Revenue</div>
+            <div className="mt-1 text-[26px] font-semibold tracking-[-0.02em]" style={{ color: T.text }}>
+              <AnimatedNumber value={28450} prefix="$" />
             </div>
             <div className="mt-3 flex items-center gap-2.5">
               <span
