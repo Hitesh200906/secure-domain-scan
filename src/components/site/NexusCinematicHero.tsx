@@ -360,7 +360,7 @@ export function RevenueCard() {
   );
 }
 
-function AnimatedNumber({
+export function AnimatedNumber({
   value,
   prefix = "",
   suffix = "",
