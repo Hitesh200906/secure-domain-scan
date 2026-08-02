@@ -30,107 +30,51 @@ export function SecurityCard() {
             className="block h-auto w-full"
           />
 
-          {/* Radar sweep glow over the radar circle (top-left area) */}
-          <motion.div
-            className="pointer-events-none absolute"
+          {/* Radar sweep over the radar circle (top-left) */}
+          <div
+            className="pointer-events-none absolute overflow-hidden rounded-full"
             style={{ left: "8%", top: "13%", width: "27%", aspectRatio: "1 / 1" }}
           >
             <motion.div
               className="h-full w-full rounded-full"
               style={{
                 background:
-                  "conic-gradient(from 0deg, rgba(124,58,237,0.45), rgba(79,107,255,0.12) 45deg, transparent 110deg, transparent 360deg)",
-                mixBlendMode: "screen",
+                  "conic-gradient(from 0deg, rgba(124,58,237,0.40), rgba(79,107,255,0.10) 40deg, transparent 100deg, transparent 360deg)",
               }}
               animate={{ rotate: 360 }}
               transition={{ duration: 4.5, repeat: Infinity, ease: "linear" }}
             />
+          </div>
+
+          {/* Tracer running along the top-right line graph */}
+          <div
+            className="pointer-events-none absolute overflow-hidden"
+            style={{ left: "40%", right: "6%", top: "14%", height: "24%" }}
+          >
             <motion.div
-              className="absolute inset-0 rounded-full"
-              style={{ boxShadow: "0 0 60px 6px rgba(79,107,255,0.25) inset" }}
-              animate={{ opacity: [0.25, 0.7, 0.25] }}
-              transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute top-0 h-full w-[2px]"
+              style={{ background: "rgba(255,255,255,0.35)" }}
+              animate={{ x: ["0%", "2400%"] }}
+              transition={{ duration: 4.5, repeat: Infinity, ease: "linear" }}
             />
-          </motion.div>
+          </div>
 
-          {/* Vertical scan line sweeping across the whole card */}
-          <motion.div
-            className="pointer-events-none absolute inset-y-0 w-[18%]"
-            style={{
-              background:
-                "linear-gradient(90deg, transparent, rgba(79,107,255,0.16), rgba(124,58,237,0.10), transparent)",
-              mixBlendMode: "screen",
-            }}
-            animate={{ x: ["-20%", "560%"] }}
-            transition={{ duration: 5.2, repeat: Infinity, ease: "easeInOut", repeatDelay: 1.2 }}
-          />
+          {/* Gentle drift across the bottom wave graph */}
+          <div
+            className="pointer-events-none absolute overflow-hidden"
+            style={{ left: "44%", right: "6%", bottom: "12%", height: "18%" }}
+          >
+            <motion.div
+              className="absolute inset-y-0 w-1/4"
+              style={{
+                background:
+                  "linear-gradient(90deg, transparent, rgba(124,58,237,0.28), transparent)",
+              }}
+              animate={{ x: ["-100%", "400%"] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+            />
+          </div>
 
-          {/* Diagonal glass shimmer */}
-          <motion.div
-            className="pointer-events-none absolute inset-y-[-40%] w-[26%] rotate-12"
-            style={{
-              background:
-                "linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent)",
-              mixBlendMode: "screen",
-            }}
-            animate={{ x: ["-40%", "480%"] }}
-            transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut", repeatDelay: 2.4 }}
-          />
-
-          {/* Breathing glow on the security score ring (center) */}
-          <motion.div
-            className="pointer-events-none absolute rounded-full"
-            style={{
-              left: "40%",
-              top: "41%",
-              width: "12%",
-              aspectRatio: "1 / 1",
-              background: "radial-gradient(circle, rgba(79,107,255,0.35), transparent 70%)",
-              mixBlendMode: "screen",
-            }}
-            animate={{ opacity: [0.2, 0.8, 0.2], scale: [0.9, 1.08, 0.9] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          />
-
-          {/* Pulsing shield status glow (right tile) */}
-          <motion.div
-            className="pointer-events-none absolute rounded-full"
-            style={{
-              left: "79%",
-              top: "43%",
-              width: "10%",
-              aspectRatio: "1 / 1",
-              background: "radial-gradient(circle, rgba(124,58,237,0.40), transparent 70%)",
-              mixBlendMode: "screen",
-            }}
-            animate={{ opacity: [0.15, 0.75, 0.15], scale: [0.85, 1.12, 0.85] }}
-            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
-          />
-
-          {/* Wave field shimmer at the bottom strip */}
-          <motion.div
-            className="pointer-events-none absolute"
-            style={{
-              left: "44%",
-              right: "6%",
-              bottom: "13%",
-              height: "16%",
-              background:
-                "linear-gradient(90deg, rgba(79,107,255,0.18), rgba(124,58,237,0.22), rgba(79,107,255,0.18))",
-              filter: "blur(14px)",
-              mixBlendMode: "screen",
-            }}
-            animate={{ opacity: [0.25, 0.65, 0.25] }}
-            transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut" }}
-          />
-
-          {/* Ambient edge glow */}
-          <motion.div
-            className="pointer-events-none absolute inset-0 rounded-[22px]"
-            style={{ boxShadow: "inset 0 0 80px rgba(79,107,255,0.12)" }}
-            animate={{ opacity: [0.4, 1, 0.4] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          />
         </div>
       </motion.div>
 
