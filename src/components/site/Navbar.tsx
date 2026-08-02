@@ -64,9 +64,7 @@ export function Navbar() {
                   "drop-shadow(0 0 8px rgba(37,99,235,.45)) drop-shadow(0 0 14px rgba(31,85,245,.25))",
               }}
             />
-            <span className="text-[15px] font-semibold tracking-tight text-white">
-              Nexefy
-            </span>
+            <span className="sr-only">Nexefy</span>
           </Link>
 
 
