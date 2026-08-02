@@ -74,9 +74,11 @@ export function NexusCinematicHero() {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.08 }}
-              className="mt-7 font-semibold leading-[0.9] text-[42px] sm:text-[62px] lg:text-[78px]"
+              className="mt-7 font-semibold leading-[0.95] whitespace-nowrap text-[30px] sm:text-[44px] lg:text-[54px]"
               style={{
-                letterSpacing: "0.14em",
+                fontFamily: "'Syne', Inter, sans-serif",
+                fontWeight: 800,
+                letterSpacing: "0.08em",
                 background: `linear-gradient(180deg, #FFFFFF 0%, #C9D2FF 45%, ${T.blue} 105%)`,
                 WebkitBackgroundClip: "text",
                 backgroundClip: "text",
