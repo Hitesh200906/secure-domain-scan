@@ -183,16 +183,16 @@ export function NexusCinematicHero() {
 
         {/* ---------- Bottom feature strip ---------- */}
         <div
-          className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.25em]"
+          className="mt-7 sm:mt-10 flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-8 gap-y-2 sm:gap-y-3 text-[8px] sm:text-[11px] uppercase tracking-[0.16em] sm:tracking-[0.25em]"
           style={{ color: T.text3 }}
         >
-          <span className="inline-flex items-center gap-2"><Store className="size-3.5" /> Storefronts</span>
+          <span className="inline-flex items-center gap-1.5 sm:gap-2"><Store className="size-2.5 sm:size-3.5" /> Storefronts</span>
           <span>·</span>
-          <span className="inline-flex items-center gap-2"><Users className="size-3.5" /> Communities</span>
+          <span className="inline-flex items-center gap-1.5 sm:gap-2"><Users className="size-2.5 sm:size-3.5" /> Communities</span>
           <span>·</span>
-          <span className="inline-flex items-center gap-2"><Gift className="size-3.5" /> Creator Rewards</span>
+          <span className="inline-flex items-center gap-1.5 sm:gap-2"><Gift className="size-2.5 sm:size-3.5" /> Creator Rewards</span>
           <span>·</span>
-          <span className="inline-flex items-center gap-2"><Sparkles className="size-3.5" /> AI Automation</span>
+          <span className="inline-flex items-center gap-1.5 sm:gap-2"><Sparkles className="size-2.5 sm:size-3.5" /> AI Automation</span>
         </div>
       </div>
     </section>
