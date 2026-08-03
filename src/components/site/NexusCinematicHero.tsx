@@ -319,10 +319,10 @@ export function RevenueCard() {
                   initial={{ opacity: 0, x: -8 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5, delay: 0.7 + i * 0.12 }}
-                  className="flex items-center justify-between gap-3 text-[11px]"
+                  className="flex items-center justify-between gap-2 sm:gap-3 text-[8.5px] sm:text-[11px]"
                 >
-                  <span className="inline-flex items-center gap-1.5" style={{ color: T.text2 }}>
-                    <span className="size-1.5 rounded-full" style={{ background: r.dot }} />
+                  <span className="inline-flex items-center gap-1 sm:gap-1.5" style={{ color: T.text2 }}>
+                    <span className="size-1 sm:size-1.5 rounded-full" style={{ background: r.dot }} />
                     {r.label}
                   </span>
                   <span style={{ color: T.text }}>
