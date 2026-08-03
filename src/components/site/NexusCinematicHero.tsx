@@ -270,7 +270,7 @@ export function RevenueCard() {
       <motion.div
         animate={{ y: [0, -10, 0], rotateY: [-11, -7, -11], rotateX: [6, 4, 6] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="relative rounded-[22px] overflow-hidden backdrop-blur-xl origin-center"
+        className="relative rounded-[14px] sm:rounded-[22px] overflow-hidden backdrop-blur-xl origin-center"
         style={{
           transformStyle: "preserve-3d",
           background: "linear-gradient(160deg, #0A0B0F 0%, #000000 100%)",
