@@ -1,7 +1,8 @@
 import { motion, animate } from "framer-motion";
 import { useEffect, useState } from "react";
-import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe, Store } from "lucide-react";
+import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe, Store, Gift, Layers, Users } from "lucide-react";
 import { useAppMode } from "@/lib/app-mode";
+import { HeroPointsPanel } from "./HeroPointsPanel";
 import imgMarketplace from "@/assets/card-marketplace-v7.png.asset.json";
 import imgSecurity from "@/assets/card-security-v11.png.asset.json";
 import imgRewards from "@/assets/card-rewards-v10.png.asset.json";
