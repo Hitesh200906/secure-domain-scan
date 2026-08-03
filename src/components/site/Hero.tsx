@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe as GlobeIcon, Store } from "lucide-react";
+import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe as GlobeIcon, Store, ScanSearch, Bug, FileCheck } from "lucide-react";
 import { useAppMode } from "@/lib/app-mode";
 import { T, FeatureCard } from "./NexusCinematicHero";
+import { HeroPointsPanel } from "./HeroPointsPanel";
 import { SecurityCard } from "./SecurityCard";
 import imgMarketplace from "@/assets/card-marketplace-v7.png.asset.json";
 import imgSecurity from "@/assets/card-security-v11.png.asset.json";
