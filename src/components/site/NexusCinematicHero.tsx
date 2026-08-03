@@ -234,11 +234,11 @@ export function FeatureCard({
         />
       </div>
 
-      <div className="basis-[20%] px-5 py-3.5" style={{ background: "rgba(0,0,0,0.7)" }}>
-        <div className="text-[16px] sm:text-[17px] font-semibold leading-tight" style={{ color: T.text }}>
+      <div className="basis-[20%] px-2 py-2 sm:px-5 sm:py-3.5" style={{ background: "rgba(0,0,0,0.7)" }}>
+        <div className="text-[10px] sm:text-[17px] font-semibold leading-tight" style={{ color: T.text }}>
           {title}
         </div>
-        <p className="mt-1 text-[12.5px] leading-snug" style={{ color: T.text2 }}>
+        <p className="mt-0.5 sm:mt-1 hidden xs:block text-[8.5px] sm:text-[12.5px] leading-snug" style={{ color: T.text2 }}>
           {desc}
         </p>
       </div>
