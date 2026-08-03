@@ -264,7 +264,7 @@ export function RevenueCard() {
       initial={{ opacity: 0, y: 26 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.9, delay: 0.35 }}
-      className="relative w-full max-w-full px-0 py-2 sm:px-6 sm:py-10 lg:pl-8 lg:pr-4"
+      className="relative w-full max-w-full px-0 py-1 sm:px-6 sm:py-10 lg:pl-8 lg:pr-4"
       style={{ perspective: "1400px" }}
     >
       <motion.div
@@ -279,7 +279,7 @@ export function RevenueCard() {
             "0 50px 110px -40px rgba(0,0,0,1), -24px 24px 60px -40px rgba(79,107,255,0.35), inset 0 1px 0 rgba(255,255,255,0.05)",
         }}
       >
-        <div className="flex justify-end px-2 pt-2 sm:px-4 sm:pt-4">
+        <div className="flex justify-end px-2 pt-1 sm:px-4 sm:pt-4">
           <div
             className="inline-flex items-center gap-1 sm:gap-1.5 rounded-md sm:rounded-lg px-1.5 py-0.5 sm:px-2.5 sm:py-1 text-[8px] sm:text-[10px]"
             style={{ border: `1px solid ${T.border}`, color: T.text2 }}
@@ -289,13 +289,13 @@ export function RevenueCard() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-2 sm:gap-4 px-2 pb-3 sm:px-4 sm:pb-5 pt-1">
+        <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-1 sm:gap-4 px-2 pb-1.5 sm:px-4 sm:pb-5 pt-0.5 sm:pt-1">
           <div>
-            <div className="text-[8px] sm:text-[10.5px]" style={{ color: T.text2 }}>Total Revenue</div>
-            <div className="mt-0.5 sm:mt-1 text-[16px] sm:text-[26px] font-semibold tracking-[-0.02em]" style={{ color: T.text }}>
+            <div className="text-[7.5px] sm:text-[10.5px]" style={{ color: T.text2 }}>Total Revenue</div>
+            <div className="mt-0 sm:mt-1 text-[13px] sm:text-[26px] font-semibold tracking-[-0.02em]" style={{ color: T.text }}>
               <AnimatedNumber value={28450} prefix="$" />
             </div>
-            <div className="mt-1 sm:mt-2 flex items-center gap-1.5 sm:gap-2">
+            <div className="mt-0.5 sm:mt-2 flex items-center gap-1.5 sm:gap-2">
               <span
                 className="inline-flex items-center gap-1 rounded-md px-1 py-0.5 sm:px-1.5 text-[8px] sm:text-[10px] font-medium"
                 style={{ background: "rgba(16,185,129,0.12)", color: "#34D399" }}
@@ -305,10 +305,10 @@ export function RevenueCard() {
               <span className="hidden sm:inline text-[10px]" style={{ color: T.text2 }}>vs last month</span>
             </div>
 
-            <div className="my-2 sm:my-3.5 h-px w-full" style={{ background: T.border }} />
+            <div className="my-1 sm:my-3.5 h-px w-full" style={{ background: T.border }} />
 
-            <div className="text-[8px] sm:text-[10px]" style={{ color: T.text3 }}>Breakdown</div>
-            <ul className="mt-1 sm:mt-2 space-y-1 sm:space-y-1.5">
+            <div className="text-[7.5px] sm:text-[10px]" style={{ color: T.text3 }}>Breakdown</div>
+            <ul className="mt-0.5 sm:mt-2 space-y-0.5 sm:space-y-1.5">
               {[
                 { label: "Subscriptions", value: 16250, dot: "#A855F7" },
                 { label: "Sales", value: 8150, dot: "#2563EB" },
@@ -339,7 +339,7 @@ export function RevenueCard() {
                 {["32K", "24K", "16K", "8K", "0"].map((t) => <span key={t}>{t}</span>)}
               </div>
               <div className="relative flex-1">
-                <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-[70px] sm:h-[140px]" preserveAspectRatio="none">
+                <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-[48px] sm:h-[140px]" preserveAspectRatio="none">
                   <defs>
                     <linearGradient id="revLine" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="0%" stopColor="#2563EB" />
