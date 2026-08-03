@@ -27,9 +27,9 @@ export function HeroPointsPanel({ points }: { points: HeroPoint[] }) {
       {/* darkening veil — image 30% less visible */}
       <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "rgba(0,0,0,0.45)" }} />
 
-      <div className="relative grid grid-cols-2 lg:grid-cols-4">
+      <div className="relative grid grid-cols-4">
         {points.map((p, i) => (
-          <div key={p.title} className="relative px-5 py-6 sm:px-7 sm:py-7">
+          <div key={p.title} className="relative px-2 py-3 sm:px-7 sm:py-7">
             {i > 0 && (
               <span
                 aria-hidden
