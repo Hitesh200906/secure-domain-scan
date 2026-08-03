@@ -43,10 +43,10 @@ export function NexusCinematicHero() {
 
       </div>
 
-      <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-24 sm:pt-28 pb-16 sm:pb-20">
+      <div className="relative mx-auto max-w-[1360px] px-3 sm:px-8 pt-20 sm:pt-28 pb-10 sm:pb-20">
 
         {/* ---------- Two-column top ---------- */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-14 items-center">
+        <div className="grid grid-cols-2 gap-3 sm:gap-8 lg:gap-14 items-center">
           <div className="text-left">
             <motion.div
               initial={{ opacity: 0, y: 8 }}
