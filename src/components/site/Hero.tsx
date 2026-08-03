@@ -132,15 +132,44 @@ export function Hero() {
           <FeatureCard index={2} image={imgRewards.url} title="Nexefy Rewards" desc="Earn from the clips you create." />
         </div>
 
+        <div className="mt-16 sm:mt-20">
+          <HeroPointsPanel
+            points={[
+              {
+                icon: ScanSearch,
+                title: "Continuous Scanning",
+                desc: "Automated scans across your apps, APIs and dependencies catch new exposures the moment they appear.",
+              },
+              {
+                icon: Bug,
+                title: "Prioritised Findings",
+                desc: "Every issue is scored by real impact, so your team fixes what actually matters before anything else.",
+              },
+              {
+                icon: FileCheck,
+                title: "Actionable Reports",
+                desc: "Clear, shareable reports with reproduction steps and remediation guidance your engineers can ship today.",
+              },
+              {
+                icon: ShieldCheck,
+                title: "Security, End to End",
+                desc: "Discovery, testing, monitoring, alerting and compliance-ready evidence in one place — one dashboard for your whole estate, with history you can prove.",
+              },
+            ]}
+          />
+        </div>
+
         <div
           className="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.25em]"
           style={{ color: T.text3 }}
         >
-          <span className="inline-flex items-center gap-2"><Store className="size-3.5" /> 12k+ Stores</span>
+          <span className="inline-flex items-center gap-2"><ScanSearch className="size-3.5" /> Continuous Scans</span>
           <span>·</span>
-          <span className="inline-flex items-center gap-2"><Zap className="size-3.5" /> 99.99% Uptime</span>
+          <span className="inline-flex items-center gap-2"><Zap className="size-3.5" /> Real-Time Alerts</span>
           <span>·</span>
-          <span className="inline-flex items-center gap-2"><GlobeIcon className="size-3.5" /> 140 Countries</span>
+          <span className="inline-flex items-center gap-2"><FileCheck className="size-3.5" /> Detailed Reports</span>
+          <span>·</span>
+          <span className="inline-flex items-center gap-2"><GlobeIcon className="size-3.5" /> Full-Stack Coverage</span>
         </div>
       </div>
     </section>
