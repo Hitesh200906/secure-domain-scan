@@ -15,45 +15,43 @@ export function HeroPointsPanel({ points }: { points: HeroPoint[] }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.6 }}
-      className="relative overflow-hidden rounded-[26px]"
+      className="relative overflow-hidden rounded-[22px]"
       style={{
-        background: "linear-gradient(180deg,#08090C 0%,#000000 100%)",
+        background: "linear-gradient(180deg,#0A0B0F 0%,#000000 100%)",
         border: `1px solid ${T.border}`,
+        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
       }}
     >
-      <div className="grid grid-cols-1 sm:grid-cols-2">
+      <div className="grid grid-cols-2 lg:grid-cols-4">
         {points.map((p, i) => {
           const Icon = p.icon;
           return (
             <div
               key={p.title}
-              className="px-6 py-7 sm:px-8 sm:py-9 border-b last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0 sm:even:border-r-0"
+              className="px-4 py-5 sm:px-5 sm:py-6 border-b lg:border-b-0 last:border-r-0 lg:last:border-r-0"
               style={{
                 borderColor: T.border,
-                borderRightWidth: i % 2 === 0 ? 2 : 0,
+                borderRightWidth: i % 2 === 0 ? 1 : 0,
                 borderRightStyle: "solid",
               }}
             >
-              <div className="flex items-start gap-3.5">
-                <span
-                  className="mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-xl"
-                  style={{ background: "#0C0E13", border: `1px solid ${T.border}`, color: T.text2 }}
-                >
-                  <Icon className="size-4" />
-                </span>
-                <div className="min-w-0">
-                  <div className="text-[14px] font-semibold tracking-[-0.01em]" style={{ color: T.text }}>
-                    {p.title}
-                  </div>
-                  <p className="mt-1.5 text-[12.5px] leading-relaxed" style={{ color: T.text2 }}>
-                    {p.desc}
-                  </p>
-                </div>
+              <span
+                className="inline-flex size-8 items-center justify-center rounded-lg"
+                style={{ background: "#0C0E13", border: `1px solid ${T.border}`, color: T.text2 }}
+              >
+                <Icon className="size-4" />
+              </span>
+              <div className="mt-3 text-[13.5px] font-semibold tracking-[-0.01em]" style={{ color: T.text }}>
+                {p.title}
               </div>
+              <p className="mt-1 text-[12px] leading-[1.45]" style={{ color: T.text2 }}>
+                {p.desc}
+              </p>
             </div>
           );
         })}
       </div>
+
     </motion.div>
   );
 }
