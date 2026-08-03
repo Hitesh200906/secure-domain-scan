@@ -41,7 +41,7 @@ export function NexusCinematicHero() {
         />
       </div>
 
-      <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-24 sm:pt-28 pb-40 sm:pb-56">
+      <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-24 sm:pt-28 pb-16 sm:pb-20">
 
         {/* ---------- Two-column top ---------- */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-14 items-center">
@@ -145,14 +145,14 @@ export function NexusCinematicHero() {
 
 
         {/* ---------- Feature cards ---------- */}
-        <div className="mt-20 sm:mt-24 grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6">
+        <div className="mt-14 sm:mt-16 grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6">
           <FeatureCard index={0} image={imgMarketplace.url} fit="contain" title="Marketplace" desc="Launch branded storefronts." />
           <FeatureCard index={1} image={imgSecurity.url} title="Security" desc="AI-powered protection." />
           <FeatureCard index={2} image={imgRewards.url} title="Nexefy Rewards" desc="Earn from the clips you create." />
         </div>
 
         {/* ---------- Platform points ---------- */}
-        <div className="mt-16 sm:mt-20">
+        <div className="mt-12 sm:mt-14">
           <HeroPointsPanel
             points={[
               {
@@ -181,7 +181,7 @@ export function NexusCinematicHero() {
 
         {/* ---------- Bottom feature strip ---------- */}
         <div
-          className="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.25em]"
+          className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.25em]"
           style={{ color: T.text3 }}
         >
           <span className="inline-flex items-center gap-2"><Store className="size-3.5" /> Storefronts</span>
