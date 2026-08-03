@@ -52,7 +52,7 @@ export function NexusCinematicHero() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2.5 rounded-full px-3.5 py-1.5 text-[11px] uppercase tracking-[0.2em] backdrop-blur-md"
+              className="inline-flex items-center gap-1.5 sm:gap-2.5 rounded-full px-2 py-1 sm:px-3.5 sm:py-1.5 text-[8px] sm:text-[11px] uppercase tracking-[0.14em] sm:tracking-[0.2em] backdrop-blur-md"
               style={{ background: "rgba(0,0,0,0.55)", border: `1px solid ${T.border}`, color: T.text2 }}
             >
               <span className="relative flex size-1.5">
