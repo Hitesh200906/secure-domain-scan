@@ -21,13 +21,15 @@ export function Hero() {
           style={{
             backgroundImage: `url(${heroDesk.url})`,
             backgroundPosition: "center 22%",
-            opacity: 0.4,
+            opacity: 0.32,
             WebkitMaskImage:
               "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.65) 10%, #000 26%, #000 66%, rgba(0,0,0,0.5) 84%, transparent 100%)",
             maskImage:
               "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.65) 10%, #000 26%, #000 66%, rgba(0,0,0,0.5) 84%, transparent 100%)",
           }}
         />
+        <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.2)" }} />
+
       </div>
 
       <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-24 sm:pt-28 pb-16 sm:pb-20">
