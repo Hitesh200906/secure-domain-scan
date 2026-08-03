@@ -381,7 +381,7 @@ export function RevenueCard() {
                     transition={{ duration: 0.6, delay: 2.3 }}
                   />
                 </svg>
-                <div className="mt-1.5 flex justify-between text-[8.5px]" style={{ color: T.text3 }}>
+                <div className="mt-1 sm:mt-1.5 flex justify-between text-[6px] sm:text-[8.5px]" style={{ color: T.text3 }}>
                   {["May 1", "May 8", "May 15", "May 22", "May 31"].map((d) => <span key={d}>{d}</span>)}
                 </div>
               </div>
