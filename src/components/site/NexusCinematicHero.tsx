@@ -96,7 +96,7 @@ export function NexusCinematicHero() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="mt-5 max-w-xl text-[15px] sm:text-[17px] leading-relaxed"
+              className="mt-2 sm:mt-5 max-w-xl text-[10px] sm:text-[17px] leading-snug sm:leading-relaxed"
               style={{ color: T.text2 }}
             >
               The all-in-one business platform where creators, founders, developers, and teams launch and grow without limits.
