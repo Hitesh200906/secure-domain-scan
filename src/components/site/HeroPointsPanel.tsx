@@ -27,10 +27,11 @@ export function HeroPointsPanel({ points }: { points: HeroPoint[] }) {
           return (
             <div
               key={p.title}
-              className="px-6 py-7 sm:px-8 sm:py-9"
+              className="px-6 py-7 sm:px-8 sm:py-9 border-b last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0 sm:even:border-r-0"
               style={{
-                borderBottom: i < points.length - 1 ? `1px solid ${T.border}` : undefined,
-                borderRight: i % 2 === 0 ? `2px solid ${T.border}` : undefined,
+                borderColor: T.border,
+                borderRightWidth: i % 2 === 0 ? 2 : 0,
+                borderRightStyle: "solid",
               }}
             >
               <div className="flex items-start gap-3.5">
