@@ -218,7 +218,7 @@ export function FeatureCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.6, delay: index * 0.08 }}
-      className="group relative rounded-2xl overflow-hidden flex flex-col backdrop-blur-md transition-transform duration-300 hover:-translate-y-1"
+      className="group relative rounded-xl sm:rounded-2xl overflow-hidden flex flex-col backdrop-blur-md transition-transform duration-300 hover:-translate-y-1"
       style={{
         background: "rgba(0,0,0,0.6)",
         border: `1px solid ${T.border}`,
