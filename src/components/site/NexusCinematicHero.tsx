@@ -134,9 +134,9 @@ export function NexusCinematicHero() {
                 }}
               >
                 <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                <ShieldCheck className="size-4" />
+                <ShieldCheck className="size-3 sm:size-4 shrink-0" />
                 Switch to Nexefy Security
-                <ArrowUpRight className="size-4 opacity-90 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight className="size-3 sm:size-4 shrink-0 opacity-90 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
 
             </motion.div>
