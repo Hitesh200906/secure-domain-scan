@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe as GlobeIcon, Store, ScanSearch, Bug, FileCheck } from "lucide-react";
+import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe as GlobeIcon, ScanSearch, Bug, FileCheck } from "lucide-react";
 import { useAppMode } from "@/lib/app-mode";
 import { T, FeatureCard } from "./NexusCinematicHero";
 import { HeroPointsPanel } from "./HeroPointsPanel";
