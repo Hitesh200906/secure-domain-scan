@@ -23,18 +23,15 @@ export function HeroPointsPanel({ points }: { points: HeroPoint[] }) {
       }}
     >
       <div className="grid grid-cols-2 lg:grid-cols-4">
-        {points.map((p, i) => {
+        {points.map((p) => {
           const Icon = p.icon;
           return (
             <div
               key={p.title}
-              className="px-4 py-5 sm:px-5 sm:py-6 border-b lg:border-b-0 last:border-r-0 lg:last:border-r-0"
-              style={{
-                borderColor: T.border,
-                borderRightWidth: i % 2 === 0 ? 1 : 0,
-                borderRightStyle: "solid",
-              }}
+              className="px-4 py-5 sm:px-5 sm:py-6 border-b border-r even:border-r-0 lg:border-b-0 lg:even:border-r lg:last:border-r-0 lg:[&:nth-last-child(-n+2)]:border-b-0 [&:nth-last-child(-n+2)]:border-b-0"
+              style={{ borderColor: T.border }}
             >
+
               <span
                 className="inline-flex size-8 items-center justify-center rounded-lg"
                 style={{ background: "#0C0E13", border: `1px solid ${T.border}`, color: T.text2 }}
