@@ -147,7 +147,7 @@ export function NexusCinematicHero() {
 
 
         {/* ---------- Feature cards ---------- */}
-        <div className="mt-14 sm:mt-16 grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6">
+        <div className="mt-8 sm:mt-16 grid grid-cols-3 gap-2 sm:gap-6">
           <FeatureCard index={0} image={imgMarketplace.url} fit="contain" title="Marketplace" desc="Launch branded storefronts." />
           <FeatureCard index={1} image={imgSecurity.url} title="Security" desc="AI-powered protection." />
           <FeatureCard index={2} image={imgRewards.url} title="Nexefy Rewards" desc="Earn from the clips you create." />
