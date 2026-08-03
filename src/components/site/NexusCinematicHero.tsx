@@ -106,11 +106,11 @@ export function NexusCinematicHero() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.32 }}
-              className="mt-9 flex flex-col sm:flex-row items-start sm:items-center gap-3"
+              className="mt-4 sm:mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3"
             >
               <button
                 onClick={() => setMode("nexus")}
-                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl px-6 py-3.5 text-[14px] font-medium backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-white/25"
+                className="group relative inline-flex items-center justify-center gap-1.5 sm:gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-3 py-2 sm:px-6 sm:py-3.5 text-[10px] sm:text-[14px] font-medium backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-white/25"
                 style={{
                   background: "linear-gradient(180deg,rgba(22,24,32,0.85) 0%,rgba(0,0,0,0.85) 100%)",
                   border: `1px solid ${T.border}`,
