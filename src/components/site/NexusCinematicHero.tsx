@@ -334,12 +334,12 @@ export function RevenueCard() {
           </div>
 
           <div className="min-w-0">
-            <div className="flex gap-1.5">
-              <div className="flex flex-col justify-between py-0.5 text-[8.5px]" style={{ color: T.text3 }}>
+            <div className="flex gap-1 sm:gap-1.5">
+              <div className="flex flex-col justify-between py-0.5 text-[6px] sm:text-[8.5px]" style={{ color: T.text3 }}>
                 {["32K", "24K", "16K", "8K", "0"].map((t) => <span key={t}>{t}</span>)}
               </div>
               <div className="relative flex-1">
-                <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-[140px]" preserveAspectRatio="none">
+                <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-[70px] sm:h-[140px]" preserveAspectRatio="none">
                   <defs>
                     <linearGradient id="revLine" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="0%" stopColor="#2563EB" />
