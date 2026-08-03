@@ -16,7 +16,7 @@ export function HeroPointsPanel({ points }: { points: HeroPoint[] }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.6 }}
-      className="relative overflow-hidden rounded-[24px]"
+      className="relative overflow-hidden rounded-[14px] sm:rounded-[24px]"
       style={{
         backgroundImage: `url(${panelBg.url})`,
         backgroundSize: "cover",
