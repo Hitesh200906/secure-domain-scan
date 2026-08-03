@@ -279,36 +279,36 @@ export function RevenueCard() {
             "0 50px 110px -40px rgba(0,0,0,1), -24px 24px 60px -40px rgba(79,107,255,0.35), inset 0 1px 0 rgba(255,255,255,0.05)",
         }}
       >
-        <div className="flex justify-end px-4 pt-4">
+        <div className="flex justify-end px-2 pt-2 sm:px-4 sm:pt-4">
           <div
-            className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[10px]"
+            className="inline-flex items-center gap-1 sm:gap-1.5 rounded-md sm:rounded-lg px-1.5 py-0.5 sm:px-2.5 sm:py-1 text-[8px] sm:text-[10px]"
             style={{ border: `1px solid ${T.border}`, color: T.text2 }}
           >
             This Month
-            <span className="text-[9px]">▾</span>
+            <span className="text-[7px] sm:text-[9px]">▾</span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-4 px-4 pb-5 pt-1">
+        <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-2 sm:gap-4 px-2 pb-3 sm:px-4 sm:pb-5 pt-1">
           <div>
-            <div className="text-[10.5px]" style={{ color: T.text2 }}>Total Revenue</div>
-            <div className="mt-1 text-[26px] font-semibold tracking-[-0.02em]" style={{ color: T.text }}>
+            <div className="text-[8px] sm:text-[10.5px]" style={{ color: T.text2 }}>Total Revenue</div>
+            <div className="mt-0.5 sm:mt-1 text-[16px] sm:text-[26px] font-semibold tracking-[-0.02em]" style={{ color: T.text }}>
               <AnimatedNumber value={28450} prefix="$" />
             </div>
-            <div className="mt-2 flex items-center gap-2">
+            <div className="mt-1 sm:mt-2 flex items-center gap-1.5 sm:gap-2">
               <span
-                className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-medium"
+                className="inline-flex items-center gap-1 rounded-md px-1 py-0.5 sm:px-1.5 text-[8px] sm:text-[10px] font-medium"
                 style={{ background: "rgba(16,185,129,0.12)", color: "#34D399" }}
               >
                 ↑ <AnimatedNumber value={12.5} decimals={1} suffix="%" />
               </span>
-              <span className="text-[10px]" style={{ color: T.text2 }}>vs last month</span>
+              <span className="hidden sm:inline text-[10px]" style={{ color: T.text2 }}>vs last month</span>
             </div>
 
-            <div className="my-3.5 h-px w-full" style={{ background: T.border }} />
+            <div className="my-2 sm:my-3.5 h-px w-full" style={{ background: T.border }} />
 
-            <div className="text-[10px]" style={{ color: T.text3 }}>Breakdown</div>
-            <ul className="mt-2 space-y-1.5">
+            <div className="text-[8px] sm:text-[10px]" style={{ color: T.text3 }}>Breakdown</div>
+            <ul className="mt-1 sm:mt-2 space-y-1 sm:space-y-1.5">
               {[
                 { label: "Subscriptions", value: 16250, dot: "#A855F7" },
                 { label: "Sales", value: 8150, dot: "#2563EB" },
