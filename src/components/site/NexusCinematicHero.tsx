@@ -43,16 +43,16 @@ export function NexusCinematicHero() {
 
       </div>
 
-      <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-24 sm:pt-28 pb-16 sm:pb-20">
+      <div className="relative mx-auto max-w-[1360px] px-3 sm:px-8 pt-20 sm:pt-28 pb-10 sm:pb-20">
 
         {/* ---------- Two-column top ---------- */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-14 items-center">
-          <div className="text-left">
+        <div className="grid grid-cols-2 gap-3 sm:gap-8 lg:gap-14 items-center">
+          <div className="text-left min-w-0">
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2.5 rounded-full px-3.5 py-1.5 text-[11px] uppercase tracking-[0.2em] backdrop-blur-md"
+              className="inline-flex items-center gap-1.5 sm:gap-2.5 rounded-full px-2 py-1 sm:px-3.5 sm:py-1.5 text-[8px] sm:text-[11px] uppercase tracking-[0.14em] sm:tracking-[0.2em] backdrop-blur-md"
               style={{ background: "rgba(0,0,0,0.55)", border: `1px solid ${T.border}`, color: T.text2 }}
             >
               <span className="relative flex size-1.5">
@@ -77,7 +77,7 @@ export function NexusCinematicHero() {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.08 }}
-              className="mt-7 leading-[0.95] whitespace-nowrap text-[22px] sm:text-[32px] lg:text-[40px]"
+              className="mt-3 sm:mt-7 leading-[0.95] whitespace-nowrap text-[15px] sm:text-[32px] lg:text-[40px]"
               style={{
                 fontFamily: "ui-sans-serif, system-ui, sans-serif",
                 fontWeight: 700,
@@ -96,7 +96,7 @@ export function NexusCinematicHero() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="mt-5 max-w-xl text-[15px] sm:text-[17px] leading-relaxed"
+              className="mt-2 sm:mt-5 max-w-xl text-[10px] sm:text-[17px] leading-snug sm:leading-relaxed"
               style={{ color: T.text2 }}
             >
               The all-in-one business platform where creators, founders, developers, and teams launch and grow without limits.
@@ -106,11 +106,11 @@ export function NexusCinematicHero() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.32 }}
-              className="mt-9 flex flex-col sm:flex-row items-start sm:items-center gap-3"
+              className="mt-4 sm:mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3"
             >
               <button
                 onClick={() => setMode("nexus")}
-                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl px-6 py-3.5 text-[14px] font-medium backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-white/25"
+                className="group relative inline-flex items-center justify-center gap-1.5 sm:gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-3 py-2 sm:px-6 sm:py-3.5 text-[10px] sm:text-[14px] font-medium backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-white/25"
                 style={{
                   background: "linear-gradient(180deg,rgba(22,24,32,0.85) 0%,rgba(0,0,0,0.85) 100%)",
                   border: `1px solid ${T.border}`,
@@ -119,14 +119,14 @@ export function NexusCinematicHero() {
                 }}
               >
                 <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                <Sparkles className="size-4" />
+                <Sparkles className="size-3 sm:size-4 shrink-0" />
                 Switch to Nexefy
-                <ArrowUpRight className="size-4 opacity-80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight className="size-3 sm:size-4 shrink-0 opacity-80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
 
               <button
                 onClick={() => setMode("security")}
-                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl px-6 py-3.5 text-[14px] font-medium text-white transition-all duration-300 hover:-translate-y-0.5"
+                className="group relative inline-flex items-center justify-center gap-1.5 sm:gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-3 py-2 sm:px-6 sm:py-3.5 text-[10px] sm:text-[14px] font-medium text-white transition-all duration-300 hover:-translate-y-0.5"
                 style={{
                   background: `linear-gradient(180deg, color-mix(in oklab, ${T.navy} 82%, white) 0%, ${T.navy} 55%, color-mix(in oklab, ${T.navy} 78%, black) 100%)`,
                   border: "none",
@@ -134,9 +134,9 @@ export function NexusCinematicHero() {
                 }}
               >
                 <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                <ShieldCheck className="size-4" />
+                <ShieldCheck className="size-3 sm:size-4 shrink-0" />
                 Switch to Nexefy Security
-                <ArrowUpRight className="size-4 opacity-90 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight className="size-3 sm:size-4 shrink-0 opacity-90 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
 
             </motion.div>
@@ -147,14 +147,14 @@ export function NexusCinematicHero() {
 
 
         {/* ---------- Feature cards ---------- */}
-        <div className="mt-14 sm:mt-16 grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6">
+        <div className="mt-8 sm:mt-16 grid grid-cols-3 gap-2 sm:gap-6">
           <FeatureCard index={0} image={imgMarketplace.url} fit="contain" title="Marketplace" desc="Launch branded storefronts." />
           <FeatureCard index={1} image={imgSecurity.url} title="Security" desc="AI-powered protection." />
           <FeatureCard index={2} image={imgRewards.url} title="Nexefy Rewards" desc="Earn from the clips you create." />
         </div>
 
         {/* ---------- Platform points ---------- */}
-        <div className="mt-12 sm:mt-14">
+        <div className="mt-8 sm:mt-14">
           <HeroPointsPanel
             points={[
               {
@@ -183,16 +183,16 @@ export function NexusCinematicHero() {
 
         {/* ---------- Bottom feature strip ---------- */}
         <div
-          className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.25em]"
+          className="mt-7 sm:mt-10 flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-8 gap-y-2 sm:gap-y-3 text-[8px] sm:text-[11px] uppercase tracking-[0.16em] sm:tracking-[0.25em]"
           style={{ color: T.text3 }}
         >
-          <span className="inline-flex items-center gap-2"><Store className="size-3.5" /> Storefronts</span>
+          <span className="inline-flex items-center gap-1.5 sm:gap-2"><Store className="size-2.5 sm:size-3.5" /> Storefronts</span>
           <span>·</span>
-          <span className="inline-flex items-center gap-2"><Users className="size-3.5" /> Communities</span>
+          <span className="inline-flex items-center gap-1.5 sm:gap-2"><Users className="size-2.5 sm:size-3.5" /> Communities</span>
           <span>·</span>
-          <span className="inline-flex items-center gap-2"><Gift className="size-3.5" /> Creator Rewards</span>
+          <span className="inline-flex items-center gap-1.5 sm:gap-2"><Gift className="size-2.5 sm:size-3.5" /> Creator Rewards</span>
           <span>·</span>
-          <span className="inline-flex items-center gap-2"><Sparkles className="size-3.5" /> AI Automation</span>
+          <span className="inline-flex items-center gap-1.5 sm:gap-2"><Sparkles className="size-2.5 sm:size-3.5" /> AI Automation</span>
         </div>
       </div>
     </section>
@@ -218,7 +218,7 @@ export function FeatureCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.6, delay: index * 0.08 }}
-      className="group relative rounded-2xl overflow-hidden flex flex-col backdrop-blur-md transition-transform duration-300 hover:-translate-y-1"
+      className="group relative rounded-xl sm:rounded-2xl overflow-hidden flex flex-col backdrop-blur-md transition-transform duration-300 hover:-translate-y-1"
       style={{
         background: "rgba(0,0,0,0.6)",
         border: `1px solid ${T.border}`,
@@ -234,11 +234,11 @@ export function FeatureCard({
         />
       </div>
 
-      <div className="basis-[20%] px-5 py-3.5" style={{ background: "rgba(0,0,0,0.7)" }}>
-        <div className="text-[16px] sm:text-[17px] font-semibold leading-tight" style={{ color: T.text }}>
+      <div className="basis-[20%] px-2 py-2 sm:px-5 sm:py-3.5" style={{ background: "rgba(0,0,0,0.7)" }}>
+        <div className="text-[10px] sm:text-[17px] font-semibold leading-tight" style={{ color: T.text }}>
           {title}
         </div>
-        <p className="mt-1 text-[12.5px] leading-snug" style={{ color: T.text2 }}>
+        <p className="mt-0.5 sm:mt-1 hidden xs:block text-[8.5px] sm:text-[12.5px] leading-snug" style={{ color: T.text2 }}>
           {desc}
         </p>
       </div>
@@ -264,13 +264,13 @@ export function RevenueCard() {
       initial={{ opacity: 0, y: 26 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.9, delay: 0.35 }}
-      className="relative w-full max-w-full px-2 py-8 sm:px-6 sm:py-10 lg:pl-8 lg:pr-4"
+      className="relative w-full max-w-full px-0 py-2 sm:px-6 sm:py-10 lg:pl-8 lg:pr-4"
       style={{ perspective: "1400px" }}
     >
       <motion.div
         animate={{ y: [0, -10, 0], rotateY: [-11, -7, -11], rotateX: [6, 4, 6] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="relative rounded-[22px] overflow-hidden backdrop-blur-xl origin-center"
+        className="relative rounded-[14px] sm:rounded-[22px] overflow-hidden backdrop-blur-xl origin-center"
         style={{
           transformStyle: "preserve-3d",
           background: "linear-gradient(160deg, #0A0B0F 0%, #000000 100%)",
@@ -279,36 +279,36 @@ export function RevenueCard() {
             "0 50px 110px -40px rgba(0,0,0,1), -24px 24px 60px -40px rgba(79,107,255,0.35), inset 0 1px 0 rgba(255,255,255,0.05)",
         }}
       >
-        <div className="flex justify-end px-4 pt-4">
+        <div className="flex justify-end px-2 pt-2 sm:px-4 sm:pt-4">
           <div
-            className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[10px]"
+            className="inline-flex items-center gap-1 sm:gap-1.5 rounded-md sm:rounded-lg px-1.5 py-0.5 sm:px-2.5 sm:py-1 text-[8px] sm:text-[10px]"
             style={{ border: `1px solid ${T.border}`, color: T.text2 }}
           >
             This Month
-            <span className="text-[9px]">▾</span>
+            <span className="text-[7px] sm:text-[9px]">▾</span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-4 px-4 pb-5 pt-1">
+        <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-2 sm:gap-4 px-2 pb-3 sm:px-4 sm:pb-5 pt-1">
           <div>
-            <div className="text-[10.5px]" style={{ color: T.text2 }}>Total Revenue</div>
-            <div className="mt-1 text-[26px] font-semibold tracking-[-0.02em]" style={{ color: T.text }}>
+            <div className="text-[8px] sm:text-[10.5px]" style={{ color: T.text2 }}>Total Revenue</div>
+            <div className="mt-0.5 sm:mt-1 text-[16px] sm:text-[26px] font-semibold tracking-[-0.02em]" style={{ color: T.text }}>
               <AnimatedNumber value={28450} prefix="$" />
             </div>
-            <div className="mt-2 flex items-center gap-2">
+            <div className="mt-1 sm:mt-2 flex items-center gap-1.5 sm:gap-2">
               <span
-                className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-medium"
+                className="inline-flex items-center gap-1 rounded-md px-1 py-0.5 sm:px-1.5 text-[8px] sm:text-[10px] font-medium"
                 style={{ background: "rgba(16,185,129,0.12)", color: "#34D399" }}
               >
                 ↑ <AnimatedNumber value={12.5} decimals={1} suffix="%" />
               </span>
-              <span className="text-[10px]" style={{ color: T.text2 }}>vs last month</span>
+              <span className="hidden sm:inline text-[10px]" style={{ color: T.text2 }}>vs last month</span>
             </div>
 
-            <div className="my-3.5 h-px w-full" style={{ background: T.border }} />
+            <div className="my-2 sm:my-3.5 h-px w-full" style={{ background: T.border }} />
 
-            <div className="text-[10px]" style={{ color: T.text3 }}>Breakdown</div>
-            <ul className="mt-2 space-y-1.5">
+            <div className="text-[8px] sm:text-[10px]" style={{ color: T.text3 }}>Breakdown</div>
+            <ul className="mt-1 sm:mt-2 space-y-1 sm:space-y-1.5">
               {[
                 { label: "Subscriptions", value: 16250, dot: "#A855F7" },
                 { label: "Sales", value: 8150, dot: "#2563EB" },
@@ -319,10 +319,10 @@ export function RevenueCard() {
                   initial={{ opacity: 0, x: -8 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5, delay: 0.7 + i * 0.12 }}
-                  className="flex items-center justify-between gap-3 text-[11px]"
+                  className="flex items-center justify-between gap-2 sm:gap-3 text-[8.5px] sm:text-[11px]"
                 >
-                  <span className="inline-flex items-center gap-1.5" style={{ color: T.text2 }}>
-                    <span className="size-1.5 rounded-full" style={{ background: r.dot }} />
+                  <span className="inline-flex items-center gap-1 sm:gap-1.5" style={{ color: T.text2 }}>
+                    <span className="size-1 sm:size-1.5 rounded-full" style={{ background: r.dot }} />
                     {r.label}
                   </span>
                   <span style={{ color: T.text }}>
@@ -334,12 +334,12 @@ export function RevenueCard() {
           </div>
 
           <div className="min-w-0">
-            <div className="flex gap-1.5">
-              <div className="flex flex-col justify-between py-0.5 text-[8.5px]" style={{ color: T.text3 }}>
+            <div className="flex gap-1 sm:gap-1.5">
+              <div className="flex flex-col justify-between py-0.5 text-[6px] sm:text-[8.5px]" style={{ color: T.text3 }}>
                 {["32K", "24K", "16K", "8K", "0"].map((t) => <span key={t}>{t}</span>)}
               </div>
               <div className="relative flex-1">
-                <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-[140px]" preserveAspectRatio="none">
+                <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-[70px] sm:h-[140px]" preserveAspectRatio="none">
                   <defs>
                     <linearGradient id="revLine" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="0%" stopColor="#2563EB" />
@@ -381,7 +381,7 @@ export function RevenueCard() {
                     transition={{ duration: 0.6, delay: 2.3 }}
                   />
                 </svg>
-                <div className="mt-1.5 flex justify-between text-[8.5px]" style={{ color: T.text3 }}>
+                <div className="mt-1 sm:mt-1.5 flex justify-between text-[6px] sm:text-[8.5px]" style={{ color: T.text3 }}>
                   {["May 1", "May 8", "May 15", "May 22", "May 31"].map((d) => <span key={d}>{d}</span>)}
                 </div>
               </div>

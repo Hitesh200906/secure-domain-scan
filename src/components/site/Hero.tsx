@@ -32,14 +32,14 @@ export function Hero() {
 
       </div>
 
-      <div className="relative mx-auto max-w-[1360px] px-5 sm:px-8 pt-24 sm:pt-28 pb-16 sm:pb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-14 items-center">
-          <div className="text-left">
+      <div className="relative mx-auto max-w-[1360px] px-3 sm:px-8 pt-20 sm:pt-28 pb-10 sm:pb-20">
+        <div className="grid grid-cols-2 gap-3 sm:gap-8 lg:gap-14 items-center">
+          <div className="text-left min-w-0">
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2.5 rounded-full px-3.5 py-1.5 text-[11px] uppercase tracking-[0.2em] backdrop-blur-md"
+              className="inline-flex items-center gap-1.5 sm:gap-2.5 rounded-full px-2 py-1 sm:px-3.5 sm:py-1.5 text-[8px] sm:text-[11px] uppercase tracking-[0.14em] sm:tracking-[0.2em] backdrop-blur-md"
               style={{ background: "rgba(0,0,0,0.55)", border: `1px solid ${T.border}`, color: T.text2 }}
             >
               <span className="relative flex size-1.5">
@@ -61,7 +61,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.08 }}
-              className="mt-7 leading-[0.95] whitespace-nowrap text-[17px] sm:text-[26px] lg:text-[32px]"
+              className="mt-3 sm:mt-7 leading-[0.95] whitespace-nowrap text-[11px] sm:text-[26px] lg:text-[32px]"
               style={{
                 fontFamily: "ui-sans-serif, system-ui, sans-serif",
                 fontWeight: 700,
@@ -80,7 +80,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="mt-5 max-w-xl text-[15px] sm:text-[17px] leading-relaxed"
+              className="mt-2 sm:mt-5 max-w-xl text-[10px] sm:text-[17px] leading-snug sm:leading-relaxed"
               style={{ color: T.text2 }}
             >
               Detect vulnerabilities before attackers do. Get detailed, actionable security
@@ -91,11 +91,11 @@ export function Hero() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.32 }}
-              className="mt-9 flex flex-col sm:flex-row items-start sm:items-center gap-3"
+              className="mt-4 sm:mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3"
             >
               <button
                 onClick={() => setMode("security")}
-                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl px-6 py-3.5 text-[14px] font-medium backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-white/25"
+                className="group relative inline-flex items-center justify-center gap-1.5 sm:gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-3 py-2 sm:px-6 sm:py-3.5 text-[10px] sm:text-[14px] font-medium backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-white/25"
                 style={{
                   background: "linear-gradient(180deg,rgba(22,24,32,0.85) 0%,rgba(0,0,0,0.85) 100%)",
                   border: `1px solid ${T.border}`,
@@ -104,14 +104,14 @@ export function Hero() {
                 }}
               >
                 <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                <ShieldCheck className="size-4" />
+                <ShieldCheck className="size-3 sm:size-4 shrink-0" />
                 Switch to Nexefy Security
-                <ArrowUpRight className="size-4 opacity-80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight className="size-3 sm:size-4 shrink-0 opacity-80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
 
               <button
                 onClick={() => setMode("nexus")}
-                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl px-6 py-3.5 text-[14px] font-medium text-white transition-all duration-300 hover:-translate-y-0.5"
+                className="group relative inline-flex items-center justify-center gap-1.5 sm:gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-3 py-2 sm:px-6 sm:py-3.5 text-[10px] sm:text-[14px] font-medium text-white transition-all duration-300 hover:-translate-y-0.5"
                 style={{
                   background: `linear-gradient(180deg, color-mix(in oklab, ${T.navy} 82%, white) 0%, ${T.navy} 55%, color-mix(in oklab, ${T.navy} 78%, black) 100%)`,
                   border: "none",
@@ -119,9 +119,9 @@ export function Hero() {
                 }}
               >
                 <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                <Sparkles className="size-4" />
+                <Sparkles className="size-3 sm:size-4 shrink-0" />
                 Switch to Nexefy
-                <ArrowUpRight className="size-4 opacity-90 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight className="size-3 sm:size-4 shrink-0 opacity-90 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
             </motion.div>
           </div>
@@ -129,13 +129,13 @@ export function Hero() {
           <SecurityCard />
         </div>
 
-        <div className="mt-14 sm:mt-16 grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6">
+        <div className="mt-8 sm:mt-16 grid grid-cols-3 gap-2 sm:gap-6">
           <FeatureCard index={0} image={imgMarketplace.url} fit="contain" title="Marketplace" desc="Launch branded storefronts." />
           <FeatureCard index={1} image={imgSecurity.url} title="Security" desc="AI-powered protection." />
           <FeatureCard index={2} image={imgRewards.url} title="Nexefy Rewards" desc="Earn from the clips you create." />
         </div>
 
-        <div className="mt-12 sm:mt-14">
+        <div className="mt-8 sm:mt-14">
           <HeroPointsPanel
             points={[
               {
@@ -163,16 +163,16 @@ export function Hero() {
         </div>
 
         <div
-          className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.25em]"
+          className="mt-7 sm:mt-10 flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-8 gap-y-2 sm:gap-y-3 text-[8px] sm:text-[11px] uppercase tracking-[0.16em] sm:tracking-[0.25em]"
           style={{ color: T.text3 }}
         >
-          <span className="inline-flex items-center gap-2"><ScanSearch className="size-3.5" /> Continuous Scans</span>
+          <span className="inline-flex items-center gap-1.5 sm:gap-2"><ScanSearch className="size-2.5 sm:size-3.5" /> Continuous Scans</span>
           <span>·</span>
-          <span className="inline-flex items-center gap-2"><Zap className="size-3.5" /> Real-Time Alerts</span>
+          <span className="inline-flex items-center gap-1.5 sm:gap-2"><Zap className="size-2.5 sm:size-3.5" /> Real-Time Alerts</span>
           <span>·</span>
-          <span className="inline-flex items-center gap-2"><FileCheck className="size-3.5" /> Detailed Reports</span>
+          <span className="inline-flex items-center gap-1.5 sm:gap-2"><FileCheck className="size-2.5 sm:size-3.5" /> Detailed Reports</span>
           <span>·</span>
-          <span className="inline-flex items-center gap-2"><GlobeIcon className="size-3.5" /> Full-Stack Coverage</span>
+          <span className="inline-flex items-center gap-1.5 sm:gap-2"><GlobeIcon className="size-2.5 sm:size-3.5" /> Full-Stack Coverage</span>
         </div>
       </div>
     </section>
