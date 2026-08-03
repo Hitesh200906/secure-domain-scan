@@ -1,7 +1,8 @@
 import { motion, animate } from "framer-motion";
 import { useEffect, useState } from "react";
-import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe, Store } from "lucide-react";
+import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe, Store, Gift, Layers, Users } from "lucide-react";
 import { useAppMode } from "@/lib/app-mode";
+import { HeroPointsPanel } from "./HeroPointsPanel";
 import imgMarketplace from "@/assets/card-marketplace-v7.png.asset.json";
 import imgSecurity from "@/assets/card-security-v11.png.asset.json";
 import imgRewards from "@/assets/card-rewards-v10.png.asset.json";
@@ -150,16 +151,46 @@ export function NexusCinematicHero() {
           <FeatureCard index={2} image={imgRewards.url} title="Nexefy Rewards" desc="Earn from the clips you create." />
         </div>
 
+        {/* ---------- Platform points ---------- */}
+        <div className="mt-16 sm:mt-20">
+          <HeroPointsPanel
+            points={[
+              {
+                icon: Store,
+                title: "Marketplace",
+                desc: "Launch a branded storefront, sell products, memberships and courses, and reach buyers already browsing Nexefy.",
+              },
+              {
+                icon: Gift,
+                title: "Nexefy Rewards",
+                desc: "Turn content into income. Publish clips, grow reach, and earn payouts tied to the attention you create.",
+              },
+              {
+                icon: Sparkles,
+                title: "AI Built In",
+                desc: "Generate copy, pricing and campaigns, then let AI handle follow-ups and surface what to fix next.",
+              },
+              {
+                icon: Layers,
+                title: "One Platform, End to End",
+                desc: "Store, community, payments, analytics, automation and security live in one workspace — no stitched-together tools, one login, one bill, one source of truth.",
+              },
+            ]}
+          />
+        </div>
+
         {/* ---------- Bottom feature strip ---------- */}
         <div
           className="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.25em]"
           style={{ color: T.text3 }}
         >
-          <span className="inline-flex items-center gap-2"><Store className="size-3.5" /> 12k+ Stores</span>
+          <span className="inline-flex items-center gap-2"><Store className="size-3.5" /> Storefronts</span>
           <span>·</span>
-          <span className="inline-flex items-center gap-2"><Zap className="size-3.5" /> 99.99% Uptime</span>
+          <span className="inline-flex items-center gap-2"><Users className="size-3.5" /> Communities</span>
           <span>·</span>
-          <span className="inline-flex items-center gap-2"><Globe className="size-3.5" /> 140 Countries</span>
+          <span className="inline-flex items-center gap-2"><Gift className="size-3.5" /> Creator Rewards</span>
+          <span>·</span>
+          <span className="inline-flex items-center gap-2"><Sparkles className="size-3.5" /> AI Automation</span>
         </div>
       </div>
     </section>
