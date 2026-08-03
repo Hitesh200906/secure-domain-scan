@@ -47,7 +47,7 @@ export function NexusCinematicHero() {
 
         {/* ---------- Two-column top ---------- */}
         <div className="grid grid-cols-2 gap-3 sm:gap-8 lg:gap-14 items-center">
-          <div className="text-left">
+          <div className="text-left min-w-0">
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
