@@ -32,7 +32,7 @@ export function NexusCinematicHero() {
           style={{
             backgroundImage: `url(${heroDesk.url})`,
             backgroundPosition: "center 22%",
-            opacity: 0.4,
+            opacity: 0.32,
             WebkitMaskImage:
               "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.65) 10%, #000 26%, #000 66%, rgba(0,0,0,0.5) 84%, transparent 100%)",
             maskImage:
