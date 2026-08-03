@@ -33,41 +33,21 @@ export function HeroPointsPanel({ points }: { points: HeroPoint[] }) {
             {i > 0 && (
               <span
                 aria-hidden
-                className="pointer-events-none absolute left-0 top-[14%] hidden h-[72%] w-px lg:block"
+                className="pointer-events-none absolute left-0 top-[14%] h-[72%] w-px"
                 style={{
                   background:
                     "linear-gradient(to bottom, transparent, rgba(255,255,255,0.16) 22%, rgba(255,255,255,0.16) 78%, transparent)",
-                }}
-              />
-            )}
-            {i % 2 === 1 && (
-              <span
-                aria-hidden
-                className="pointer-events-none absolute left-0 top-[14%] h-[72%] w-px lg:hidden"
-                style={{
-                  background:
-                    "linear-gradient(to bottom, transparent, rgba(255,255,255,0.16) 22%, rgba(255,255,255,0.16) 78%, transparent)",
-                }}
-              />
-            )}
-            {i >= 2 && (
-              <span
-                aria-hidden
-                className="pointer-events-none absolute left-[8%] top-0 h-px w-[84%] lg:hidden"
-                style={{
-                  background:
-                    "linear-gradient(to right, transparent, rgba(255,255,255,0.14), transparent)",
                 }}
               />
             )}
 
             <div
-              className="text-[16px] sm:text-[17px] font-bold tracking-[-0.01em]"
+              className="text-[9.5px] sm:text-[17px] font-bold leading-tight tracking-[-0.01em]"
               style={{ color: T.text }}
             >
               {p.title}
             </div>
-            <p className="mt-1.5 text-[13px] sm:text-[14px] leading-[1.5]" style={{ color: T.text2 }}>
+            <p className="mt-1 sm:mt-1.5 text-[8px] sm:text-[14px] leading-[1.35] sm:leading-[1.5]" style={{ color: T.text2 }}>
               {p.desc}
             </p>
           </div>
