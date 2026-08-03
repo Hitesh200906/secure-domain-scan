@@ -158,22 +158,22 @@ export function NexusCinematicHero() {
               {
                 icon: Store,
                 title: "Marketplace",
-                desc: "Launch a branded storefront, sell products, memberships and courses, and reach buyers already browsing Nexefy.",
+                desc: "Launch a storefront and sell products, memberships and courses.",
               },
               {
                 icon: Gift,
                 title: "Nexefy Rewards",
-                desc: "Turn content into income. Publish clips, grow reach, and earn payouts tied to the attention you create.",
+                desc: "Publish content, grow reach and earn payouts for attention.",
               },
               {
                 icon: Sparkles,
                 title: "AI Built In",
-                desc: "Generate copy, pricing and campaigns, then let AI handle follow-ups and surface what to fix next.",
+                desc: "Generate copy, pricing and campaigns, then automate follow-ups.",
               },
               {
                 icon: Layers,
                 title: "One Platform, End to End",
-                desc: "Store, community, payments, analytics, automation and security live in one workspace — no stitched-together tools, one login, one bill, one source of truth.",
+                desc: "Store, community, payments, analytics and security in one login.",
               },
             ]}
           />

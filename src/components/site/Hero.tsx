@@ -139,22 +139,22 @@ export function Hero() {
               {
                 icon: ScanSearch,
                 title: "Continuous Scanning",
-                desc: "Automated scans across your apps, APIs and dependencies catch new exposures the moment they appear.",
+                desc: "Always-on scans across apps, APIs and dependencies.",
               },
               {
                 icon: Bug,
                 title: "Prioritised Findings",
-                desc: "Every issue is scored by real impact, so your team fixes what actually matters before anything else.",
+                desc: "Issues scored by real impact, so you fix what matters.",
               },
               {
                 icon: FileCheck,
                 title: "Actionable Reports",
-                desc: "Clear, shareable reports with reproduction steps and remediation guidance your engineers can ship today.",
+                desc: "Shareable reports with steps and fixes engineers can ship.",
               },
               {
                 icon: ShieldCheck,
                 title: "Security, End to End",
-                desc: "Discovery, testing, monitoring, alerting and compliance-ready evidence in one place — one dashboard for your whole estate, with history you can prove.",
+                desc: "Testing, monitoring, alerts and evidence in one dashboard.",
               },
             ]}
           />
