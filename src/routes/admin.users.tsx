@@ -11,6 +11,7 @@ export const Route = createFileRoute("/admin/users")({ component: UsersPage });
 type Profile = {
   id: string; full_name: string | null; email: string | null; company: string | null;
   plan: string; credits: number; status: string; created_at: string;
+  ban_reason?: string | null; banned_at?: string | null;
 };
 
 function UsersPage() {
@@ -18,6 +19,7 @@ function UsersPage() {
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<string>("all");
   const [selected, setSelected] = useState<Profile | null>(null);
+  const [banTarget, setBanTarget] = useState<Profile | null>(null);
 
   const load = async () => {
     try {
@@ -90,9 +92,9 @@ function UsersPage() {
                       <IconBtn title="+1 credit" onClick={() => act(r, { credits: r.credits + 1 }, "credits.add")}><Plus className="size-3" /></IconBtn>
                       <IconBtn title="-1 credit" onClick={() => act(r, { credits: Math.max(0, r.credits - 1) }, "credits.remove")}><Minus className="size-3" /></IconBtn>
                       {r.status !== "banned" ? (
-                        <IconBtn title="Ban" tone="danger" onClick={() => act(r, { status: "banned" }, "user.ban")}><Ban className="size-3" /></IconBtn>
+                        <IconBtn title="Ban" tone="danger" onClick={() => setBanTarget(r)}><Ban className="size-3" /></IconBtn>
                       ) : (
-                        <IconBtn title="Unban" tone="ok" onClick={() => act(r, { status: "active" }, "user.unban")}><Check className="size-3" /></IconBtn>
+                        <IconBtn title="Unban" tone="ok" onClick={() => act(r, { status: "active", ban_reason: null, banned_at: null }, "user.unban")}><Check className="size-3" /></IconBtn>
                       )}
                     </div>
                   </Td>
@@ -106,8 +108,66 @@ function UsersPage() {
         </div>
       </Section>
 
+      {banTarget && (
+        <BanDialog
+          user={banTarget}
+          onClose={() => setBanTarget(null)}
+          onConfirm={async (reason) => {
+            await act(banTarget, { status: "banned", ban_reason: reason, banned_at: new Date().toISOString() }, "user.ban");
+            setBanTarget(null);
+          }}
+        />
+      )}
+
       {selected && <UserDrawer user={selected} onClose={() => setSelected(null)} onChange={(u) => { setSelected(u); load(); }} />}
     </AdminShell>
+  );
+}
+
+function BanDialog({ user, onClose, onConfirm }: { user: Profile; onClose: () => void; onConfirm: (reason: string) => Promise<void> }) {
+  const [reason, setReason] = useState("");
+  const [busy, setBusy] = useState(false);
+  const presets = [
+    "Violation of the Nexefy platform terms of service.",
+    "Fraudulent or misleading product listings.",
+    "Payment fraud or chargeback abuse.",
+    "Abusive behaviour towards other members.",
+    "Spam or automated abuse of the platform.",
+  ];
+
+  return (
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 backdrop-blur-sm px-4" onClick={onClose}>
+      <div className="w-full max-w-md glass-strong rounded-2xl border border-white/10 p-6" onClick={(e) => e.stopPropagation()}>
+        <h3 className="text-lg font-medium">Ban account</h3>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {user.full_name || user.email} will immediately lose access to the platform. The reason below is shown to them.
+        </p>
+        <div className="mt-4 space-y-1.5">
+          {presets.map((p) => (
+            <button key={p} onClick={() => setReason(p)} className={`w-full text-left text-xs px-3 py-2 rounded-lg border transition ${reason === p ? "border-rose-400/40 bg-rose-400/10 text-rose-200" : "border-white/10 bg-white/[0.03] hover:bg-white/[0.06]"}`}>
+              {p}
+            </button>
+          ))}
+        </div>
+        <textarea
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+          rows={3}
+          placeholder="Reason shown to the user…"
+          className="mt-3 w-full text-xs bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2"
+        />
+        <div className="mt-4 flex gap-2">
+          <button onClick={onClose} className="flex-1 text-xs py-2 rounded-lg glass">Cancel</button>
+          <button
+            disabled={busy || reason.trim().length < 4}
+            onClick={async () => { setBusy(true); await onConfirm(reason.trim()); setBusy(false); }}
+            className="flex-1 text-xs py-2 rounded-lg bg-rose-500/90 text-white disabled:opacity-40"
+          >
+            {busy ? "Banning…" : "Ban account"}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -145,6 +205,12 @@ function UserDrawer({ user, onClose, onChange }: { user: Profile; onClose: () =>
             <Badge tone={user.status === "active" ? "ok" : "danger"}>{user.status}</Badge>
             <Badge>{user.credits} credits</Badge>
           </div>
+          {user.status !== "active" && user.ban_reason && (
+            <div className="mt-3 rounded-xl border border-rose-400/20 bg-rose-400/5 px-3 py-2 text-xs text-rose-200">
+              <span className="uppercase tracking-[0.18em] text-[10px] text-rose-300/70">Reason</span>
+              <div className="mt-1">{user.ban_reason}</div>
+            </div>
+          )}
         </div>
         <div className="space-y-2 mb-6">
           <h4 className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Change plan</h4>
@@ -157,7 +223,10 @@ function UserDrawer({ user, onClose, onChange }: { user: Profile; onClose: () =>
         </div>
         <div className="space-y-2 mb-6">
           <h4 className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Account</h4>
-          <button onClick={() => update({ status: "suspended" }, "user.suspend")} className="w-full text-xs py-2 rounded-lg glass">Suspend account</button>
+          {user.status !== "active" && (
+            <button onClick={() => update({ status: "active", ban_reason: null, banned_at: null }, "user.unban")} className="w-full text-xs py-2 rounded-lg bg-emerald-500/80 text-white">Restore access</button>
+          )}
+          <button onClick={() => update({ status: "suspended", banned_at: new Date().toISOString() }, "user.suspend")} className="w-full text-xs py-2 rounded-lg glass">Suspend account</button>
           <button onClick={() => toast.success("Reset email queued (mock)")} className="w-full text-xs py-2 rounded-lg glass">Send password reset</button>
           <button onClick={() => { update({ status: "active" }, "user.verify"); toast.success("Email verified manually"); }} className="w-full text-xs py-2 rounded-lg glass">Verify email manually</button>
         </div>
