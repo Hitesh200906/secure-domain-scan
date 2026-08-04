@@ -134,8 +134,8 @@ function DiscoverPage() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.from("stores").select("*").order("created_at", { ascending: false }).limit(60);
-      setUserStores(((data as Store[]) ?? []).map(storeToCard));
+      const { data } = await supabase.from("stores").select(PUBLIC_STORE_COLUMNS).order("created_at", { ascending: false }).limit(60);
+      setUserStores(((data as unknown as Store[]) ?? []).map(storeToCard));
       setLoading(false);
     })();
   }, []);
