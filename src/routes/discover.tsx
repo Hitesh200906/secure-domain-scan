@@ -11,6 +11,7 @@ import { Navbar } from "@/components/site/Navbar";
 import heroBg from "@/assets/hero-bg.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import type { Store } from "@/lib/business";
+import { PUBLIC_STORE_COLUMNS } from "@/lib/business";
 
 export const Route = createFileRoute("/discover")({
   head: () => ({
