@@ -8,6 +8,7 @@
  * Supabase publishable client (and the existing RLS policies).
  */
 import { supabase } from "@/integrations/supabase/client";
+import { assertNotBanned } from "@/lib/ban-state";
 
 type Id = string;
 type ProfilePatch = { full_name?: string; role_title?: string; company?: string };
@@ -16,6 +17,8 @@ type AdminUserPatch = {
   status?: string;
   credits?: number;
   full_name?: string;
+  ban_reason?: string | null;
+  banned_at?: string | null;
 };
 type AdminScanPatch = { status?: string; notes?: string };
 type AdminReportInput = {
@@ -69,6 +72,7 @@ function unwrap<T>(res: { data: T | null; error: { message: string } | null }): 
 }
 
 async function currentUser() {
+  assertNotBanned();
   const { data } = await supabase.auth.getUser();
   return data.user;
 }
