@@ -16,6 +16,7 @@ import { Navbar } from "../components/site/Navbar";
 import { Footer } from "../components/site/Footer";
 import { Toaster } from "sonner";
 import { AppModeProvider } from "../lib/app-mode";
+import { BanGate } from "../components/site/BanGate";
 
 function NotFoundComponent() {
   return (
