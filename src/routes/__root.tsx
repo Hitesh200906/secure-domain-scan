@@ -167,6 +167,7 @@ function RootComponent() {
           </main>
           {!isApp && <Footer />}
           <Toaster theme="dark" position="top-right" />
+          <BanGate />
         </div>
       </AppModeProvider>
     </QueryClientProvider>
