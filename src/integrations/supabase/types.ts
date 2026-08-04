@@ -153,13 +153,6 @@ export type Database = {
             foreignKeyName: "orders_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
-            referencedRelation: "public_stores"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "orders_store_id_fkey"
-            columns: ["store_id"]
-            isOneToOne: false
             referencedRelation: "stores"
             referencedColumns: ["id"]
           },
@@ -348,13 +341,6 @@ export type Database = {
             foreignKeyName: "products_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
-            referencedRelation: "public_stores"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "products_store_id_fkey"
-            columns: ["store_id"]
-            isOneToOne: false
             referencedRelation: "stores"
             referencedColumns: ["id"]
           },
@@ -539,13 +525,6 @@ export type Database = {
             foreignKeyName: "store_apps_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
-            referencedRelation: "public_stores"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "store_apps_store_id_fkey"
-            columns: ["store_id"]
-            isOneToOne: false
             referencedRelation: "stores"
             referencedColumns: ["id"]
           },
@@ -720,63 +699,7 @@ export type Database = {
       }
     }
     Views: {
-      public_stores: {
-        Row: {
-          accent_color: string | null
-          banner_url: string | null
-          category: string | null
-          created_at: string | null
-          description: string | null
-          id: string | null
-          logo_url: string | null
-          member_count: number | null
-          name: string | null
-          skills: string[] | null
-          slug: string | null
-          social_links: Json | null
-          theme_color: string | null
-          updated_at: string | null
-          verified: boolean | null
-          website_url: string | null
-        }
-        Insert: {
-          accent_color?: string | null
-          banner_url?: string | null
-          category?: string | null
-          created_at?: string | null
-          description?: string | null
-          id?: string | null
-          logo_url?: string | null
-          member_count?: number | null
-          name?: string | null
-          skills?: string[] | null
-          slug?: string | null
-          social_links?: Json | null
-          theme_color?: string | null
-          updated_at?: string | null
-          verified?: boolean | null
-          website_url?: string | null
-        }
-        Update: {
-          accent_color?: string | null
-          banner_url?: string | null
-          category?: string | null
-          created_at?: string | null
-          description?: string | null
-          id?: string | null
-          logo_url?: string | null
-          member_count?: number | null
-          name?: string | null
-          skills?: string[] | null
-          slug?: string | null
-          social_links?: Json | null
-          theme_color?: string | null
-          updated_at?: string | null
-          verified?: boolean | null
-          website_url?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       get_user_role: {
