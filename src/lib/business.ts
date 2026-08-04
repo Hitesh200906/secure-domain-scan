@@ -52,9 +52,15 @@ export async function getMyStore(userId: string): Promise<Store | null> {
   return data as Store | null;
 }
 
+/** Columns readable by anonymous visitors (owner_id is never exposed publicly). */
+export const PUBLIC_STORE_COLUMNS =
+  "id,name,slug,description,logo_url,banner_url,category,theme_color,accent_color,website_url,social_links,verified,member_count,total_sales,skills,created_at,updated_at";
+
 export async function getStoreBySlug(slug: string): Promise<Store | null> {
-  const { data } = await supabase.from("stores").select("*").eq("slug", slug).maybeSingle();
-  return data as Store | null;
+  const { data: auth } = await supabase.auth.getSession();
+  const cols = auth.session ? "*" : PUBLIC_STORE_COLUMNS;
+  const { data } = await supabase.from("stores").select(cols).eq("slug", slug).maybeSingle();
+  return (data as unknown as Store) ?? null;
 }
 
 export async function getStoreProducts(storeId: string): Promise<Product[]> {
