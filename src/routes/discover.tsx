@@ -11,6 +11,7 @@ import { Navbar } from "@/components/site/Navbar";
 import heroBg from "@/assets/hero-bg.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import type { Store } from "@/lib/business";
+import { PUBLIC_STORE_COLUMNS } from "@/lib/business";
 
 export const Route = createFileRoute("/discover")({
   head: () => ({
@@ -134,8 +135,8 @@ function DiscoverPage() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.from("stores").select("*").order("created_at", { ascending: false }).limit(60);
-      setUserStores(((data as Store[]) ?? []).map(storeToCard));
+      const { data } = await supabase.from("stores").select(PUBLIC_STORE_COLUMNS).order("created_at", { ascending: false }).limit(60);
+      setUserStores(((data as unknown as Store[]) ?? []).map(storeToCard));
       setLoading(false);
     })();
   }, []);
