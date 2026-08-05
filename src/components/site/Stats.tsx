@@ -12,7 +12,6 @@ const stats = [
     hint: "Validated findings, near-zero noise",
     icon: Target,
     progress: 95,
-    color: "var(--green-success)",
   },
   {
     value: 24,
@@ -21,7 +20,6 @@ const stats = [
     hint: "Full report turnaround time",
     icon: Timer,
     progress: 80,
-    color: "var(--warning-orange)",
   },
   {
     value: 99.9,
@@ -31,7 +29,6 @@ const stats = [
     icon: Activity,
     progress: 99.9,
     hint: "Continuous monitoring, always on",
-    color: "var(--violet-accent)",
   },
   {
     value: 12,
@@ -40,16 +37,14 @@ const stats = [
     hint: "Across apps, APIs and cloud",
     icon: ScanLine,
     progress: 88,
-    color: "var(--border-soft)",
   },
 ];
 
 const highlights = [
-  { icon: ShieldCheck, k: "OWASP Top 10", v: "Full coverage", color: "var(--green-success)" },
-  { icon: Bug, k: "CVE Corpus", v: "4.2M+ indexed", color: "var(--critical-red)" },
-  { icon: Activity, k: "Threat Feeds", v: "40+ live sources", color: "var(--warning-orange)" },
+  { icon: ShieldCheck, k: "OWASP Top 10", v: "Full coverage" },
+  { icon: Bug, k: "CVE Corpus", v: "4.2M+ indexed" },
+  { icon: Activity, k: "Threat Feeds", v: "40+ live sources" },
 ];
-
 
 function Counter({
   value,
@@ -118,48 +113,27 @@ export function Stats() {
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.55, delay: i * 0.07 }}
                   whileHover={{ y: -4 }}
-                  className="group relative rounded-2xl p-4 sm:p-6 transition-colors duration-300 overflow-hidden"
-                  style={{
-                    background:
-                      "radial-gradient(120% 90% at 50% -20%, rgba(255,255,255,0.055), rgba(255,255,255,0) 60%), linear-gradient(180deg, #14161b 0%, #0b0c0f 100%)",
-                    border: "1px solid var(--border-hard)",
-                    boxShadow:
-                      "inset 0 1px 0 0 rgba(255,255,255,0.06), 0 20px 40px -24px rgba(0,0,0,0.9)",
-                  }}
+                  className="group relative rounded-2xl glass p-4 sm:p-6 transition-colors duration-300 hover:border-white/20"
                 >
                   <div className="flex items-center justify-between">
-                    <span
-                      className="inline-flex items-center justify-center size-8 sm:size-9 rounded-lg"
-                      style={{
-                        background:
-                          "linear-gradient(180deg, #1a1d24 0%, #0d0e12 100%)",
-                        border: "1px solid var(--border-hard)",
-                        boxShadow: "inset 0 1px 0 0 rgba(255,255,255,0.07)",
-                        color: s.color,
-                      }}
-                    >
+                    <span className="inline-flex items-center justify-center size-8 sm:size-9 rounded-lg glass text-primary">
                       <s.icon className="size-4" strokeWidth={1.6} />
                     </span>
-
                     <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                       0{i + 1}
                     </span>
                   </div>
 
-                  <div className="mt-4 text-2xl sm:text-4xl font-semibold tracking-tight text-foreground">
+                  <div className="mt-4 text-2xl sm:text-4xl font-semibold tracking-tight text-gradient-accent">
                     <Counter value={s.value} suffix={s.suffix} decimals={s.decimals} />
                   </div>
                   <div className="mt-1.5 text-[10px] sm:text-xs uppercase tracking-[0.18em] text-muted-foreground">
                     {s.label}
                   </div>
 
-                  <div
-                    className="mt-3 h-px w-full overflow-hidden rounded-full"
-                    style={{ background: "var(--border-hard)" }}
-                  >
+                  <div className="mt-3 h-px w-full bg-white/10 overflow-hidden rounded-full">
                     <motion.div
-                      className="h-px"
-                      style={{ background: s.color, opacity: 0.8 }}
+                      className="h-px bg-primary/70"
                       initial={{ width: 0 }}
                       whileInView={{ width: `${s.progress}%` }}
                       viewport={{ once: true, margin: "-60px" }}
@@ -173,7 +147,6 @@ export function Stats() {
                 </motion.div>
               ))}
             </div>
-
           </div>
 
           {/* right: visual panel */}
@@ -182,8 +155,7 @@ export function Stats() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.7 }}
-            className="relative rounded-3xl overflow-hidden"
-            style={{ background: "var(--surface-2)", border: "1px solid var(--border-hard)" }}
+            className="relative rounded-3xl glass overflow-hidden"
           >
             <div className="relative aspect-[4/3] overflow-hidden">
               <motion.img
@@ -209,7 +181,7 @@ export function Stats() {
               />
             </div>
 
-            <div className="relative p-4 sm:p-6" style={{ borderTop: "1px solid var(--border-hard)" }}>
+            <div className="relative p-4 sm:p-6 border-t border-white/[0.06]">
               <div className="grid grid-cols-3 gap-3 sm:gap-4">
                 {highlights.map((h, i) => (
                   <motion.div
@@ -218,32 +190,12 @@ export function Stats() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: 0.15 + i * 0.08 }}
-                    whileHover={{ y: -3 }}
-                    className="rounded-xl p-3 sm:p-4"
-                    style={{
-                      background:
-                        "radial-gradient(120% 90% at 50% -20%, rgba(255,255,255,0.05), rgba(255,255,255,0) 60%), linear-gradient(180deg, #14161b 0%, #0b0c0f 100%)",
-                      border: "1px solid var(--border-hard)",
-                      boxShadow:
-                        "inset 0 1px 0 0 rgba(255,255,255,0.06), 0 16px 32px -24px rgba(0,0,0,0.9)",
-                    }}
                   >
-                    <span
-                      className="inline-flex items-center justify-center size-7 sm:size-8 rounded-lg"
-                      style={{
-                        background: "linear-gradient(180deg, #1a1d24 0%, #0d0e12 100%)",
-                        border: "1px solid var(--border-hard)",
-                        boxShadow: "inset 0 1px 0 0 rgba(255,255,255,0.07)",
-                        color: h.color,
-                      }}
-                    >
-                      <h.icon className="size-3.5 sm:size-4" strokeWidth={1.6} />
-                    </span>
+                    <h.icon className="size-3.5 sm:size-4 text-primary" strokeWidth={1.6} />
                     <div className="mt-2 text-[10px] sm:text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
                       {h.k}
                     </div>
                     <div className="mt-1 text-xs sm:text-sm text-white/90">{h.v}</div>
-
                   </motion.div>
                 ))}
               </div>

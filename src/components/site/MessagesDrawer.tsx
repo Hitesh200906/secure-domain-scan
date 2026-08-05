@@ -57,7 +57,6 @@ export function MessagesDrawer({ open, onClose }: { open: boolean; onClose: () =
           <div className="flex items-center gap-1">
             <Link
               to="/profile"
-              search={{ tab: undefined }}
               onClick={onClose}
               className="size-9 grid place-items-center rounded-full hover:bg-white/10 text-muted-foreground hover:text-white transition"
               aria-label="Expand"
