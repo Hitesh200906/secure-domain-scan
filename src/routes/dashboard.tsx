@@ -76,7 +76,7 @@ function Dashboard() {
         <nav className="flex-1 p-3 space-y-0.5">
           <div className="px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">Workspace</div>
           <SidebarLink to="/dashboard" icon={LayoutDashboard} label="Overview" active />
-          <SidebarLink to="/scan/new" search={{ plan: 'professional' as const }} icon={ScanSearch} label="New Scan" />
+          <SidebarLink to="/scan/new" icon={ScanSearch} label="New Scan" />
           <SidebarLink to="/dashboard" icon={FileWarning} label="Findings" badge={String(totalFindings)} />
           <SidebarLink to="/dashboard" icon={Globe2} label="Assets" />
           <SidebarLink to="/dashboard" icon={Bell} label="Alerts" />
@@ -420,7 +420,7 @@ function Dashboard() {
         <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto" onClick={() => setMobileNav(false)}>
           <div className="px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">Workspace</div>
           <SidebarLink to="/dashboard" icon={LayoutDashboard} label="Overview" active />
-          <SidebarLink to="/scan/new" search={{ plan: 'professional' as const }} icon={ScanSearch} label="New Scan" />
+          <SidebarLink to="/scan/new" icon={ScanSearch} label="New Scan" />
           <SidebarLink to="/dashboard" icon={FileWarning} label="Findings" badge={String(totalFindings)} />
           <SidebarLink to="/dashboard" icon={Globe2} label="Assets" />
           <SidebarLink to="/dashboard" icon={Bell} label="Alerts" />
