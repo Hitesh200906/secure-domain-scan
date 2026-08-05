@@ -147,10 +147,8 @@ export function NexusCinematicHero() {
 
 
         {/* ---------- Feature cards ---------- */}
-        <div className="mt-8 sm:mt-16 grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-6">
-          <div className="hidden sm:block">
-            <FeatureCard index={0} image={imgMarketplace.url} fit="contain" title="Marketplace" desc="Launch branded storefronts." />
-          </div>
+        <div className="mt-8 sm:mt-16 grid grid-cols-3 gap-2 sm:gap-6 items-stretch">
+          <FeatureCard index={0} image={imgMarketplace.url} fit="contain" title="Marketplace" desc="Launch branded storefronts." />
           <FeatureCard index={1} image={imgSecurity.url} title="Security" desc="AI-powered protection." />
           <FeatureCard index={2} image={imgRewards.url} title="Nexefy Rewards" desc="Earn from the clips you create." />
         </div>
@@ -227,7 +225,7 @@ export function FeatureCard({
         boxShadow: "0 24px 60px -30px rgba(0,0,0,0.9)",
       }}
     >
-      <div className={`relative w-full basis-[80%] grow-0 ${fit === "contain" ? "aspect-[3/2]" : "aspect-[16/9]"}`}>
+      <div className="relative w-full basis-[80%] grow-0 aspect-[3/2]">
         <img
           src={image}
           alt={`${title} preview`}
