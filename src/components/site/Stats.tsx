@@ -12,7 +12,6 @@ const stats = [
     hint: "Validated findings, near-zero noise",
     icon: Target,
     progress: 95,
-    tone: "var(--brand-blue)",
   },
   {
     value: 24,
@@ -21,7 +20,6 @@ const stats = [
     hint: "Full report turnaround time",
     icon: Timer,
     progress: 80,
-    tone: "var(--brand-navy)",
   },
   {
     value: 99.9,
@@ -30,7 +28,6 @@ const stats = [
     decimals: 1,
     icon: Activity,
     progress: 99.9,
-    tone: "var(--brand-green)",
     hint: "Continuous monitoring, always on",
   },
   {
@@ -40,7 +37,6 @@ const stats = [
     hint: "Across apps, APIs and cloud",
     icon: ScanLine,
     progress: 88,
-    tone: "var(--brand-cyan)",
   },
 ];
 
@@ -83,10 +79,7 @@ function Counter({
 
 export function Stats() {
   return (
-    <section
-      className="relative py-16 sm:py-28 overflow-hidden"
-      style={{ borderTop: "1px solid var(--line-soft)", borderBottom: "1px solid var(--line-soft)", background: "linear-gradient(180deg, #000 0%, var(--ink-900) 50%, #000 100%)" }}
-    >
+    <section className="relative py-16 sm:py-28 border-y border-white/[0.06] overflow-hidden">
       <SectionBackdrop variant="grid" opacity={0.1} />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -99,21 +92,13 @@ export function Stats() {
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.5 }}
             >
-              <div
-                className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-[10px] sm:text-[11px] uppercase tracking-[0.2em]"
-                style={{
-                  background: "var(--gradient-brand-soft)",
-                  border: "1px solid color-mix(in srgb, var(--brand-blue) 30%, transparent)",
-                  color: "var(--text-secondary)",
-                }}
-              >
-                <span className="size-1.5 rounded-full" style={{ background: "var(--brand-blue)" }} />
+              <div className="inline-flex items-center gap-2 rounded-full glass px-3 py-1 text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
                 By the numbers
               </div>
               <h2 className="mt-4 text-2xl sm:text-4xl font-semibold tracking-[-0.03em] text-gradient">
                 Measured performance, not marketing
               </h2>
-              <p className="mt-3 max-w-lg text-sm sm:text-base leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+              <p className="mt-3 max-w-lg text-sm sm:text-base text-muted-foreground leading-relaxed">
                 Every scan is benchmarked against verified exploit data, so the numbers
                 you see are the numbers your team can plan around.
               </p>
@@ -128,24 +113,13 @@ export function Stats() {
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.55, delay: i * 0.07 }}
                   whileHover={{ y: -4 }}
-                  className="group relative rounded-2xl p-4 sm:p-6 overflow-hidden transition-colors duration-300"
-                  style={{
-                    background: "linear-gradient(180deg, var(--ink-700) 0%, var(--ink-900) 100%)",
-                    border: "1px solid var(--line-soft)",
-                  }}
+                  className="group relative rounded-2xl glass p-4 sm:p-6 transition-colors duration-300 hover:border-white/20"
                 >
                   <div className="flex items-center justify-between">
-                    <span
-                      className="inline-flex items-center justify-center size-8 sm:size-9 rounded-lg"
-                      style={{
-                        background: `color-mix(in srgb, ${s.tone} 16%, var(--ink-600))`,
-                        border: `1px solid color-mix(in srgb, ${s.tone} 32%, transparent)`,
-                        color: s.tone === "var(--brand-navy)" ? "var(--brand-blue)" : s.tone,
-                      }}
-                    >
+                    <span className="inline-flex items-center justify-center size-8 sm:size-9 rounded-lg glass text-primary">
                       <s.icon className="size-4" strokeWidth={1.6} />
                     </span>
-                    <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.18em]" style={{ color: "var(--text-muted)" }}>
+                    <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                       0{i + 1}
                     </span>
                   </div>
@@ -153,14 +127,13 @@ export function Stats() {
                   <div className="mt-4 text-2xl sm:text-4xl font-semibold tracking-tight text-gradient-accent">
                     <Counter value={s.value} suffix={s.suffix} decimals={s.decimals} />
                   </div>
-                  <div className="mt-1.5 text-[10px] sm:text-xs uppercase tracking-[0.18em]" style={{ color: "var(--text-secondary)" }}>
+                  <div className="mt-1.5 text-[10px] sm:text-xs uppercase tracking-[0.18em] text-muted-foreground">
                     {s.label}
                   </div>
 
-                  <div className="mt-3 h-px w-full overflow-hidden rounded-full" style={{ background: "var(--line-soft)" }}>
+                  <div className="mt-3 h-px w-full bg-white/10 overflow-hidden rounded-full">
                     <motion.div
-                      className="h-px"
-                      style={{ background: s.tone }}
+                      className="h-px bg-primary/70"
                       initial={{ width: 0 }}
                       whileInView={{ width: `${s.progress}%` }}
                       viewport={{ once: true, margin: "-60px" }}
@@ -168,7 +141,7 @@ export function Stats() {
                     />
                   </div>
 
-                  <p className="mt-3 text-[11px] sm:text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                  <p className="mt-3 text-[11px] sm:text-xs text-muted-foreground/80 leading-relaxed">
                     {s.hint}
                   </p>
                 </motion.div>
@@ -182,11 +155,7 @@ export function Stats() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.7 }}
-            className="relative rounded-3xl overflow-hidden"
-            style={{
-              background: "linear-gradient(180deg, var(--ink-700) 0%, var(--ink-900) 100%)",
-              border: "1px solid var(--line-soft)",
-            }}
+            className="relative rounded-3xl glass overflow-hidden"
           >
             <div className="relative aspect-[4/3] overflow-hidden">
               <motion.img
@@ -206,14 +175,13 @@ export function Stats() {
               {/* scan sweep */}
               <motion.div
                 aria-hidden
-                className="absolute left-0 right-0 h-px"
-                style={{ background: "linear-gradient(90deg, transparent, var(--brand-blue), transparent)" }}
+                className="absolute left-0 right-0 h-px bg-white/15"
                 animate={{ top: ["8%", "88%", "8%"] }}
                 transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
               />
             </div>
 
-            <div className="relative p-4 sm:p-6" style={{ borderTop: "1px solid var(--line-soft)" }}>
+            <div className="relative p-4 sm:p-6 border-t border-white/[0.06]">
               <div className="grid grid-cols-3 gap-3 sm:gap-4">
                 {highlights.map((h, i) => (
                   <motion.div
@@ -223,11 +191,11 @@ export function Stats() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: 0.15 + i * 0.08 }}
                   >
-                    <h.icon className="size-3.5 sm:size-4" style={{ color: "var(--brand-blue)" }} strokeWidth={1.6} />
-                    <div className="mt-2 text-[10px] sm:text-[11px] uppercase tracking-[0.16em]" style={{ color: "var(--text-muted)" }}>
+                    <h.icon className="size-3.5 sm:size-4 text-primary" strokeWidth={1.6} />
+                    <div className="mt-2 text-[10px] sm:text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
                       {h.k}
                     </div>
-                    <div className="mt-1 text-xs sm:text-sm" style={{ color: "var(--text-primary)" }}>{h.v}</div>
+                    <div className="mt-1 text-xs sm:text-sm text-white/90">{h.v}</div>
                   </motion.div>
                 ))}
               </div>
