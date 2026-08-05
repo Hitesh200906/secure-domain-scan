@@ -114,7 +114,7 @@ export function Navbar() {
                         <LayoutDashboard className="size-4" /> Dashboard
                       </Link>
                     )}
-                    <Link to="/profile" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.05]">
+                    <Link to="/profile" search={{ tab: undefined }} onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.05]">
                       <UserIcon className="size-4" /> Profile
                     </Link>
                     {admin && (
@@ -188,7 +188,7 @@ export function Navbar() {
                     <LayoutDashboard className="size-4" /> Dashboard
                   </Link>
                 )}
-                <Link to="/profile" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">
+                <Link to="/profile" search={{ tab: undefined }} onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">
                   <UserIcon className="size-4" /> Profile
                 </Link>
                 {admin && (

@@ -188,7 +188,7 @@ function BusinessDashboard() {
                 <ChevronDown className="size-3" />
               </button>
               <Link
-                to="/business/products"
+                to="/business/products" search={{ new: undefined }}
                 className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-medium text-white transition hover:-translate-y-px"
                 style={{
                   background: "linear-gradient(90deg, #4730D8 0%, #1F55F5 100%)",
@@ -311,7 +311,7 @@ function BusinessDashboard() {
         <Panel className="lg:col-span-4 p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-[15px] font-medium">Top Products</h2>
-            <Link to="/business/products" className="text-[11px] text-neutral-400 hover:text-white">View all</Link>
+            <Link to="/business/products" search={{ new: undefined }} className="text-[11px] text-neutral-400 hover:text-white">View all</Link>
           </div>
           {topProducts.length === 0 ? (
             <EmptyLine text="No sales yet." />

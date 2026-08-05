@@ -56,7 +56,7 @@ export function MessagesDrawer({ open, onClose }: { open: boolean; onClose: () =
           <h2 className="text-xl font-semibold text-white">Messages</h2>
           <div className="flex items-center gap-1">
             <Link
-              to="/profile"
+              to="/profile" search={{ tab: undefined }}
               onClick={onClose}
               className="size-9 grid place-items-center rounded-full hover:bg-white/10 text-muted-foreground hover:text-white transition"
               aria-label="Expand"
@@ -135,7 +135,7 @@ export function MessagesDrawer({ open, onClose }: { open: boolean; onClose: () =
               {filtered.map((t) => (
                 <li key={t.id}>
                   <Link
-                    to="/profile"
+                    to="/profile" search={{ tab: undefined }}
                     search={{ tab: "tickets" }}
                     onClick={onClose}
                     className="flex items-start gap-3 px-5 py-3.5 hover:bg-white/[0.04] transition border-b border-white/[0.04]"

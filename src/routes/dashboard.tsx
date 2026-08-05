@@ -76,7 +76,7 @@ function Dashboard() {
         <nav className="flex-1 p-3 space-y-0.5">
           <div className="px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">Workspace</div>
           <SidebarLink to="/dashboard" icon={LayoutDashboard} label="Overview" active />
-          <SidebarLink to="/scan/new" icon={ScanSearch} label="New Scan" />
+          <SidebarLink to="/scan/new" search={{ plan: 'professional' as const }} icon={ScanSearch} label="New Scan" />
           <SidebarLink to="/dashboard" icon={FileWarning} label="Findings" badge={String(totalFindings)} />
           <SidebarLink to="/dashboard" icon={Globe2} label="Assets" />
           <SidebarLink to="/dashboard" icon={Bell} label="Alerts" />
@@ -141,7 +141,7 @@ function Dashboard() {
               <button className="size-9 rounded-full glass grid place-items-center hover:border-white/20 transition">
                 <Bell className="size-4" />
               </button>
-              <Link to="/scan/new" className="rounded-full bg-white text-black px-4 py-2 text-xs font-medium inline-flex items-center gap-1.5 hover:shadow-[0_0_30px_-4px_oklch(0.86_0.16_200_/0.6)] transition">
+              <Link to="/scan/new" search={{ plan: 'professional' as const }} className="rounded-full bg-white text-black px-4 py-2 text-xs font-medium inline-flex items-center gap-1.5 hover:shadow-[0_0_30px_-4px_oklch(0.86_0.16_200_/0.6)] transition">
                 <ScanSearch className="size-3.5" /> New Scan
               </Link>
             </div>
@@ -236,7 +236,7 @@ function Dashboard() {
                   <div className="text-sm font-medium">Recent Scans</div>
                   <div className="text-[11px] text-muted-foreground mt-0.5">{scans.length} total this month</div>
                 </div>
-                <Link to="/scan/new" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
+                <Link to="/scan/new" search={{ plan: 'professional' as const }} className="text-xs text-primary hover:underline inline-flex items-center gap-1">
                   Start new <ArrowUpRight className="size-3" />
                 </Link>
               </div>
@@ -248,7 +248,7 @@ function Dashboard() {
                   </div>
                   <div className="mt-4 text-sm">No scans yet</div>
                   <p className="mt-1 text-xs text-muted-foreground">Run your first security scan in under 60 seconds.</p>
-                  <Link to="/scan/new" className="mt-5 inline-flex rounded-full bg-white text-black px-4 py-2 text-xs font-medium">Start your first scan</Link>
+                  <Link to="/scan/new" search={{ plan: 'professional' as const }} className="mt-5 inline-flex rounded-full bg-white text-black px-4 py-2 text-xs font-medium">Start your first scan</Link>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -420,7 +420,7 @@ function Dashboard() {
         <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto" onClick={() => setMobileNav(false)}>
           <div className="px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">Workspace</div>
           <SidebarLink to="/dashboard" icon={LayoutDashboard} label="Overview" active />
-          <SidebarLink to="/scan/new" icon={ScanSearch} label="New Scan" />
+          <SidebarLink to="/scan/new" search={{ plan: 'professional' as const }} icon={ScanSearch} label="New Scan" />
           <SidebarLink to="/dashboard" icon={FileWarning} label="Findings" badge={String(totalFindings)} />
           <SidebarLink to="/dashboard" icon={Globe2} label="Assets" />
           <SidebarLink to="/dashboard" icon={Bell} label="Alerts" />
