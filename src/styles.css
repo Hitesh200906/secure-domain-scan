@@ -124,7 +124,7 @@
   --gradient-radial-cyan: radial-gradient(ellipse at center, oklch(0.86 0.16 200 / 0.18), transparent 60%);
   --gradient-hero: radial-gradient(ellipse 80% 60% at 50% 0%, oklch(0.86 0.16 200 / 0.18), transparent 70%);
   --gradient-text: linear-gradient(180deg, oklch(1 0 0) 0%, oklch(0.7 0.02 220) 100%);
-  --gradient-accent: linear-gradient(135deg, oklch(0.86 0.16 200), oklch(0.75 0.13 180));
+  --gradient-accent: linear-gradient(135deg, #ffffff 0%, #6d9bff 45%, #1e51ea 100%);
   --shadow-glow-sm: 0 0 24px -4px oklch(0.86 0.16 200 / 0.35);
   --shadow-glow-md: 0 0 40px -6px oklch(0.86 0.16 200 / 0.45);
   --shadow-glow-lg: 0 8px 60px -10px oklch(0.86 0.16 200 / 0.5);
