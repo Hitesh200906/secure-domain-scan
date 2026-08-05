@@ -89,6 +89,18 @@
   --shadow-glow-md: 0 0 40px -6px oklch(0.86 0.16 200 / 0.45);
   --shadow-glow-lg: 0 8px 60px -10px oklch(0.86 0.16 200 / 0.5);
   --shadow-card: 0 1px 0 0 oklch(1 0 0 / 0.06) inset, 0 30px 60px -20px oklch(0 0 0 / 0.6);
+
+  /* Extended dark palette */
+  --surface-1: #0f1013;
+  --surface-2: #14161b;
+  --surface-3: #171a20;
+  --surface-4: #1c2129;
+  --border-hard: #2a2f38;
+  --border-soft: #353b46;
+  --violet-accent: #6c3cff;
+  --green-success: #1bcb7a;
+  --critical-red: #ff4d57;
+  --warning-orange: #ffb347;
 }
 
 .dark {
