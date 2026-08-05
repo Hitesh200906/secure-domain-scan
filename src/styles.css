@@ -61,6 +61,28 @@
 :root {
   --radius: 0.875rem;
 
+  /* Nexefy brand palette (dark + navy dominant) */
+  --ink-900: #0f1013;
+  --ink-800: #14161b;
+  --ink-700: #171a20;
+  --ink-600: #1c2129;
+  --line-strong: #353b46;
+  --line-soft: #2a2f38;
+  --brand-navy: #051cdd;
+  --brand-blue: #1e51ea;
+  --brand-cyan: #00d4ff;
+  --brand-purple: #6c3cff;
+  --brand-green: #1bcb7a;
+  --brand-red: #ff4d57;
+  --brand-amber: #ffb347;
+  --text-primary: #f5f7fa;
+  --text-secondary: #b3bac6;
+  --text-muted: #7a8493;
+  --gradient-brand: linear-gradient(135deg, #1e51ea 0%, #070da2 100%);
+  --gradient-brand-soft: linear-gradient(180deg, rgba(30, 81, 234, 0.16) 0%, rgba(5, 28, 221, 0.04) 100%);
+
+
+
   /* Pure black foundation */
   --background: oklch(0 0 0);
   --foreground: oklch(1 0 0);
