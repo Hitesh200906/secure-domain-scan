@@ -118,10 +118,21 @@ export function Stats() {
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.55, delay: i * 0.07 }}
                   whileHover={{ y: -4 }}
-                  className="group relative rounded-2xl glass p-4 sm:p-6 transition-colors duration-300 hover:border-white/20"
+                  className="group relative rounded-2xl p-4 sm:p-6 transition-colors duration-300"
+                  style={{
+                    background: "linear-gradient(180deg, var(--surface-3), var(--surface-1))",
+                    border: "1px solid var(--border-hard)",
+                  }}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center justify-center size-8 sm:size-9 rounded-lg glass text-primary">
+                    <span
+                      className="inline-flex items-center justify-center size-8 sm:size-9 rounded-lg"
+                      style={{
+                        background: "var(--surface-4)",
+                        border: "1px solid var(--border-soft)",
+                        color: s.color,
+                      }}
+                    >
                       <s.icon className="size-4" strokeWidth={1.6} />
                     </span>
                     <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -129,16 +140,20 @@ export function Stats() {
                     </span>
                   </div>
 
-                  <div className="mt-4 text-2xl sm:text-4xl font-semibold tracking-tight text-gradient-accent">
+                  <div className="mt-4 text-2xl sm:text-4xl font-semibold tracking-tight text-foreground">
                     <Counter value={s.value} suffix={s.suffix} decimals={s.decimals} />
                   </div>
                   <div className="mt-1.5 text-[10px] sm:text-xs uppercase tracking-[0.18em] text-muted-foreground">
                     {s.label}
                   </div>
 
-                  <div className="mt-3 h-px w-full bg-white/10 overflow-hidden rounded-full">
+                  <div
+                    className="mt-3 h-px w-full overflow-hidden rounded-full"
+                    style={{ background: "var(--border-hard)" }}
+                  >
                     <motion.div
-                      className="h-px bg-primary/70"
+                      className="h-px"
+                      style={{ background: s.color, opacity: 0.8 }}
                       initial={{ width: 0 }}
                       whileInView={{ width: `${s.progress}%` }}
                       viewport={{ once: true, margin: "-60px" }}
@@ -152,6 +167,7 @@ export function Stats() {
                 </motion.div>
               ))}
             </div>
+
           </div>
 
           {/* right: visual panel */}
