@@ -51,14 +51,14 @@ export function Navbar() {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 bg-black py-4">
+    <header className="fixed inset-x-0 top-0 z-50 bg-black py-2 sm:py-4">
       <div className="mx-auto max-w-7xl px-3 sm:px-6">
-        <div className={`flex items-center justify-between rounded-2xl px-3 sm:px-6 bg-black backdrop-blur-xl transition-all duration-300 ${scrolled ? "py-1.5 sm:py-2 border border-white/10 shadow-lg" : "py-2.5 sm:py-3 border border-transparent"}`}>
+        <div className={`flex items-center justify-between rounded-xl sm:rounded-2xl px-2.5 sm:px-6 bg-black backdrop-blur-xl transition-all duration-300 ${scrolled ? "py-1 sm:py-2 border border-white/10 shadow-lg" : "py-1.5 sm:py-3 border border-transparent"}`}>
           <Link to="/" className="flex items-center gap-2 group">
             <img
               src={nexusLogo}
               alt="Nexefy"
-              className="block size-7 object-contain"
+              className="block size-5 sm:size-7 object-contain"
               style={{
                 filter:
                   "drop-shadow(0 0 8px rgba(37,99,235,.45)) drop-shadow(0 0 14px rgba(31,85,245,.25))",
