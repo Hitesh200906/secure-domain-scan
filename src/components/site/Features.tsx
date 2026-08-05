@@ -14,33 +14,47 @@ const features = [
     icon: Brain,
     title: "AI Vulnerability Detection",
     desc: "Models trained on millions of CVEs surface unknown attack paths and zero-day patterns in seconds.",
+    tone: "blue",
   },
   {
     icon: ShieldCheck,
     title: "OWASP Security Assessment",
     desc: "Full OWASP Top 10 coverage with deep checks for injection, auth, and broken access control flaws.",
+    tone: "navy",
   },
   {
     icon: FileSearch,
     title: "Penetration Testing Reports",
     desc: "Executive-grade reports with reproducible steps, evidence and CVSS-scored remediation paths.",
+    tone: "blue",
   },
   {
     icon: Network,
     title: "API Security Analysis",
     desc: "Schema-aware fuzzing for REST, GraphQL and gRPC. BOLA, rate limit and auth flow validation.",
+    tone: "cyan",
   },
   {
     icon: Cloud,
     title: "Cloud Infrastructure Audits",
     desc: "AWS, GCP and Azure misconfiguration analysis mapped to CIS benchmarks and best practices.",
+    tone: "navy",
   },
   {
     icon: Radar,
     title: "Real-Time Threat Intelligence",
     desc: "Live feeds from 40+ sources continuously correlated with your exposed surface and assets.",
+    tone: "purple",
   },
-];
+] as const;
+
+const toneColor: Record<string, string> = {
+  blue: "var(--brand-blue)",
+  navy: "var(--brand-navy)",
+  cyan: "var(--brand-cyan)",
+  purple: "var(--brand-purple)",
+};
+
 
 function Tilt3DCard({
   children,
