@@ -150,13 +150,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "orders_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products_public"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "orders_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
@@ -706,116 +699,7 @@ export type Database = {
       }
     }
     Views: {
-      products_public: {
-        Row: {
-          active: boolean | null
-          apps: Json | null
-          banner_url: string | null
-          benefits: Json | null
-          billing_type: string | null
-          category: string | null
-          created_at: string | null
-          demo_video_url: string | null
-          description: string | null
-          docs_url: string | null
-          faq: Json | null
-          features: Json | null
-          gallery: Json | null
-          headline: string | null
-          id: string | null
-          image_url: string | null
-          logo_url: string | null
-          name: string | null
-          preview_url: string | null
-          price: number | null
-          product_type: string | null
-          requirements: Json | null
-          seo: Json | null
-          short_description: string | null
-          status: string | null
-          store_id: string | null
-          subcategory: string | null
-          tags: string[] | null
-          thumbnail_url: string | null
-          updated_at: string | null
-          version: string | null
-        }
-        Insert: {
-          active?: boolean | null
-          apps?: Json | null
-          banner_url?: string | null
-          benefits?: Json | null
-          billing_type?: string | null
-          category?: string | null
-          created_at?: string | null
-          demo_video_url?: string | null
-          description?: string | null
-          docs_url?: string | null
-          faq?: Json | null
-          features?: Json | null
-          gallery?: Json | null
-          headline?: string | null
-          id?: string | null
-          image_url?: string | null
-          logo_url?: string | null
-          name?: string | null
-          preview_url?: string | null
-          price?: number | null
-          product_type?: string | null
-          requirements?: Json | null
-          seo?: Json | null
-          short_description?: string | null
-          status?: string | null
-          store_id?: string | null
-          subcategory?: string | null
-          tags?: string[] | null
-          thumbnail_url?: string | null
-          updated_at?: string | null
-          version?: string | null
-        }
-        Update: {
-          active?: boolean | null
-          apps?: Json | null
-          banner_url?: string | null
-          benefits?: Json | null
-          billing_type?: string | null
-          category?: string | null
-          created_at?: string | null
-          demo_video_url?: string | null
-          description?: string | null
-          docs_url?: string | null
-          faq?: Json | null
-          features?: Json | null
-          gallery?: Json | null
-          headline?: string | null
-          id?: string | null
-          image_url?: string | null
-          logo_url?: string | null
-          name?: string | null
-          preview_url?: string | null
-          price?: number | null
-          product_type?: string | null
-          requirements?: Json | null
-          seo?: Json | null
-          short_description?: string | null
-          status?: string | null
-          store_id?: string | null
-          subcategory?: string | null
-          tags?: string[] | null
-          thumbnail_url?: string | null
-          updated_at?: string | null
-          version?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "products_store_id_fkey"
-            columns: ["store_id"]
-            isOneToOne: false
-            referencedRelation: "stores"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       get_user_role: {
