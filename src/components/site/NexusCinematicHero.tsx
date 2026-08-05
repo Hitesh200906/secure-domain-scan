@@ -147,8 +147,10 @@ export function NexusCinematicHero() {
 
 
         {/* ---------- Feature cards ---------- */}
-        <div className="mt-8 sm:mt-16 grid grid-cols-3 gap-2 sm:gap-6">
-          <FeatureCard index={0} image={imgMarketplace.url} fit="contain" title="Marketplace" desc="Launch branded storefronts." />
+        <div className="mt-8 sm:mt-16 grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-6">
+          <div className="hidden sm:block">
+            <FeatureCard index={0} image={imgMarketplace.url} fit="contain" title="Marketplace" desc="Launch branded storefronts." />
+          </div>
           <FeatureCard index={1} image={imgSecurity.url} title="Security" desc="AI-powered protection." />
           <FeatureCard index={2} image={imgRewards.url} title="Nexefy Rewards" desc="Earn from the clips you create." />
         </div>
@@ -305,10 +307,10 @@ export function RevenueCard() {
               <span className="hidden sm:inline text-[10px]" style={{ color: T.text2 }}>vs last month</span>
             </div>
 
-            <div className="my-1 sm:my-3.5 h-px w-full" style={{ background: T.border }} />
+            <div className="hidden sm:block my-1 sm:my-3.5 h-px w-full" style={{ background: T.border }} />
 
-            <div className="text-[7.5px] sm:text-[10px]" style={{ color: T.text3 }}>Breakdown</div>
-            <ul className="mt-0.5 sm:mt-2 space-y-0.5 sm:space-y-1.5">
+            <div className="hidden sm:block text-[7.5px] sm:text-[10px]" style={{ color: T.text3 }}>Breakdown</div>
+            <ul className="hidden sm:block mt-0.5 sm:mt-2 space-y-0.5 sm:space-y-1.5">
               {[
                 { label: "Subscriptions", value: 16250, dot: "#A855F7" },
                 { label: "Sales", value: 8150, dot: "#2563EB" },
@@ -339,7 +341,7 @@ export function RevenueCard() {
                 {["32K", "24K", "16K", "8K", "0"].map((t) => <span key={t}>{t}</span>)}
               </div>
               <div className="relative flex-1">
-                <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-[48px] sm:h-[140px]" preserveAspectRatio="none">
+                <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-[34px] sm:h-[140px]" preserveAspectRatio="none">
                   <defs>
                     <linearGradient id="revLine" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="0%" stopColor="#2563EB" />
@@ -381,7 +383,7 @@ export function RevenueCard() {
                     transition={{ duration: 0.6, delay: 2.3 }}
                   />
                 </svg>
-                <div className="mt-1 sm:mt-1.5 flex justify-between text-[6px] sm:text-[8.5px]" style={{ color: T.text3 }}>
+                <div className="mt-1 sm:mt-1.5 hidden sm:flex justify-between text-[6px] sm:text-[8.5px]" style={{ color: T.text3 }}>
                   {["May 1", "May 8", "May 15", "May 22", "May 31"].map((d) => <span key={d}>{d}</span>)}
                 </div>
               </div>

@@ -51,9 +51,9 @@ export function Navbar() {
   };
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 bg-black transition-all duration-300 ${scrolled ? "py-2" : "py-4"}`}>
+    <header className="fixed inset-x-0 top-0 z-50 bg-black py-4">
       <div className="mx-auto max-w-7xl px-3 sm:px-6">
-        <div className={`flex items-center justify-between rounded-2xl px-3 sm:px-6 py-2.5 sm:py-3 bg-black backdrop-blur-xl transition-all duration-300 ${scrolled ? "border border-white/10 shadow-lg" : "border border-transparent"}`}>
+        <div className={`flex items-center justify-between rounded-2xl px-3 sm:px-6 bg-black backdrop-blur-xl transition-all duration-300 ${scrolled ? "py-1.5 sm:py-2 border border-white/10 shadow-lg" : "py-2.5 sm:py-3 border border-transparent"}`}>
           <Link to="/" className="flex items-center gap-2 group">
             <img
               src={nexusLogo}
@@ -114,7 +114,7 @@ export function Navbar() {
                         <LayoutDashboard className="size-4" /> Dashboard
                       </Link>
                     )}
-                    <Link to="/profile" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.05]">
+                    <Link to="/profile" search={{ tab: undefined }} onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.05]">
                       <UserIcon className="size-4" /> Profile
                     </Link>
                     {admin && (
@@ -188,7 +188,7 @@ export function Navbar() {
                     <LayoutDashboard className="size-4" /> Dashboard
                   </Link>
                 )}
-                <Link to="/profile" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">
+                <Link to="/profile" search={{ tab: undefined }} onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">
                   <UserIcon className="size-4" /> Profile
                 </Link>
                 {admin && (

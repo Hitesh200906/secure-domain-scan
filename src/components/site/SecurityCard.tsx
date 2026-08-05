@@ -60,10 +60,10 @@ export function SecurityCard() {
               <span className="hidden sm:inline text-[10px]" style={{ color: T.text2 }}>vs last scan</span>
             </div>
 
-            <div className="my-1 sm:my-3.5 h-px w-full" style={{ background: T.border }} />
+            <div className="hidden sm:block my-1 sm:my-3.5 h-px w-full" style={{ background: T.border }} />
 
-            <div className="text-[7.5px] sm:text-[10px]" style={{ color: T.text3 }}>Findings</div>
-            <ul className="mt-0.5 sm:mt-2 space-y-0.5 sm:space-y-1.5">
+            <div className="hidden sm:block text-[7.5px] sm:text-[10px]" style={{ color: T.text3 }}>Findings</div>
+            <ul className="hidden sm:block mt-0.5 sm:mt-2 space-y-0.5 sm:space-y-1.5">
               {[
                 { label: "Critical", value: 3, dot: "#EF4444" },
                 { label: "Medium", value: 9, dot: "#F59E0B" },
@@ -94,7 +94,7 @@ export function SecurityCard() {
                 {["24", "18", "12", "6", "0"].map((t) => <span key={t}>{t}</span>)}
               </div>
               <div className="relative flex-1">
-                <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-[48px] sm:h-[140px]" preserveAspectRatio="none">
+                <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-[34px] sm:h-[140px]" preserveAspectRatio="none">
                   <defs>
                     <linearGradient id="secLine" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="0%" stopColor="#2563EB" />
@@ -136,11 +136,11 @@ export function SecurityCard() {
                     transition={{ duration: 0.6, delay: 2.3 }}
                   />
                 </svg>
-                <div className="mt-1 sm:mt-1.5 flex justify-between text-[6px] sm:text-[8.5px]" style={{ color: T.text3 }}>
+                <div className="mt-1 sm:mt-1.5 hidden sm:flex justify-between text-[6px] sm:text-[8.5px]" style={{ color: T.text3 }}>
                   {["Wk 1", "Wk 2", "Wk 3", "Wk 4", "Now"].map((d) => <span key={d}>{d}</span>)}
                 </div>
 
-                <div className="mt-1 sm:mt-3 space-y-1 sm:space-y-2">
+                <div className="mt-1 sm:mt-3 hidden sm:block space-y-1 sm:space-y-2">
                   {[
                     { label: "Threats blocked", value: 1482, pct: 88, color: "#2563EB" },
                     { label: "Scans completed", value: 214, pct: 64, color: "#22D3EE" },
