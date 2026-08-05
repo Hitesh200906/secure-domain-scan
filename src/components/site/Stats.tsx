@@ -176,7 +176,8 @@ export function Stats() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.7 }}
-            className="relative rounded-3xl glass overflow-hidden"
+            className="relative rounded-3xl overflow-hidden"
+            style={{ background: "var(--surface-2)", border: "1px solid var(--border-hard)" }}
           >
             <div className="relative aspect-[4/3] overflow-hidden">
               <motion.img
