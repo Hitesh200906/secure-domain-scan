@@ -47,13 +47,13 @@
   --background: oklch(0 0 0);
   --foreground: oklch(1 0 0);
 
-  /* Glass surfaces */
-  --surface: oklch(0.16 0.012 220 / 0.5);
-  --surface-elevated: oklch(0.22 0.015 220 / 0.6);
+  /* Dark neutral surfaces */
+  --surface: #14161b;
+  --surface-elevated: #171a20;
 
-  --card: oklch(0.12 0.01 220 / 0.6);
+  --card: #14161b;
   --card-foreground: oklch(1 0 0);
-  --popover: oklch(0.08 0.008 220);
+  --popover: #0f1013;
   --popover-foreground: oklch(1 0 0);
 
   /* Cyan primary */
@@ -64,8 +64,9 @@
   --secondary: oklch(0.75 0.13 180);
   --secondary-foreground: oklch(0.08 0 0);
 
-  --muted: oklch(0.18 0.01 220);
+  --muted: #171a20;
   --muted-foreground: oklch(0.68 0.015 220);
+
 
   --accent: oklch(0.86 0.16 200 / 0.12);
   --accent-foreground: oklch(0.86 0.16 200);
