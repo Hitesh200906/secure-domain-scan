@@ -203,7 +203,6 @@ export function Stats() {
               />
             </div>
 
-            <div className="relative p-4 sm:p-6 border-t border-white/[0.06]">
             <div className="relative p-4 sm:p-6" style={{ borderTop: "1px solid var(--border-hard)" }}>
               <div className="grid grid-cols-3 gap-3 sm:gap-4">
                 {highlights.map((h, i) => (
