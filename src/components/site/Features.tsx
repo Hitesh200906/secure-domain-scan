@@ -128,7 +128,7 @@ export function Features() {
               <Tilt3DCard
                 className="group relative h-full rounded-2xl p-6 sm:p-8 lg:p-10 transition-colors duration-500 will-change-transform"
                 style={{
-                  background: "linear-gradient(180deg, var(--ink-700) 0%, var(--ink-900) 100%)",
+                  background: "#000000",
                   border: "1px solid var(--line-soft)",
                 }}
               >
