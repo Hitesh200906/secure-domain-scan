@@ -118,23 +118,29 @@ export function Stats() {
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.55, delay: i * 0.07 }}
                   whileHover={{ y: -4 }}
-                  className="group relative rounded-2xl p-4 sm:p-6 transition-colors duration-300"
+                  className="group relative rounded-2xl p-4 sm:p-6 transition-colors duration-300 overflow-hidden"
                   style={{
-                    background: "linear-gradient(180deg, var(--surface-3), var(--surface-1))",
+                    background:
+                      "radial-gradient(120% 90% at 50% -20%, rgba(255,255,255,0.055), rgba(255,255,255,0) 60%), linear-gradient(180deg, #14161b 0%, #0b0c0f 100%)",
                     border: "1px solid var(--border-hard)",
+                    boxShadow:
+                      "inset 0 1px 0 0 rgba(255,255,255,0.06), 0 20px 40px -24px rgba(0,0,0,0.9)",
                   }}
                 >
                   <div className="flex items-center justify-between">
                     <span
                       className="inline-flex items-center justify-center size-8 sm:size-9 rounded-lg"
                       style={{
-                        background: "var(--surface-4)",
-                        border: "1px solid var(--border-soft)",
+                        background:
+                          "linear-gradient(180deg, #1a1d24 0%, #0d0e12 100%)",
+                        border: "1px solid var(--border-hard)",
+                        boxShadow: "inset 0 1px 0 0 rgba(255,255,255,0.07)",
                         color: s.color,
                       }}
                     >
                       <s.icon className="size-4" strokeWidth={1.6} />
                     </span>
+
                     <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                       0{i + 1}
                     </span>
