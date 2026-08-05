@@ -204,6 +204,7 @@ export function Stats() {
             </div>
 
             <div className="relative p-4 sm:p-6 border-t border-white/[0.06]">
+            <div className="relative p-4 sm:p-6" style={{ borderTop: "1px solid var(--border-hard)" }}>
               <div className="grid grid-cols-3 gap-3 sm:gap-4">
                 {highlights.map((h, i) => (
                   <motion.div
@@ -213,7 +214,7 @@ export function Stats() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: 0.15 + i * 0.08 }}
                   >
-                    <h.icon className="size-3.5 sm:size-4 text-primary" strokeWidth={1.6} />
+                    <h.icon className="size-3.5 sm:size-4" strokeWidth={1.6} style={{ color: h.color }} />
                     <div className="mt-2 text-[10px] sm:text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
                       {h.k}
                     </div>
