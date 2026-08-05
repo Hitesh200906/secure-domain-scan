@@ -112,7 +112,9 @@ export function Features() {
           className="mt-10 sm:mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
           style={{ perspective: 1200 }}
         >
-          {features.map((f, i) => (
+          {features.map((f, i) => {
+            const c = toneColor[f.tone];
+            return (
             <motion.div
               key={f.title}
               initial={{ opacity: 0, y: 20, rotateX: -8 }}
@@ -120,13 +122,22 @@ export function Features() {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: i * 0.07 }}
             >
-              <Tilt3DCard className="group relative h-full rounded-2xl glass p-6 sm:p-8 lg:p-10 transition-colors duration-500 will-change-transform hover:border-white/20">
+              <Tilt3DCard
+                className="group relative h-full rounded-2xl p-6 sm:p-8 lg:p-10 transition-colors duration-500 will-change-transform"
+                style={{
+                  background: "linear-gradient(180deg, var(--ink-700) 0%, var(--ink-900) 100%)",
+                  border: "1px solid var(--line-soft)",
+                }}
+              >
                 <div
                   className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                   style={{
-                    background:
-                      "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0) 55%)",
+                    background: `linear-gradient(135deg, color-mix(in srgb, ${c} 14%, transparent) 0%, transparent 60%)`,
                   }}
+                />
+                <div
+                  className="absolute left-0 right-0 top-0 h-px rounded-t-2xl opacity-60"
+                  style={{ background: `linear-gradient(90deg, transparent, ${c}, transparent)` }}
                 />
                 <div
                   className="relative"
@@ -135,20 +146,43 @@ export function Features() {
                   <motion.div
                     whileHover={{ rotateY: 360 }}
                     transition={{ duration: 0.8 }}
-                    className="inline-flex items-center justify-center size-12 rounded-xl glass text-primary"
+                    className="inline-flex items-center justify-center size-12 rounded-xl"
+                    style={{
+                      background: `color-mix(in srgb, ${c} 16%, var(--ink-600))`,
+                      border: `1px solid color-mix(in srgb, ${c} 34%, transparent)`,
+                      color: c === "var(--brand-navy)" ? "var(--brand-blue)" : c,
+                    }}
                   >
                     <f.icon className="size-5" strokeWidth={1.6} />
                   </motion.div>
-                  <h3 className="mt-6 text-lg font-medium text-white tracking-tight">
+                  <h3
+                    className="mt-6 text-lg font-medium tracking-tight"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {f.title}
                   </h3>
-                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                  <p
+                    className="mt-2 text-sm leading-relaxed"
+                    style={{ color: "var(--text-secondary)" }}
+                  >
                     {f.desc}
                   </p>
+                  <div className="mt-5 h-px w-full" style={{ background: "var(--line-soft)" }}>
+                    <motion.div
+                      className="h-px"
+                      style={{ background: c }}
+                      initial={{ width: "12%" }}
+                      whileInView={{ width: "52%" }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.1, delay: 0.25 + i * 0.07, ease: [0.16, 1, 0.3, 1] }}
+                    />
+                  </div>
                 </div>
               </Tilt3DCard>
             </motion.div>
-          ))}
+            );
+          })}
+
         </div>
       </div>
     </section>
