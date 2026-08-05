@@ -90,7 +90,7 @@ function Tilt3DCard({
       ref={ref}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
-      style={{ rotateX, rotateY, transformStyle: "preserve-3d", perspective: 1000 }}
+      style={{ ...style, rotateX, rotateY, transformStyle: "preserve-3d", perspective: 1000 }}
       className={className}
     >
       {children}
