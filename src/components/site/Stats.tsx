@@ -12,6 +12,7 @@ const stats = [
     hint: "Validated findings, near-zero noise",
     icon: Target,
     progress: 95,
+    color: "var(--green-success)",
   },
   {
     value: 24,
@@ -20,6 +21,7 @@ const stats = [
     hint: "Full report turnaround time",
     icon: Timer,
     progress: 80,
+    color: "var(--warning-orange)",
   },
   {
     value: 99.9,
@@ -29,6 +31,7 @@ const stats = [
     icon: Activity,
     progress: 99.9,
     hint: "Continuous monitoring, always on",
+    color: "var(--violet-accent)",
   },
   {
     value: 12,
@@ -37,14 +40,16 @@ const stats = [
     hint: "Across apps, APIs and cloud",
     icon: ScanLine,
     progress: 88,
+    color: "var(--border-soft)",
   },
 ];
 
 const highlights = [
-  { icon: ShieldCheck, k: "OWASP Top 10", v: "Full coverage" },
-  { icon: Bug, k: "CVE Corpus", v: "4.2M+ indexed" },
-  { icon: Activity, k: "Threat Feeds", v: "40+ live sources" },
+  { icon: ShieldCheck, k: "OWASP Top 10", v: "Full coverage", color: "var(--green-success)" },
+  { icon: Bug, k: "CVE Corpus", v: "4.2M+ indexed", color: "var(--critical-red)" },
+  { icon: Activity, k: "Threat Feeds", v: "40+ live sources", color: "var(--warning-orange)" },
 ];
+
 
 function Counter({
   value,
