@@ -206,10 +206,22 @@ export function SectionHeader({
   return (
     <div className={align === "center" ? "text-center max-w-2xl mx-auto" : "max-w-2xl"}>
       {eyebrow && (
-        <div className="inline-flex items-center gap-2 rounded-full glass px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+        <div
+          className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.2em]"
+          style={{
+            background: "var(--gradient-brand-soft)",
+            border: "1px solid color-mix(in srgb, var(--brand-blue) 30%, transparent)",
+            color: "var(--text-secondary)",
+          }}
+        >
+          <span
+            className="size-1.5 rounded-full"
+            style={{ background: "var(--brand-blue)" }}
+          />
           {eyebrow}
         </div>
       )}
+
       <h2 className="mt-5 text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-gradient">
         {title}
       </h2>
