@@ -4,7 +4,6 @@ import { Menu, X, LogOut, User as UserIcon, LayoutDashboard, Lock } from "lucide
 import nexusLogo from "@/assets/nexefy-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/use-admin";
-import { RoleBadge } from "@/components/ui/RoleBadge";
 import { useAppMode } from "@/lib/app-mode";
 
 
@@ -18,8 +17,7 @@ const baseLinks = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const { user, isAdmin: admin, role } = useAdmin();
+  const { user, isAdmin: admin } = useAdmin();
   const { mode } = useAppMode();
   const navigate = useNavigate();
   const links = [
@@ -36,7 +34,6 @@ export function Navbar() {
 
   const signOut = async () => {
     await supabase.auth.signOut();
-    setMenuOpen(false);
     navigate({ to: "/" });
   };
 
