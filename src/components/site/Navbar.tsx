@@ -155,23 +155,12 @@ export function Navbar() {
             ))}
             {user && (
               <>
-                <button
-                  onClick={() => { setStoresOpen(true); setOpen(false); }}
-                  className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg"
-                >
-                  <StoreIcon className="size-4" /> Stores
-                </button>
-                <button
-                  onClick={openMessages}
-                  className="w-full text-left flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg"
-                >
-                  <MessageSquare className="size-4" /> Messages
-                </button>
                 {mode === "security" && (
                   <Link to="/dashboard" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">
                     <LayoutDashboard className="size-4" /> Dashboard
                   </Link>
                 )}
+
                 <Link to="/profile" search={{ tab: undefined }} onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">
                   <UserIcon className="size-4" /> Profile
                 </Link>
