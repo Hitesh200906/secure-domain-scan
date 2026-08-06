@@ -141,8 +141,9 @@ function RootComponent() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const KNOWN_TOP_ROUTES = new Set([
     "", "contact", "discover", "pricing", "login", "signup", "reset-password",
-    "dashboard", "profile", "admin", "business",
+    "dashboard", "profile", "admin", "business", "legal",
   ]);
+
   const firstSeg = pathname.split("/")[1] ?? "";
   const isStorefront = firstSeg !== "" && !KNOWN_TOP_ROUTES.has(firstSeg);
   const isApp =
