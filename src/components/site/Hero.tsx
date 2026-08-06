@@ -94,7 +94,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.32 }}
-              className="mt-4 sm:mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3"
+              className="mt-7 sm:mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-3"
             >
               <button
                 onClick={() => setMode("security")}
