@@ -5,7 +5,7 @@ import {
   BarChart3, Share2, Wallet, Settings, LifeBuoy, Menu, X,
   Check, UserCog, Blocks, Search, ChevronRight, ExternalLink, Plus,
 } from "lucide-react";
-import type { Store } from "@/lib/business";
+import { getMyStores, type Store } from "@/lib/business";
 import { supabase } from "@/integrations/supabase/client";
 import { CommandPalette } from "./CommandPalette";
 import { BackButton } from "@/components/site/BackButton";
