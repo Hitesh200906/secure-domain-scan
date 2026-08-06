@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowUpRight, Users, BarChart3, Zap } from "lucide-react";
+import { ArrowRight, ShieldCheck } from "lucide-react";
 import { SectionHeader } from "./Features";
 import { SectionBackdrop } from "./SectionFx";
 import bgIg from "@/assets/social-ig-dark.jpg";
@@ -11,157 +11,96 @@ import logoX from "@/assets/logo-x.jpg";
 
 type Social = {
   name: string;
-  handle: string;
   href: string;
   logo: string;
-  followers: string;
-  posts: string;
-  engagement: string;
-  tagline: string;
+  desc: string;
+  note: string;
   bg: string;
   accent: string;
-  glow: string;
 };
 
 const socials: Social[] = [
   {
     name: "Instagram",
-    handle: "@nexussecurity",
     href: "https://instagram.com",
     logo: logoIg,
-    followers: "128K",
-    posts: "1.2K",
-    engagement: "8.4%",
-    tagline: "Threat intel reels & security visuals",
+    desc: "Behind the scenes, reels, security tips & live updates.",
+    note: "New reels & live updates",
     bg: bgIg,
     accent: "#e1306c",
-    glow: "rgba(225,48,108,0.35)",
+  },
+  {
+    name: "X (Twitter)",
+    href: "https://x.com",
+    logo: logoX,
+    desc: "Instant alerts, security news, and real-time intelligence.",
+    note: "Real-time threat alerts",
+    bg: bgX,
+    accent: "#3b82f6",
   },
   {
     name: "Facebook",
-    handle: "/nexussecurity",
     href: "https://facebook.com",
     logo: logoFb,
-    followers: "94K",
-    posts: "860",
-    engagement: "6.1%",
-    tagline: "Community alerts & live Q&A sessions",
+    desc: "Community updates, guides, and in-depth threat analysis.",
+    note: "Guides & community updates",
     bg: bgFb,
     accent: "#1877F2",
-    glow: "rgba(24,119,242,0.35)",
-  },
-  {
-    name: "X",
-    handle: "@nexussec",
-    href: "https://x.com",
-    logo: logoX,
-    followers: "212K",
-    posts: "5.8K",
-    engagement: "11.2%",
-    tagline: "Real-time CVE drops & research threads",
-    bg: bgX,
-    accent: "#ffffff",
-    glow: "rgba(255,255,255,0.22)",
   },
 ];
 
 function SocialCard({ s, index }: { s: Social; index: number }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
+    <motion.a
+      href={s.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.6, delay: index * 0.12 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.55, delay: index * 0.1 }}
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[oklch(0.045_0.006_220)] p-6 sm:p-7 transition-colors duration-500 hover:border-white/20"
     >
-      <a
-        href={s.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="group relative block rounded-3xl overflow-hidden border border-white/10 hover:border-white/25 transition-colors duration-500"
-      >
-        {/* Visual header */}
-        <div className="relative h-48 overflow-hidden">
-          <img
-            src={s.bg}
-            alt={`${s.name} dark themed artwork`}
-            width={1024}
-            height={768}
-            loading="lazy"
-            className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-110"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[oklch(0.05_0.008_220)]" />
-          <div
-            className="absolute -inset-x-10 -top-24 h-40 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-            style={{ background: `radial-gradient(closest-side, ${s.glow}, transparent)` }}
-          />
-          <div className="absolute top-4 right-4 size-9 rounded-full grid place-items-center border border-white/15 bg-black/40 backdrop-blur text-white/80 group-hover:bg-white/15 transition">
-            <ArrowUpRight className="size-4" />
+      {/* right-side artwork */}
+      <img
+        src={s.bg}
+        alt=""
+        aria-hidden
+        loading="lazy"
+        className="pointer-events-none absolute right-0 top-0 h-full w-3/5 object-cover opacity-60 transition-transform duration-700 group-hover:scale-105"
+        style={{ maskImage: "linear-gradient(90deg, transparent, black 55%)", WebkitMaskImage: "linear-gradient(90deg, transparent, black 55%)" }}
+      />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[oklch(0.045_0.006_220)] via-[oklch(0.045_0.006_220)]/80 to-transparent" />
+
+      <div className="relative">
+        <img src={s.logo} alt={`${s.name} logo`} width={56} height={56} loading="lazy" className="size-12 rounded-xl object-cover" />
+
+        <h3 className="mt-6 text-base sm:text-lg font-semibold uppercase tracking-[0.18em] text-white">
+          {s.name}
+        </h3>
+        <div className="mt-2 h-[3px] w-9 rounded-full" style={{ background: s.accent }} />
+
+        <p className="mt-5 max-w-[16rem] text-sm leading-relaxed text-white/60">{s.desc}</p>
+
+        <div className="mt-7 border-t border-white/10 pt-6">
+          <span className="flex items-center justify-between rounded-lg bg-[#1d4ed8] px-4 py-3 text-sm font-medium text-white transition-colors duration-300 group-hover:bg-[#1e40af]">
+            Follow Us
+            <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+          </span>
+          <div className="mt-4 flex items-center gap-2 text-xs text-white/55">
+            <span className="size-1.5 rounded-full" style={{ background: s.accent }} />
+            {s.note}
           </div>
         </div>
-
-        {/* Floating logo */}
-        <div className="absolute top-48 left-7 -translate-y-1/2 z-10">
-          <div
-            className="size-16 rounded-2xl overflow-hidden border-2 shadow-2xl bg-black"
-            style={{ borderColor: s.accent, boxShadow: `0 8px 30px -6px ${s.glow}` }}
-          >
-            <img src={s.logo} alt={`${s.name} logo`} width={64} height={64} loading="lazy" className="size-full object-cover" />
-          </div>
-        </div>
-
-        {/* Body */}
-        <div className="relative bg-[oklch(0.05_0.008_220)] px-7 pt-12 pb-7">
-          <div
-            className="absolute top-0 left-0 right-0 h-px opacity-50"
-            style={{ background: `linear-gradient(90deg, transparent, ${s.accent}, transparent)` }}
-          />
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] uppercase tracking-[0.25em] text-white/40">{s.name}</span>
-              <span className="size-1 rounded-full" style={{ background: s.accent }} />
-              <span className="text-[10px] uppercase tracking-[0.2em]" style={{ color: s.accent }}>Verified</span>
-            </div>
-            <div className="mt-1.5 text-2xl font-semibold tracking-tight text-white">{s.handle}</div>
-            <p className="mt-2 text-xs text-white/50 leading-relaxed">{s.tagline}</p>
-
-            {/* Stats */}
-            <div className="mt-5 grid grid-cols-3 gap-2">
-              {[
-                { icon: Users, label: "Followers", value: s.followers },
-                { icon: BarChart3, label: "Posts", value: s.posts },
-                { icon: Zap, label: "Engage", value: s.engagement },
-              ].map((st) => (
-                <div key={st.label} className="rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2.5 text-center">
-                  <st.icon className="size-3 mx-auto mb-1 text-white/35" />
-                  <div className="text-sm font-semibold text-white">{st.value}</div>
-                  <div className="text-[9px] uppercase tracking-[0.15em] text-white/35">{st.label}</div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-5 flex items-center justify-between pt-4 border-t border-white/10">
-              <span className="text-xs text-white/40">Live threat updates</span>
-              <span
-                className="inline-flex items-center gap-1.5 text-xs font-semibold rounded-full px-3.5 py-1.5 border transition-all duration-300 group-hover:gap-2.5"
-                style={{ color: s.accent, borderColor: `${s.accent}40`, background: `${s.accent}12` }}
-              >
-                Follow <span aria-hidden>→</span>
-              </span>
-            </div>
-          </div>
-        </div>
-      </a>
-    </motion.div>
+      </div>
+    </motion.a>
   );
 }
 
 export function Social() {
   return (
     <section className="relative py-16 sm:py-32 overflow-hidden">
-      <SectionBackdrop variant="grid" opacity={0.1} />
-      {/* Ambient accent glows */}
-      <div className="pointer-events-none absolute top-1/3 left-0 size-96 rounded-full blur-[140px] opacity-20 bg-[#e1306c]" />
-      <div className="pointer-events-none absolute bottom-0 right-0 size-96 rounded-full blur-[140px] opacity-15 bg-[#1877F2]" />
+      <SectionBackdrop variant="grid" opacity={0.08} />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeader
           eyebrow="Community"
@@ -173,6 +112,21 @@ export function Social() {
             <SocialCard key={s.name} s={s} index={i} />
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mt-8 sm:mt-10 flex justify-center"
+        >
+          <div className="inline-flex items-center gap-4 rounded-full border border-white/10 bg-white/[0.03] px-6 py-3">
+            <ShieldCheck className="size-5 text-[#3b82f6]" strokeWidth={1.8} />
+            <span className="text-sm font-medium text-white">Stay informed. Stay secure.</span>
+            <span className="h-4 w-px bg-white/15" />
+            <span className="text-sm text-white/55">We share. You stay ahead.</span>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
