@@ -2,7 +2,8 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type Store = {
   id: string;
-  owner_id: string;
+  /** Never selected from the client — owner identity is resolved server-side via owns_store(). */
+  owner_id?: string;
   name: string;
   slug: string;
   description: string | null;
