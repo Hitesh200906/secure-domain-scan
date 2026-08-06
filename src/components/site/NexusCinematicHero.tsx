@@ -235,7 +235,7 @@ export function FeatureCard({
         boxShadow: "0 24px 60px -30px rgba(0,0,0,0.9)",
       }}
     >
-      <div className="relative w-full basis-[80%] grow-0 aspect-[3/2]">
+      <div className="relative w-full shrink-0 aspect-[3/2]">
         <img
           src={image}
           alt={`${title} preview`}
@@ -244,14 +244,15 @@ export function FeatureCard({
         />
       </div>
 
-      <div className="basis-[20%] px-2 py-2 sm:px-5 sm:py-3.5" style={{ background: "rgba(0,0,0,0.7)" }}>
-        <div className="text-[10px] sm:text-[17px] font-semibold leading-tight" style={{ color: T.text }}>
+      <div className="flex-1 px-2 py-2 sm:px-5 sm:py-3.5" style={{ background: "rgba(0,0,0,0.7)" }}>
+        <div className="text-[9px] sm:text-[17px] font-semibold leading-tight" style={{ color: T.text }}>
           {title}
         </div>
-        <p className="mt-0.5 sm:mt-1 hidden xs:block text-[8.5px] sm:text-[12.5px] leading-snug" style={{ color: T.text2 }}>
+        <p className="mt-0.5 sm:mt-1 text-[7.5px] sm:text-[12.5px] leading-snug" style={{ color: T.text2 }}>
           {desc}
         </p>
       </div>
+
     </motion.div>
   );
 }
