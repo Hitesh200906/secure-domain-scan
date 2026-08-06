@@ -18,14 +18,13 @@ export function StoresDrawer({ open, onClose }: { open: boolean; onClose: () => 
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setOwned([]); setJoined([]); setLoading(false); return; }
 
-      const { data: ownedData } = await supabase.from("stores").select("*").eq("owner_id", user.id);
-      setOwned((ownedData as Store[]) ?? []);
+      setOwned(await getMyStores());
 
       const { data: orders } = await supabase.from("orders").select("store_id").eq("buyer_id", user.id);
       const ids = Array.from(new Set((orders ?? []).map((o: any) => o.store_id))).filter(Boolean);
       if (ids.length > 0) {
-        const { data: joinedData } = await supabase.from("stores").select("*").in("id", ids);
-        setJoined((joinedData as Store[]) ?? []);
+        const { data: joinedData } = await supabase.from("stores").select(PUBLIC_STORE_COLUMNS).in("id", ids);
+        setJoined((joinedData as unknown as Store[]) ?? []);
       } else {
         setJoined([]);
       }
