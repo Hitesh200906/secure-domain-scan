@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe, Store, Gift, Layers, Users } from "lucide-react";
 import { useAppMode } from "@/lib/app-mode";
 import { HeroPointsPanel } from "./HeroPointsPanel";
+import { ComingSoonDialog, COMING_SOON, type ComingSoonInfo } from "./ComingSoonDialog";
 import imgMarketplace from "@/assets/card-marketplace-v7.png.asset.json";
 import imgSecurity from "@/assets/card-security-v11.png.asset.json";
 import imgRewards from "@/assets/card-rewards-v10.png.asset.json";
@@ -22,6 +23,7 @@ export const T = {
 
 export function NexusCinematicHero() {
   const { setMode } = useAppMode();
+  const [comingSoon, setComingSoon] = useState<ComingSoonInfo | null>(null);
 
   return (
     <section className="relative w-full overflow-hidden" style={{ background: T.bg }}>
@@ -109,7 +111,7 @@ export function NexusCinematicHero() {
               className="mt-4 sm:mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3"
             >
               <button
-                onClick={() => setMode("nexus")}
+                onClick={() => setComingSoon(COMING_SOON.nexefy)}
                 className="group relative inline-flex items-center justify-center gap-1.5 sm:gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-3 py-2 sm:px-6 sm:py-3.5 text-[10px] sm:text-[14px] font-medium backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-white/25"
                 style={{
                   background: "linear-gradient(180deg,rgba(22,24,32,0.85) 0%,rgba(0,0,0,0.85) 100%)",
@@ -148,9 +150,9 @@ export function NexusCinematicHero() {
 
         {/* ---------- Feature cards ---------- */}
         <div className="mt-8 sm:mt-16 grid grid-cols-3 gap-2 sm:gap-6 items-stretch">
-          <FeatureCard index={0} image={imgMarketplace.url} fit="contain" title="Marketplace" desc="Launch branded storefronts." />
+          <FeatureCard index={0} image={imgMarketplace.url} fit="contain" title="Marketplace" desc="Launch branded storefronts." onClick={() => setComingSoon(COMING_SOON.marketplace)} />
           <FeatureCard index={1} image={imgSecurity.url} title="Security" desc="AI-powered protection." />
-          <FeatureCard index={2} image={imgRewards.url} title="Nexefy Rewards" desc="Earn from the clips you create." />
+          <FeatureCard index={2} image={imgRewards.url} title="Nexefy Rewards" desc="Earn from the clips you create." onClick={() => setComingSoon(COMING_SOON.rewards)} />
         </div>
 
         {/* ---------- Platform points ---------- */}
@@ -195,6 +197,8 @@ export function NexusCinematicHero() {
           <span className="inline-flex items-center gap-1.5 sm:gap-2"><Sparkles className="size-2.5 sm:size-3.5" /> AI Automation</span>
         </div>
       </div>
+
+      <ComingSoonDialog info={comingSoon} onClose={() => setComingSoon(null)} />
     </section>
   );
 }
@@ -205,12 +209,14 @@ export function FeatureCard({
   title,
   desc,
   fit = "cover",
+  onClick,
 }: {
   index: number;
   image: string;
   title: string;
   desc: string;
   fit?: "cover" | "contain";
+  onClick?: () => void;
 }) {
   return (
     <motion.div
@@ -218,7 +224,11 @@ export function FeatureCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.6, delay: index * 0.08 }}
-      className="group relative rounded-xl sm:rounded-2xl overflow-hidden flex flex-col backdrop-blur-md transition-transform duration-300 hover:-translate-y-1"
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onClick={onClick}
+      onKeyDown={onClick ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } } : undefined}
+      className={`group relative rounded-xl sm:rounded-2xl overflow-hidden flex flex-col backdrop-blur-md transition-transform duration-300 hover:-translate-y-1${onClick ? " cursor-pointer" : ""}`}
       style={{
         background: "rgba(0,0,0,0.6)",
         border: `1px solid ${T.border}`,

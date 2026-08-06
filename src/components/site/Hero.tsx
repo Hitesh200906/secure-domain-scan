@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe as GlobeIcon, ScanSearch, Bug, FileCheck } from "lucide-react";
 import { useAppMode } from "@/lib/app-mode";
 import { T, FeatureCard } from "./NexusCinematicHero";
 import { HeroPointsPanel } from "./HeroPointsPanel";
+import { ComingSoonDialog, COMING_SOON, type ComingSoonInfo } from "./ComingSoonDialog";
 import { SecurityCard } from "./SecurityCard";
 import imgMarketplace from "@/assets/card-marketplace-v7.png.asset.json";
 import imgSecurity from "@/assets/card-security-v11.png.asset.json";
@@ -11,6 +13,7 @@ import heroDesk from "@/assets/hero-bg-v6.png.asset.json";
 
 export function Hero() {
   const { setMode } = useAppMode();
+  const [comingSoon, setComingSoon] = useState<ComingSoonInfo | null>(null);
 
   return (
     <section className="relative w-full overflow-hidden" style={{ background: T.bg }}>
@@ -110,7 +113,7 @@ export function Hero() {
               </button>
 
               <button
-                onClick={() => setMode("nexus")}
+                onClick={() => setComingSoon(COMING_SOON.nexefy)}
                 className="group relative inline-flex items-center justify-center gap-1.5 sm:gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-3 py-2 sm:px-6 sm:py-3.5 text-[10px] sm:text-[14px] font-medium text-white transition-all duration-300 hover:-translate-y-0.5"
                 style={{
                   background: `linear-gradient(180deg, color-mix(in oklab, ${T.navy} 82%, white) 0%, ${T.navy} 55%, color-mix(in oklab, ${T.navy} 78%, black) 100%)`,
@@ -130,9 +133,9 @@ export function Hero() {
         </div>
 
         <div className="mt-8 sm:mt-16 grid grid-cols-3 gap-2 sm:gap-6 items-stretch">
-          <FeatureCard index={0} image={imgMarketplace.url} fit="contain" title="Marketplace" desc="Launch branded storefronts." />
+          <FeatureCard index={0} image={imgMarketplace.url} fit="contain" title="Marketplace" desc="Launch branded storefronts." onClick={() => setComingSoon(COMING_SOON.marketplace)} />
           <FeatureCard index={1} image={imgSecurity.url} title="Security" desc="AI-powered protection." />
-          <FeatureCard index={2} image={imgRewards.url} title="Nexefy Rewards" desc="Earn from the clips you create." />
+          <FeatureCard index={2} image={imgRewards.url} title="Nexefy Rewards" desc="Earn from the clips you create." onClick={() => setComingSoon(COMING_SOON.rewards)} />
         </div>
 
         <div className="mt-8 sm:mt-14">
@@ -175,6 +178,8 @@ export function Hero() {
           <span className="inline-flex items-center gap-1.5 sm:gap-2"><GlobeIcon className="size-2.5 sm:size-3.5" /> Full-Stack Coverage</span>
         </div>
       </div>
+
+      <ComingSoonDialog info={comingSoon} onClose={() => setComingSoon(null)} />
     </section>
   );
 }

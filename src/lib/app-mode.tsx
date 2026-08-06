@@ -12,12 +12,12 @@ const AppModeContext = createContext<Ctx | null>(null);
 const STORAGE_KEY = "nexus-app-mode";
 
 export function AppModeProvider({ children }: { children: ReactNode }) {
-  const [mode, setModeState] = useState<AppMode>("nexus");
+  // Nexefy Security is the launched product — it is the default and only active mode.
+  const [mode, setModeState] = useState<AppMode>("security");
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored === "nexus" || stored === "security") setModeState(stored);
+      localStorage.setItem(STORAGE_KEY, "security");
     } catch { /* ignore */ }
   }, []);
 
