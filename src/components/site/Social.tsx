@@ -2,9 +2,13 @@ import { motion } from "framer-motion";
 import { ArrowRight, ShieldCheck } from "lucide-react";
 import { SectionHeader } from "./Features";
 import { SectionBackdrop } from "./SectionFx";
-import bgIg from "@/assets/social-ig-dark.jpg";
-import bgFb from "@/assets/social-fb-dark.jpg";
-import bgX from "@/assets/social-x-new.jpg";
+import bgIgAsset from "@/assets/social-bg-ig.png.asset.json";
+import bgFbAsset from "@/assets/social-bg-fb.png.asset.json";
+import bgXAsset from "@/assets/social-bg-x.png.asset.json";
+
+const bgIg = bgIgAsset.url;
+const bgFb = bgFbAsset.url;
+const bgX = bgXAsset.url;
 import logoIg from "@/assets/social-ig.png";
 import logoFb from "@/assets/social-fb.png";
 import logoX from "@/assets/social-x.png";
@@ -59,8 +63,18 @@ function SocialCard({ s, index }: { s: Social; index: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.55, delay: index * 0.1 }}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-black/10 p-6 sm:p-7 transition-colors duration-500 hover:border-white/20"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-black p-6 sm:p-7 transition-colors duration-500 hover:border-white/20"
     >
+      <img
+        src={s.bg}
+        alt=""
+        aria-hidden
+        loading="lazy"
+        className="pointer-events-none absolute inset-0 size-full object-cover"
+      />
+      <div className="pointer-events-none absolute inset-0 bg-black/20" />
+
+
 
 
       <div className="relative">
