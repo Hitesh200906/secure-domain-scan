@@ -109,21 +109,21 @@ function CTASection() {
                 {!user ? (
                   <a
                     href="/signup"
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white text-black px-6 py-3 text-sm font-medium hover:shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.7)] transition"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white text-black px-6 py-3 text-sm font-medium transition-transform duration-300 hover:scale-105"
                   >
                     Sign Up →
                   </a>
                 ) : (
                   <a
                     href="/contact"
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white text-black px-6 py-3 text-sm font-medium hover:shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.7)] transition"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white text-black px-6 py-3 text-sm font-medium transition-transform duration-300 hover:scale-105"
                   >
                     Contact
                   </a>
                 )}
                 <a
                   href="/pricing"
-                  className="inline-flex items-center justify-center gap-2 rounded-full glass px-6 py-3 text-sm font-medium text-white"
+                  className="inline-flex items-center justify-center gap-2 rounded-full glass px-6 py-3 text-sm font-medium text-white transition-transform duration-300 hover:scale-105"
                 >
                   Compare Plans
                 </a>
