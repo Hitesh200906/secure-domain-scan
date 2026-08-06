@@ -64,7 +64,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.08 }}
-              className="mt-3 sm:mt-7 leading-[0.95] whitespace-nowrap text-[11px] sm:text-[26px] lg:text-[32px]"
+              className="mt-6 sm:mt-7 leading-[0.95] whitespace-nowrap text-[11px] sm:text-[26px] lg:text-[32px]"
               style={{
                 fontFamily: "ui-sans-serif, system-ui, sans-serif",
                 fontWeight: 700,
@@ -83,7 +83,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="mt-2 sm:mt-5 max-w-xl text-[10px] sm:text-[17px] leading-snug sm:leading-relaxed"
+              className="mt-4 sm:mt-5 max-w-xl text-[10px] sm:text-[17px] leading-snug sm:leading-relaxed"
               style={{ color: T.text2 }}
             >
               Detect vulnerabilities before attackers do. Get detailed, actionable security
@@ -94,7 +94,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.32 }}
-              className="mt-4 sm:mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3"
+              className="mt-7 sm:mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-3"
             >
               <button
                 onClick={() => setMode("security")}
@@ -132,13 +132,13 @@ export function Hero() {
           <SecurityCard />
         </div>
 
-        <div className="mt-8 sm:mt-16 grid grid-cols-3 gap-2 sm:gap-6 items-stretch">
+        <div className="mt-14 sm:mt-16 grid grid-cols-3 gap-3 sm:gap-6 items-stretch">
           <FeatureCard index={0} image={imgMarketplace.url} fit="contain" title="Marketplace" desc="Launch branded storefronts." onClick={() => setComingSoon(COMING_SOON.marketplace)} />
           <FeatureCard index={1} image={imgSecurity.url} title="Security" desc="AI-powered protection." />
           <FeatureCard index={2} image={imgRewards.url} title="Nexefy Rewards" desc="Earn from the clips you create." onClick={() => setComingSoon(COMING_SOON.rewards)} />
         </div>
 
-        <div className="mt-8 sm:mt-14">
+        <div className="mt-14 sm:mt-14">
           <HeroPointsPanel
             points={[
               {
@@ -166,7 +166,7 @@ export function Hero() {
         </div>
 
         <div
-          className="mt-7 sm:mt-10 flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-8 gap-y-2 sm:gap-y-3 text-[8px] sm:text-[11px] uppercase tracking-[0.16em] sm:tracking-[0.25em]"
+          className="hidden sm:flex mt-10 flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.25em]"
           style={{ color: T.text3 }}
         >
           <span className="inline-flex items-center gap-1.5 sm:gap-2"><ScanSearch className="size-2.5 sm:size-3.5" /> Continuous Scans</span>
