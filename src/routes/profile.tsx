@@ -196,7 +196,7 @@ function ProfilePage() {
                   <div className="text-center py-12">
                     <Radar className="size-8 mx-auto text-muted-foreground" />
                     <div className="mt-3 text-sm">No scans yet</div>
-                    <Link to="/scan/new" className="mt-4 inline-flex rounded-full bg-white text-black px-4 py-2 text-xs font-medium">Request a scan</Link>
+                    <Link to="/scan/new" search={{ plan: "starter" }} className="mt-4 inline-flex rounded-full bg-white text-black px-4 py-2 text-xs font-medium">Request a scan</Link>
                   </div>
                 ) : (
                   <div className="space-y-2">
