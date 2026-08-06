@@ -63,8 +63,18 @@ function SocialCard({ s, index }: { s: Social; index: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.55, delay: index * 0.1 }}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-black/10 p-6 sm:p-7 transition-colors duration-500 hover:border-white/20"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-black p-6 sm:p-7 transition-colors duration-500 hover:border-white/20"
     >
+      <img
+        src={s.bg}
+        alt=""
+        aria-hidden
+        loading="lazy"
+        className="pointer-events-none absolute inset-0 size-full object-cover"
+      />
+      <div className="pointer-events-none absolute inset-0 bg-black/20" />
+
+
 
 
       <div className="relative">
