@@ -111,7 +111,7 @@ export function Navbar() {
                   className="group relative inline-flex items-center gap-2 rounded-lg px-4 py-1.5 text-[13px] font-medium text-[#F8FAFC] overflow-hidden transition-all duration-300 hover:-translate-y-0.5 border border-white/10"
                   style={{
                     background:
-                      "linear-gradient(90deg, #244DFA 0%, #2F63FA 50%, #3778FA 100%)",
+                      "linear-gradient(90deg, #12269B 0%, #17359E 50%, #1B44A8 100%)",
                     boxShadow:
                       "inset 0 1px 0 rgba(255,255,255,.08), 0 6px 16px rgba(0,0,0,.35), 0 0 18px rgba(47,96,255,.18)",
                   }}
