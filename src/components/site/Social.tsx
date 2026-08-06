@@ -5,9 +5,9 @@ import { SectionBackdrop } from "./SectionFx";
 import bgIg from "@/assets/social-ig-dark.jpg";
 import bgFb from "@/assets/social-fb-dark.jpg";
 import bgX from "@/assets/social-x-new.jpg";
-import logoIg from "@/assets/logo-instagram.jpg";
-import logoFb from "@/assets/logo-facebook.jpg";
-import logoX from "@/assets/logo-x.jpg";
+import logoIg from "@/assets/social-ig.png";
+import logoFb from "@/assets/social-fb.png";
+import logoX from "@/assets/social-x.png";
 
 type Social = {
   name: string;
@@ -64,7 +64,7 @@ function SocialCard({ s, index }: { s: Social; index: number }) {
 
 
       <div className="relative">
-        <img src={s.logo} alt={`${s.name} logo`} width={56} height={56} loading="lazy" className="size-12 rounded-xl object-cover" />
+        <img src={s.logo} alt={`${s.name} logo`} width={56} height={56} loading="lazy" className="size-12 object-contain" />
 
         <h3 className="mt-6 text-base sm:text-lg font-semibold uppercase tracking-[0.18em] text-white">
           {s.name}
