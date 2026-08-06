@@ -12,7 +12,8 @@ import { useAppMode } from "@/lib/app-mode";
 
 const baseLinks = [
   { to: "/", label: "Features" },
-  { to: "/discover", label: "Discover" },
+  { to: "/pricing", label: "Plans" },
+  { to: "/contact", label: "Contact" },
 ] as const;
 
 
@@ -27,9 +28,7 @@ export function Navbar() {
   const navigate = useNavigate();
   const links = [
     ...baseLinks,
-    mode === "security"
-      ? { to: "/dashboard" as const, label: "Dashboard" }
-      : { to: "/business" as const, label: "Business" },
+    ...(mode === "security" ? [{ to: "/dashboard" as const, label: "Dashboard" }] : []),
   ];
 
   useEffect(() => {
