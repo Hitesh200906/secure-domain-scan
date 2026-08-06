@@ -1,9 +1,13 @@
 import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { Target, Clock, ShieldCheck } from "lucide-react";
-import imgAccuracy from "@/assets/stat-accuracy.jpg";
-import imgDelivery from "@/assets/stat-delivery.jpg";
-import imgUptime from "@/assets/stat-uptime.jpg";
+import accuracyAsset from "@/assets/stat-accuracy-bg.png.asset.json";
+import deliveryAsset from "@/assets/stat-delivery-bg.png.asset.json";
+import uptimeAsset from "@/assets/stat-uptime-bg.png.asset.json";
+
+const imgAccuracy = accuracyAsset.url;
+const imgDelivery = deliveryAsset.url;
+const imgUptime = uptimeAsset.url;
 
 const stats = [
   {
