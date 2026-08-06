@@ -62,7 +62,7 @@ export function Stats() {
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.5, delay: i * 0.07 }}
               className="rounded-xl border border-white/[0.08] p-5 sm:p-6 text-center"
-              style={{ background: `color-mix(in oklab, ${s.color} 10%, transparent)` }}
+              style={{ background: "rgba(0,0,0,0.1)" }}
             >
               <div
                 className="text-2xl sm:text-4xl font-semibold tracking-tight"

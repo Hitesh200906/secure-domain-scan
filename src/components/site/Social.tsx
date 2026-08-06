@@ -22,7 +22,7 @@ type Social = {
 const socials: Social[] = [
   {
     name: "Instagram",
-    href: "https://instagram.com",
+    href: "https://www.instagram.com/nexefy_",
     logo: logoIg,
     desc: "Behind the scenes, reels, security tips & live updates.",
     note: "New reels & live updates",
@@ -59,18 +59,9 @@ function SocialCard({ s, index }: { s: Social; index: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.55, delay: index * 0.1 }}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[oklch(0.045_0.006_220)] p-6 sm:p-7 transition-colors duration-500 hover:border-white/20"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-black/10 p-6 sm:p-7 transition-colors duration-500 hover:border-white/20"
     >
-      {/* right-side artwork */}
-      <img
-        src={s.bg}
-        alt=""
-        aria-hidden
-        loading="lazy"
-        className="pointer-events-none absolute right-0 top-0 h-full w-3/5 object-cover opacity-60 transition-transform duration-700 group-hover:scale-105"
-        style={{ maskImage: "linear-gradient(90deg, transparent, black 55%)", WebkitMaskImage: "linear-gradient(90deg, transparent, black 55%)" }}
-      />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[oklch(0.045_0.006_220)] via-[oklch(0.045_0.006_220)]/80 to-transparent" />
+
 
       <div className="relative">
         <img src={s.logo} alt={`${s.name} logo`} width={56} height={56} loading="lazy" className="size-12 rounded-xl object-cover" />
