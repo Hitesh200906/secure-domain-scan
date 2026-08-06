@@ -64,7 +64,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.08 }}
-              className="mt-3 sm:mt-7 leading-[0.95] whitespace-nowrap text-[11px] sm:text-[26px] lg:text-[32px]"
+              className="mt-6 sm:mt-7 leading-[0.95] whitespace-nowrap text-[11px] sm:text-[26px] lg:text-[32px]"
               style={{
                 fontFamily: "ui-sans-serif, system-ui, sans-serif",
                 fontWeight: 700,
