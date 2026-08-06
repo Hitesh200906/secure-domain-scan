@@ -82,18 +82,10 @@ export function Pricing({ compact = false }: { compact?: boolean }) {
                 <Link
                   to="/scan/new"
                   search={{ plan: t.slug as "starter" | "professional" | "enterprise" }}
-                  className={`group relative mt-8 inline-flex items-center justify-center overflow-hidden rounded-full px-5 py-3 text-sm font-medium transition-colors duration-500 ${t.popular ? "bg-white text-black hover:text-white" : "glass text-white hover:border-white/20"}`}
+                  className={`group relative mt-8 inline-flex items-center justify-center overflow-hidden rounded-full px-5 py-3 text-sm font-medium transition-transform duration-300 hover:scale-[1.03] ${t.popular ? "bg-white text-black" : "glass text-white hover:border-white/20"}`}
                 >
-                  {t.popular && (
-                    <span
-                      aria-hidden
-                      className="pointer-events-none absolute inset-x-0 bottom-0 h-0 transition-[height] duration-500 ease-out group-hover:h-full"
-                      style={{
-                        background: "linear-gradient(180deg, color-mix(in oklab, #0000DD 82%, white) 0%, #0000DD 55%, color-mix(in oklab, #0000DD 78%, black) 100%)",
-                      }}
-                    />
-                  )}
                   <span className="relative">{t.cta_label || "Get started"}</span>
+
                 </Link>
               </div>
             </motion.div>
