@@ -2,9 +2,13 @@ import { motion } from "framer-motion";
 import { ArrowRight, ShieldCheck } from "lucide-react";
 import { SectionHeader } from "./Features";
 import { SectionBackdrop } from "./SectionFx";
-import bgIg from "@/assets/social-ig-dark.jpg";
-import bgFb from "@/assets/social-fb-dark.jpg";
-import bgX from "@/assets/social-x-new.jpg";
+import bgIgAsset from "@/assets/social-bg-ig.png.asset.json";
+import bgFbAsset from "@/assets/social-bg-fb.png.asset.json";
+import bgXAsset from "@/assets/social-bg-x.png.asset.json";
+
+const bgIg = bgIgAsset.url;
+const bgFb = bgFbAsset.url;
+const bgX = bgXAsset.url;
 import logoIg from "@/assets/social-ig.png";
 import logoFb from "@/assets/social-fb.png";
 import logoX from "@/assets/social-x.png";
