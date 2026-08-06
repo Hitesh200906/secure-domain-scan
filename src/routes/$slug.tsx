@@ -15,6 +15,7 @@ function StorefrontPage() {
   const [store, setStore] = useState<Store | null>(null);
   const [loading, setLoading] = useState(true);
   const [viewerId, setViewerId] = useState<string | null>(null);
+  const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -22,6 +23,7 @@ function StorefrontPage() {
       setStore(s);
       const { data: { user } } = await supabase.auth.getUser();
       setViewerId(user?.id ?? null);
+      setIsOwner(user && s ? await isStoreOwner(s.id) : false);
       setLoading(false);
     })();
   }, [slug]);
@@ -38,7 +40,6 @@ function StorefrontPage() {
     );
   }
 
-  const isOwner = viewerId === store.owner_id;
 
   const join = async () => {
     if (!viewerId) { toast.error("Sign in to join"); return; }
