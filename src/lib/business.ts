@@ -2,7 +2,8 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type Store = {
   id: string;
-  owner_id: string;
+  /** Never selected from the client — owner identity is resolved server-side via owns_store(). */
+  owner_id?: string;
   name: string;
   slug: string;
   description: string | null;
@@ -47,19 +48,40 @@ export type Order = {
   created_at: string;
 };
 
-export async function getMyStore(userId: string): Promise<Store | null> {
-  const { data } = await supabase.from("stores").select("*").eq("owner_id", userId).maybeSingle();
-  return data as Store | null;
-}
-
-/** Columns readable by anonymous visitors (owner_id is never exposed publicly). */
+/** Columns any client may read — owner_id is never exposed. */
 export const PUBLIC_STORE_COLUMNS =
   "id,name,slug,description,logo_url,banner_url,category,theme_color,accent_color,website_url,social_links,verified,member_count,total_sales,skills,created_at,updated_at";
 
+/** IDs of the stores owned by the current user (resolved server-side, owner_id stays hidden). */
+export async function getMyStoreIds(): Promise<string[]> {
+  const { data } = await (supabase as any).rpc("my_store_ids");
+  return ((data as string[] | null) ?? []).filter(Boolean);
+}
+
+/** Whether the current user owns a given store (verified server-side). */
+export async function isStoreOwner(storeId: string): Promise<boolean> {
+  const { data } = await (supabase as any).rpc("owns_store", { _store_id: storeId });
+  return data === true;
+}
+
+export async function getMyStores(): Promise<Store[]> {
+  const ids = await getMyStoreIds();
+  if (ids.length === 0) return [];
+  const { data } = await supabase
+    .from("stores")
+    .select(PUBLIC_STORE_COLUMNS)
+    .in("id", ids)
+    .order("created_at", { ascending: true });
+  return ((data as unknown as Store[]) ?? []);
+}
+
+export async function getMyStore(_userId?: string): Promise<Store | null> {
+  const stores = await getMyStores();
+  return stores[0] ?? null;
+}
+
 export async function getStoreBySlug(slug: string): Promise<Store | null> {
-  const { data: auth } = await supabase.auth.getSession();
-  const cols = auth.session ? "*" : PUBLIC_STORE_COLUMNS;
-  const { data } = await supabase.from("stores").select(cols).eq("slug", slug).maybeSingle();
+  const { data } = await supabase.from("stores").select(PUBLIC_STORE_COLUMNS).eq("slug", slug).maybeSingle();
   return (data as unknown as Store) ?? null;
 }
 

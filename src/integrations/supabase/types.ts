@@ -715,6 +715,8 @@ export type Database = {
       }
       is_banned: { Args: { _user_id: string }; Returns: boolean }
       is_master_admin: { Args: { _user_id: string }; Returns: boolean }
+      my_store_ids: { Args: never; Returns: string[] }
+      owns_store: { Args: { _store_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "master_admin" | "super_admin" | "admin" | "user"

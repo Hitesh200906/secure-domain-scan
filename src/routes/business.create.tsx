@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { slugify } from "@/lib/business";
+import { slugify, getMyStoreIds } from "@/lib/business";
 import { uploadStoreAsset } from "@/lib/uploads";
 import {
   Check, ChevronLeft, ChevronRight, Loader2, Sparkles, Upload, X,
@@ -114,8 +114,8 @@ function CreateStoreWizard() {
     const social_links = Object.fromEntries(Object.entries(socials).filter(([_, v]) => v.trim()));
 
     // Guard: user already owns a store
-    const { data: existing } = await supabase.from("stores").select("id").eq("owner_id", userId).maybeSingle();
-    if (existing) {
+    const existingIds = await getMyStoreIds();
+    if (existingIds.length > 0) {
       setLaunching(false);
       setLaunchPhase("idle");
       setSubmitting(false);
