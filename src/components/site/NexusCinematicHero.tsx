@@ -244,7 +244,7 @@ export function FeatureCard({
         />
       </div>
 
-      <div className="flex-1 px-2 py-2 sm:px-5 sm:py-3.5" style={{ background: "rgba(0,0,0,0.7)" }}>
+      <div className="hidden sm:block flex-1 px-2 py-2 sm:px-5 sm:py-3.5" style={{ background: "rgba(0,0,0,0.7)" }}>
         <div className="text-[9px] sm:text-[17px] font-semibold leading-tight" style={{ color: T.text }}>
           {title}
         </div>
