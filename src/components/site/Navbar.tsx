@@ -1,12 +1,10 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X, LogOut, User as UserIcon, LayoutDashboard, Lock, MessageSquare, Store as StoreIcon } from "lucide-react";
+import { Menu, X, LogOut, User as UserIcon, LayoutDashboard, Lock } from "lucide-react";
 import nexusLogo from "@/assets/nexefy-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/use-admin";
 import { RoleBadge } from "@/components/ui/RoleBadge";
-import { MessagesDrawer } from "@/components/site/MessagesDrawer";
-import { StoresDrawer } from "@/components/site/StoresDrawer";
 import { useAppMode } from "@/lib/app-mode";
 
 
@@ -21,8 +19,6 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [msgOpen, setMsgOpen] = useState(false);
-  const [storesOpen, setStoresOpen] = useState(false);
   const { user, isAdmin: admin, role } = useAdmin();
   const { mode } = useAppMode();
   const navigate = useNavigate();
@@ -42,11 +38,6 @@ export function Navbar() {
     await supabase.auth.signOut();
     setMenuOpen(false);
     navigate({ to: "/" });
-  };
-
-  const openMessages = () => {
-    setMsgOpen(true);
-    setOpen(false);
   };
 
   return (
@@ -187,8 +178,6 @@ export function Navbar() {
         )}
       </div>
 
-      <MessagesDrawer open={msgOpen} onClose={() => setMsgOpen(false)} />
-      <StoresDrawer open={storesOpen} onClose={() => setStoresOpen(false)} />
     </header>
   );
 }
