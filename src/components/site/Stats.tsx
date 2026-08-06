@@ -1,10 +1,9 @@
 import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
 import { useEffect, useRef } from "react";
-import { Target, Clock, ShieldCheck, ScanLine } from "lucide-react";
+import { Target, Clock, ShieldCheck } from "lucide-react";
 import imgAccuracy from "@/assets/stat-accuracy.jpg";
 import imgDelivery from "@/assets/stat-delivery.jpg";
 import imgUptime from "@/assets/stat-uptime.jpg";
-import imgChecks from "@/assets/stat-checks.jpg";
 
 const stats = [
   {
@@ -31,14 +30,6 @@ const stats = [
     color: "#22c55e",
     icon: ShieldCheck,
     image: imgUptime,
-  },
-  {
-    value: 12,
-    suffix: "M+",
-    label: "Checks Executed",
-    color: "#38bdf8",
-    icon: ScanLine,
-    image: imgChecks,
   },
 ];
 
@@ -87,7 +78,7 @@ export function Stats() {
           By the numbers
         </motion.h2>
 
-        <div className="mt-8 sm:mt-12 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+        <div className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5">
           {stats.map((s, i) => {
             const Icon = s.icon;
             return (
@@ -119,9 +110,15 @@ export function Stats() {
                   </span>
 
                   <div className="mt-auto pt-8">
-                    <div className="text-3xl sm:text-5xl font-semibold tracking-tight text-white">
+                    <motion.div
+                      initial={{ opacity: 0, y: 18, scale: 0.94 }}
+                      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                      viewport={{ once: true, margin: "-60px" }}
+                      transition={{ duration: 0.7, delay: 0.15 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                      className="text-3xl sm:text-5xl font-semibold tracking-tight text-white"
+                    >
                       <Counter value={s.value} suffix={s.suffix} decimals={s.decimals} />
-                    </div>
+                    </motion.div>
                     <div className="mt-2 text-[10px] sm:text-xs uppercase tracking-[0.2em] text-white/60">
                       {s.label}
                     </div>
