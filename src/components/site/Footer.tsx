@@ -89,7 +89,7 @@ function FooterCol({
   links,
 }: {
   title: string;
-  links: { label: string; to: string }[];
+  links: { label: string; to: string; hash?: string }[];
 }) {
   return (
     <div>
@@ -99,6 +99,7 @@ function FooterCol({
           <li key={l.label}>
             <Link
               to={l.to}
+              hash={l.hash}
               className="text-sm text-muted-foreground hover:text-white transition"
             >
               {l.label}
@@ -108,4 +109,5 @@ function FooterCol({
       </ul>
     </div>
   );
+
 }
