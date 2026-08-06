@@ -136,11 +136,6 @@ export function Features() {
             </motion.div>
           ))}
         </div>
-                </div>
-              </Tilt3DCard>
-            </motion.div>
-          ))}
-        </div>
       </div>
     </section>
   );
