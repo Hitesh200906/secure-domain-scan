@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { X, Store as StoreIcon, ChevronUp, ChevronDown } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import type { Store } from "@/lib/business";
+import { getMyStores, PUBLIC_STORE_COLUMNS, type Store } from "@/lib/business";
 
 export function StoresDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [owned, setOwned] = useState<Store[]>([]);
