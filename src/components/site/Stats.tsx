@@ -101,7 +101,7 @@ export function Stats() {
                   loading="lazy"
                   width={800}
                   height={600}
-                  className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-45 transition-transform duration-[1200ms] group-hover:scale-105"
+                  className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-65 transition-transform duration-[1200ms] group-hover:scale-105"
                 />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black/20" />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
