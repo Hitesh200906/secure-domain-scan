@@ -72,7 +72,10 @@ function SocialCard({ s, index }: { s: Social; index: number }) {
         loading="lazy"
         className="pointer-events-none absolute inset-0 size-full object-cover"
       />
-      <div className="pointer-events-none absolute inset-0 bg-black/40" />
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ background: `rgba(0,0,0,${s.name === "Instagram" ? 0.4 : 0.6})` }}
+      />
 
 
 
