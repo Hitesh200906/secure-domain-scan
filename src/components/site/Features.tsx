@@ -95,7 +95,7 @@ export function Features() {
         />
 
         <div
-          className="mt-10 sm:mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+          className="mt-10 sm:mt-16 grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6"
           style={{ perspective: 1200 }}
         >
           {features.map((f, i) => (
@@ -106,7 +106,7 @@ export function Features() {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: i * 0.07 }}
             >
-              <Tilt3DCard className="group relative h-full rounded-2xl glass p-6 sm:p-8 lg:p-10 transition-colors duration-500 will-change-transform hover:border-white/20">
+              <Tilt3DCard className="group relative h-full rounded-2xl glass p-4 sm:p-8 lg:p-10 transition-colors duration-500 will-change-transform hover:border-white/20">
                 <div
                   className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                   style={{
@@ -115,22 +115,27 @@ export function Features() {
                   }}
                 />
                 <div
-                  className="relative"
+                  className="relative min-w-0"
                   style={{ transform: "translateZ(40px)", transformStyle: "preserve-3d" }}
                 >
                   <motion.div
                     whileHover={{ rotateY: 360 }}
                     transition={{ duration: 0.8 }}
-                    className="inline-flex items-center justify-center size-12 rounded-xl glass text-primary"
+                    className="inline-flex items-center justify-center size-9 sm:size-12 shrink-0 rounded-xl glass text-primary"
                   >
-                    <f.icon className="size-5" strokeWidth={1.6} />
+                    <f.icon className="size-4 sm:size-5" strokeWidth={1.6} />
                   </motion.div>
-                  <h3 className="mt-6 text-lg font-medium text-white tracking-tight">
+                  <h3 className="mt-3 sm:mt-6 text-[13px] sm:text-lg font-medium text-white tracking-tight">
                     {f.title}
                   </h3>
-                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                  <p className="mt-1.5 sm:mt-2 text-[11px] sm:text-sm text-muted-foreground leading-relaxed">
                     {f.desc}
                   </p>
+                </div>
+              </Tilt3DCard>
+            </motion.div>
+          ))}
+        </div>
                 </div>
               </Tilt3DCard>
             </motion.div>
