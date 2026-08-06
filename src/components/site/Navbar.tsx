@@ -41,9 +41,9 @@ export function Navbar() {
   };
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 py-2 sm:py-4 transition-colors duration-300 ${scrolled ? "bg-transparent" : "bg-black"}`}>
+    <header className={`fixed inset-x-0 top-0 z-50 py-2 sm:py-4 transition-colors duration-300 ${scrolled ? "bg-transparent" : "bg-black/30"}`}>
       <div className="mx-auto max-w-7xl px-3 sm:px-6">
-        <div className={`flex items-center justify-between rounded-xl sm:rounded-2xl px-2.5 sm:px-6 bg-black backdrop-blur-xl transition-all duration-300 ${scrolled ? "py-1 sm:py-2 border border-white/10 shadow-lg" : "py-1.5 sm:py-3 border border-transparent"}`}>
+        <div className={`flex items-center justify-between rounded-xl sm:rounded-2xl px-2.5 sm:px-6 bg-black/30 backdrop-blur-xl transition-all duration-300 ${scrolled ? "py-1 sm:py-2 border border-white/10 shadow-lg" : "py-1.5 sm:py-3 border border-transparent"}`}>
           <Link to="/" className="flex items-center gap-2 group">
             <img
               src={nexusLogo}
@@ -71,37 +71,18 @@ export function Navbar() {
 
           <div className="hidden md:flex items-center gap-2">
             {user ? (
-              <div className="relative">
-                <button onClick={() => setMenuOpen(!menuOpen)} className="size-9 rounded-full glass grid place-items-center text-sm font-medium hover:border-white/20 transition">
-                  {(user.email || "?")[0].toUpperCase()}
-                </button>
-                {menuOpen && (
-                  <div className="absolute right-0 top-11 w-64 rounded-2xl p-2 text-sm bg-black/95 backdrop-blur-xl border border-white/10 shadow-2xl">
-                    <div className="px-3 py-2 text-xs text-muted-foreground truncate flex items-center gap-2">
-                      <span className="truncate flex-1">{user.email}</span>
-                    </div>
-                    {role && role !== "user" && (
-                      <div className="px-3 pb-2"><RoleBadge role={role} /></div>
-                    )}
-
-                    {mode === "security" && (
-                      <Link to="/dashboard" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.05]">
-                        <LayoutDashboard className="size-4" /> Dashboard
-                      </Link>
-                    )}
-                    <Link to="/profile" search={{ tab: undefined }} onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.05]">
-                      <UserIcon className="size-4" /> Profile
-                    </Link>
-                    {admin && (
-                      <Link to="/admin" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.05]">
-                        <Lock className="size-4" /> Admin Console
-                      </Link>
-                    )}
-                    <button onClick={signOut} className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.05] text-destructive">
-                      <LogOut className="size-4" /> Sign out
-                    </button>
-                  </div>
+              <div className="flex items-center gap-2">
+                {admin && (
+                  <Link to="/admin" className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[13px] text-muted-foreground hover:text-white border border-white/10 transition">
+                    <Lock className="size-3.5" /> Admin Console
+                  </Link>
                 )}
+                <Link to="/profile" search={{ tab: undefined }} aria-label="Profile" className="size-9 rounded-full glass grid place-items-center text-sm font-medium hover:border-white/20 transition">
+                  {(user.email || "?")[0].toUpperCase()}
+                </Link>
+                <button onClick={signOut} aria-label="Sign out" className="size-9 rounded-full glass grid place-items-center text-muted-foreground hover:text-white transition">
+                  <LogOut className="size-4" />
+                </button>
               </div>
             ) : (
               <>
@@ -111,7 +92,7 @@ export function Navbar() {
                   className="group relative inline-flex items-center gap-2 rounded-lg px-4 py-1.5 text-[13px] font-medium text-[#F8FAFC] overflow-hidden transition-all duration-300 hover:-translate-y-0.5 border border-white/10"
                   style={{
                     background:
-                      "linear-gradient(90deg, #12269B 0%, #17359E 50%, #1B44A8 100%)",
+                      "linear-gradient(90deg, #0000DD 0%, #0000DD 100%)",
                     boxShadow:
                       "inset 0 1px 0 rgba(255,255,255,.08), 0 6px 16px rgba(0,0,0,.35), 0 0 18px rgba(47,96,255,.18)",
                   }}
