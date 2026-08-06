@@ -75,22 +75,7 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
-            {user && (
-              <>
-                <button
-                  onClick={() => setStoresOpen(true)}
-                  className="px-3.5 py-2 text-[13px] text-muted-foreground hover:text-white transition rounded-lg"
-                >
-                  Stores
-                </button>
-                <button
-                  onClick={openMessages}
-                  className="px-3.5 py-2 text-[13px] text-muted-foreground hover:text-white transition rounded-lg"
-                >
-                  Messages
-                </button>
-              </>
-            )}
+
           </nav>
 
           <div className="hidden md:flex items-center gap-2">
