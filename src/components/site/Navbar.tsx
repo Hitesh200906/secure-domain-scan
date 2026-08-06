@@ -77,9 +77,10 @@ export function Navbar() {
                 <Link to="/profile" search={{ tab: undefined }} aria-label="Profile" className="size-9 rounded-full glass grid place-items-center text-sm font-medium hover:border-white/20 transition">
                   {(user.email || "?")[0].toUpperCase()}
                 </Link>
-                <button onClick={signOut} aria-label="Sign out" className="size-9 rounded-full glass grid place-items-center text-muted-foreground hover:text-white transition">
+                <button onClick={signOut} aria-label="Sign out" className="size-9 rounded-full glass grid place-items-center text-muted-foreground hover:text-red-500 transition-colors">
                   <LogOut className="size-4" />
                 </button>
+
               </div>
             ) : (
               <>

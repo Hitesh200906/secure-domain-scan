@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Github, Linkedin, ShieldCheck, Twitter } from "lucide-react";
+import { Github, Linkedin, Twitter } from "lucide-react";
+import nexefyLogo from "@/assets/nexefy-logo.png";
 
 export function Footer() {
   return (
@@ -8,20 +9,31 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 sm:gap-10">
           <div className="col-span-2">
-            <div className="flex items-center gap-2.5">
-              <ShieldCheck className="size-5 text-primary" />
+            <Link to="/" className="flex items-center gap-2.5">
+              <img
+                src={nexefyLogo}
+                alt="Nexefy Security"
+                className="size-7 object-contain"
+                style={{ filter: "drop-shadow(0 0 8px rgba(37,99,235,.45))" }}
+              />
               <span className="text-[13px] font-semibold tracking-[0.2em]">
-                NEXUS<span className="text-muted-foreground ml-1.5">SECURITY</span>
+                NEXEFY<span className="text-muted-foreground ml-1.5">SECURITY</span>
               </span>
-            </div>
+            </Link>
             <p className="mt-4 text-sm text-muted-foreground max-w-xs leading-relaxed">
               AI-powered security analysis built for modern engineering teams. Detect vulnerabilities before attackers do.
             </p>
             <div className="mt-6 flex items-center gap-3">
-              {[Github, Linkedin, Twitter].map((Icon, i) => (
+              {[
+                { Icon: Github, href: "https://github.com" },
+                { Icon: Linkedin, href: "https://www.linkedin.com" },
+                { Icon: Twitter, href: "https://x.com" },
+              ].map(({ Icon, href }, i) => (
                 <a
                   key={i}
-                  href="#"
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer noopener"
                   className="size-9 rounded-full glass grid place-items-center text-muted-foreground hover:text-primary hover:border-primary/40 transition"
                 >
                   <Icon className="size-4" />
@@ -43,19 +55,20 @@ export function Footer() {
             title="Company"
             links={[
               { label: "Contact", to: "/contact" },
-              { label: "Customers", to: "/" },
-              { label: "Security", to: "/" },
+              { label: "Customers", to: "/contact" },
+              { label: "Security", to: "/legal", hash: "compliance" },
             ]}
           />
           <FooterCol
             title="Legal"
             links={[
-              { label: "Privacy Policy", to: "/" },
-              { label: "Terms of Service", to: "/" },
-              { label: "Compliance", to: "/" },
+              { label: "Privacy Policy", to: "/legal", hash: "privacy" },
+              { label: "Terms of Service", to: "/legal", hash: "terms" },
+              { label: "Compliance", to: "/legal", hash: "compliance" },
             ]}
           />
         </div>
+
 
         <div className="mt-14 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
@@ -76,7 +89,7 @@ function FooterCol({
   links,
 }: {
   title: string;
-  links: { label: string; to: string }[];
+  links: { label: string; to: string; hash?: string }[];
 }) {
   return (
     <div>
@@ -86,6 +99,7 @@ function FooterCol({
           <li key={l.label}>
             <Link
               to={l.to}
+              hash={l.hash}
               className="text-sm text-muted-foreground hover:text-white transition"
             >
               {l.label}
@@ -95,4 +109,5 @@ function FooterCol({
       </ul>
     </div>
   );
+
 }
