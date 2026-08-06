@@ -58,8 +58,7 @@ function StoreCard({ store }: { store: Store | null }) {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      const { data } = await supabase.from("stores").select("*").eq("owner_id", user.id).order("created_at", { ascending: true });
-      setStores((data as Store[]) ?? []);
+      setStores(await getMyStores());
     })();
   }, [store?.id]);
 
