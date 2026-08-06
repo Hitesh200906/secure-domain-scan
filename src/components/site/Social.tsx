@@ -22,7 +22,7 @@ type Social = {
 const socials: Social[] = [
   {
     name: "Instagram",
-    href: "https://instagram.com",
+    href: "https://www.instagram.com/nexefy_",
     logo: logoIg,
     desc: "Behind the scenes, reels, security tips & live updates.",
     note: "New reels & live updates",
