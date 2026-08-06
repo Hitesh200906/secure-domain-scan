@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { getStoreBySlug, type Store } from "@/lib/business";
+import { getStoreBySlug, isStoreOwner, type Store } from "@/lib/business";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
