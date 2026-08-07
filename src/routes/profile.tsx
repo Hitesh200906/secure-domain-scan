@@ -156,7 +156,7 @@ function ProfilePage() {
       {/* page background — uploaded texture with 30% black coating */}
       <div className="pointer-events-none fixed inset-0 z-0">
         <img src={pageBgAsset.url} alt="" aria-hidden="true" className="size-full object-cover" />
-        <div className="absolute inset-0 bg-black/30" />
+        <div className="absolute inset-0 bg-black/60" />
       </div>
 
 
