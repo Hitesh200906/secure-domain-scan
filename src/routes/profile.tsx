@@ -212,15 +212,14 @@ function ProfilePage() {
                   const count = n.key === "tickets" ? tickets.length : n.key === "credits" ? profile.credits : 0;
                   return (
                     <button key={n.key} onClick={() => setTab(n.key)}
-                      className={`group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left transition border ${
-                        active ? "border-white/20 bg-black" : "border-transparent hover:border-white/10 hover:bg-black"
+                      className={`group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left transition hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] ${
+                        active ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))]" : ""
                       }`}>
-                      <span aria-hidden className={`absolute left-0 top-1.5 bottom-1.5 w-[2px] rounded-full bg-white/50 transition-opacity ${active ? "opacity-100" : "opacity-0 group-hover:opacity-70"}`} />
-                      <span className="relative size-7 rounded-lg border border-white/10 bg-black grid place-items-center shrink-0">
-                        <n.icon className={`size-4 ${n.tint}`} />
+                      <span className="relative size-7 rounded-lg grid place-items-center shrink-0">
+                        <n.icon className={`size-4 ${n.tint} transition ${active ? "" : "grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100"}`} />
                       </span>
                       <span className={`relative min-w-0 flex-1 block text-sm whitespace-nowrap ${active ? "text-white" : "text-neutral-200"}`}>{n.label}</span>
-                      {count > 0 && <span className="relative hidden md:inline text-[10px] rounded-full border border-white/10 bg-black px-1.5 py-0.5 text-neutral-300 tabular-nums">{count}</span>}
+                      {count > 0 && <span className="relative hidden md:inline text-[10px] rounded-full bg-white/[0.06] px-1.5 py-0.5 text-neutral-300 tabular-nums">{count}</span>}
                     </button>
                   );
                 })}
@@ -229,14 +228,15 @@ function ProfilePage() {
                   <>
                     <div className="hidden md:block my-2 h-px bg-white/10" />
                     <button onClick={signOut}
-                      className="group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left border border-transparent hover:border-white/10 hover:bg-black transition">
-                      <span className="relative size-7 rounded-lg border border-white/10 bg-black grid place-items-center shrink-0">
-                        <LogOut className="size-4 text-red-500" />
+                      className="group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left transition hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))]">
+                      <span className="relative size-7 rounded-lg grid place-items-center shrink-0">
+                        <LogOut className="size-4 text-neutral-400 transition-colors group-hover:text-red-500" />
                       </span>
                       <span className="relative min-w-0 flex-1 block text-sm whitespace-nowrap">Sign out</span>
                     </button>
                   </>
                 )}
+
               </nav>
 
               {/* Danger zone — pinned to bottom of the rail */}
