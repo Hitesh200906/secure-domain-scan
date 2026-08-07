@@ -176,7 +176,7 @@ function ProfilePage() {
             <div className="relative overflow-hidden rounded-2xl border border-white/10">
               <img src={textureImg} alt="" aria-hidden="true" loading="lazy" width={1280} height={640}
                 className="absolute inset-0 size-full object-cover" />
-              <div className="absolute inset-0 bg-black/70" />
+              <div className="absolute inset-0 bg-black/90" />
               <div className="relative p-5">
                 <div className="flex items-center gap-4">
                   <div className="relative">
@@ -320,7 +320,7 @@ function ProfilePage() {
               <>
                 <div className="relative overflow-hidden rounded-2xl border border-white/10">
                   <img src={textureImg} alt="" aria-hidden="true" loading="lazy" width={1280} height={640} className="absolute inset-0 size-full object-cover" />
-                  <div className="absolute inset-0 bg-black/70" />
+                  <div className="absolute inset-0 bg-black/90" />
                   <div className="relative p-6 sm:p-7 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
                     <div>
                       <div className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-full border border-white/15 bg-black/50 text-neutral-300">
@@ -516,7 +516,7 @@ function Banner({ title, desc }: { title: string; desc: string }) {
   return (
     <div className="relative overflow-hidden rounded-2xl border border-white/10">
       <img src={textureImg} alt="" aria-hidden="true" loading="lazy" width={1280} height={640} className="absolute inset-0 size-full object-cover" />
-      <div className="absolute inset-0 bg-black/75" />
+      <div className="absolute inset-0 bg-black/90" />
       <div className="relative px-5 py-4">
         <div className="text-sm font-medium">{title}</div>
         <div className="text-xs text-muted-foreground mt-0.5">{desc}</div>
@@ -527,7 +527,7 @@ function Banner({ title, desc }: { title: string; desc: string }) {
 
 function Card({ title, desc, children, className = "" }: { title: string; desc?: string; children: React.ReactNode; className?: string }) {
   return (
-    <div className={`rounded-2xl border border-white/10 bg-white/[0.02] p-5 sm:p-6 ${className}`}>
+    <div className={`rounded-2xl border border-white/10 bg-black p-5 sm:p-6 ${className}`}>
       <div className="space-y-4">
         <div>
           <div className="text-sm font-medium">{title}</div>
