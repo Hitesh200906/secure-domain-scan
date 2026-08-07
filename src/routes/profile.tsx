@@ -151,11 +151,12 @@ function ProfilePage() {
 
   return (
     <div className="relative min-h-screen bg-black">
-      {/* page ambience — texture, no glow */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[420px] overflow-hidden">
-        <img src={textureImg} alt="" aria-hidden="true" className="size-full object-cover opacity-[0.35]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/85 to-black" />
+      {/* page background — uploaded texture with 30% black coating */}
+      <div className="pointer-events-none fixed inset-0 z-0">
+        <img src={pageBgAsset.url} alt="" aria-hidden="true" className="size-full object-cover" />
+        <div className="absolute inset-0 bg-black/30" />
       </div>
+
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-10">
         <div className="grid md:grid-cols-[minmax(250px,23%)_1fr] gap-4 lg:gap-6 items-start">
