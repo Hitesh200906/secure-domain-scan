@@ -260,8 +260,8 @@ function ProfilePage() {
             {tab === "general" && (
               <>
                 <Banner title="General" desc="Your identity across Nexefy Security reports and notifications." />
-                <div className="grid lg:grid-cols-3 gap-4">
-                  <Card title="Account information" className="lg:col-span-2">
+                <div className="grid xl:grid-cols-3 gap-4">
+                  <Card title="Account information" className="xl:col-span-2">
                     <div className="grid sm:grid-cols-2 gap-4">
                       <Field label="Full name" value={profile.full_name} onChange={(v) => setProfile({ ...profile, full_name: v })} />
                       <Field label="Role / Title" value={profile.role_title} onChange={(v) => setProfile({ ...profile, role_title: v })} />
@@ -349,7 +349,7 @@ function ProfilePage() {
             {tab === "tickets" && (
               <>
                 <Banner title="Support tickets" desc="Every conversation you've had with the Nexefy team." />
-                <div className="grid lg:grid-cols-[320px_1fr] gap-4">
+                <div className="grid xl:grid-cols-[320px_1fr] gap-4">
                   <Card title="Your tickets" desc={tickets.length ? `${tickets.length} conversation${tickets.length === 1 ? "" : "s"}.` : "Open a request from Contact."}>
                     <div className="space-y-2 max-h-[520px] overflow-y-auto -mx-2 px-2">
                       {tickets.length === 0 && (
@@ -467,6 +467,15 @@ function ProfilePage() {
           </motion.div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-black/50 px-4 py-2 text-center">
+      <div className="text-sm font-semibold capitalize tabular-nums">{value}</div>
+      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{label}</div>
     </div>
   );
 }
