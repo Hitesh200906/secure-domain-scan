@@ -47,9 +47,9 @@ const NAV: { key: Tab; label: string; icon: typeof User2; hint: string; tint: st
 
 
 const CREDIT_PACKS = [
-  { id: "starter", name: "Recon", credits: 10, price: 29, per: "2.90", blurb: "For occasional audits and one-off checks.", perks: ["10 full-stack scans", "PDF report export", "Email delivery"] },
-  { id: "pro", name: "Sentinel", credits: 50, price: 119, per: "2.38", blurb: "Best value for continuous monitoring.", perks: ["50 full-stack scans", "Priority queue", "Critical alerting", "Team sharing"], popular: true },
-  { id: "scale", name: "Fortress", credits: 150, price: 299, per: "1.99", blurb: "For agencies and multi-domain estates.", perks: ["150 full-stack scans", "Dedicated analyst", "API access", "SLA response"] },
+  { id: "starter", name: "Starter", credits: 10, price: 49, per: "/month", blurb: "For solo founders and small sites.", perks: ["1 domain", "Weekly scans", "AI vulnerability report", "Email alerts"] },
+  { id: "professional", name: "Professional", credits: 50, price: 199, per: "/month", blurb: "For growing engineering teams.", perks: ["10 domains", "Daily scans", "OWASP Top 10 + CVE feeds", "Slack & PagerDuty alerts", "PDF & JSON exports"], popular: true },
+  { id: "custom", name: "Custom", credits: 0, price: 0, per: "Custom", blurb: "Dedicated infrastructure and custom programs at scale.", perks: ["Unlimited domains", "Real-time monitoring", "SAML SSO + audit logs", "Dedicated security engineer", "99.99% SLA"] },
 ] as const;
 
 function ProfilePage() {
@@ -209,7 +209,7 @@ function ProfilePage() {
               <div className="my-4 h-px bg-white/10" />
 
               {/* Nav */}
-              <nav className="flex md:block gap-2 overflow-x-auto md:overflow-visible">
+              <nav className="flex md:block gap-2 md:space-y-1.5 overflow-x-auto md:overflow-visible">
                 {NAV.map((n) => {
                   const active = tab === n.key;
                   const count = n.key === "tickets" ? tickets.length : n.key === "credits" ? profile.credits : 0;
@@ -219,7 +219,7 @@ function ProfilePage() {
                         active ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]" : ""
                       }`}>
                       <span className="relative size-7 rounded-lg grid place-items-center shrink-0">
-                        <n.icon className={`size-4 ${n.tint} transition ${active ? "" : "grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100"}`} />
+                        <n.icon className={`size-4 ${n.key === "security" ? "text-white" : n.tint} transition ${active ? "" : "grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100"}`} />
                       </span>
                       <span className={`relative min-w-0 flex-1 block text-sm whitespace-nowrap ${active ? "text-white" : "text-neutral-200"}`}>{n.label}</span>
                       {count > 0 && <span className="relative hidden md:inline text-[10px] rounded-full bg-white/[0.06] px-1.5 py-0.5 text-neutral-300 tabular-nums">{count}</span>}
