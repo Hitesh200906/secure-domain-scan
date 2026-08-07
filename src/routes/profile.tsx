@@ -47,9 +47,9 @@ const NAV: { key: Tab; label: string; icon: typeof User2; hint: string; tint: st
 
 
 const CREDIT_PACKS = [
-  { id: "starter", name: "Recon", credits: 10, price: 29, per: "2.90", blurb: "For occasional audits and one-off checks.", perks: ["10 full-stack scans", "PDF report export", "Email delivery"] },
-  { id: "pro", name: "Sentinel", credits: 50, price: 119, per: "2.38", blurb: "Best value for continuous monitoring.", perks: ["50 full-stack scans", "Priority queue", "Critical alerting", "Team sharing"], popular: true },
-  { id: "scale", name: "Fortress", credits: 150, price: 299, per: "1.99", blurb: "For agencies and multi-domain estates.", perks: ["150 full-stack scans", "Dedicated analyst", "API access", "SLA response"] },
+  { id: "starter", name: "Starter", credits: 10, price: 49, per: "/month", blurb: "For solo founders and small sites.", perks: ["1 domain", "Weekly scans", "AI vulnerability report", "Email alerts"] },
+  { id: "professional", name: "Professional", credits: 50, price: 199, per: "/month", blurb: "For growing engineering teams.", perks: ["10 domains", "Daily scans", "OWASP Top 10 + CVE feeds", "Slack & PagerDuty alerts", "PDF & JSON exports"], popular: true },
+  { id: "custom", name: "Custom", credits: 0, price: 0, per: "Custom", blurb: "Dedicated infrastructure and custom programs at scale.", perks: ["Unlimited domains", "Real-time monitoring", "SAML SSO + audit logs", "Dedicated security engineer", "99.99% SLA"] },
 ] as const;
 
 function ProfilePage() {
@@ -209,7 +209,7 @@ function ProfilePage() {
               <div className="my-4 h-px bg-white/10" />
 
               {/* Nav */}
-              <nav className="flex md:block gap-2 overflow-x-auto md:overflow-visible">
+              <nav className="flex md:block gap-2 md:space-y-1.5 overflow-x-auto md:overflow-visible">
                 {NAV.map((n) => {
                   const active = tab === n.key;
                   const count = n.key === "tickets" ? tickets.length : n.key === "credits" ? profile.credits : 0;
@@ -219,7 +219,7 @@ function ProfilePage() {
                         active ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]" : ""
                       }`}>
                       <span className="relative size-7 rounded-lg grid place-items-center shrink-0">
-                        <n.icon className={`size-4 ${n.tint} transition ${active ? "" : "grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100"}`} />
+                        <n.icon className={`size-4 ${n.key === "security" ? "text-white" : n.tint} transition ${active ? "" : "grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100"}`} />
                       </span>
                       <span className={`relative min-w-0 flex-1 block text-sm whitespace-nowrap ${active ? "text-white" : "text-neutral-200"}`}>{n.label}</span>
                       {count > 0 && <span className="relative hidden md:inline text-[10px] rounded-full bg-white/[0.06] px-1.5 py-0.5 text-neutral-300 tabular-nums">{count}</span>}
@@ -335,6 +335,12 @@ function ProfilePage() {
                       <p className="mt-2 text-xs text-muted-foreground max-w-sm">
                         One credit runs one complete full-stack security scan, including the deliverable report.
                       </p>
+                      <button
+                        onClick={() => document.getElementById("credit-plans")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                        className="mt-4 inline-flex items-center gap-2 rounded-full bg-white text-black px-4 py-2 text-sm font-medium transition hover:scale-[1.02]"
+                      >
+                        <Coins className="size-4" /> Buy credits
+                      </button>
                     </div>
                     <div className="sm:text-right">
                       <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Usage this cycle</div>
@@ -346,20 +352,20 @@ function ProfilePage() {
                   </div>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-4">
+                <div id="credit-plans" className="grid md:grid-cols-3 gap-4">
                   {CREDIT_PACKS.map((p) => (
                     <div key={p.id} className={`relative overflow-hidden rounded-2xl border p-5 flex flex-col ${"popular" in p && p.popular ? "border-white/20 bg-white/[0.04]" : "border-white/10 bg-white/[0.02]"}`}>
                       {"popular" in p && p.popular && (
-                        <span className="absolute top-4 right-4 text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-white/20 text-neutral-300">Best value</span>
+                        <span className="absolute top-4 right-4 text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-white/20 text-neutral-300">Most popular</span>
                       )}
                       <div className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">
                         <Zap className="size-3 text-amber-400" /> {p.name}
                       </div>
                       <div className="mt-3 flex items-baseline gap-1">
-                        <span className="text-3xl font-semibold tracking-tight">${p.price}</span>
-                        <span className="text-xs text-muted-foreground">/ ${p.per} per scan</span>
+                        <span className="text-3xl font-semibold tracking-tight">{p.price > 0 ? `$${p.price}` : "Custom"}</span>
+                        {p.price > 0 && <span className="text-xs text-muted-foreground">{p.per}</span>}
                       </div>
-                      <div className="mt-1 text-sm font-medium">{p.credits} credits</div>
+                      <div className="mt-1 text-sm font-medium">{p.credits > 0 ? `${p.credits} credits included` : "Custom credit volume"}</div>
                       <p className="mt-1.5 text-xs text-muted-foreground">{p.blurb}</p>
                       <ul className="mt-4 space-y-2 flex-1">
                         {p.perks.map((perk) => (
@@ -368,11 +374,11 @@ function ProfilePage() {
                           </li>
                         ))}
                       </ul>
-                      <button onClick={() => toast.info("Checkout is opening soon — contact us to top up today.")}
+                      <button onClick={() => toast.info(p.price > 0 ? "Checkout is opening soon — contact us to top up today." : "Talk to our team for a custom plan.")}
                         className={`mt-5 w-full rounded-full px-4 py-2.5 text-sm font-medium transition hover:scale-[1.02] ${
                           "popular" in p && p.popular ? "bg-white text-black" : "border border-white/15 hover:border-white/35"
                         }`}>
-                        Buy {p.credits} credits
+                        {p.price > 0 ? `Choose ${p.name}` : "Talk to sales"}
                       </button>
                     </div>
                   ))}
