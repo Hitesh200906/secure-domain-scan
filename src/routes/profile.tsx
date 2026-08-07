@@ -216,7 +216,7 @@ function ProfilePage() {
                         active ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))]" : ""
                       }`}>
                       <span className="relative size-7 rounded-lg grid place-items-center shrink-0">
-                        <n.icon className={`size-4 transition-colors ${active ? n.tint : `text-neutral-400 group-hover:${n.tint}`}`} />
+                        <n.icon className={`size-4 ${n.tint} transition ${active ? "" : "grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100"}`} />
                       </span>
                       <span className={`relative min-w-0 flex-1 block text-sm whitespace-nowrap ${active ? "text-white" : "text-neutral-200"}`}>{n.label}</span>
                       {count > 0 && <span className="relative hidden md:inline text-[10px] rounded-full bg-white/[0.06] px-1.5 py-0.5 text-neutral-300 tabular-nums">{count}</span>}
