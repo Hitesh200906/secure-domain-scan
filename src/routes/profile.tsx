@@ -187,12 +187,12 @@ function ProfilePage() {
                     onChange={(e) => { onPickAvatar(e.target.files?.[0]); e.target.value = ""; }} />
                 </div>
                 <div className="min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-sm font-semibold tracking-tight truncate">{displayName}</span>
-                    <RoleBadge role={role} size="sm" />
-                  </div>
-                  <div className="mt-0.5 text-[11px] text-muted-foreground truncate">{user?.email}</div>
+                  <div className="text-sm font-semibold tracking-tight truncate">{displayName}</div>
+                  {roleTitle && (
+                    <div className="mt-0.5 text-[11px] text-muted-foreground truncate">{roleTitle}</div>
+                  )}
                 </div>
+
               </div>
               <div className="mt-3 text-[11px] text-muted-foreground inline-flex items-center gap-1.5">
                 <BadgeCheck className="size-3" /> Member since {joinDate}
