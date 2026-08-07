@@ -202,21 +202,8 @@ function ProfilePage() {
                   </div>
                 </div>
 
-                <div className="mt-4 grid grid-cols-2 gap-2">
-                  <div className="rounded-xl border border-white/10 bg-black px-3 py-2">
-                    <div className="text-sm font-semibold capitalize">{profile.plan}</div>
-                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Plan</div>
-                  </div>
-                  <div className="rounded-xl border border-white/10 bg-black px-3 py-2">
-                    <div className="text-sm font-semibold tabular-nums">{profile.credits}</div>
-                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Credits</div>
-                  </div>
-                </div>
 
-                <button onClick={() => setTab("credits")}
-                  className="mt-2 w-full rounded-xl bg-[#0000DD] hover:bg-[#0b0bff] text-white px-3 py-2 text-xs font-medium inline-flex items-center justify-center gap-1.5 transition">
-                  <Coins className="size-3.5" /> Buy credits
-                </button>
+
 
                 <div className="mt-3 pt-3 border-t border-white/10 text-[11px] text-muted-foreground inline-flex items-center gap-1.5">
                   <BadgeCheck className="size-3" /> Member since {joinDate}
