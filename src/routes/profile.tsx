@@ -153,114 +153,109 @@ function ProfilePage() {
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-10">
-        <BackButton label="Back" fallback="/" />
+        <div className="grid md:grid-cols-[minmax(250px,23%)_1fr] gap-4 lg:gap-6 items-start">
+          {/* ---------- Left rail — single unified panel ---------- */}
+          <aside className="relative overflow-hidden rounded-2xl border border-white/10 md:sticky md:top-6 md:min-h-[calc(100vh-3rem)] flex flex-col">
+            <img src={textureImg} alt="" aria-hidden="true" loading="lazy" width={1280} height={640}
+              className="absolute inset-0 size-full object-cover" />
+            <div className="absolute inset-0 bg-black/90" />
 
-        {/* page header */}
-        <header className="mt-5 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 sm:flex sm:justify-between">
-          <div className="min-w-0">
-            <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Nexefy Security</div>
-            <h1 className="mt-1 truncate text-2xl sm:text-3xl font-semibold tracking-tight">Account center</h1>
-          </div>
-        </header>
-
-        <div className="mt-5 grid md:grid-cols-[minmax(230px,22%)_1fr] gap-4 lg:gap-6 items-start">
-          {/* ---------- Left rail ---------- */}
-          <div className="md:sticky md:top-24 space-y-4">
-
-            {/* Identity card */}
-            <div className="relative overflow-hidden rounded-2xl border border-white/10">
-              <img src={textureImg} alt="" aria-hidden="true" loading="lazy" width={1280} height={640}
-                className="absolute inset-0 size-full object-cover" />
-              <div className="absolute inset-0 bg-black/90" />
-              <div className="relative p-5">
-                <div className="flex items-center gap-4">
-                  <div className="relative">
-                    <div className="size-16 rounded-xl overflow-hidden border border-white/12 bg-white/[0.04] grid place-items-center text-xl font-semibold">
-                      {profile.avatar_url
-                        ? <img src={profile.avatar_url} alt={`${displayName} profile photo`} className="size-full object-cover" />
-                        : initials}
-                    </div>
-                    <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading || !user}
-                      aria-label="Upload profile photo"
-                      className="absolute -bottom-1.5 -right-1.5 size-7 rounded-lg border border-white/15 bg-black grid place-items-center hover:border-white/40 transition disabled:opacity-60">
-                      {uploading ? <Loader2 className="size-3.5 animate-spin" /> : <Camera className="size-3.5" />}
-                    </button>
-                    <input ref={fileRef} type="file" accept="image/*" className="hidden"
-                      onChange={(e) => { onPickAvatar(e.target.files?.[0]); e.target.value = ""; }} />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h1 className="text-base font-semibold tracking-tight truncate">{displayName}</h1>
-                      <RoleBadge role={role} size="sm" />
-                    </div>
-                    <div className="mt-0.5 text-[11px] text-muted-foreground truncate">{user?.email}</div>
-                  </div>
-                </div>
-
-
-
-
-                <div className="mt-3 pt-3 border-t border-white/10 text-[11px] text-muted-foreground inline-flex items-center gap-1.5">
-                  <BadgeCheck className="size-3" /> Member since {joinDate}
-                </div>
+            <div className="relative flex flex-col flex-1 p-4">
+              {/* Back + title */}
+              <BackButton label="Back" fallback="/" />
+              <div className="mt-4">
+                <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Nexefy Security</div>
+                <h1 className="mt-1 truncate text-xl font-semibold tracking-tight">Account center</h1>
               </div>
-            </div>
 
-            {/* Nav card — vertical rail on desktop, horizontal scroller on mobile */}
-            <nav className="rounded-2xl border border-white/10 bg-black p-2 flex md:block gap-2 overflow-x-auto">
-              {NAV.map((n) => {
-                const active = tab === n.key;
-                const count = n.key === "tickets" ? tickets.length : n.key === "credits" ? profile.credits : 0;
-                return (
-                  <button key={n.key} onClick={() => setTab(n.key)}
-                    className={`group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left transition border ${
-                      active ? "border-white/20 bg-black" : "border-transparent hover:border-white/10 hover:bg-black"
-                    }`}>
-                    <span aria-hidden className={`absolute left-0 top-1.5 bottom-1.5 w-[2px] rounded-full bg-white/50 transition-opacity ${active ? "opacity-100" : "opacity-0 group-hover:opacity-70"}`} />
-                    <span className="relative size-7 rounded-lg border border-white/10 bg-black grid place-items-center shrink-0">
-                      <n.icon className={`size-4 ${n.tint}`} />
-                    </span>
-                    <span className={`relative min-w-0 flex-1 block text-sm whitespace-nowrap ${active ? "text-white" : "text-neutral-200"}`}>{n.label}</span>
-                    {count > 0 && <span className="relative hidden md:inline text-[10px] rounded-full border border-white/10 bg-black px-1.5 py-0.5 text-neutral-300 tabular-nums">{count}</span>}
+              <div className="my-4 h-px bg-white/10" />
+
+              {/* Identity */}
+              <div className="flex items-center gap-3">
+                <div className="relative shrink-0">
+                  <div className="size-14 rounded-xl overflow-hidden border border-white/12 bg-white/[0.04] grid place-items-center text-lg font-semibold">
+                    {profile.avatar_url
+                      ? <img src={profile.avatar_url} alt={`${displayName} profile photo`} className="size-full object-cover" />
+                      : initials}
+                  </div>
+                  <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading || !user}
+                    aria-label="Upload profile photo"
+                    className="absolute -bottom-1.5 -right-1.5 size-7 rounded-lg border border-white/15 bg-black grid place-items-center hover:border-white/40 transition disabled:opacity-60">
+                    {uploading ? <Loader2 className="size-3.5 animate-spin" /> : <Camera className="size-3.5" />}
                   </button>
-                );
-              })}
-
-              <div className="hidden md:block my-2 h-px bg-white/10" />
-
-              {user && (
-                <button onClick={signOut}
-                  className="group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left border border-transparent hover:border-white/10 hover:bg-black transition">
-                  <span className="relative size-7 rounded-lg border border-white/10 bg-black grid place-items-center shrink-0">
-                    <LogOut className="size-4 text-red-500" />
-                  </span>
-                  <span className="relative min-w-0 flex-1 block text-sm whitespace-nowrap">Sign out</span>
-                </button>
-              )}
-
-            </nav>
-
-
-            {/* Danger zone */}
-            {user && (
-              <div className="rounded-2xl border border-white/10 bg-black p-4">
-                <div className="flex items-center gap-3">
-                  <span className="size-8 rounded-lg border border-white/10 bg-black grid place-items-center shrink-0">
-                    <AlertTriangle className="size-4 text-red-500" />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-sm">Danger zone</div>
-                    <div className="text-[10px] text-muted-foreground">Irreversible account actions</div>
-                  </div>
-                  <ChevronRight className="size-4 text-muted-foreground" />
+                  <input ref={fileRef} type="file" accept="image/*" className="hidden"
+                    onChange={(e) => { onPickAvatar(e.target.files?.[0]); e.target.value = ""; }} />
                 </div>
-                <button className="mt-3 w-full rounded-lg border border-white/10 bg-black px-3 py-2 text-xs inline-flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground hover:border-white/25 transition">
-                  <Trash2 className="size-3.5" /> Delete account
-                </button>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm font-semibold tracking-tight truncate">{displayName}</span>
+                    <RoleBadge role={role} size="sm" />
+                  </div>
+                  <div className="mt-0.5 text-[11px] text-muted-foreground truncate">{user?.email}</div>
+                </div>
               </div>
-            )}
+              <div className="mt-3 text-[11px] text-muted-foreground inline-flex items-center gap-1.5">
+                <BadgeCheck className="size-3" /> Member since {joinDate}
+              </div>
 
-          </div>
+              <div className="my-4 h-px bg-white/10" />
+
+              {/* Nav */}
+              <nav className="flex md:block gap-2 overflow-x-auto md:overflow-visible">
+                {NAV.map((n) => {
+                  const active = tab === n.key;
+                  const count = n.key === "tickets" ? tickets.length : n.key === "credits" ? profile.credits : 0;
+                  return (
+                    <button key={n.key} onClick={() => setTab(n.key)}
+                      className={`group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left transition border ${
+                        active ? "border-white/20 bg-black" : "border-transparent hover:border-white/10 hover:bg-black"
+                      }`}>
+                      <span aria-hidden className={`absolute left-0 top-1.5 bottom-1.5 w-[2px] rounded-full bg-white/50 transition-opacity ${active ? "opacity-100" : "opacity-0 group-hover:opacity-70"}`} />
+                      <span className="relative size-7 rounded-lg border border-white/10 bg-black grid place-items-center shrink-0">
+                        <n.icon className={`size-4 ${n.tint}`} />
+                      </span>
+                      <span className={`relative min-w-0 flex-1 block text-sm whitespace-nowrap ${active ? "text-white" : "text-neutral-200"}`}>{n.label}</span>
+                      {count > 0 && <span className="relative hidden md:inline text-[10px] rounded-full border border-white/10 bg-black px-1.5 py-0.5 text-neutral-300 tabular-nums">{count}</span>}
+                    </button>
+                  );
+                })}
+
+                {user && (
+                  <>
+                    <div className="hidden md:block my-2 h-px bg-white/10" />
+                    <button onClick={signOut}
+                      className="group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left border border-transparent hover:border-white/10 hover:bg-black transition">
+                      <span className="relative size-7 rounded-lg border border-white/10 bg-black grid place-items-center shrink-0">
+                        <LogOut className="size-4 text-red-500" />
+                      </span>
+                      <span className="relative min-w-0 flex-1 block text-sm whitespace-nowrap">Sign out</span>
+                    </button>
+                  </>
+                )}
+              </nav>
+
+              {/* Danger zone — pinned to bottom of the rail */}
+              {user && (
+                <div className="mt-6 md:mt-auto md:pt-6">
+                  <div className="h-px bg-white/10" />
+                  <div className="mt-4 flex items-center gap-3">
+                    <span className="size-8 rounded-lg border border-white/10 bg-black grid place-items-center shrink-0">
+                      <AlertTriangle className="size-4 text-red-500" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm">Danger zone</div>
+                      <div className="text-[10px] text-muted-foreground">Irreversible account actions</div>
+                    </div>
+                    <ChevronRight className="size-4 text-muted-foreground" />
+                  </div>
+                  <button className="mt-3 w-full rounded-lg border border-white/10 bg-black px-3 py-2 text-xs inline-flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground hover:border-white/25 transition">
+                    <Trash2 className="size-3.5" /> Delete account
+                  </button>
+                </div>
+              )}
+            </div>
+          </aside>
+
 
           {/* ---------- Right content ---------- */}
           <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="space-y-4">
