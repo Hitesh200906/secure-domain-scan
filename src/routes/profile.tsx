@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
-  BadgeCheck, Camera, Check, CircleUserRound, Copy, Coins, Crown, Database, Key, KeyRound, LifeBuoy,
+  BadgeCheck, Pencil, Check, CircleUserRound, Copy, Coins, Crown, Database, Key, KeyRound, LifeBuoy,
   Loader2, LogOut, MessageSquare, MessagesSquare, Monitor, Send, ShieldHalf, ShieldCheck, Smartphone,
   Trash2, User2, Zap, ChevronRight, AlertTriangle,
 } from "lucide-react";
@@ -156,7 +156,7 @@ function ProfilePage() {
       {/* page background — uploaded texture with 30% black coating */}
       <div className="pointer-events-none fixed inset-0 z-0">
         <img src={pageBgAsset.url} alt="" aria-hidden="true" className="size-full object-cover" />
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-black/80" />
       </div>
 
 
@@ -181,15 +181,15 @@ function ProfilePage() {
               {/* Identity */}
               <div className="flex items-center gap-3">
                 <div className="relative shrink-0">
-                  <div className="size-14 rounded-xl overflow-hidden border border-white/12 bg-white/[0.04] grid place-items-center text-lg font-semibold">
+                  <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading || !user}
+                    aria-label="Change profile photo"
+                    className="group/av relative size-14 rounded-xl overflow-hidden border border-white/12 bg-white/[0.04] grid place-items-center text-lg font-semibold disabled:opacity-60">
                     {profile.avatar_url
                       ? <img src={profile.avatar_url} alt={`${displayName} profile photo`} className="size-full object-cover" />
                       : initials}
-                  </div>
-                  <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading || !user}
-                    aria-label="Upload profile photo"
-                    className="absolute -bottom-1.5 -right-1.5 size-7 rounded-lg border border-white/15 bg-black grid place-items-center hover:border-white/40 transition disabled:opacity-60">
-                    {uploading ? <Loader2 className="size-3.5 animate-spin" /> : <Camera className="size-3.5" />}
+                    <span className="absolute inset-0 grid place-items-center bg-black/60 opacity-0 transition group-hover/av:opacity-100">
+                      {uploading ? <Loader2 className="size-4 animate-spin" /> : <Pencil className="size-4" />}
+                    </span>
                   </button>
                   <input ref={fileRef} type="file" accept="image/*" className="hidden"
                     onChange={(e) => { onPickAvatar(e.target.files?.[0]); e.target.value = ""; }} />
@@ -215,8 +215,8 @@ function ProfilePage() {
                   const count = n.key === "tickets" ? tickets.length : n.key === "credits" ? profile.credits : 0;
                   return (
                     <button key={n.key} onClick={() => setTab(n.key)}
-                      className={`group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left transition hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] ${
-                        active ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))]" : ""
+                      className={`group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left transition hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.05))] ${
+                        active ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.05))]" : ""
                       }`}>
                       <span className="relative size-7 rounded-lg grid place-items-center shrink-0">
                         <n.icon className={`size-4 ${n.tint} transition ${active ? "" : "grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100"}`} />
@@ -231,7 +231,7 @@ function ProfilePage() {
                   <>
                     <div className="hidden md:block my-2 h-px bg-white/10" />
                     <button onClick={signOut}
-                      className="group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left transition hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))]">
+                      className="group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left transition hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.05))]">
                       <span className="relative size-7 rounded-lg grid place-items-center shrink-0">
                         <LogOut className="size-4 text-neutral-400 transition-colors group-hover:text-red-500" />
                       </span>
