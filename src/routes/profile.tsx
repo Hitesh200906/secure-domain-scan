@@ -514,14 +514,6 @@ function ProfilePage() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-xl border border-white/10 bg-black/50 px-4 py-2 text-center">
-      <div className="text-sm font-semibold capitalize tabular-nums">{value}</div>
-      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{label}</div>
-    </div>
-  );
-}
 
 function OverviewTile({ icon, ring, value, label, hint, action }: {
   icon: React.ReactNode; ring: string; value: string; label: string; hint: string;
