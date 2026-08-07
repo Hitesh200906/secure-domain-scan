@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
-  BadgeCheck, Camera, Check, CircleUserRound, Copy, Coins, Crown, Database, Key, KeyRound, LifeBuoy,
+  BadgeCheck, Pencil, Check, CircleUserRound, Copy, Coins, Crown, Database, Key, KeyRound, LifeBuoy,
   Loader2, LogOut, MessageSquare, MessagesSquare, Monitor, Send, ShieldHalf, ShieldCheck, Smartphone,
   Trash2, User2, Zap, ChevronRight, AlertTriangle,
 } from "lucide-react";
