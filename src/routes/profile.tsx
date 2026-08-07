@@ -143,13 +143,33 @@ function ProfilePage() {
   const joinDate = user ? new Date(user.created_at).toLocaleDateString(undefined, { month: "long", year: "numeric" }) : "—";
 
   return (
-    <div className="min-h-screen bg-black">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-6 sm:py-10">
+    <div className="relative min-h-screen bg-black">
+      {/* page ambience — texture, no glow */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[420px] overflow-hidden">
+        <img src={textureImg} alt="" aria-hidden="true" className="size-full object-cover opacity-[0.35]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/85 to-black" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-10">
         <BackButton label="Back" fallback="/" />
 
-        <div className="mt-5 grid lg:grid-cols-[300px_1fr] gap-4 lg:gap-6 items-start">
+        {/* page header */}
+        <header className="mt-5 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 sm:flex sm:justify-between">
+          <div className="min-w-0">
+            <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Nexefy Security</div>
+            <h1 className="mt-1 truncate text-2xl sm:text-3xl font-semibold tracking-tight">Account center</h1>
+          </div>
+          <div className="hidden sm:grid grid-cols-3 gap-2">
+            <Stat label="Plan" value={profile.plan} />
+            <Stat label="Credits" value={String(profile.credits)} />
+            <Stat label="Tickets" value={String(tickets.length)} />
+          </div>
+        </header>
+
+        <div className="mt-5 grid md:grid-cols-[minmax(230px,22%)_1fr] gap-4 lg:gap-6 items-start">
           {/* ---------- Left rail ---------- */}
-          <div className="lg:sticky lg:top-24 space-y-4">
+          <div className="md:sticky md:top-24 space-y-4">
+
             {/* Identity card */}
             <div className="relative overflow-hidden rounded-2xl border border-white/10">
               <img src={textureImg} alt="" aria-hidden="true" loading="lazy" width={1280} height={640}
