@@ -143,13 +143,33 @@ function ProfilePage() {
   const joinDate = user ? new Date(user.created_at).toLocaleDateString(undefined, { month: "long", year: "numeric" }) : "—";
 
   return (
-    <div className="min-h-screen bg-black">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-6 sm:py-10">
+    <div className="relative min-h-screen bg-black">
+      {/* page ambience — texture, no glow */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[420px] overflow-hidden">
+        <img src={textureImg} alt="" aria-hidden="true" className="size-full object-cover opacity-[0.35]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/85 to-black" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-10">
         <BackButton label="Back" fallback="/" />
 
-        <div className="mt-5 grid lg:grid-cols-[300px_1fr] gap-4 lg:gap-6 items-start">
+        {/* page header */}
+        <header className="mt-5 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 sm:flex sm:justify-between">
+          <div className="min-w-0">
+            <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Nexefy Security</div>
+            <h1 className="mt-1 truncate text-2xl sm:text-3xl font-semibold tracking-tight">Account center</h1>
+          </div>
+          <div className="hidden sm:grid grid-cols-3 gap-2">
+            <Stat label="Plan" value={profile.plan} />
+            <Stat label="Credits" value={String(profile.credits)} />
+            <Stat label="Tickets" value={String(tickets.length)} />
+          </div>
+        </header>
+
+        <div className="mt-5 grid md:grid-cols-[minmax(230px,22%)_1fr] gap-4 lg:gap-6 items-start">
           {/* ---------- Left rail ---------- */}
-          <div className="lg:sticky lg:top-24 space-y-4">
+          <div className="md:sticky md:top-24 space-y-4">
+
             {/* Identity card */}
             <div className="relative overflow-hidden rounded-2xl border border-white/10">
               <img src={textureImg} alt="" aria-hidden="true" loading="lazy" width={1280} height={640}
@@ -197,28 +217,29 @@ function ProfilePage() {
               </div>
             </div>
 
-            {/* Nav card */}
-            <nav className="rounded-2xl border border-white/10 bg-white/[0.02] p-2">
+            {/* Nav card — vertical rail on desktop, horizontal scroller on mobile */}
+            <nav className="rounded-2xl border border-white/10 bg-white/[0.02] p-2 flex md:block gap-2 overflow-x-auto">
               {NAV.map((n) => {
                 const active = tab === n.key;
                 const count = n.key === "tickets" ? tickets.length : 0;
                 return (
                   <button key={n.key} onClick={() => setTab(n.key)}
-                    className={`w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${
+                    className={`shrink-0 md:w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${
                       active ? "bg-[#0000DD]/25 border border-[#0000DD]/40" : "border border-transparent hover:bg-white/[0.04]"
                     }`}>
                     <span className="size-8 rounded-lg border border-white/10 bg-black/60 grid place-items-center shrink-0">
                       <n.icon className="size-4" />
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className={`block text-sm ${active ? "text-white" : "text-neutral-300"}`}>{n.label}</span>
-                      <span className="block text-[10px] text-muted-foreground truncate">{n.hint}</span>
+                      <span className={`block text-sm whitespace-nowrap ${active ? "text-white" : "text-neutral-300"}`}>{n.label}</span>
+                      <span className="hidden md:block text-[10px] text-muted-foreground truncate">{n.hint}</span>
                     </span>
-                    {count > 0 && <span className="text-[10px] rounded-full border border-white/10 px-1.5 py-0.5 text-muted-foreground">{count}</span>}
+                    {count > 0 && <span className="hidden md:inline text-[10px] rounded-full border border-white/10 px-1.5 py-0.5 text-muted-foreground">{count}</span>}
                   </button>
                 );
               })}
             </nav>
+
 
             {/* Danger zone */}
             {user && (
@@ -239,8 +260,8 @@ function ProfilePage() {
             {tab === "general" && (
               <>
                 <Banner title="General" desc="Your identity across Nexefy Security reports and notifications." />
-                <div className="grid lg:grid-cols-3 gap-4">
-                  <Card title="Account information" className="lg:col-span-2">
+                <div className="grid xl:grid-cols-3 gap-4">
+                  <Card title="Account information" className="xl:col-span-2">
                     <div className="grid sm:grid-cols-2 gap-4">
                       <Field label="Full name" value={profile.full_name} onChange={(v) => setProfile({ ...profile, full_name: v })} />
                       <Field label="Role / Title" value={profile.role_title} onChange={(v) => setProfile({ ...profile, role_title: v })} />
@@ -328,7 +349,7 @@ function ProfilePage() {
             {tab === "tickets" && (
               <>
                 <Banner title="Support tickets" desc="Every conversation you've had with the Nexefy team." />
-                <div className="grid lg:grid-cols-[320px_1fr] gap-4">
+                <div className="grid xl:grid-cols-[320px_1fr] gap-4">
                   <Card title="Your tickets" desc={tickets.length ? `${tickets.length} conversation${tickets.length === 1 ? "" : "s"}.` : "Open a request from Contact."}>
                     <div className="space-y-2 max-h-[520px] overflow-y-auto -mx-2 px-2">
                       {tickets.length === 0 && (
@@ -446,6 +467,15 @@ function ProfilePage() {
           </motion.div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-black/50 px-4 py-2 text-center">
+      <div className="text-sm font-semibold capitalize tabular-nums">{value}</div>
+      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{label}</div>
     </div>
   );
 }
