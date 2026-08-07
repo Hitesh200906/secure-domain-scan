@@ -15,6 +15,8 @@ import { useAdmin } from "@/hooks/use-admin";
 import { RoleBadge } from "@/components/ui/RoleBadge";
 import { BackButton } from "@/components/site/BackButton";
 import textureImg from "@/assets/profile-texture.jpg";
+import pageBgAsset from "@/assets/profile-bg.png.asset.json";
+
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
