@@ -143,6 +143,11 @@ function ProfilePage() {
   const displayName = profile.full_name || user?.email || "Your account";
   const initials = (profile.full_name || user?.email || "?").trim()[0].toUpperCase();
   const joinDate = user ? new Date(user.created_at).toLocaleDateString(undefined, { month: "long", year: "numeric" }) : "—";
+  const roleTitle =
+    role === "master_admin" ? "Master Admin" :
+    role === "super_admin" ? "Super Admin" :
+    role === "admin" ? "Admin" : "";
+
 
   return (
     <div className="relative min-h-screen bg-black">
