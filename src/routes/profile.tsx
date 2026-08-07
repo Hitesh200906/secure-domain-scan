@@ -161,11 +161,6 @@ function ProfilePage() {
             <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Nexefy Security</div>
             <h1 className="mt-1 truncate text-2xl sm:text-3xl font-semibold tracking-tight">Account center</h1>
           </div>
-          <div className="hidden sm:grid grid-cols-3 gap-2">
-            <Stat label="Plan" value={profile.plan} />
-            <Stat label="Credits" value={String(profile.credits)} />
-            <Stat label="Tickets" value={String(tickets.length)} />
-          </div>
         </header>
 
         <div className="mt-5 grid md:grid-cols-[minmax(230px,22%)_1fr] gap-4 lg:gap-6 items-start">
