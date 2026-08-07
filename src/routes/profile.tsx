@@ -2,8 +2,9 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
-  BadgeCheck, Camera, Check, Copy, Coins, Key, LifeBuoy, Loader2, LogOut, MessageSquare,
-  Monitor, Send, Shield, ShieldCheck, Smartphone, Trash2, User2, Zap,
+  BadgeCheck, Camera, Check, CircleUserRound, Copy, Coins, Crown, Database, Key, KeyRound, LifeBuoy,
+  Loader2, LogOut, MessageSquare, MessagesSquare, Monitor, Send, ShieldHalf, ShieldCheck, Smartphone,
+  Trash2, User2, Zap, ChevronRight, AlertTriangle,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
