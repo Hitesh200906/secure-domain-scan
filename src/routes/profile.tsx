@@ -34,13 +34,14 @@ type Tab = "general" | "credits" | "tickets" | "security" | "api";
 type Ticket = { id: string; subject: string; status: string; priority: string; created_at: string; message: string; email: string; name: string };
 type TMsg = { id: string; author_type: string; author_name: string | null; body: string; created_at: string };
 
-const NAV: { key: Tab; label: string; icon: typeof User2; hint: string }[] = [
-  { key: "general", label: "General", icon: User2, hint: "Identity & details" },
-  { key: "credits", label: "Credits", icon: Coins, hint: "Balance & top-ups" },
-  { key: "tickets", label: "Tickets", icon: LifeBuoy, hint: "Support threads" },
-  { key: "security", label: "Security", icon: Shield, hint: "Password & sessions" },
-  { key: "api", label: "API Keys", icon: Key, hint: "Integrations" },
+const NAV: { key: Tab; label: string; icon: typeof User2; hint: string; tint: string }[] = [
+  { key: "general", label: "General", icon: CircleUserRound, hint: "Profile and account info", tint: "text-[#4d7cff]" },
+  { key: "security", label: "Security", icon: ShieldHalf, hint: "Password and sessions", tint: "text-neutral-300" },
+  { key: "credits", label: "Credits", icon: Database, hint: "Balance and top-ups", tint: "text-[#4d7cff]" },
+  { key: "tickets", label: "Tickets", icon: MessagesSquare, hint: "Support and requests", tint: "text-emerald-400" },
+  { key: "api", label: "API Keys", icon: KeyRound, hint: "Integrations and access", tint: "text-amber-400" },
 ];
+
 
 const CREDIT_PACKS = [
   { id: "starter", name: "Recon", credits: 10, price: 29, per: "2.90", blurb: "For occasional audits and one-off checks.", perks: ["10 full-stack scans", "PDF report export", "Email delivery"] },
