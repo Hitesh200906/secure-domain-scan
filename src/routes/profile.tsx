@@ -232,10 +232,10 @@ function ProfilePage() {
                 return (
                   <button key={n.key} onClick={() => setTab(n.key)}
                     className={`group relative shrink-0 md:w-full flex items-center gap-3 overflow-hidden rounded-xl px-3 py-2.5 text-left transition border ${
-                      active ? "border-[#0000DD]/50" : "border-transparent hover:border-white/10"
+                      active ? "border-white/20" : "border-transparent hover:border-white/10"
                     }`}>
-                    <span aria-hidden className={`absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,221,0.22),rgba(0,0,0,0)_62%)] transition-opacity ${active ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`} />
-                    <span aria-hidden className={`absolute left-0 top-2 bottom-2 w-[2px] rounded-full bg-[#0000DD] transition-opacity ${active ? "opacity-100" : "opacity-0 group-hover:opacity-70"}`} />
+                    <span aria-hidden className={`absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.08),rgba(0,0,0,0)_62%)] transition-opacity ${active ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`} />
+                    <span aria-hidden className={`absolute left-0 top-2 bottom-2 w-[2px] rounded-full bg-white/50 transition-opacity ${active ? "opacity-100" : "opacity-0 group-hover:opacity-70"}`} />
                     <span className="relative size-8 rounded-lg border border-white/10 bg-black grid place-items-center shrink-0">
                       <n.icon className={`size-4 ${n.tint}`} />
                     </span>
@@ -252,13 +252,13 @@ function ProfilePage() {
 
               {user && (
                 <button onClick={signOut}
-                  className="group relative shrink-0 md:w-full flex items-center gap-3 overflow-hidden rounded-xl px-3 py-2.5 text-left border border-transparent hover:border-red-500/25 transition">
+                  className="group relative shrink-0 md:w-full flex items-center gap-3 overflow-hidden rounded-xl px-3 py-2.5 text-left border border-transparent hover:border-white/10 transition">
                   <span aria-hidden className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-[linear-gradient(90deg,rgba(220,38,38,0.16),rgba(0,0,0,0)_62%)]" />
                   <span className="relative size-8 rounded-lg border border-white/10 bg-black grid place-items-center shrink-0">
                     <LogOut className="size-4 text-red-500" />
                   </span>
                   <span className="relative min-w-0 flex-1">
-                    <span className="block text-sm whitespace-nowrap text-red-400">Sign out</span>
+                    <span className="block text-sm whitespace-nowrap">Sign out</span>
                     <span className="hidden md:block text-[10px] text-muted-foreground truncate">End this session</span>
                   </span>
                 </button>
@@ -268,18 +268,18 @@ function ProfilePage() {
 
             {/* Danger zone */}
             {user && (
-              <div className="rounded-2xl border border-red-500/20 bg-black p-4">
+              <div className="rounded-2xl border border-white/10 bg-black p-4">
                 <div className="flex items-center gap-3">
-                  <span className="size-8 rounded-lg border border-red-500/25 bg-black grid place-items-center shrink-0">
+                  <span className="size-8 rounded-lg border border-white/10 bg-black grid place-items-center shrink-0">
                     <AlertTriangle className="size-4 text-red-500" />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <div className="text-sm text-red-400">Danger zone</div>
+                    <div className="text-sm">Danger zone</div>
                     <div className="text-[10px] text-muted-foreground">Irreversible account actions</div>
                   </div>
                   <ChevronRight className="size-4 text-muted-foreground" />
                 </div>
-                <button className="mt-3 w-full rounded-lg border border-white/10 bg-black px-3 py-2 text-xs inline-flex items-center justify-center gap-2 text-muted-foreground hover:text-red-400 hover:border-red-500/40 transition">
+                <button className="mt-3 w-full rounded-lg border border-white/10 bg-black px-3 py-2 text-xs inline-flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground hover:border-white/25 transition">
                   <Trash2 className="size-3.5" /> Delete account
                 </button>
               </div>
@@ -318,19 +318,19 @@ function ProfilePage() {
                   <div className="grid sm:grid-cols-3 gap-3">
                     <OverviewTile
                       icon={<Database className="size-4 text-[#4d7cff]" />}
-                      ring="border-[#0000DD]/40"
+                      ring="border-white/10"
                       value={String(profile.credits)} label="Credits" hint="Available balance"
                       action={{ text: "Buy", onClick: () => setTab("credits") }}
                     />
                     <OverviewTile
                       icon={<MessagesSquare className="size-4 text-emerald-400" />}
-                      ring="border-emerald-500/30"
+                      ring="border-white/10"
                       value={String(tickets.length)} label="Tickets" hint="Open tickets"
                       action={{ text: "View", onClick: () => setTab("tickets") }}
                     />
                     <OverviewTile
                       icon={<Crown className="size-4 text-amber-400" />}
-                      ring="border-amber-500/30"
+                      ring="border-white/10"
                       value={profile.plan} label="Plan" hint="Current plan"
                       action={{ text: "Upgrade", to: "/pricing" }}
                     />
@@ -361,7 +361,7 @@ function ProfilePage() {
                     <div className="sm:text-right">
                       <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Usage this cycle</div>
                       <div className="mt-2 h-2 w-full sm:w-52 rounded-full bg-white/[0.08] overflow-hidden">
-                        <div className="h-full rounded-full bg-[#0000DD]" style={{ width: `${Math.min(100, (profile.credits / 50) * 100)}%` }} />
+                        <div className="h-full rounded-full bg-white/60" style={{ width: `${Math.min(100, (profile.credits / 50) * 100)}%` }} />
                       </div>
                       <div className="mt-2 text-[11px] text-muted-foreground capitalize">{profile.plan} plan</div>
                     </div>
@@ -370,7 +370,7 @@ function ProfilePage() {
 
                 <div className="grid md:grid-cols-3 gap-4">
                   {CREDIT_PACKS.map((p) => (
-                    <div key={p.id} className={`relative overflow-hidden rounded-2xl border p-5 flex flex-col ${"popular" in p && p.popular ? "border-[#0000DD]/50 bg-[#0000DD]/10" : "border-white/10 bg-white/[0.02]"}`}>
+                    <div key={p.id} className={`relative overflow-hidden rounded-2xl border p-5 flex flex-col ${"popular" in p && p.popular ? "border-white/20 bg-white/[0.04]" : "border-white/10 bg-white/[0.02]"}`}>
                       {"popular" in p && p.popular && (
                         <span className="absolute top-4 right-4 text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-white/20 text-neutral-300">Best value</span>
                       )}
@@ -417,7 +417,7 @@ function ProfilePage() {
                       )}
                       {tickets.map((t) => (
                         <button key={t.id} onClick={() => setActiveTicket(t)}
-                          className={`w-full text-left p-3 rounded-xl border transition ${activeTicket?.id === t.id ? "border-[#0000DD]/50 bg-[#0000DD]/15" : "border-white/8 hover:border-white/20"}`}>
+                          className={`w-full text-left p-3 rounded-xl border transition ${activeTicket?.id === t.id ? "border-white/20 bg-white/[0.06]" : "border-white/8 hover:border-white/20"}`}>
                           <div className="flex items-center justify-between gap-2">
                             <span className="text-sm font-medium truncate">{t.subject}</span>
                             <span className="text-[9px] uppercase tracking-widest px-1.5 py-0.5 rounded-full border border-white/10 text-muted-foreground">{t.status.replace("_", " ")}</span>
@@ -545,7 +545,7 @@ function OverviewTile({ icon, ring, value, label, hint, action }: {
   icon: React.ReactNode; ring: string; value: string; label: string; hint: string;
   action: { text: string; onClick?: () => void; to?: string };
 }) {
-  const btn = "rounded-full border border-white/15 bg-black px-3 py-1 text-[11px] font-medium text-neutral-200 hover:border-[#0000DD] hover:text-white transition";
+  const btn = "rounded-full border border-white/15 bg-black px-3 py-1 text-[11px] font-medium text-neutral-200 hover:border-white/40 hover:text-white transition";
   return (
     <div className="rounded-xl border border-white/10 bg-black p-4">
       <div className="flex items-center gap-3">
@@ -625,7 +625,7 @@ function ChatBubble({ side, who, when, body }: { side: "user" | "admin"; who: st
   const isAdmin = side === "admin";
   return (
     <div className={`flex ${isAdmin ? "justify-start" : "justify-end"}`}>
-      <div className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm border ${isAdmin ? "border-[#0000DD]/40 bg-[#0000DD]/15" : "border-white/10 bg-white/[0.04]"}`}>
+      <div className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm border ${isAdmin ? "border-white/15 bg-white/[0.08]" : "border-white/10 bg-white/[0.04]"}`}>
         <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">{who} · {new Date(when).toLocaleString()}</div>
         <div className="whitespace-pre-wrap">{body}</div>
       </div>
