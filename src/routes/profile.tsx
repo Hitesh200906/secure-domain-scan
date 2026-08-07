@@ -541,6 +541,30 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
+function OverviewTile({ icon, ring, value, label, hint, action }: {
+  icon: React.ReactNode; ring: string; value: string; label: string; hint: string;
+  action: { text: string; onClick?: () => void; to?: string };
+}) {
+  const btn = "rounded-full border border-white/15 bg-black px-3 py-1 text-[11px] font-medium text-neutral-200 hover:border-[#0000DD] hover:text-white transition";
+  return (
+    <div className="rounded-xl border border-white/10 bg-black p-4">
+      <div className="flex items-center gap-3">
+        <span className={`size-10 rounded-full border ${ring} bg-black grid place-items-center shrink-0`}>{icon}</span>
+        <div className="min-w-0">
+          <div className="text-xl font-semibold capitalize tabular-nums truncate">{value}</div>
+          <div className="text-xs text-neutral-300">{label}</div>
+        </div>
+      </div>
+      <div className="mt-3 flex items-center justify-between gap-2">
+        <span className="text-[11px] text-muted-foreground">{hint}</span>
+        {action.to
+          ? <Link to={action.to as never} className={btn}>{action.text}</Link>
+          : <button onClick={action.onClick} className={btn}>{action.text}</button>}
+      </div>
+    </div>
+  );
+}
+
 function Banner({ title, desc }: { title: string; desc: string }) {
   return (
     <div className="relative overflow-hidden rounded-2xl border border-white/10">
