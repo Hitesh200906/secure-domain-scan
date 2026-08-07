@@ -156,7 +156,7 @@ function ProfilePage() {
       {/* page background — uploaded texture with 30% black coating */}
       <div className="pointer-events-none fixed inset-0 z-0">
         <img src={pageBgAsset.url} alt="" aria-hidden="true" className="size-full object-cover" />
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-black/80" />
       </div>
 
 
@@ -181,15 +181,15 @@ function ProfilePage() {
               {/* Identity */}
               <div className="flex items-center gap-3">
                 <div className="relative shrink-0">
-                  <div className="size-14 rounded-xl overflow-hidden border border-white/12 bg-white/[0.04] grid place-items-center text-lg font-semibold">
+                  <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading || !user}
+                    aria-label="Change profile photo"
+                    className="group/av relative size-14 rounded-xl overflow-hidden border border-white/12 bg-white/[0.04] grid place-items-center text-lg font-semibold disabled:opacity-60">
                     {profile.avatar_url
                       ? <img src={profile.avatar_url} alt={`${displayName} profile photo`} className="size-full object-cover" />
                       : initials}
-                  </div>
-                  <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading || !user}
-                    aria-label="Upload profile photo"
-                    className="absolute -bottom-1.5 -right-1.5 size-7 rounded-lg border border-white/15 bg-black grid place-items-center hover:border-white/40 transition disabled:opacity-60">
-                    {uploading ? <Loader2 className="size-3.5 animate-spin" /> : <Camera className="size-3.5" />}
+                    <span className="absolute inset-0 grid place-items-center bg-black/60 opacity-0 transition group-hover/av:opacity-100">
+                      {uploading ? <Loader2 className="size-4 animate-spin" /> : <Pencil className="size-4" />}
+                    </span>
                   </button>
                   <input ref={fileRef} type="file" accept="image/*" className="hidden"
                     onChange={(e) => { onPickAvatar(e.target.files?.[0]); e.target.value = ""; }} />
