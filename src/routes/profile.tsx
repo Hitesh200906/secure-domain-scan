@@ -423,7 +423,12 @@ function ProfilePage() {
                             <span className="text-[9px] uppercase tracking-widest px-1.5 py-0.5 rounded-full border border-white/10 text-muted-foreground">{t.status.replace("_", " ")}</span>
                           </div>
                           <div className="text-[11px] text-muted-foreground mt-1 line-clamp-2">{t.message}</div>
-                          <div className="text-[10px] text-muted-foreground/70 mt-1.5">{new Date(t.created_at).toLocaleString()}</div>
+                          <div className="mt-2 flex items-center justify-between">
+                            <span className="text-[10px] text-muted-foreground/70">{new Date(t.created_at).toLocaleString()}</span>
+                            <span className="text-[10px] rounded-full border border-white/15 bg-black px-2 py-0.5 text-neutral-300 inline-flex items-center gap-1">
+                              View <ChevronRight className="size-3" />
+                            </span>
+                          </div>
                         </button>
                       ))}
                     </div>
