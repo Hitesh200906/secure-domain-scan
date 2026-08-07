@@ -313,6 +313,30 @@ function ProfilePage() {
                     <Row label="Plan" value={profile.plan} />
                   </Card>
                 </div>
+
+                <Card title="Account overview" desc="Your plan usage and account summary.">
+                  <div className="grid sm:grid-cols-3 gap-3">
+                    <OverviewTile
+                      icon={<Database className="size-4 text-[#4d7cff]" />}
+                      ring="border-[#0000DD]/40"
+                      value={String(profile.credits)} label="Credits" hint="Available balance"
+                      action={{ text: "Buy", onClick: () => setTab("credits") }}
+                    />
+                    <OverviewTile
+                      icon={<MessagesSquare className="size-4 text-emerald-400" />}
+                      ring="border-emerald-500/30"
+                      value={String(tickets.length)} label="Tickets" hint="Open tickets"
+                      action={{ text: "View", onClick: () => setTab("tickets") }}
+                    />
+                    <OverviewTile
+                      icon={<Crown className="size-4 text-amber-400" />}
+                      ring="border-amber-500/30"
+                      value={profile.plan} label="Plan" hint="Current plan"
+                      action={{ text: "Upgrade", to: "/pricing" }}
+                    />
+                  </div>
+                </Card>
+
               </>
             )}
 
