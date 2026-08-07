@@ -217,28 +217,29 @@ function ProfilePage() {
               </div>
             </div>
 
-            {/* Nav card */}
-            <nav className="rounded-2xl border border-white/10 bg-white/[0.02] p-2">
+            {/* Nav card — vertical rail on desktop, horizontal scroller on mobile */}
+            <nav className="rounded-2xl border border-white/10 bg-white/[0.02] p-2 flex md:block gap-2 overflow-x-auto">
               {NAV.map((n) => {
                 const active = tab === n.key;
                 const count = n.key === "tickets" ? tickets.length : 0;
                 return (
                   <button key={n.key} onClick={() => setTab(n.key)}
-                    className={`w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${
+                    className={`shrink-0 md:w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${
                       active ? "bg-[#0000DD]/25 border border-[#0000DD]/40" : "border border-transparent hover:bg-white/[0.04]"
                     }`}>
                     <span className="size-8 rounded-lg border border-white/10 bg-black/60 grid place-items-center shrink-0">
                       <n.icon className="size-4" />
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className={`block text-sm ${active ? "text-white" : "text-neutral-300"}`}>{n.label}</span>
-                      <span className="block text-[10px] text-muted-foreground truncate">{n.hint}</span>
+                      <span className={`block text-sm whitespace-nowrap ${active ? "text-white" : "text-neutral-300"}`}>{n.label}</span>
+                      <span className="hidden md:block text-[10px] text-muted-foreground truncate">{n.hint}</span>
                     </span>
-                    {count > 0 && <span className="text-[10px] rounded-full border border-white/10 px-1.5 py-0.5 text-muted-foreground">{count}</span>}
+                    {count > 0 && <span className="hidden md:inline text-[10px] rounded-full border border-white/10 px-1.5 py-0.5 text-muted-foreground">{count}</span>}
                   </button>
                 );
               })}
             </nav>
+
 
             {/* Danger zone */}
             {user && (
