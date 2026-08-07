@@ -39,7 +39,7 @@ type TMsg = { id: string; author_type: string; author_name: string | null; body:
 
 const NAV: { key: Tab; label: string; icon: typeof User2; hint: string; tint: string }[] = [
   { key: "general", label: "General", icon: CircleUserRound, hint: "Profile and account info", tint: "text-[#4d7cff]" },
-  { key: "security", label: "Security", icon: ShieldHalf, hint: "Password and sessions", tint: "text-neutral-300" },
+  { key: "security", label: "Security", icon: ShieldHalf, hint: "Password and sessions", tint: "text-[#4d7cff]" },
   { key: "credits", label: "Credits", icon: Database, hint: "Balance and top-ups", tint: "text-[#4d7cff]" },
   { key: "tickets", label: "Tickets", icon: MessagesSquare, hint: "Support and requests", tint: "text-emerald-400" },
   { key: "api", label: "API Keys", icon: KeyRound, hint: "Integrations and access", tint: "text-amber-400" },
@@ -156,7 +156,7 @@ function ProfilePage() {
       {/* page background — uploaded texture with 30% black coating */}
       <div className="pointer-events-none fixed inset-0 z-0">
         <img src={pageBgAsset.url} alt="" aria-hidden="true" className="size-full object-cover" />
-        <div className="absolute inset-0 bg-black/80" />
+        <div className="absolute inset-0 bg-black/70" />
       </div>
 
 
@@ -215,8 +215,8 @@ function ProfilePage() {
                   const count = n.key === "tickets" ? tickets.length : n.key === "credits" ? profile.credits : 0;
                   return (
                     <button key={n.key} onClick={() => setTab(n.key)}
-                      className={`group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left transition hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.05))] ${
-                        active ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.05))]" : ""
+                      className={`group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left transition hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))] ${
+                        active ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]" : ""
                       }`}>
                       <span className="relative size-7 rounded-lg grid place-items-center shrink-0">
                         <n.icon className={`size-4 ${n.tint} transition ${active ? "" : "grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100"}`} />
@@ -231,7 +231,7 @@ function ProfilePage() {
                   <>
                     <div className="hidden md:block my-2 h-px bg-white/10" />
                     <button onClick={signOut}
-                      className="group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left transition hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.05))]">
+                      className="group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left transition hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]">
                       <span className="relative size-7 rounded-lg grid place-items-center shrink-0">
                         <LogOut className="size-4 text-neutral-400 transition-colors group-hover:text-red-500" />
                       </span>
@@ -257,7 +257,7 @@ function ProfilePage() {
                     <ChevronRight className="size-4 text-muted-foreground" />
                   </div>
                   <button className="mt-3 w-full rounded-lg border border-white/10 bg-black px-3 py-2 text-xs inline-flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground hover:border-white/25 transition">
-                    <Trash2 className="size-3.5" /> Delete account
+                    <Trash2 className="size-3.5 text-red-500" /> Delete account
                   </button>
                 </div>
               )}
@@ -326,7 +326,7 @@ function ProfilePage() {
                   <div className="relative p-6 sm:p-7 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
                     <div>
                       <div className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-full border border-white/15 bg-black/50 text-neutral-300">
-                        <Coins className="size-3" /> Credit balance
+                        <Coins className="size-3 text-amber-400" /> Credit balance
                       </div>
                       <div className="mt-3 flex items-end gap-2">
                         <span className="text-5xl font-semibold tracking-tight tabular-nums">{profile.credits}</span>
@@ -339,7 +339,7 @@ function ProfilePage() {
                     <div className="sm:text-right">
                       <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Usage this cycle</div>
                       <div className="mt-2 h-2 w-full sm:w-52 rounded-full bg-white/[0.08] overflow-hidden">
-                        <div className="h-full rounded-full bg-white/60" style={{ width: `${Math.min(100, (profile.credits / 50) * 100)}%` }} />
+                        <div className="h-full rounded-full bg-[#4d7cff]" style={{ width: `${Math.min(100, (profile.credits / 50) * 100)}%` }} />
                       </div>
                       <div className="mt-2 text-[11px] text-muted-foreground capitalize">{profile.plan} plan</div>
                     </div>
@@ -353,7 +353,7 @@ function ProfilePage() {
                         <span className="absolute top-4 right-4 text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-white/20 text-neutral-300">Best value</span>
                       )}
                       <div className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">
-                        <Zap className="size-3" /> {p.name}
+                        <Zap className="size-3 text-amber-400" /> {p.name}
                       </div>
                       <div className="mt-3 flex items-baseline gap-1">
                         <span className="text-3xl font-semibold tracking-tight">${p.price}</span>
@@ -364,7 +364,7 @@ function ProfilePage() {
                       <ul className="mt-4 space-y-2 flex-1">
                         {p.perks.map((perk) => (
                           <li key={perk} className="flex items-start gap-2 text-xs text-muted-foreground">
-                            <Check className="size-3.5 shrink-0 mt-px" /><span>{perk}</span>
+                            <Check className="size-3.5 shrink-0 mt-px text-emerald-400" /><span>{perk}</span>
                           </li>
                         ))}
                       </ul>
@@ -388,7 +388,7 @@ function ProfilePage() {
                     <div className="space-y-2 max-h-[520px] overflow-y-auto -mx-2 px-2">
                       {tickets.length === 0 && (
                         <div className="text-center py-10">
-                          <LifeBuoy className="size-8 mx-auto text-muted-foreground" />
+                          <LifeBuoy className="size-8 mx-auto text-emerald-400" />
                           <div className="mt-3 text-sm">No tickets yet</div>
                           <Link to="/contact" className="mt-4 inline-flex rounded-full bg-white text-black px-4 py-2 text-xs font-medium">Open a ticket</Link>
                         </div>
@@ -414,7 +414,7 @@ function ProfilePage() {
                   <Card title={activeTicket ? activeTicket.subject : "Conversation"} desc={activeTicket ? `Ticket #${activeTicket.id.slice(0, 8)} · ${activeTicket.status.replace("_", " ")}` : "Pick a ticket to view the thread."}>
                     {!activeTicket ? (
                       <div className="text-center py-16 text-sm text-muted-foreground">
-                        <MessageSquare className="size-8 mx-auto mb-3 text-muted-foreground/50" />
+                        <MessageSquare className="size-8 mx-auto mb-3 text-[#4d7cff]" />
                         Select a ticket on the left.
                       </div>
                     ) : (
@@ -455,7 +455,7 @@ function ProfilePage() {
                   <Card title="Two-factor authentication" desc="Protect your account with an additional layer.">
                     <div className="flex items-center justify-between p-4 rounded-xl border border-white/10">
                       <div className="flex items-center gap-3">
-                        <div className="size-10 rounded-lg border border-white/10 grid place-items-center"><Smartphone className="size-4" /></div>
+                        <div className="size-10 rounded-lg border border-white/10 grid place-items-center"><Smartphone className="size-4 text-[#4d7cff]" /></div>
                         <div>
                           <div className="text-sm">Authenticator app</div>
                           <div className="text-[11px] text-muted-foreground">Not configured</div>
@@ -467,13 +467,13 @@ function ProfilePage() {
                   <Card title="Active sessions" className="lg:col-span-2">
                     <div className="flex items-center justify-between p-4 rounded-xl border border-white/10">
                       <div className="flex items-center gap-3">
-                        <div className="size-10 rounded-lg border border-white/10 grid place-items-center"><Monitor className="size-4" /></div>
+                        <div className="size-10 rounded-lg border border-white/10 grid place-items-center"><Monitor className="size-4 text-[#4d7cff]" /></div>
                         <div>
                           <div className="text-sm flex items-center gap-2">This device <span className="text-[10px] px-1.5 py-0.5 rounded-full border border-white/10 text-muted-foreground">CURRENT</span></div>
                           <div className="text-[11px] text-muted-foreground">Active now</div>
                         </div>
                       </div>
-                      <ShieldCheck className="size-4" />
+                      <ShieldCheck className="size-4 text-emerald-400" />
                     </div>
                   </Card>
                 </div>
@@ -487,19 +487,19 @@ function ProfilePage() {
                   <div className="p-4 rounded-xl border border-white/10">
                     <div className="flex items-center justify-between gap-3 flex-wrap">
                       <div className="flex items-center gap-3">
-                        <div className="size-10 rounded-lg border border-white/10 grid place-items-center"><Key className="size-4" /></div>
+                        <div className="size-10 rounded-lg border border-white/10 grid place-items-center"><Key className="size-4 text-amber-400" /></div>
                         <div>
                           <div className="text-sm">Production key</div>
                           <div className="text-[11px] text-muted-foreground font-mono">nxs_live_••••••••••••3f8a</div>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <button onClick={() => { navigator.clipboard.writeText("nxs_live_xxxxx"); toast.success("Copied"); }} className="text-xs text-muted-foreground hover:text-white inline-flex items-center gap-1"><Copy className="size-3" /> Copy</button>
+                        <button onClick={() => { navigator.clipboard.writeText("nxs_live_xxxxx"); toast.success("Copied"); }} className="text-xs text-muted-foreground hover:text-white inline-flex items-center gap-1"><Copy className="size-3 text-[#4d7cff]" /> Copy</button>
                         <button className="text-xs text-destructive hover:underline">Revoke</button>
                       </div>
                     </div>
                   </div>
-                  <button className="rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium hover:border-white/30 transition inline-flex items-center gap-2"><Key className="size-4" /> Generate new key</button>
+                  <button className="rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium hover:border-white/30 transition inline-flex items-center gap-2"><Key className="size-4 text-amber-400" /> Generate new key</button>
                 </Card>
               </>
             )}
