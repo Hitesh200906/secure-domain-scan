@@ -2,8 +2,9 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
-  BadgeCheck, Camera, Check, Copy, Coins, Key, LifeBuoy, Loader2, LogOut, MessageSquare,
-  Monitor, Send, Shield, ShieldCheck, Smartphone, Trash2, User2, Zap,
+  BadgeCheck, Camera, Check, CircleUserRound, Copy, Coins, Crown, Database, Key, KeyRound, LifeBuoy,
+  Loader2, LogOut, MessageSquare, MessagesSquare, Monitor, Send, ShieldHalf, ShieldCheck, Smartphone,
+  Trash2, User2, Zap, ChevronRight, AlertTriangle,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,13 +35,14 @@ type Tab = "general" | "credits" | "tickets" | "security" | "api";
 type Ticket = { id: string; subject: string; status: string; priority: string; created_at: string; message: string; email: string; name: string };
 type TMsg = { id: string; author_type: string; author_name: string | null; body: string; created_at: string };
 
-const NAV: { key: Tab; label: string; icon: typeof User2; hint: string }[] = [
-  { key: "general", label: "General", icon: User2, hint: "Identity & details" },
-  { key: "credits", label: "Credits", icon: Coins, hint: "Balance & top-ups" },
-  { key: "tickets", label: "Tickets", icon: LifeBuoy, hint: "Support threads" },
-  { key: "security", label: "Security", icon: Shield, hint: "Password & sessions" },
-  { key: "api", label: "API Keys", icon: Key, hint: "Integrations" },
+const NAV: { key: Tab; label: string; icon: typeof User2; hint: string; tint: string }[] = [
+  { key: "general", label: "General", icon: CircleUserRound, hint: "Profile and account info", tint: "text-[#4d7cff]" },
+  { key: "security", label: "Security", icon: ShieldHalf, hint: "Password and sessions", tint: "text-neutral-300" },
+  { key: "credits", label: "Credits", icon: Database, hint: "Balance and top-ups", tint: "text-[#4d7cff]" },
+  { key: "tickets", label: "Tickets", icon: MessagesSquare, hint: "Support and requests", tint: "text-emerald-400" },
+  { key: "api", label: "API Keys", icon: KeyRound, hint: "Integrations and access", tint: "text-amber-400" },
 ];
+
 
 const CREDIT_PACKS = [
   { id: "starter", name: "Recon", credits: 10, price: 29, per: "2.90", blurb: "For occasional audits and one-off checks.", perks: ["10 full-stack scans", "PDF report export", "Email delivery"] },
@@ -174,7 +176,7 @@ function ProfilePage() {
             <div className="relative overflow-hidden rounded-2xl border border-white/10">
               <img src={textureImg} alt="" aria-hidden="true" loading="lazy" width={1280} height={640}
                 className="absolute inset-0 size-full object-cover" />
-              <div className="absolute inset-0 bg-black/70" />
+              <div className="absolute inset-0 bg-black/90" />
               <div className="relative p-5">
                 <div className="flex items-center gap-4">
                   <div className="relative">
@@ -201,58 +203,88 @@ function ProfilePage() {
                 </div>
 
                 <div className="mt-4 grid grid-cols-2 gap-2">
-                  <div className="rounded-xl border border-white/10 bg-black/40 px-3 py-2">
+                  <div className="rounded-xl border border-white/10 bg-black px-3 py-2">
                     <div className="text-sm font-semibold capitalize">{profile.plan}</div>
                     <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Plan</div>
                   </div>
-                  <button onClick={() => setTab("credits")} className="rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-left hover:border-white/25 transition">
+                  <div className="rounded-xl border border-white/10 bg-black px-3 py-2">
                     <div className="text-sm font-semibold tabular-nums">{profile.credits}</div>
                     <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Credits</div>
-                  </button>
+                  </div>
                 </div>
 
-                <div className="mt-3 text-[11px] text-muted-foreground inline-flex items-center gap-1.5">
+                <button onClick={() => setTab("credits")}
+                  className="mt-2 w-full rounded-xl bg-[#0000DD] hover:bg-[#0b0bff] text-white px-3 py-2 text-xs font-medium inline-flex items-center justify-center gap-1.5 transition">
+                  <Coins className="size-3.5" /> Buy credits
+                </button>
+
+                <div className="mt-3 pt-3 border-t border-white/10 text-[11px] text-muted-foreground inline-flex items-center gap-1.5">
                   <BadgeCheck className="size-3" /> Member since {joinDate}
                 </div>
               </div>
             </div>
 
             {/* Nav card — vertical rail on desktop, horizontal scroller on mobile */}
-            <nav className="rounded-2xl border border-white/10 bg-white/[0.02] p-2 flex md:block gap-2 overflow-x-auto">
+            <nav className="rounded-2xl border border-white/10 bg-black p-2 flex md:block gap-2 overflow-x-auto">
               {NAV.map((n) => {
                 const active = tab === n.key;
-                const count = n.key === "tickets" ? tickets.length : 0;
+                const count = n.key === "tickets" ? tickets.length : n.key === "credits" ? profile.credits : 0;
                 return (
                   <button key={n.key} onClick={() => setTab(n.key)}
-                    className={`shrink-0 md:w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${
-                      active ? "bg-[#0000DD]/25 border border-[#0000DD]/40" : "border border-transparent hover:bg-white/[0.04]"
+                    className={`group relative shrink-0 md:w-full flex items-center gap-3 overflow-hidden rounded-xl px-3 py-2.5 text-left transition border ${
+                      active ? "border-[#0000DD]/50" : "border-transparent hover:border-white/10"
                     }`}>
-                    <span className="size-8 rounded-lg border border-white/10 bg-black/60 grid place-items-center shrink-0">
-                      <n.icon className="size-4" />
+                    <span aria-hidden className={`absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,221,0.22),rgba(0,0,0,0)_62%)] transition-opacity ${active ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`} />
+                    <span aria-hidden className={`absolute left-0 top-2 bottom-2 w-[2px] rounded-full bg-[#0000DD] transition-opacity ${active ? "opacity-100" : "opacity-0 group-hover:opacity-70"}`} />
+                    <span className="relative size-8 rounded-lg border border-white/10 bg-black grid place-items-center shrink-0">
+                      <n.icon className={`size-4 ${n.tint}`} />
                     </span>
-                    <span className="min-w-0 flex-1">
-                      <span className={`block text-sm whitespace-nowrap ${active ? "text-white" : "text-neutral-300"}`}>{n.label}</span>
+                    <span className="relative min-w-0 flex-1">
+                      <span className={`block text-sm whitespace-nowrap ${active ? "text-white" : "text-neutral-200"}`}>{n.label}</span>
                       <span className="hidden md:block text-[10px] text-muted-foreground truncate">{n.hint}</span>
                     </span>
-                    {count > 0 && <span className="hidden md:inline text-[10px] rounded-full border border-white/10 px-1.5 py-0.5 text-muted-foreground">{count}</span>}
+                    {count > 0 && <span className="relative hidden md:inline text-[10px] rounded-full border border-white/10 bg-black px-1.5 py-0.5 text-neutral-300 tabular-nums">{count}</span>}
                   </button>
                 );
               })}
+
+              <div className="hidden md:block my-2 h-px bg-white/10" />
+
+              {user && (
+                <button onClick={signOut}
+                  className="group relative shrink-0 md:w-full flex items-center gap-3 overflow-hidden rounded-xl px-3 py-2.5 text-left border border-transparent hover:border-red-500/25 transition">
+                  <span aria-hidden className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-[linear-gradient(90deg,rgba(220,38,38,0.16),rgba(0,0,0,0)_62%)]" />
+                  <span className="relative size-8 rounded-lg border border-white/10 bg-black grid place-items-center shrink-0">
+                    <LogOut className="size-4 text-red-500" />
+                  </span>
+                  <span className="relative min-w-0 flex-1">
+                    <span className="block text-sm whitespace-nowrap text-red-400">Sign out</span>
+                    <span className="hidden md:block text-[10px] text-muted-foreground truncate">End this session</span>
+                  </span>
+                </button>
+              )}
             </nav>
 
 
             {/* Danger zone */}
             {user && (
-              <div className="rounded-2xl border border-red-500/20 bg-red-950/20 p-4 space-y-2">
-                <div className="text-xs font-medium">Danger zone</div>
-                <button onClick={signOut} className="w-full rounded-lg border border-white/15 px-3 py-2 text-xs inline-flex items-center justify-center gap-2 hover:border-white/35 transition">
-                  <LogOut className="size-3.5" /> Sign out
-                </button>
-                <button className="w-full rounded-lg border border-white/10 px-3 py-2 text-xs inline-flex items-center justify-center gap-2 text-muted-foreground hover:text-destructive hover:border-destructive/40 transition">
+              <div className="rounded-2xl border border-red-500/20 bg-black p-4">
+                <div className="flex items-center gap-3">
+                  <span className="size-8 rounded-lg border border-red-500/25 bg-black grid place-items-center shrink-0">
+                    <AlertTriangle className="size-4 text-red-500" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm text-red-400">Danger zone</div>
+                    <div className="text-[10px] text-muted-foreground">Irreversible account actions</div>
+                  </div>
+                  <ChevronRight className="size-4 text-muted-foreground" />
+                </div>
+                <button className="mt-3 w-full rounded-lg border border-white/10 bg-black px-3 py-2 text-xs inline-flex items-center justify-center gap-2 text-muted-foreground hover:text-red-400 hover:border-red-500/40 transition">
                   <Trash2 className="size-3.5" /> Delete account
                 </button>
               </div>
             )}
+
           </div>
 
           {/* ---------- Right content ---------- */}
@@ -281,6 +313,30 @@ function ProfilePage() {
                     <Row label="Plan" value={profile.plan} />
                   </Card>
                 </div>
+
+                <Card title="Account overview" desc="Your plan usage and account summary.">
+                  <div className="grid sm:grid-cols-3 gap-3">
+                    <OverviewTile
+                      icon={<Database className="size-4 text-[#4d7cff]" />}
+                      ring="border-[#0000DD]/40"
+                      value={String(profile.credits)} label="Credits" hint="Available balance"
+                      action={{ text: "Buy", onClick: () => setTab("credits") }}
+                    />
+                    <OverviewTile
+                      icon={<MessagesSquare className="size-4 text-emerald-400" />}
+                      ring="border-emerald-500/30"
+                      value={String(tickets.length)} label="Tickets" hint="Open tickets"
+                      action={{ text: "View", onClick: () => setTab("tickets") }}
+                    />
+                    <OverviewTile
+                      icon={<Crown className="size-4 text-amber-400" />}
+                      ring="border-amber-500/30"
+                      value={profile.plan} label="Plan" hint="Current plan"
+                      action={{ text: "Upgrade", to: "/pricing" }}
+                    />
+                  </div>
+                </Card>
+
               </>
             )}
 
@@ -288,7 +344,7 @@ function ProfilePage() {
               <>
                 <div className="relative overflow-hidden rounded-2xl border border-white/10">
                   <img src={textureImg} alt="" aria-hidden="true" loading="lazy" width={1280} height={640} className="absolute inset-0 size-full object-cover" />
-                  <div className="absolute inset-0 bg-black/70" />
+                  <div className="absolute inset-0 bg-black/90" />
                   <div className="relative p-6 sm:p-7 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
                     <div>
                       <div className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-full border border-white/15 bg-black/50 text-neutral-300">
@@ -367,7 +423,12 @@ function ProfilePage() {
                             <span className="text-[9px] uppercase tracking-widest px-1.5 py-0.5 rounded-full border border-white/10 text-muted-foreground">{t.status.replace("_", " ")}</span>
                           </div>
                           <div className="text-[11px] text-muted-foreground mt-1 line-clamp-2">{t.message}</div>
-                          <div className="text-[10px] text-muted-foreground/70 mt-1.5">{new Date(t.created_at).toLocaleString()}</div>
+                          <div className="mt-2 flex items-center justify-between">
+                            <span className="text-[10px] text-muted-foreground/70">{new Date(t.created_at).toLocaleString()}</span>
+                            <span className="text-[10px] rounded-full border border-white/15 bg-black px-2 py-0.5 text-neutral-300 inline-flex items-center gap-1">
+                              View <ChevronRight className="size-3" />
+                            </span>
+                          </div>
                         </button>
                       ))}
                     </div>
@@ -480,11 +541,35 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
+function OverviewTile({ icon, ring, value, label, hint, action }: {
+  icon: React.ReactNode; ring: string; value: string; label: string; hint: string;
+  action: { text: string; onClick?: () => void; to?: string };
+}) {
+  const btn = "rounded-full border border-white/15 bg-black px-3 py-1 text-[11px] font-medium text-neutral-200 hover:border-[#0000DD] hover:text-white transition";
+  return (
+    <div className="rounded-xl border border-white/10 bg-black p-4">
+      <div className="flex items-center gap-3">
+        <span className={`size-10 rounded-full border ${ring} bg-black grid place-items-center shrink-0`}>{icon}</span>
+        <div className="min-w-0">
+          <div className="text-xl font-semibold capitalize tabular-nums truncate">{value}</div>
+          <div className="text-xs text-neutral-300">{label}</div>
+        </div>
+      </div>
+      <div className="mt-3 flex items-center justify-between gap-2">
+        <span className="text-[11px] text-muted-foreground">{hint}</span>
+        {action.to
+          ? <Link to={action.to as never} className={btn}>{action.text}</Link>
+          : <button onClick={action.onClick} className={btn}>{action.text}</button>}
+      </div>
+    </div>
+  );
+}
+
 function Banner({ title, desc }: { title: string; desc: string }) {
   return (
     <div className="relative overflow-hidden rounded-2xl border border-white/10">
       <img src={textureImg} alt="" aria-hidden="true" loading="lazy" width={1280} height={640} className="absolute inset-0 size-full object-cover" />
-      <div className="absolute inset-0 bg-black/75" />
+      <div className="absolute inset-0 bg-black/90" />
       <div className="relative px-5 py-4">
         <div className="text-sm font-medium">{title}</div>
         <div className="text-xs text-muted-foreground mt-0.5">{desc}</div>
@@ -495,7 +580,7 @@ function Banner({ title, desc }: { title: string; desc: string }) {
 
 function Card({ title, desc, children, className = "" }: { title: string; desc?: string; children: React.ReactNode; className?: string }) {
   return (
-    <div className={`rounded-2xl border border-white/10 bg-white/[0.02] p-5 sm:p-6 ${className}`}>
+    <div className={`rounded-2xl border border-white/10 bg-black p-5 sm:p-6 ${className}`}>
       <div className="space-y-4">
         <div>
           <div className="text-sm font-medium">{title}</div>
