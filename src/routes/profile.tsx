@@ -352,20 +352,20 @@ function ProfilePage() {
                   </div>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-4">
+                <div id="credit-plans" className="grid md:grid-cols-3 gap-4">
                   {CREDIT_PACKS.map((p) => (
                     <div key={p.id} className={`relative overflow-hidden rounded-2xl border p-5 flex flex-col ${"popular" in p && p.popular ? "border-white/20 bg-white/[0.04]" : "border-white/10 bg-white/[0.02]"}`}>
                       {"popular" in p && p.popular && (
-                        <span className="absolute top-4 right-4 text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-white/20 text-neutral-300">Best value</span>
+                        <span className="absolute top-4 right-4 text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-white/20 text-neutral-300">Most popular</span>
                       )}
                       <div className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">
                         <Zap className="size-3 text-amber-400" /> {p.name}
                       </div>
                       <div className="mt-3 flex items-baseline gap-1">
-                        <span className="text-3xl font-semibold tracking-tight">${p.price}</span>
-                        <span className="text-xs text-muted-foreground">/ ${p.per} per scan</span>
+                        <span className="text-3xl font-semibold tracking-tight">{p.price > 0 ? `$${p.price}` : "Custom"}</span>
+                        {p.price > 0 && <span className="text-xs text-muted-foreground">{p.per}</span>}
                       </div>
-                      <div className="mt-1 text-sm font-medium">{p.credits} credits</div>
+                      <div className="mt-1 text-sm font-medium">{p.credits > 0 ? `${p.credits} credits included` : "Custom credit volume"}</div>
                       <p className="mt-1.5 text-xs text-muted-foreground">{p.blurb}</p>
                       <ul className="mt-4 space-y-2 flex-1">
                         {p.perks.map((perk) => (
@@ -374,11 +374,11 @@ function ProfilePage() {
                           </li>
                         ))}
                       </ul>
-                      <button onClick={() => toast.info("Checkout is opening soon — contact us to top up today.")}
+                      <button onClick={() => toast.info(p.price > 0 ? "Checkout is opening soon — contact us to top up today." : "Talk to our team for a custom plan.")}
                         className={`mt-5 w-full rounded-full px-4 py-2.5 text-sm font-medium transition hover:scale-[1.02] ${
                           "popular" in p && p.popular ? "bg-white text-black" : "border border-white/15 hover:border-white/35"
                         }`}>
-                        Buy {p.credits} credits
+                        {p.price > 0 ? `Choose ${p.name}` : "Talk to sales"}
                       </button>
                     </div>
                   ))}
