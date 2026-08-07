@@ -335,6 +335,12 @@ function ProfilePage() {
                       <p className="mt-2 text-xs text-muted-foreground max-w-sm">
                         One credit runs one complete full-stack security scan, including the deliverable report.
                       </p>
+                      <button
+                        onClick={() => document.getElementById("credit-plans")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                        className="mt-4 inline-flex items-center gap-2 rounded-full bg-white text-black px-4 py-2 text-sm font-medium transition hover:scale-[1.02]"
+                      >
+                        <Coins className="size-4" /> Buy credits
+                      </button>
                     </div>
                     <div className="sm:text-right">
                       <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Usage this cycle</div>
