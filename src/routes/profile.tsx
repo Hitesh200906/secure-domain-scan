@@ -213,18 +213,14 @@ function ProfilePage() {
                 const count = n.key === "tickets" ? tickets.length : n.key === "credits" ? profile.credits : 0;
                 return (
                   <button key={n.key} onClick={() => setTab(n.key)}
-                    className={`group relative shrink-0 md:w-full flex items-center gap-3 overflow-hidden rounded-xl px-3 py-2.5 text-left transition border ${
-                      active ? "border-white/20" : "border-transparent hover:border-white/10"
+                    className={`group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left transition border ${
+                      active ? "border-white/20 bg-black" : "border-transparent hover:border-white/10 hover:bg-black"
                     }`}>
-                    <span aria-hidden className={`absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.08),rgba(0,0,0,0)_62%)] transition-opacity ${active ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`} />
-                    <span aria-hidden className={`absolute left-0 top-2 bottom-2 w-[2px] rounded-full bg-white/50 transition-opacity ${active ? "opacity-100" : "opacity-0 group-hover:opacity-70"}`} />
-                    <span className="relative size-8 rounded-lg border border-white/10 bg-black grid place-items-center shrink-0">
+                    <span aria-hidden className={`absolute left-0 top-1.5 bottom-1.5 w-[2px] rounded-full bg-white/50 transition-opacity ${active ? "opacity-100" : "opacity-0 group-hover:opacity-70"}`} />
+                    <span className="relative size-7 rounded-lg border border-white/10 bg-black grid place-items-center shrink-0">
                       <n.icon className={`size-4 ${n.tint}`} />
                     </span>
-                    <span className="relative min-w-0 flex-1">
-                      <span className={`block text-sm whitespace-nowrap ${active ? "text-white" : "text-neutral-200"}`}>{n.label}</span>
-                      <span className="hidden md:block text-[10px] text-muted-foreground truncate">{n.hint}</span>
-                    </span>
+                    <span className={`relative min-w-0 flex-1 block text-sm whitespace-nowrap ${active ? "text-white" : "text-neutral-200"}`}>{n.label}</span>
                     {count > 0 && <span className="relative hidden md:inline text-[10px] rounded-full border border-white/10 bg-black px-1.5 py-0.5 text-neutral-300 tabular-nums">{count}</span>}
                   </button>
                 );
@@ -234,17 +230,14 @@ function ProfilePage() {
 
               {user && (
                 <button onClick={signOut}
-                  className="group relative shrink-0 md:w-full flex items-center gap-3 overflow-hidden rounded-xl px-3 py-2.5 text-left border border-transparent hover:border-white/10 transition">
-                  <span aria-hidden className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-[linear-gradient(90deg,rgba(220,38,38,0.16),rgba(0,0,0,0)_62%)]" />
-                  <span className="relative size-8 rounded-lg border border-white/10 bg-black grid place-items-center shrink-0">
+                  className="group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left border border-transparent hover:border-white/10 hover:bg-black transition">
+                  <span className="relative size-7 rounded-lg border border-white/10 bg-black grid place-items-center shrink-0">
                     <LogOut className="size-4 text-red-500" />
                   </span>
-                  <span className="relative min-w-0 flex-1">
-                    <span className="block text-sm whitespace-nowrap">Sign out</span>
-                    <span className="hidden md:block text-[10px] text-muted-foreground truncate">End this session</span>
-                  </span>
+                  <span className="relative min-w-0 flex-1 block text-sm whitespace-nowrap">Sign out</span>
                 </button>
               )}
+
             </nav>
 
 
