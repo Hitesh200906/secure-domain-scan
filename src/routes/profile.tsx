@@ -159,6 +159,22 @@ function ProfilePage() {
 
   const signOut = async () => { await supabase.auth.signOut(); navigate({ to: "/" }); };
 
+  const removeAccount = async () => {
+    setDeleting(true);
+    try {
+      await deleteMyAccount();
+      await supabase.auth.signOut();
+      toast.success("Your account has been permanently deleted");
+      navigate({ to: "/" });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not delete account");
+    } finally {
+      setDeleting(false);
+      setConfirmDelete(false);
+    }
+  };
+
+
   if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="size-5 animate-spin text-primary" /></div>;
 
   const displayName = profile.full_name || user?.email || "Your account";
