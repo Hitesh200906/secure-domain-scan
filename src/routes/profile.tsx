@@ -543,3 +543,157 @@ function ChatBubble({ side, who, when, body }: { side: "user" | "admin"; who: st
     </div>
   );
 }
+
+/* ---------------- Buy Credits ---------------- */
+
+const CURRENCIES = [
+  { code: "USD", symbol: "$", rate: 1, label: "USD ($)" },
+  { code: "INR", symbol: "₹", rate: 83, label: "INR (₹)" },
+  { code: "EUR", symbol: "€", rate: 0.92, label: "EUR (€)" },
+] as const;
+
+const CREDIT_PACKS = [
+  { credits: 1000, desc: "For small teams getting started" },
+  { credits: 2500, desc: "Best for growing workloads", popular: true },
+  { credits: 5000, desc: "For continuous coverage" },
+  { credits: 10000, desc: "Volume usage at scale" },
+] as const;
+
+function CreditsSection({ balance }: { balance: number }) {
+  const [cur, setCur] = useState<(typeof CURRENCIES)[number]>(CURRENCIES[0]);
+  const [selected, setSelected] = useState<number>(2500);
+  const [custom, setCustom] = useState("");
+
+  const customNum = Math.floor(Number(custom) || 0);
+  const usingCustom = custom.trim().length > 0;
+  const credits = usingCustom ? customNum : selected;
+  const valid = credits >= 100;
+  const price = (c: number) =>
+    `${cur.symbol}${(c * cur.rate).toLocaleString(undefined, { maximumFractionDigits: cur.code === "INR" ? 0 : 2 })}`;
+
+  return (
+    <div className="mx-auto w-full max-w-[1100px] grid lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] gap-4">
+      {/* LEFT — credits info */}
+      <aside className="rounded-[10px] border border-[#1F2937] bg-[#0A0A0A] p-6 flex flex-col">
+        <div className="flex items-center gap-2 text-[#9CA3AF]">
+          <Coins className="size-4" strokeWidth={1.5} />
+          <span className="text-sm">Your Credits</span>
+        </div>
+        <div className="mt-6 text-5xl font-semibold tracking-tight tabular-nums text-[#F8FAFC]">
+          {balance.toLocaleString()}
+        </div>
+        <p className="mt-2 text-sm text-[#9CA3AF]">Use credits to access features</p>
+
+        <div className="mt-6 h-px bg-[#1F2937]" />
+
+        <dl className="mt-6 space-y-3 text-sm">
+          <div className="flex items-center justify-between">
+            <dt className="text-[#9CA3AF]">Rate</dt>
+            <dd className="text-[#F8FAFC] tabular-nums">1 credit = $1 USD</dd>
+          </div>
+          <div className="flex items-center justify-between">
+            <dt className="text-[#9CA3AF]">Billing</dt>
+            <dd className="text-[#F8FAFC]">Pay as you go</dd>
+          </div>
+          <div className="flex items-center justify-between">
+            <dt className="text-[#9CA3AF]">Expiry</dt>
+            <dd className="text-[#F8FAFC]">Never</dd>
+          </div>
+        </dl>
+
+        <div className="mt-auto pt-8 text-xs text-[#9CA3AF]">Secure • Instant • Transparent</div>
+      </aside>
+
+      {/* RIGHT — purchase */}
+      <section className="rounded-[10px] border border-[#1F2937] bg-[#0A0A0A] p-6">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 className="text-base font-medium text-[#F8FAFC]">Buy Credits</h2>
+            <p className="mt-1 text-sm text-[#9CA3AF]">Select a package or enter a custom amount.</p>
+          </div>
+          <label className="text-xs text-[#9CA3AF]">
+            <span className="block mb-1.5">Currency</span>
+            <select
+              value={cur.code}
+              onChange={(e) => setCur(CURRENCIES.find((c) => c.code === e.target.value) ?? CURRENCIES[0])}
+              className="rounded-[6px] border border-[#1F2937] bg-[#111111] px-3 py-2 text-sm text-[#F8FAFC] outline-none transition-colors duration-150 hover:border-[#374151] focus:border-[#1D4ED8]"
+            >
+              {CURRENCIES.map((c) => (
+                <option key={c.code} value={c.code} className="bg-[#111111]">{c.label}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        {/* Packages */}
+        <div className="mt-5 grid sm:grid-cols-2 gap-3">
+          {CREDIT_PACKS.map((p) => {
+            const active = !usingCustom && selected === p.credits;
+            return (
+              <button
+                key={p.credits}
+                onClick={() => { setCustom(""); setSelected(p.credits); }}
+                className={`text-left rounded-[8px] border bg-[#111111] p-4 transition-colors duration-150 ${
+                  active ? "border-[#1D4ED8]" : "border-[#1F2937] hover:border-[#374151]"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-lg font-medium tabular-nums text-[#F8FAFC]">
+                    {p.credits.toLocaleString()} Credits
+                  </span>
+                  {"popular" in p && p.popular && (
+                    <span className="rounded-[4px] border border-[#1F2937] px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-[#9CA3AF]">
+                      Popular
+                    </span>
+                  )}
+                </div>
+                <div className="mt-1 text-sm tabular-nums text-[#F8FAFC]">{price(p.credits)}</div>
+                <div className="mt-1 text-xs text-[#9CA3AF]">{p.desc}</div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Custom */}
+        <div className="mt-3 rounded-[8px] border border-[#1F2937] bg-[#111111] p-4">
+          <label htmlFor="custom-credits" className="text-sm text-[#F8FAFC]">Custom amount</label>
+          <input
+            id="custom-credits"
+            inputMode="numeric"
+            value={custom}
+            onChange={(e) => setCustom(e.target.value.replace(/[^0-9]/g, ""))}
+            placeholder="Enter credits"
+            className="mt-2 w-full rounded-[6px] border border-[#1F2937] bg-[#0A0A0A] px-3 py-2.5 text-sm text-[#F8FAFC] placeholder:text-[#6B7280] outline-none transition-colors duration-150 hover:border-[#374151] focus:border-[#1D4ED8]"
+          />
+          <div className="mt-2 text-xs text-[#9CA3AF]">
+            {usingCustom
+              ? customNum >= 100
+                ? `${customNum.toLocaleString()} credits — ${price(customNum)}`
+                : "Minimum 100 credits."
+              : "Minimum 100 credits."}
+          </div>
+        </div>
+
+        {/* Summary + CTA */}
+        <div className="mt-5 border-t border-[#1F2937] pt-5 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div className="text-xs text-[#9CA3AF]">Total ({cur.code})</div>
+            <div className="mt-1 text-2xl font-semibold tabular-nums text-[#F8FAFC]">
+              {price(valid ? credits : 0)}
+            </div>
+            <div className="mt-1 text-xs text-[#9CA3AF] tabular-nums">
+              {valid ? `${credits.toLocaleString()} credits` : "Select a package"}
+            </div>
+          </div>
+          <button
+            disabled={!valid}
+            onClick={() => toast.info(`Checkout opening soon — ${credits.toLocaleString()} credits for ${price(credits)}.`)}
+            className="rounded-[6px] bg-[#1D4ED8] px-6 py-3 text-sm font-medium text-[#F8FAFC] transition-colors duration-150 hover:bg-[#1A43BA] disabled:cursor-not-allowed disabled:bg-[#1F2937] disabled:text-[#6B7280]"
+          >
+            Buy Credits
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+}
