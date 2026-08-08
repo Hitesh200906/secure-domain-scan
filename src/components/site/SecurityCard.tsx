@@ -89,7 +89,7 @@ export function SecurityCard() {
           </div>
 
           <div className="min-w-0 flex flex-col">
-            <div className="flex flex-1 gap-1 sm:gap-1.5 sm:block-none">
+            <div className="flex flex-1 gap-1 sm:gap-1.5">
               <div className="flex flex-col justify-between py-0.5 text-[6px] sm:text-[8.5px]" style={{ color: T.text3 }}>
                 {["24", "18", "12", "6", "0"].map((t) => <span key={t}>{t}</span>)}
               </div>
