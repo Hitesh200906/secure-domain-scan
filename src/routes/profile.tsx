@@ -13,6 +13,7 @@ import { api } from "@/lib/api-client";
 import { uploadStoreAsset } from "@/lib/uploads";
 import { useAuth } from "@/hooks/use-auth";
 import creditsWallet from "@/assets/credits-wallet.png.asset.json";
+import generalPanel from "@/assets/general-panel.png.asset.json";
 import creditsGift from "@/assets/credits-gift.png.asset.json";
 import CreditsCheckout from "@/components/credits/CreditsCheckout";
 import { useAdmin } from "@/hooks/use-admin";
@@ -270,55 +271,9 @@ function ProfilePage() {
           {/* ---------- Right content ---------- */}
           <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="space-y-4">
             {tab === "general" && (
-              <>
-                <Banner title="General" desc="Your identity across Nexefy Security reports and notifications." />
-                <div className="grid xl:grid-cols-3 gap-4">
-                  <Card title="Account information" className="xl:col-span-2">
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <Field label="Full name" value={profile.full_name} onChange={(v) => setProfile({ ...profile, full_name: v })} />
-                      <Field label="Role / Title" value={profile.role_title} onChange={(v) => setProfile({ ...profile, role_title: v })} />
-                      <Field label="Company" value={profile.company} onChange={(v) => setProfile({ ...profile, company: v })} />
-                      <Field label="Email" value={user?.email ?? ""} readOnly />
-                    </div>
-                    {user && (
-                      <button onClick={save} disabled={saving} className="mt-2 rounded-full bg-white text-black px-5 py-2.5 text-sm font-medium inline-flex items-center gap-2 disabled:opacity-60 hover:scale-[1.02] transition">
-                        {saving && <Loader2 className="size-4 animate-spin" />} Save changes
-                      </button>
-                    )}
-                  </Card>
-                  <Card title="Account details">
-                    <Row label="User ID" value={user ? `${user.id.slice(0, 8)}…` : "—"} mono />
-                    <Row label="Auth provider" value={user ? (user.app_metadata?.provider ?? "email") : "—"} />
-                    <Row label="Last sign-in" value={user?.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : "—"} />
-                    <Row label="Plan" value={profile.plan} />
-                  </Card>
-                </div>
-
-                <Card title="Account overview" desc="Your plan usage and account summary.">
-                  <div className="grid sm:grid-cols-3 gap-3">
-                    <OverviewTile
-                      icon={<Database className="size-4 text-[#4d7cff]" />}
-                      ring="border-white/10"
-                      value={String(profile.credits)} label="Credits" hint="Available balance"
-                      action={{ text: "Buy", onClick: () => setTab("credits") }}
-                    />
-                    <OverviewTile
-                      icon={<MessagesSquare className="size-4 text-emerald-400" />}
-                      ring="border-white/10"
-                      value={String(tickets.length)} label="Tickets" hint="Open tickets"
-                      action={{ text: "View", onClick: () => setTab("tickets") }}
-                    />
-                    <OverviewTile
-                      icon={<Crown className="size-4 text-amber-400" />}
-                      ring="border-white/10"
-                      value={profile.plan} label="Plan" hint="Current plan"
-                      action={{ text: "Upgrade", to: "/pricing" }}
-                    />
-                  </div>
-                </Card>
-
-              </>
+              <img src={generalPanel.url} alt="General account settings" className="w-full rounded-2xl" />
             )}
+
 
             {tab === "credits" && <CreditsSection balance={profile.credits} />}
 
