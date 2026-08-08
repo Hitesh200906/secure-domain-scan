@@ -15,6 +15,7 @@ import { useAuth } from "@/hooks/use-auth";
 import creditsWallet from "@/assets/credits-wallet.png.asset.json";
 import creditsGift from "@/assets/credits-gift.png.asset.json";
 import CreditsCheckout from "@/components/credits/CreditsCheckout";
+import CreditsAmount from "@/components/credits/CreditsAmount";
 import { useAdmin } from "@/hooks/use-admin";
 import { RoleBadge } from "@/components/ui/RoleBadge";
 import { BackButton } from "@/components/site/BackButton";
@@ -689,6 +690,7 @@ function CreditsSection({ balance }: { balance: number }) {
   const [txs, setTxs] = useState<CreditTx[]>([]);
   const [showAll, setShowAll] = useState(false);
   const [open, setOpen] = useState(false);
+  const [step, setStep] = useState<1 | 2>(1);
   const [amount, setAmount] = useState<number>(1000);
   const [busy, setBusy] = useState(false);
 
@@ -848,7 +850,18 @@ function CreditsSection({ balance }: { balance: number }) {
       </div>
 
       {/* Full-page checkout */}
-      {open && <CreditsCheckout onClose={() => setOpen(false)} onContinue={() => {}} />}
+      {open && step === 1 && (
+        <CreditsCheckout onClose={() => setOpen(false)} onContinue={() => setStep(2)} />
+      )}
+      {open && step === 2 && (
+        <CreditsAmount
+          onClose={() => {
+            setOpen(false);
+            setStep(1);
+          }}
+          onContinue={() => {}}
+        />
+      )}
 
       {/* Buy dialog */}
       {false && (
