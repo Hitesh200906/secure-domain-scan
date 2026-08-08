@@ -36,7 +36,7 @@ export function Hero() {
       </div>
 
       <div className="relative mx-auto max-w-[1360px] px-3 sm:px-8 pt-20 sm:pt-28 pb-10 sm:pb-20">
-        <div className="grid grid-cols-2 gap-3 sm:gap-8 lg:gap-14 items-center">
+        <div className="grid grid-cols-2 gap-3 sm:gap-8 lg:gap-14 items-stretch sm:items-center">
           <div className="text-left min-w-0">
             <motion.div
               initial={{ opacity: 0, y: 8 }}

@@ -55,10 +55,10 @@ export function Navbar() {
           </Link>
 
 
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="flex items-center gap-0.5 md:gap-1">
             {links.map((l) => (
               <Link key={l.to} to={l.to}
-                className="px-3.5 py-2 text-[13px] text-muted-foreground hover:text-white transition rounded-lg"
+                className={`${l.to === "/dashboard" ? "hidden md:inline-flex" : ""} px-1.5 py-1.5 text-[11px] md:px-3.5 md:py-2 md:text-[13px] text-muted-foreground hover:text-white transition rounded-lg`}
                 activeProps={{ className: "text-white" }} activeOptions={{ exact: true }}>
                 {l.label}
               </Link>
@@ -118,11 +118,6 @@ export function Navbar() {
 
         {open && (
           <div className="md:hidden mt-2 bg-black/90 backdrop-blur-xl border border-white/10 rounded-2xl p-4 space-y-1">
-            {links.map((l) => (
-              <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="block px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">
-                {l.label}
-              </Link>
-            ))}
             {user && (
               <>
                 {mode === "security" && (
