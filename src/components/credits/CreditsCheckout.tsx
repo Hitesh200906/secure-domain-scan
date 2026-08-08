@@ -63,7 +63,7 @@ export default function CreditsCheckout({
         </div>
 
         {/* Body — same two-column structure on every screen */}
-        <div className="grid flex-1 grid-cols-2 items-center gap-4 py-4 sm:gap-10 sm:py-8 lg:gap-16">
+        <div className="grid grid-cols-2 items-start gap-4 py-4 sm:flex-1 sm:items-center sm:gap-10 sm:py-8 lg:gap-16">
           {/* Left */}
           <div className="flex h-full flex-col">
             <h1 className="text-[20px] font-bold leading-[1.05] tracking-tight text-white sm:text-[42px] lg:text-[52px]">

@@ -55,7 +55,7 @@ export default function CreditsAmount({
           </button>
         </div>
 
-        <div className="grid flex-1 grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] gap-3 py-4 sm:gap-8 sm:py-6 lg:gap-12">
+        <div className="grid grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] items-start gap-3 py-4 sm:flex-1 sm:items-stretch sm:gap-8 sm:py-6 lg:gap-12">
           {/* Left */}
           <div className="flex h-full flex-col">
             <h1 className="text-[17px] font-bold leading-[1.06] tracking-tight text-white sm:text-[36px] lg:text-[46px]">
