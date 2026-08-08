@@ -133,6 +133,18 @@ function ProfilePage() {
     }
   };
 
+  const closeTicket = async (t: Ticket) => {
+    try {
+      const { ok } = await api.closeTicket(t.id);
+      if (!ok) { toast.error("This ticket is already closed"); return; }
+      setTickets((list) => list.map((x) => (x.id === t.id ? { ...x, status: "closed" } : x)));
+      setActiveTicket((cur) => (cur && cur.id === t.id ? { ...cur, status: "closed" } : cur));
+      toast.success("Ticket closed");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not close ticket");
+    }
+  };
+
   const save = async () => {
     if (!user) return;
     setSaving(true);
@@ -423,10 +435,20 @@ function ProfilePage() {
                             <span className="text-[9px] uppercase tracking-widest px-1.5 py-0.5 rounded-full border border-white/10 text-muted-foreground">{t.status.replace("_", " ")}</span>
                           </div>
                           <div className="text-[11px] text-muted-foreground mt-1 line-clamp-2">{t.message}</div>
-                          <div className="mt-2 flex items-center justify-between">
+                          <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
                             <span className="text-[10px] text-muted-foreground/70">{new Date(t.created_at).toLocaleString()}</span>
-                            <span className="text-[10px] rounded-full border border-white/15 bg-black px-2 py-0.5 text-neutral-300 inline-flex items-center gap-1">
-                              View <ChevronRight className="size-3" />
+                            <span className="flex items-center gap-1.5">
+                              {t.status !== "closed" && (
+                                <span role="button" tabIndex={0}
+                                  onClick={(e) => { e.stopPropagation(); closeTicket(t); }}
+                                  onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); closeTicket(t); } }}
+                                  className="text-[10px] rounded-full border border-white/15 bg-black px-2 py-0.5 text-neutral-300 inline-flex items-center gap-1 hover:border-white/35 hover:text-white">
+                                  <CheckCircle2 className="size-3 text-[#2563EB]" /> Close
+                                </span>
+                              )}
+                              <span className="text-[10px] rounded-full border border-white/15 bg-black px-2 py-0.5 text-neutral-300 inline-flex items-center gap-1">
+                                View <ChevronRight className="size-3" />
+                              </span>
                             </span>
                           </div>
                         </button>
@@ -435,8 +457,18 @@ function ProfilePage() {
                   </div>
 
                   <div className="rounded-xl border border-white/10 bg-black p-3">
-                    <div className="text-sm font-medium text-white">{activeTicket ? activeTicket.subject : "Conversation"}</div>
-                    <div className="mt-1 text-[11px] text-[#9CA3AF]">{activeTicket ? `Ticket #${activeTicket.id.slice(0, 8)} · ${activeTicket.status.replace("_", " ")}` : "Pick a ticket to view the thread."}</div>
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="truncate text-sm font-medium text-white">{activeTicket ? activeTicket.subject : "Conversation"}</div>
+                        <div className="mt-1 text-[11px] text-[#9CA3AF]">{activeTicket ? `Ticket #${activeTicket.id.slice(0, 8)} · ${activeTicket.status.replace("_", " ")}` : "Pick a ticket to view the thread."}</div>
+                      </div>
+                      {activeTicket && activeTicket.status !== "closed" && (
+                        <button onClick={() => closeTicket(activeTicket)}
+                          className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-white/12 px-2.5 py-1.5 text-[11px] text-neutral-200 transition hover:border-white/30 hover:text-white">
+                          <CheckCircle2 className="size-3.5 text-[#2563EB]" /> Close ticket
+                        </button>
+                      )}
+                    </div>
                     {!activeTicket ? (
                       <div className="text-center py-16 text-sm text-muted-foreground">
                         <MessageSquare className="size-8 mx-auto mb-3 text-[#2563EB]" />
