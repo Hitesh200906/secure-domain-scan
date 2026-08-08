@@ -217,8 +217,9 @@ function ProfilePage() {
                   return (
                     <button key={n.key} onClick={() => setTab(n.key)}
                       className={`group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl border px-3 py-1.5 text-left transition hover:border-white/25 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))] ${
-                        active ? "border-white/25 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]" : "border-white/10"
+                        active ? "border-white/25 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]" : "border-transparent"
                       }`}>
+
 
                       <span className="relative size-7 rounded-lg grid place-items-center shrink-0">
                         <n.icon className={`size-4 ${n.key === "security" ? "text-white" : n.tint} transition ${active ? "" : "grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100"}`} />
@@ -233,7 +234,7 @@ function ProfilePage() {
                   <>
                     <div className="hidden md:block my-2 h-px bg-white/10" />
                     <button onClick={signOut}
-                      className="group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl border border-white/10 px-3 py-1.5 text-left transition hover:border-white/25 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]">
+                      className="group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl border border-transparent px-3 py-1.5 text-left transition hover:border-white/25 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]">
                       <span className="relative size-7 rounded-lg grid place-items-center shrink-0">
                         <LogOut className="size-4 text-neutral-400 transition-colors group-hover:text-red-500" />
                       </span>
