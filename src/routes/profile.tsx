@@ -233,7 +233,7 @@ function ProfilePage() {
                   <>
                     <div className="hidden md:block my-2 h-px bg-white/10" />
                     <button onClick={signOut}
-                      className="group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left transition hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]">
+                      className="group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl border border-white/10 px-3 py-1.5 text-left transition hover:border-white/25 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]">
                       <span className="relative size-7 rounded-lg grid place-items-center shrink-0">
                         <LogOut className="size-4 text-neutral-400 transition-colors group-hover:text-red-500" />
                       </span>
