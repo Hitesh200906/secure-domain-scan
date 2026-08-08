@@ -552,130 +552,223 @@ const CURRENCIES = [
   { code: "EUR", symbol: "€", rate: 0.92 },
 ] as const;
 
-const CREDIT_PACKS = [1000, 2500, 5000, 10000] as const;
+const CREDIT_NODES = [1000, 2500, 5000, 10000] as const;
+const RECOMMENDED = 2500;
+const MIN_CREDITS = 100;
+const MAX_CREDITS = 10000;
+
+function useCountUp(value: number, duration = 420) {
+  const [display, setDisplay] = useState(value);
+  const fromRef = useRef(value);
+  const rafRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const from = fromRef.current;
+    const to = value;
+    if (from === to) return;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const next = Math.round(from + (to - from) * eased);
+      setDisplay(next);
+      fromRef.current = next;
+      if (t < 1) rafRef.current = requestAnimationFrame(tick);
+      else fromRef.current = to;
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [value, duration]);
+
+  return display;
+}
 
 function CreditsSection({ balance }: { balance: number }) {
-  const [cur, setCur] = useState<(typeof CURRENCIES)[number]>(CURRENCIES[0]);
-  const [selected, setSelected] = useState<number>(2500);
-  const [custom, setCustom] = useState("");
-  const [pulse, setPulse] = useState<number | null>(null);
+  const [curIndex, setCurIndex] = useState(0);
+  const cur = CURRENCIES[curIndex];
+  const [credits, setCredits] = useState<number>(RECOMMENDED);
+  const [draft, setDraft] = useState<string>(String(RECOMMENDED));
 
-  const customNum = Math.floor(Number(custom) || 0);
-  const usingCustom = custom.trim().length > 0;
-  const credits = usingCustom ? customNum : selected;
-  const valid = credits >= 100;
-  const price = (c: number) =>
-    `${cur.symbol}${(c * cur.rate).toLocaleString(undefined, { maximumFractionDigits: cur.code === "INR" ? 0 : 2 })}`;
+  const valid = credits >= MIN_CREDITS;
+  const shownCredits = useCountUp(credits);
+  const amount = shownCredits * cur.rate;
+  const fmtMoney = (v: number) =>
+    `${cur.symbol}${v.toLocaleString(undefined, { maximumFractionDigits: cur.code === "INR" ? 0 : 2 })}`;
 
-  const pick = (c: number) => {
-    setCustom("");
-    setSelected(c);
-    setPulse(c);
-    setTimeout(() => setPulse(null), 200);
+  const commit = (v: number) => {
+    const clamped = Math.max(0, Math.min(MAX_CREDITS * 10, Math.round(v)));
+    setCredits(clamped);
+    setDraft(String(clamped));
   };
 
+  // node positions along the rail (evenly spaced)
+  const nodePct = (i: number) => (i / (CREDIT_NODES.length - 1)) * 100;
+  const railPct = Math.max(0, Math.min(100, ((credits - MIN_CREDITS) / (MAX_CREDITS - MIN_CREDITS)) * 100));
+
   return (
-    <div className="mx-auto w-full max-w-[560px] rounded-[14px] border border-white/[0.06] bg-black p-6 sm:p-8">
-      {/* top row */}
+    <div className="mx-auto w-full max-w-[640px] rounded-[16px] border border-white/[0.06] bg-black p-6 sm:p-9">
+      {/* 1. Top control strip */}
       <div className="flex items-center justify-between gap-4">
-        <div>
-          <div className="text-sm font-medium text-[#F8FAFC]">Credits</div>
-          <div className="mt-1 text-xs text-[#9CA3AF] tabular-nums">
-            Balance {balance.toLocaleString()} · 1 credit = 1 USD
-          </div>
+        <span className="text-sm font-medium tracking-tight text-[#F8FAFC]">Credits</span>
+
+        <div className="relative flex items-end">
+          {CURRENCIES.map((c, i) => (
+            <button
+              key={c.code}
+              onClick={() => setCurIndex(i)}
+              className={`px-3 pb-2 text-xs tracking-wide transition-colors duration-200 ${
+                i === curIndex ? "text-[#F8FAFC]" : "text-[#9CA3AF] hover:text-[#F8FAFC]"
+              }`}
+            >
+              {c.code}
+            </button>
+          ))}
+          <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-white/[0.05]" />
+          <span
+            aria-hidden
+            className="pointer-events-none absolute bottom-0 h-px bg-[#F8FAFC] transition-transform duration-200 ease-out"
+            style={{
+              width: `${100 / CURRENCIES.length}%`,
+              left: 0,
+              transform: `translateX(${curIndex * 100}%)`,
+            }}
+          />
         </div>
-        <div className="inline-flex rounded-[8px] border border-[#1F2937]">
-          {CURRENCIES.map((c, i) => {
-            const on = c.code === cur.code;
+      </div>
+
+      {/* 4. Live value display */}
+      <div className="mt-10 text-center">
+        <div className="text-[40px] font-semibold leading-none tracking-tight text-[#F8FAFC] tabular-nums sm:text-[52px]">
+          {shownCredits.toLocaleString()}
+        </div>
+        <div className="mt-3 text-base text-[#9CA3AF] tabular-nums">{fmtMoney(amount)}</div>
+      </div>
+
+      {/* 2. Rail selector */}
+      <div className="mt-12 px-2">
+        <div className="relative h-16">
+          {/* track */}
+          <span aria-hidden className="absolute left-0 right-0 top-3 h-px bg-white/[0.07]" />
+          <span
+            aria-hidden
+            className="absolute left-0 top-3 h-px bg-[#374151] transition-[width] duration-300 ease-out"
+            style={{ width: `${railPct}%` }}
+          />
+
+          {/* drag layer */}
+          <input
+            type="range"
+            aria-label="Credits"
+            min={MIN_CREDITS}
+            max={MAX_CREDITS}
+            step={100}
+            value={Math.min(MAX_CREDITS, Math.max(MIN_CREDITS, credits))}
+            onChange={(e) => commit(Number(e.target.value))}
+            className="absolute left-0 right-0 top-0 z-20 h-7 w-full cursor-ew-resize appearance-none bg-transparent opacity-0"
+          />
+
+          {CREDIT_NODES.map((c, i) => {
+            const active = credits === c;
             return (
               <button
-                key={c.code}
-                onClick={() => setCur(c)}
-                className={`px-3 py-1.5 text-xs transition-colors duration-200 ${i > 0 ? "border-l border-[#1F2937]" : ""} ${
-                  on ? "text-[#F8FAFC]" : "text-[#9CA3AF] hover:text-[#F8FAFC]"
-                }`}
+                key={c}
+                onClick={() => commit(c)}
+                className="group absolute top-0 z-30 -translate-x-1/2"
+                style={{ left: `${nodePct(i)}%` }}
               >
-                {c.code}
+                <span
+                  className={`mx-auto block rounded-full border transition-all duration-200 ${
+                    active
+                      ? "h-[9px] w-[9px] border-[#F8FAFC] bg-[#F8FAFC]"
+                      : "h-[7px] w-[7px] border-[#374151] bg-black group-hover:h-[9px] group-hover:w-[9px] group-hover:border-[#9CA3AF]"
+                  }`}
+                  style={{ marginTop: active ? 8 : 9 }}
+                />
+                <span
+                  aria-hidden
+                  className={`mx-auto block w-px bg-white/20 transition-all duration-200 ${active ? "mt-1 h-3" : "mt-1 h-0"}`}
+                />
+                <span
+                  className={`mt-1 block text-[11px] tabular-nums transition-all duration-200 ${
+                    active ? "-translate-y-[2px] text-[#F8FAFC]" : "text-[#9CA3AF] group-hover:text-[#F8FAFC]"
+                  }`}
+                >
+                  {c.toLocaleString()}
+                </span>
+                {c === RECOMMENDED && (
+                  <span
+                    aria-hidden
+                    className="mx-auto mt-1 block h-[3px] w-[3px] rounded-full bg-[#9CA3AF]"
+                  />
+                )}
               </button>
             );
           })}
         </div>
       </div>
 
-      <div className="my-6 h-px bg-white/[0.05]" />
+      {/* 3. Smart input */}
+      <div className="mt-10 flex items-center justify-between gap-4">
+        <div className="flex min-w-0 items-baseline gap-3">
+          <input
+            inputMode="numeric"
+            value={draft}
+            onChange={(e) => {
+              const raw = e.target.value.replace(/[^0-9]/g, "");
+              setDraft(raw);
+              setCredits(Math.min(MAX_CREDITS * 10, Number(raw) || 0));
+            }}
+            onBlur={() => setDraft(String(credits))}
+            className="w-32 border-b border-[#1F2937] bg-transparent pb-1.5 text-sm text-[#F8FAFC] tabular-nums outline-none transition-colors duration-200 focus:border-[#374151]"
+          />
+          <span className="text-xs text-[#9CA3AF]">credits</span>
+        </div>
 
-      {/* selection grid */}
-      <div className="grid gap-3 sm:grid-cols-2">
-        {CREDIT_PACKS.map((c) => {
-          const active = !usingCustom && selected === c;
-          return (
-            <button
-              key={c}
-              onClick={() => pick(c)}
-              className={`relative rounded-[10px] border p-4 text-left transition-all duration-200 hover:scale-[1.01] ${
-                active ? "border-[#F8FAFC]/25" : "border-white/[0.06] hover:border-[#374151]"
-              }`}
-            >
-              {active && (
-                <span
-                  aria-hidden
-                  className={`pointer-events-none absolute rounded-[7px] border border-[#F8FAFC]/15 transition-all duration-200 ${
-                    pulse === c ? "inset-[2px]" : "inset-[5px]"
-                  }`}
-                />
-              )}
-              <div className="relative text-[20px] font-semibold tabular-nums tracking-tight text-[#F8FAFC]">
-                {c.toLocaleString()}
-              </div>
-              <div className="relative mt-1 flex items-center justify-between text-xs text-[#9CA3AF] tabular-nums">
-                <span>credits</span>
-                <span>{price(c)}</span>
-              </div>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* custom input */}
-      <div className="mt-6">
-        <input
-          id="custom-credits"
-          inputMode="numeric"
-          value={custom}
-          onChange={(e) => setCustom(e.target.value.replace(/[^0-9]/g, ""))}
-          placeholder="Custom credits"
-          className="w-full border-b border-[#1F2937] bg-transparent px-1 py-2 text-sm text-[#F8FAFC] tabular-nums placeholder:text-[#9CA3AF] outline-none transition-colors duration-200 focus:border-[#374151]"
-        />
-        <div className="mt-2 px-1 text-xs text-[#9CA3AF] tabular-nums">
-          {usingCustom
-            ? customNum >= 100
-              ? `${customNum.toLocaleString()} credits · ${price(customNum)}`
-              : "Minimum 100 credits"
-            : "Minimum 100 credits"}
+        <div className="flex items-center">
+          <button
+            onClick={() => commit(credits - 100)}
+            className="h-8 w-9 border border-[#1F2937] text-sm text-[#9CA3AF] transition-colors duration-200 hover:border-[#374151] hover:text-[#F8FAFC]"
+            style={{ borderRadius: "8px 0 0 8px" }}
+            aria-label="Decrease"
+          >
+            −
+          </button>
+          <button
+            onClick={() => commit(credits + 100)}
+            className="-ml-px h-8 w-9 border border-[#1F2937] text-sm text-[#9CA3AF] transition-colors duration-200 hover:border-[#374151] hover:text-[#F8FAFC]"
+            style={{ borderRadius: "0 8px 8px 0" }}
+            aria-label="Increase"
+          >
+            +
+          </button>
         </div>
       </div>
 
-      <div className="my-6 h-px bg-white/[0.05]" />
+      <div className="my-8 h-px bg-white/[0.05]" />
 
-      {/* summary row */}
-      <div className="flex items-baseline justify-between gap-4">
-        <span className="text-sm text-[#9CA3AF] tabular-nums">
-          {valid ? `${credits.toLocaleString()} credits` : "Select an amount"}
+      {/* 5. Inline summary + CTA */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <span className="text-xs text-[#9CA3AF] tabular-nums">
+          {valid
+            ? `Balance ${balance.toLocaleString()} · 1 credit = 1 USD · taxes at checkout`
+            : `Minimum ${MIN_CREDITS} credits`}
         </span>
-        <span className="text-xl font-semibold tabular-nums tracking-tight text-[#F8FAFC]">
-          {price(valid ? credits : 0)}
-        </span>
+        <button
+          disabled={!valid}
+          onClick={() =>
+            toast.info(`Checkout opening soon — ${credits.toLocaleString()} credits for ${fmtMoney(credits * cur.rate)}.`)
+          }
+          className="group relative overflow-hidden rounded-[10px] border border-[#1F2937] px-6 py-2.5 text-sm font-medium text-[#F8FAFC] transition-all duration-200 hover:border-[#374151] hover:bg-[#0A0A0A] active:scale-[0.99] disabled:cursor-not-allowed disabled:text-[#9CA3AF] disabled:hover:border-[#1F2937] disabled:hover:bg-transparent"
+        >
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 rounded-[10px] border border-white/0 transition-all duration-200 group-hover:inset-[3px] group-hover:rounded-[7px] group-hover:border-white/10"
+          />
+          <span className="relative">Continue</span>
+        </button>
       </div>
-
-      <button
-        disabled={!valid}
-        onClick={() => toast.info(`Checkout opening soon — ${credits.toLocaleString()} credits for ${price(credits)}.`)}
-        className="mt-6 w-full rounded-[10px] border border-[#1F2937] bg-transparent px-6 py-3 text-sm font-medium text-[#F8FAFC] transition-all duration-200 hover:border-[#374151] hover:bg-[#0A0A0A] active:scale-[0.99] disabled:cursor-not-allowed disabled:text-[#9CA3AF] disabled:hover:border-[#1F2937] disabled:hover:bg-transparent"
-      >
-        Continue
-      </button>
-
-      <p className="mt-4 text-center text-xs text-[#9CA3AF]">Taxes calculated at checkout</p>
     </div>
   );
 }
