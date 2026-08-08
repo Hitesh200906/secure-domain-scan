@@ -712,16 +712,19 @@ function CreditsSection({ balance }: { balance: number }) {
                 style={{ left: `${nodePct(i)}%` }}
               >
                 <span
-                  className={`mx-auto block rounded-full border transition-all duration-200 ${
-                    active
-                      ? "h-[9px] w-[9px] border-[#F8FAFC] bg-[#F8FAFC]"
-                      : "h-[7px] w-[7px] border-[#374151] bg-black group-hover:h-[9px] group-hover:w-[9px] group-hover:border-[#9CA3AF]"
-                  }`}
-                  style={{ marginTop: active ? 8 : 9 }}
+                  className="mx-auto block rounded-full border transition-all duration-200"
+                  style={{
+                    marginTop: active ? 8 : 9,
+                    height: active ? 9 : 7,
+                    width: active ? 9 : 7,
+                    background: active ? accent : "#000000",
+                    borderColor: active ? accent : "#374151",
+                  }}
                 />
                 <span
                   aria-hidden
-                  className={`mx-auto block w-px bg-white/20 transition-all duration-200 ${active ? "mt-1 h-3" : "mt-1 h-0"}`}
+                  className="mx-auto mt-1 block w-px transition-all duration-200"
+                  style={{ height: active ? 12 : 0, background: accent }}
                 />
                 <span
                   className={`mt-1 block text-[11px] tabular-nums transition-all duration-200 ${
@@ -733,7 +736,8 @@ function CreditsSection({ balance }: { balance: number }) {
                 {c === RECOMMENDED && (
                   <span
                     aria-hidden
-                    className="mx-auto mt-1 block h-[3px] w-[3px] rounded-full bg-[#9CA3AF]"
+                    className="mx-auto mt-1 block h-[3px] w-[3px] rounded-full"
+                    style={{ background: active ? accent : "#9CA3AF" }}
                   />
                 )}
               </button>
