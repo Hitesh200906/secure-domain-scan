@@ -5,7 +5,7 @@ import {
   BadgeCheck, Pencil, CircleUserRound, Copy, Coins, Crown, Database, Key, KeyRound, LifeBuoy,
   Loader2, LogOut, MessageSquare, MessagesSquare, Monitor, Send, ShieldHalf, ShieldCheck, Smartphone,
   Trash2, User2, ChevronRight, AlertTriangle, Zap, Clock, Headphones, ShoppingCart, ArrowRight,
-  Briefcase, Building2, Mail, Save, Fingerprint,
+  Briefcase, Building2, Mail, Save, Fingerprint, Menu, X, CheckCircle2,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -74,6 +74,7 @@ function ProfilePage() {
   const [tab, setTab] = useState<Tab>(initialTab === "api" ? "general" : initialTab);
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
 
   const apiKeysNotice = () =>
     toast.message("API keys are under construction", {
@@ -211,7 +212,7 @@ function ProfilePage() {
 
         <div className="grid md:grid-cols-[minmax(250px,23%)_1fr] gap-4 lg:gap-6 items-start">
           {/* ---------- Left rail — single unified panel ---------- */}
-          <aside className={`relative overflow-y-auto rounded-2xl border border-white/10 flex flex-col fixed inset-y-0 left-0 z-[80] w-[84%] max-w-[320px] rounded-l-none transition-transform duration-300 md:transition-none md:static md:z-auto md:w-auto md:max-w-none md:rounded-2xl md:translate-x-0 md:overflow-hidden md:sticky md:top-6 md:min-h-[calc(100vh-3rem)] ${navOpen ? "translate-x-0" : "-translate-x-full"}`}>
+          <aside className={`overflow-y-auto rounded-2xl border border-white/10 flex flex-col fixed inset-y-0 left-0 z-[80] w-[84%] max-w-[320px] rounded-l-none transition-transform duration-300 md:transition-none md:static md:z-auto md:w-auto md:max-w-none md:rounded-2xl md:translate-x-0 md:overflow-hidden md:sticky md:top-6 md:min-h-[calc(100vh-3rem)] ${navOpen ? "translate-x-0" : "-translate-x-full"}`}>
 
             <img src={textureImg} alt="" aria-hidden="true" loading="lazy" width={1280} height={640}
               className="absolute inset-0 size-full object-cover" />
