@@ -47,9 +47,10 @@ const NAV: { key: Tab; label: string; icon: typeof User2; hint: string; tint: st
 
 
 const CREDIT_PACKS = [
-  { id: "starter", name: "Starter", credits: 10, price: 49, per: "/month", blurb: "For solo founders and small sites.", perks: ["1 domain", "Weekly scans", "AI vulnerability report", "Email alerts"] },
-  { id: "professional", name: "Professional", credits: 50, price: 199, per: "/month", blurb: "For growing engineering teams.", perks: ["10 domains", "Daily scans", "OWASP Top 10 + CVE feeds", "Slack & PagerDuty alerts", "PDF & JSON exports"], popular: true },
-  { id: "custom", name: "Custom", credits: 0, price: 0, per: "Custom", blurb: "Dedicated infrastructure and custom programs at scale.", perks: ["Unlimited domains", "Real-time monitoring", "SAML SSO + audit logs", "Dedicated security engineer", "99.99% SLA"] },
+  { id: "starter", name: "Starter", credits: 10, price: 49, per: "/month", blurb: "Run a full security audit on a single domain. Get an AI-generated report in minutes.", perks: ["1 domain", "Weekly scans", "AI vulnerability report", "Email alerts", "Community support"] },
+  { id: "professional", name: "Professional", credits: 50, price: 199, per: "/month", blurb: "Continuous monitoring, advanced detection, and remediation playbooks for production estates.", perks: ["10 domains", "Daily scans", "OWASP Top 10 + CVE feeds", "Slack & PagerDuty alerts", "Priority email support", "PDF & JSON exports"], popular: true },
+  { id: "custom", name: "Custom", credits: 0, price: 0, per: "Custom", blurb: "Dedicated infrastructure, SAML SSO, custom integrations, and a named security engineer.", perks: ["Unlimited domains", "Real-time monitoring", "SAML SSO + audit log export", "Dedicated security engineer", "99.99% SLA", "Custom integrations"] },
+
 ] as const;
 
 function ProfilePage() {
