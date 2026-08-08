@@ -270,19 +270,18 @@ function ProfilePage() {
           {/* ---------- Right content ---------- */}
           <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="space-y-4">
             {tab === "general" && (
-              <div className="rounded-[26px] border border-white/10 bg-black p-5 sm:p-8">
+              <div className="rounded-[26px] border border-white/10 bg-black p-4 sm:p-6">
                 <div className="flex items-center gap-3">
-                  <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">General</h2>
+                  <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-white">General</h2>
                   <span className="h-2.5 w-2.5 rounded-full bg-[#2563EB]" />
                 </div>
-                <p className="mt-2 text-sm text-[#9CA3AF]">Your identity across Nexefy Security reports and notifications.</p>
+                <p className="mt-1 text-xs text-[#9CA3AF]">Your identity across Nexefy Security reports and notifications.</p>
 
-                <div className="my-6 h-px bg-white/10" />
+                <div className="my-4 h-px bg-white/10" />
 
-                <div className="text-lg font-semibold text-white">Account information</div>
-                <p className="mt-1 text-sm text-[#9CA3AF]">Update your personal and professional details.</p>
+                <div className="text-base font-semibold text-white">Account information</div>
 
-                <div className="mt-5 grid gap-5 sm:grid-cols-2">
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
                   <IconField label="Full name" icon={<User2 className="size-4 text-[#9CA3AF]" />} placeholder="Your name"
                     value={profile.full_name} onChange={(v) => setProfile({ ...profile, full_name: v })} />
                   <IconField label="Role / Title" icon={<Briefcase className="size-4 text-[#9CA3AF]" />} placeholder="e.g. Security Analyst"
@@ -293,44 +292,43 @@ function ProfilePage() {
                     value={user?.email ?? ""} readOnly />
                 </div>
 
-                <div className="mt-6 flex flex-wrap items-center gap-5">
+                <div className="mt-4 flex flex-wrap items-center gap-4">
                   <button onClick={save} disabled={saving || !user}
-                    className="inline-flex items-center gap-2.5 rounded-xl bg-[#2563EB] px-6 py-3.5 text-[15px] font-medium text-white transition hover:bg-[#1D4ED8] disabled:opacity-60">
+                    className="inline-flex items-center gap-2 rounded-xl bg-[#2563EB] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#1D4ED8] disabled:opacity-60">
                     {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
                     Save changes
                   </button>
-                  <div className="flex items-center gap-2.5 text-sm text-[#9CA3AF]">
+                  <div className="flex items-center gap-2 text-xs text-[#9CA3AF]">
                     <ShieldCheck className="size-4 text-[#2563EB]" />
-                    Your information is protected with industry-standard encryption.
+                    Protected with industry-standard encryption.
                   </div>
                 </div>
 
-                <div className="my-7 h-px bg-white/10" />
+                <div className="my-4 h-px bg-white/10" />
 
-                <div className="text-lg font-semibold text-white">Account details</div>
-                <p className="mt-1 text-sm text-[#9CA3AF]">View your account activity and preferences.</p>
+                <div className="text-base font-semibold text-white">Account details</div>
 
-                <div className="mt-4">
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">
                   <DetailRow
-                    icon={<Fingerprint className="size-5 text-[#22D3EE]" />}
+                    icon={<IdCardLogo />}
                     label="User ID"
                     value={user ? `${user.id.slice(0, 8)}…` : "—"}
                     onClick={() => { if (user) { navigator.clipboard.writeText(user.id); toast.success("User ID copied"); } }}
                   />
                   <DetailRow
-                    icon={<KeyRound className="size-5 text-[#F59E0B]" />}
+                    icon={providerLogo(user?.app_metadata?.provider)}
                     label="Auth provider"
                     value={user ? (user.app_metadata?.provider ?? "email") : "—"}
                     onClick={() => toast.message("Sign-in method", { description: `You signed in with ${user?.app_metadata?.provider ?? "email"}.` })}
                   />
                   <DetailRow
-                    icon={<Clock className="size-5 text-[#818CF8]" />}
+                    icon={<ClockLogo />}
                     label="Last sign-in"
-                    value={user?.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : "—"}
+                    value={user?.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleDateString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "—"}
                     onClick={() => toast.message("Last sign-in", { description: user?.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : "No record" })}
                   />
                   <DetailRow
-                    icon={<Crown className="size-5 text-[#38BDF8]" />}
+                    icon={<PlanLogo />}
                     label="Plan"
                     badge={profile.plan}
                     onClick={() => navigate({ to: "/pricing" })}
