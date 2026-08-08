@@ -55,7 +55,7 @@ export default function CreditsAmount({
           </button>
         </div>
 
-        <div className="grid grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] items-start gap-3 py-4 sm:flex-1 sm:items-stretch sm:gap-8 sm:py-6 lg:gap-12">
+        <div className="grid grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] items-start gap-3 py-3 sm:flex-1 sm:items-stretch sm:gap-8 sm:py-6 lg:gap-12">
           {/* Left */}
           <div className="flex h-full flex-col">
             <h1 className="text-[17px] font-bold leading-[1.06] tracking-tight text-white sm:text-[36px] lg:text-[46px]">
@@ -63,14 +63,14 @@ export default function CreditsAmount({
               <br /> credits do you
               <br /> want?
             </h1>
-            <div className="relative my-3 flex flex-1 items-center sm:my-6">
+            <div className="relative my-2 flex flex-1 items-center sm:my-6">
               <img
                 src={cardAsset.url}
                 alt="Black Power Credits card on volcanic rock"
                 width={1024}
                 height={1024}
                 loading="lazy"
-                className="w-full max-w-[460px] select-none"
+                className="mx-auto w-full max-w-[150px] select-none sm:max-w-[460px]"
               />
             </div>
             <div className="flex items-center gap-2 sm:gap-4">
@@ -98,7 +98,7 @@ export default function CreditsAmount({
                     type="button"
                     aria-pressed={active}
                     onClick={() => setValue(p.amount)}
-                    className={`relative flex flex-col items-center rounded-[10px] border px-1 pb-2 pt-1.5 transition sm:rounded-[18px] sm:px-3 sm:pb-4 sm:pt-3 ${
+                    className={`relative flex flex-col items-center rounded-[10px] border px-1 pb-1.5 pt-1 transition sm:rounded-[18px] sm:px-3 sm:pb-4 sm:pt-3 ${
                       active
                         ? "border-transparent bg-[#DCE3FF]"
                         : "border-white/[0.08] bg-white/[0.02] hover:border-white/20"
@@ -124,7 +124,7 @@ export default function CreditsAmount({
                       width={512}
                       height={512}
                       loading="lazy"
-                      className="mt-1.5 h-[34px] w-[34px] select-none object-contain sm:mt-3 sm:h-[86px] sm:w-[86px]"
+                      className="mt-1 h-[26px] w-[26px] select-none object-contain sm:mt-3 sm:h-[86px] sm:w-[86px]"
                     />
                     <div
                       className={`mt-1 text-[13px] font-semibold tabular-nums sm:mt-2 sm:text-[26px] ${active ? "text-[#0A0A0A]" : "text-white"}`}
@@ -146,11 +146,11 @@ export default function CreditsAmount({
 
             {/* Custom */}
             <div className="grid grid-cols-2 rounded-[12px] border border-white/[0.08] bg-white/[0.015] sm:rounded-[20px]">
-              <div className="border-r border-white/[0.08] p-2.5 sm:p-6">
+              <div className="border-r border-white/[0.08] p-2 sm:p-6">
                 <div className="flex items-center gap-1.5 text-[8px] uppercase tracking-[0.14em] text-[#9CA3AF] sm:gap-2 sm:text-[12px] sm:tracking-[0.18em]">
                   Custom amount <Zap className="h-2.5 w-2.5 text-[#93A5FF] sm:h-3.5 sm:w-3.5" />
                 </div>
-                <div className="mt-3 sm:mt-8">
+                <div className="mt-2 sm:mt-8">
                   <div className="flex justify-between px-0.5 text-[8px] tabular-nums text-[#8A8F98] sm:px-1 sm:text-[12px]">
                     {MARKS.map((m) => (
                       <button key={m} type="button" onClick={() => setValue(m)} className="transition hover:text-white">
@@ -169,13 +169,13 @@ export default function CreditsAmount({
                     className="mt-2 h-1.5 w-full cursor-pointer appearance-none rounded-full bg-white/15 accent-white sm:mt-3 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white sm:[&::-webkit-slider-thumb]:h-5 sm:[&::-webkit-slider-thumb]:w-5"
                   />
                 </div>
-                <div className="mt-3 text-center sm:mt-6">
-                  <div className="text-[20px] font-semibold leading-none tabular-nums text-white sm:text-[38px]">{credits}</div>
+                <div className="mt-2 text-center sm:mt-6">
+                  <div className="text-[16px] font-semibold leading-none tabular-nums text-white sm:text-[38px]">{credits}</div>
                   <div className="mt-1 text-[9px] text-[#9CA3AF] sm:text-[14px]">Power Credits</div>
                 </div>
               </div>
 
-              <div className="p-2.5 sm:p-6">
+              <div className="p-2 sm:p-6">
                 <div className="flex items-center gap-1.5 text-[8px] uppercase tracking-[0.14em] text-[#9CA3AF] sm:gap-2 sm:text-[12px] sm:tracking-[0.18em]">
                   Enter manually <Zap className="h-2.5 w-2.5 text-[#93A5FF] sm:h-3.5 sm:w-3.5" />
                 </div>
@@ -208,7 +208,7 @@ export default function CreditsAmount({
             </div>
 
             {/* Summary */}
-            <div className="grid grid-cols-3 items-center gap-2 rounded-[12px] border border-white/[0.08] bg-white/[0.015] px-2.5 py-2.5 sm:gap-4 sm:rounded-[20px] sm:px-6 sm:py-5">
+            <div className="grid grid-cols-3 items-center gap-2 rounded-[12px] border border-white/[0.08] bg-white/[0.015] px-2.5 py-2 sm:gap-4 sm:rounded-[20px] sm:px-6 sm:py-5">
               <div className="flex items-center gap-1.5 sm:gap-4">
                 <span className="hidden h-11 w-11 items-center justify-center rounded-full bg-white/[0.05] sm:flex">
                   <Zap className="h-5 w-5 text-[#D1D5DB]" />
@@ -234,7 +234,7 @@ export default function CreditsAmount({
             <button
               type="button"
               onClick={() => onContinue?.(credits + bonus)}
-              className="flex w-full items-center gap-2 rounded-[12px] bg-gradient-to-r from-[#1E40AF] via-[#1D4ED8] to-[#2563EB] px-3 py-3 text-[13px] font-medium text-white transition hover:brightness-110 sm:gap-3 sm:rounded-[16px] sm:px-7 sm:py-5 sm:text-[18px]"
+              className="flex w-full items-center gap-2 rounded-[12px] bg-gradient-to-r from-[#1E40AF] via-[#1D4ED8] to-[#2563EB] px-3 py-2.5 text-[12px] font-medium text-white transition hover:brightness-110 sm:gap-3 sm:rounded-[16px] sm:px-7 sm:py-5 sm:text-[18px]"
             >
               <span className="flex-1 text-center">Continue to payment</span>
               <ArrowRight className="h-4 w-4 shrink-0 sm:h-5 sm:w-5" />
