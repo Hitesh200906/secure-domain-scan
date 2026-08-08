@@ -757,7 +757,10 @@ function CreditsSection({ balance }: { balance: number }) {
               setDraft(raw);
               setCredits(Math.min(MAX_CREDITS * 10, Number(raw) || 0));
             }}
-            onBlur={() => setDraft(String(credits))}
+            onBlur={(e) => {
+              setDraft(String(credits));
+              e.currentTarget.style.borderColor = "#1F2937";
+            }}
             className="w-32 border-b bg-transparent pb-1.5 text-sm text-[#F8FAFC] tabular-nums outline-none transition-colors duration-200"
             style={{ borderColor: "#1F2937" }}
             onFocus={(e) => (e.currentTarget.style.borderColor = accent)}
