@@ -50,13 +50,14 @@ type Tab = "general" | "credits" | "tickets" | "security" | "api";
 type Ticket = { id: string; subject: string; status: string; priority: string; created_at: string; message: string; email: string; name: string };
 type TMsg = { id: string; author_type: string; author_name: string | null; body: string; created_at: string };
 
-const NAV: { key: Tab; label: string; icon: typeof User2; hint: string; tint: string }[] = [
+const NAV: { key: Tab; label: string; icon: typeof User2; hint: string; tint: string; soon?: boolean }[] = [
   { key: "general", label: "General", icon: CircleUserRound, hint: "Profile and account info", tint: "text-[#4d7cff]" },
   { key: "security", label: "Security", icon: ShieldHalf, hint: "Password and sessions", tint: "text-[#4d7cff]" },
   { key: "credits", label: "Credits", icon: Database, hint: "Balance and top-ups", tint: "text-[#4d7cff]" },
   { key: "tickets", label: "Tickets", icon: MessagesSquare, hint: "Support and requests", tint: "text-emerald-400" },
-  { key: "api", label: "API Keys", icon: KeyRound, hint: "Integrations and access", tint: "text-amber-400" },
+  { key: "api", label: "API Keys", icon: KeyRound, hint: "Integrations and access", tint: "text-amber-400", soon: true },
 ];
+
 
 
 
