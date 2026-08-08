@@ -339,77 +339,8 @@ function ProfilePage() {
               </>
             )}
 
-            {tab === "credits" && (
-              <>
-                {/* Balance hero */}
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
-                  className="relative overflow-hidden rounded-3xl border border-white/12"
-                >
-                  <img src={textureImg} alt="" aria-hidden="true" loading="lazy" width={1280} height={640} className="absolute inset-0 size-full object-cover" />
-                  <div className="absolute inset-0 bg-black/85" />
-                  <div
-                    className="absolute inset-0 opacity-[0.14]"
-                    style={{
-                      backgroundImage:
-                        "linear-gradient(rgba(255,255,255,0.16) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.16) 1px, transparent 1px)",
-                      backgroundSize: "44px 44px",
-                      maskImage: "radial-gradient(ellipse at 20% 30%, black 20%, transparent 75%)",
-                    }}
-                  />
-                  <motion.div
-                    aria-hidden
-                    className="absolute inset-y-0 w-40 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent)]"
-                    animate={{ x: ["-10%", "120%"] }}
-                    transition={{ duration: 7, repeat: Infinity, ease: "linear" }}
-                  />
+            {tab === "credits" && <CreditsSection balance={profile.credits} />}
 
-                  <div className="relative p-6 sm:p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-                    <div>
-                      <div className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-full border border-white/15 bg-black/60 text-neutral-300">
-                        <Coins className="size-3 text-amber-400" /> Credit balance
-                      </div>
-                      <div className="mt-4 flex items-end gap-2">
-                        <motion.span
-                          key={profile.credits}
-                          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}
-                          className="text-6xl font-semibold tracking-tight tabular-nums leading-none"
-                        >
-                          {profile.credits}
-                        </motion.span>
-                        <span className="pb-1 text-sm text-muted-foreground">credits left</span>
-                      </div>
-                      <p className="mt-3 text-xs text-muted-foreground max-w-sm leading-relaxed">
-                        One credit runs one complete full-stack security scan, including the deliverable report.
-                      </p>
-                      <button
-                        onClick={() => document.getElementById("credit-plans")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                        className="group relative mt-5 inline-flex items-center gap-2 overflow-hidden rounded-full border border-white/20 bg-black px-5 py-2.5 text-sm font-medium transition-transform duration-300 hover:scale-[1.03]"
-                      >
-                        <span className="absolute inset-0 -translate-y-full bg-white transition-transform duration-500 ease-out group-hover:translate-y-0" />
-                        <Coins className="relative size-4 transition-colors duration-500 group-hover:text-black" />
-                        <span className="relative transition-colors duration-500 group-hover:text-black">Buy credits</span>
-                      </button>
-                    </div>
-                    <div className="sm:text-right">
-                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Usage this cycle</div>
-                      <div className="mt-2 h-2 w-full sm:w-56 rounded-full bg-white/[0.08] overflow-hidden">
-                        <motion.div
-                          className="h-full rounded-full bg-white/70"
-                          initial={{ width: 0 }}
-                          animate={{ width: `${Math.min(100, (profile.credits / 50) * 100)}%` }}
-                          transition={{ duration: 0.9, ease: "easeOut" }}
-                        />
-                      </div>
-                      <div className="mt-2 text-[11px] text-muted-foreground capitalize">{profile.plan} plan</div>
-                    </div>
-                  </div>
-                </motion.div>
-
-                <CreditPurchase />
-
-              </>
-            )}
 
 
             {tab === "tickets" && (
