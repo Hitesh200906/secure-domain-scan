@@ -607,34 +607,58 @@ function CreditsSection({ balance }: { balance: number }) {
   const nodePct = (i: number) => (i / (CREDIT_NODES.length - 1)) * 100;
   const railPct = Math.max(0, Math.min(100, ((credits - MIN_CREDITS) / (MAX_CREDITS - MIN_CREDITS)) * 100));
 
+  const accent = cur.accent;
+
   return (
     <div className="mx-auto w-full max-w-[640px] rounded-[16px] border border-white/[0.06] bg-black p-6 sm:p-9">
       {/* 1. Top control strip */}
-      <div className="flex items-center justify-between gap-4">
-        <span className="text-sm font-medium tracking-tight text-[#F8FAFC]">Credits</span>
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <span
+              aria-hidden
+              className="h-1.5 w-1.5 rounded-full transition-colors duration-300"
+              style={{ background: accent }}
+            />
+            <span className="text-sm font-medium tracking-tight text-[#F8FAFC]">Credits</span>
+          </div>
+          <p className="mt-2 max-w-[320px] text-xs leading-relaxed text-[#9CA3AF]">
+            Credits power every scan, report and automated check on Nexefy. One credit equals one
+            security action — they never expire and are shared across your whole workspace.
+          </p>
+        </div>
 
-        <div className="relative flex items-end">
-          {CURRENCIES.map((c, i) => (
-            <button
-              key={c.code}
-              onClick={() => setCurIndex(i)}
-              className={`px-3 pb-2 text-xs tracking-wide transition-colors duration-200 ${
-                i === curIndex ? "text-[#F8FAFC]" : "text-[#9CA3AF] hover:text-[#F8FAFC]"
-              }`}
-            >
-              {c.code}
-            </button>
-          ))}
-          <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-white/[0.05]" />
-          <span
-            aria-hidden
-            className="pointer-events-none absolute bottom-0 h-px bg-[#F8FAFC] transition-transform duration-200 ease-out"
-            style={{
-              width: `${100 / CURRENCIES.length}%`,
-              left: 0,
-              transform: `translateX(${curIndex * 100}%)`,
-            }}
-          />
+        {/* currency dial — rotating token switch */}
+        <div className="shrink-0">
+          <div className="relative flex items-center gap-1 rounded-full border border-white/[0.07] p-1">
+            <span
+              aria-hidden
+              className="pointer-events-none absolute top-1 h-8 w-11 rounded-full transition-all duration-300 ease-out"
+              style={{
+                left: 4,
+                transform: `translateX(${curIndex * 48}px)`,
+                background: `color-mix(in oklab, ${accent} 16%, transparent)`,
+                border: `1px solid color-mix(in oklab, ${accent} 45%, transparent)`,
+              }}
+            />
+            {CURRENCIES.map((c, i) => {
+              const on = i === curIndex;
+              return (
+                <button
+                  key={c.code}
+                  onClick={() => setCurIndex(i)}
+                  title={c.label}
+                  className="relative z-10 flex h-8 w-11 items-center justify-center rounded-full text-sm transition-all duration-300"
+                  style={{ color: on ? c.accent : "#9CA3AF", transform: on ? "scale(1.06)" : "scale(1)" }}
+                >
+                  <span className="font-semibold">{c.symbol}</span>
+                </button>
+              );
+            })}
+          </div>
+          <div className="mt-2 text-center text-[10px] uppercase tracking-[0.18em] text-[#9CA3AF]">
+            {cur.code} · {cur.label}
+          </div>
         </div>
       </div>
 
@@ -643,7 +667,15 @@ function CreditsSection({ balance }: { balance: number }) {
         <div className="text-[40px] font-semibold leading-none tracking-tight text-[#F8FAFC] tabular-nums sm:text-[52px]">
           {shownCredits.toLocaleString()}
         </div>
-        <div className="mt-3 text-base text-[#9CA3AF] tabular-nums">{fmtMoney(amount)}</div>
+        <div
+          className="mt-3 text-base font-medium tabular-nums transition-colors duration-300"
+          style={{ color: accent }}
+        >
+          {fmtMoney(amount)}
+        </div>
+        <div className="mt-2 text-xs text-[#9CA3AF] tabular-nums">
+          ≈ {shownCredits.toLocaleString()} scans · billed once, no subscription
+        </div>
       </div>
 
       {/* 2. Rail selector */}
@@ -653,9 +685,10 @@ function CreditsSection({ balance }: { balance: number }) {
           <span aria-hidden className="absolute left-0 right-0 top-3 h-px bg-white/[0.07]" />
           <span
             aria-hidden
-            className="absolute left-0 top-3 h-px bg-[#374151] transition-[width] duration-300 ease-out"
-            style={{ width: `${railPct}%` }}
+            className="absolute left-0 top-3 h-px transition-[width] duration-300 ease-out"
+            style={{ width: `${railPct}%`, background: accent }}
           />
+
 
           {/* drag layer */}
           <input
