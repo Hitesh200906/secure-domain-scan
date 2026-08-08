@@ -68,7 +68,16 @@ function ProfilePage() {
   const navigate = useNavigate();
   const search = Route.useSearch();
 
-  const [tab, setTab] = useState<Tab>((search.tab as Tab) ?? "general");
+  const initialTab = ((search.tab as Tab) ?? "general");
+  const [tab, setTab] = useState<Tab>(initialTab === "api" ? "general" : initialTab);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const apiKeysNotice = () =>
+    toast.message("API keys are under construction", {
+      description: "Programmatic access to Nexefy Security is not launched yet. We're finalising key issuance, scoping and rotation — it will be available in your account soon.",
+    });
+
   const [profile, setProfile] = useState({ full_name: "", role_title: "", company: "", plan: "starter", credits: 0, avatar_url: "" });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
