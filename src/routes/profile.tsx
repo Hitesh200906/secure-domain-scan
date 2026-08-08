@@ -220,7 +220,11 @@ function ProfilePage() {
 
             <div className="relative flex flex-col flex-1 p-4">
               {/* Back + title */}
-              <BackButton label="Back" fallback="/" />
+              <div className="flex items-center justify-between gap-2">
+                <BackButton label="Back" fallback="/" />
+                <button onClick={() => setNavOpen(false)} aria-label="Close menu"
+                  className="md:hidden rounded-lg border border-white/12 p-1.5 text-neutral-300"><X className="size-4" /></button>
+              </div>
               <div className="mt-4">
                 <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Nexefy Security</div>
                 <h1 className="mt-1 truncate text-xl font-semibold tracking-tight">Account center</h1>
@@ -259,13 +263,13 @@ function ProfilePage() {
               <div className="my-4 h-px bg-white/10" />
 
               {/* Nav */}
-              <nav className="flex md:block gap-2 md:space-y-1.5 overflow-x-auto md:overflow-visible">
+              <nav className="block space-y-1.5">
                 {NAV.map((n) => {
                   const active = tab === n.key;
                   const count = n.key === "tickets" ? tickets.length : n.key === "credits" ? profile.credits : 0;
                   return (
-                    <button key={n.key} onClick={() => { if (n.soon) { apiKeysNotice(); return; } setTab(n.key); }}
-                      className={`group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl border px-3 py-1.5 text-left transition hover:border-white/25 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))] ${
+                    <button key={n.key} onClick={() => { if (n.soon) { apiKeysNotice(); return; } setTab(n.key); setNavOpen(false); }}
+                      className={`group relative w-full flex items-center gap-2.5 overflow-hidden rounded-xl border px-3 py-1.5 text-left transition hover:border-white/25 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))] ${
                         active ? "border-white/25 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]" : "border-transparent"
                       }`}>
 
@@ -274,8 +278,8 @@ function ProfilePage() {
                         <n.icon className={`size-4 ${n.key === "security" ? "text-white" : n.tint} transition ${active ? "" : "grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100"}`} />
                       </span>
                       <span className={`relative min-w-0 flex-1 block text-sm whitespace-nowrap ${active ? "text-white" : "text-neutral-200"}`}>{n.label}</span>
-                      {n.soon && <span className="relative hidden md:inline text-[9px] uppercase tracking-[0.14em] rounded-full border border-white/12 px-1.5 py-0.5 text-[#9CA3AF]">Soon</span>}
-                      {!n.soon && count > 0 && <span className="relative hidden md:inline text-[10px] rounded-full bg-white/[0.06] px-1.5 py-0.5 text-neutral-300 tabular-nums">{count}</span>}
+                      {n.soon && <span className="relative inline text-[9px] uppercase tracking-[0.14em] rounded-full border border-white/12 px-1.5 py-0.5 text-[#9CA3AF]">Soon</span>}
+                      {!n.soon && count > 0 && <span className="relative inline text-[10px] rounded-full bg-white/[0.06] px-1.5 py-0.5 text-neutral-300 tabular-nums">{count}</span>}
 
                     </button>
                   );
@@ -283,9 +287,9 @@ function ProfilePage() {
 
                 {user && (
                   <>
-                    <div className="hidden md:block my-2 h-px bg-white/10" />
+                    <div className="my-2 h-px bg-white/10" />
                     <button onClick={signOut}
-                      className="group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl border border-transparent px-3 py-1.5 text-left transition hover:border-white/25 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]">
+                      className="group relative w-full flex items-center gap-2.5 overflow-hidden rounded-xl border border-transparent px-3 py-1.5 text-left transition hover:border-white/25 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]">
                       <span className="relative size-7 rounded-lg grid place-items-center shrink-0">
                         <LogOut className="size-4 text-neutral-400 transition-colors group-hover:text-red-500" />
                       </span>
