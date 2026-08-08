@@ -41,39 +41,39 @@ export default function CreditsCheckout({
 
   return (
     <div className="fixed inset-0 z-[90] overflow-y-auto bg-[#050505]">
-      <div className="mx-auto flex min-h-full w-full max-w-[1320px] flex-col px-6 py-8 sm:px-12 sm:py-10">
+      <div className="mx-auto flex min-h-full w-full max-w-[1320px] flex-col px-3 py-4 sm:px-12 sm:py-10">
         {/* Top bar */}
-        <div className="flex items-start justify-between gap-4">
-          <div className="w-full max-w-[330px]">
-            <div className="text-[26px] font-semibold leading-none tabular-nums text-white">
+        <div className="flex items-start justify-between gap-3">
+          <div className="w-full max-w-[140px] sm:max-w-[330px]">
+            <div className="text-[15px] font-semibold leading-none tabular-nums text-white sm:text-[26px]">
               01 <span className="text-[#4B5563]">/ 02</span>
             </div>
-            <div className="mt-4 grid grid-cols-2 gap-3">
+            <div className="mt-2 grid grid-cols-2 gap-2 sm:mt-4 sm:gap-3">
               <span className="h-[3px] rounded-full bg-[#2563EB]" />
               <span className="h-[3px] rounded-full bg-white/12" />
             </div>
           </div>
           <button
             onClick={onClose}
-            className="flex items-center gap-2.5 text-[15px] text-[#D1D5DB] transition hover:text-white"
+            className="flex items-center gap-1.5 text-[10px] text-[#D1D5DB] transition hover:text-white sm:gap-2.5 sm:text-[15px]"
           >
-            <Lock className="h-[18px] w-[18px]" strokeWidth={1.6} />
+            <Lock className="h-3.5 w-3.5 sm:h-[18px] sm:w-[18px]" strokeWidth={1.6} />
             Rates locked at checkout
           </button>
         </div>
 
-        {/* Body */}
-        <div className="grid flex-1 items-center gap-10 py-8 lg:grid-cols-2 lg:gap-16">
+        {/* Body — same two-column structure on every screen */}
+        <div className="grid flex-1 grid-cols-2 items-center gap-4 py-4 sm:gap-10 sm:py-8 lg:gap-16">
           {/* Left */}
           <div className="flex h-full flex-col">
-            <h1 className="text-[42px] font-bold leading-[1.05] tracking-tight text-white sm:text-[52px]">
+            <h1 className="text-[20px] font-bold leading-[1.05] tracking-tight text-white sm:text-[42px] lg:text-[52px]">
               Select currency
             </h1>
-            <p className="mt-4 max-w-[320px] text-[17px] leading-snug text-[#9CA3AF]">
+            <p className="mt-1.5 max-w-[320px] text-[11px] leading-snug text-[#9CA3AF] sm:mt-4 sm:text-[17px]">
               Choose the currency you want to use for buying credits.
             </p>
 
-            <div className="relative my-4 flex flex-1 items-center justify-center">
+            <div className="relative my-3 flex flex-1 items-center justify-center sm:my-4">
               <img
                 src={globeAsset.url}
                 alt="Globe surrounded by world banknotes"
@@ -84,9 +84,9 @@ export default function CreditsCheckout({
               />
             </div>
 
-            <div className="flex items-center gap-4">
-              <ShieldCheck className="h-8 w-8 text-[#2563EB]" strokeWidth={1.6} />
-              <p className="text-[15px] leading-snug text-[#D1D5DB]">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <ShieldCheck className="h-5 w-5 shrink-0 text-[#2563EB] sm:h-8 sm:w-8" strokeWidth={1.6} />
+              <p className="text-[10px] leading-snug text-[#D1D5DB] sm:text-[15px]">
                 Secure payments,
                 <br />
                 always protected.
@@ -96,73 +96,73 @@ export default function CreditsCheckout({
 
           {/* Right */}
           <div>
-            <div className="rounded-[22px] border border-white/[0.09] bg-white/[0.012] p-4 sm:p-5">
-              <div className="flex items-center gap-3 rounded-[14px] border border-white/[0.08] bg-white/[0.03] px-5 py-4">
-                <Search className="h-5 w-5 text-[#6B7280]" />
+            <div className="rounded-[14px] border border-white/[0.09] bg-white/[0.012] p-2 sm:rounded-[22px] sm:p-5">
+              <div className="flex items-center gap-2 rounded-[10px] border border-white/[0.08] bg-white/[0.03] px-2.5 py-2 sm:gap-3 sm:rounded-[14px] sm:px-5 sm:py-4">
+                <Search className="h-3.5 w-3.5 shrink-0 text-[#6B7280] sm:h-5 sm:w-5" />
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search currency"
-                  className="w-full bg-transparent text-[16px] text-white placeholder:text-[#8A8F98] outline-none"
+                  className="w-full min-w-0 bg-transparent text-[11px] text-white placeholder:text-[#8A8F98] outline-none sm:text-[16px]"
                 />
               </div>
 
-              <div className="mt-6 px-1 text-[12px] uppercase tracking-[0.22em] text-[#8A8F98]">Popular</div>
+              <div className="mt-3 px-1 text-[9px] uppercase tracking-[0.18em] text-[#8A8F98] sm:mt-6 sm:text-[12px] sm:tracking-[0.22em]">Popular</div>
 
-              <div className="mt-3 space-y-3">
+              <div className="mt-2 space-y-1.5 sm:mt-3 sm:space-y-3">
                 {list.map((c) => {
                   const active = c.code === selected.code;
                   return (
                     <button
                       key={c.code}
                       onClick={() => setSelected(c)}
-                      className={`flex w-full items-center gap-4 rounded-[14px] border px-4 py-3.5 text-left transition ${
+                      className={`flex w-full items-center gap-2 rounded-[10px] border px-2 py-2 text-left transition sm:gap-4 sm:rounded-[14px] sm:px-4 sm:py-3.5 ${
                         active
                           ? "border-[#93A5FF] bg-[#C3CCFF] shadow-[0_0_0_1px_rgba(147,165,255,0.35)]"
                           : "border-white/[0.08] bg-white/[0.03] hover:border-white/20"
                       }`}
                     >
-                      <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-white/10 text-2xl leading-none">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 text-[13px] leading-none sm:h-10 sm:w-10 sm:text-2xl">
                         {c.flag}
                       </span>
                       <span
-                        className={`flex-1 text-[17px] font-medium ${active ? "text-[#0A0A0A]" : "text-[#E5E7EB]"}`}
+                        className={`min-w-0 flex-1 truncate text-[11px] font-medium sm:text-[17px] ${active ? "text-[#0A0A0A]" : "text-[#E5E7EB]"}`}
                       >
                         {c.name}
                       </span>
-                      <span className={`text-[16px] tabular-nums ${active ? "text-[#111827]" : "text-[#9CA3AF]"}`}>
+                      <span className={`text-[10px] tabular-nums sm:text-[16px] ${active ? "text-[#111827]" : "text-[#9CA3AF]"}`}>
                         {c.code}
                       </span>
                       {active && (
-                        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#1D4ED8]">
-                          <Check className="h-4 w-4 text-white" strokeWidth={3} />
+                        <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#1D4ED8] sm:h-7 sm:w-7">
+                          <Check className="h-2.5 w-2.5 text-white sm:h-4 sm:w-4" strokeWidth={3} />
                         </span>
                       )}
                     </button>
                   );
                 })}
                 {list.length === 0 && (
-                  <div className="py-6 text-center text-sm text-[#6B7280]">No currency found.</div>
+                  <div className="py-4 text-center text-[11px] text-[#6B7280] sm:py-6 sm:text-sm">No currency found.</div>
                 )}
               </div>
 
               {!query && (
                 <button
                   onClick={() => setExpanded((v) => !v)}
-                  className="mt-3 flex w-full items-center justify-center py-1 text-[#6B7280] transition hover:text-white"
+                  className="mt-2 flex w-full items-center justify-center py-1 text-[#6B7280] transition hover:text-white sm:mt-3"
                   aria-label={expanded ? "Show less" : "Show more currencies"}
                 >
-                  <ChevronDown className={`h-5 w-5 transition-transform ${expanded ? "rotate-180" : ""}`} />
+                  <ChevronDown className={`h-4 w-4 transition-transform sm:h-5 sm:w-5 ${expanded ? "rotate-180" : ""}`} />
                 </button>
               )}
             </div>
 
             <button
               onClick={() => onContinue(selected)}
-              className="mt-6 flex w-full items-center gap-3 rounded-[16px] bg-gradient-to-r from-[#1E40AF] via-[#1D4ED8] to-[#2563EB] px-7 py-5 text-[18px] font-medium text-white transition hover:brightness-110"
+              className="mt-3 flex w-full items-center gap-2 rounded-[12px] bg-gradient-to-r from-[#1E40AF] via-[#1D4ED8] to-[#2563EB] px-3 py-3 text-[13px] font-medium text-white transition hover:brightness-110 sm:mt-6 sm:gap-3 sm:rounded-[16px] sm:px-7 sm:py-5 sm:text-[18px]"
             >
               <span className="flex-1 text-center">Continue</span>
-              <ArrowRight className="h-5 w-5" />
+              <ArrowRight className="h-4 w-4 shrink-0 sm:h-5 sm:w-5" />
             </button>
           </div>
         </div>
