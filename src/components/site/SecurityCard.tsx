@@ -19,13 +19,13 @@ export function SecurityCard() {
       initial={{ opacity: 0, y: 26 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.9, delay: 0.35 }}
-      className="relative w-full max-w-full px-0 py-1 sm:px-6 sm:py-10 lg:pl-8 lg:pr-4"
+      className="relative flex h-full w-full max-w-full px-0 py-1 sm:h-auto sm:block sm:px-6 sm:py-10 lg:pl-8 lg:pr-4"
       style={{ perspective: "1400px" }}
     >
       <motion.div
         animate={{ y: [0, -10, 0], rotateY: [-11, -7, -11], rotateX: [6, 4, 6] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="relative rounded-[14px] sm:rounded-[22px] overflow-hidden backdrop-blur-xl origin-center"
+        className="relative flex w-full flex-col rounded-[14px] sm:rounded-[22px] overflow-hidden backdrop-blur-xl origin-center sm:block"
         style={{
           transformStyle: "preserve-3d",
           background: "linear-gradient(160deg, #0A0B0F 0%, #000000 100%)",
@@ -44,7 +44,7 @@ export function SecurityCard() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-2 sm:gap-4 px-2 pb-1.5 sm:px-4 sm:pb-5 pt-0.5 sm:pt-1">
+        <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-2 sm:gap-4 px-2 pb-1.5 sm:px-4 sm:pb-5 pt-0.5 sm:pt-1 flex-1 sm:flex-none">
           <div>
             <div className="text-[7.5px] sm:text-[10.5px]" style={{ color: T.text2 }}>Security Score</div>
             <div className="mt-0 sm:mt-1 text-[13px] sm:text-[26px] font-semibold tracking-[-0.02em]" style={{ color: T.text }}>
@@ -88,13 +88,13 @@ export function SecurityCard() {
             </ul>
           </div>
 
-          <div className="min-w-0">
-            <div className="flex gap-1 sm:gap-1.5">
+          <div className="min-w-0 flex flex-col">
+            <div className="flex flex-1 gap-1 sm:gap-1.5 sm:block-none">
               <div className="flex flex-col justify-between py-0.5 text-[6px] sm:text-[8.5px]" style={{ color: T.text3 }}>
                 {["24", "18", "12", "6", "0"].map((t) => <span key={t}>{t}</span>)}
               </div>
               <div className="relative flex-1">
-                <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-[34px] sm:h-[140px]" preserveAspectRatio="none">
+                <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-full min-h-[34px] sm:h-[140px]" preserveAspectRatio="none">
                   <defs>
                     <linearGradient id="secLine" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="0%" stopColor="#2563EB" />

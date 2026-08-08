@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 
 import { motion } from "framer-motion";
-import { ShieldCheck, Loader2, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft } from "lucide-react";
+import nexefyLogo from "@/assets/nexefy-logo.png";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { signInWithGoogle } from "@/lib/auth-helpers";
@@ -71,9 +72,9 @@ function SignupPage() {
         className="w-full max-w-md glass-strong rounded-3xl p-6 sm:p-8"
       >
         <Link to="/" className="flex items-center gap-2 mb-6 sm:mb-8">
-          <ShieldCheck className="size-5 text-primary" />
+          <img src={nexefyLogo} alt="Nexefy" className="size-5 sm:size-6 object-contain" style={{ filter: "drop-shadow(0 0 8px rgba(37,99,235,.45))" }} />
           <span className="text-[13px] font-semibold tracking-[0.2em]">
-            NEXUS<span className="text-muted-foreground ml-1.5">SECURITY</span>
+            NEXEFY<span className="text-muted-foreground ml-1.5">SECURITY</span>
           </span>
         </Link>
         <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gradient">Create your account</h1>

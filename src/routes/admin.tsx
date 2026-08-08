@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Loader2, Lock, ShieldCheck } from "lucide-react";
+import { Loader2, Lock } from "lucide-react";
+import nexefyLogo from "@/assets/nexefy-logo.png";
 import { useAdmin } from "@/hooks/use-admin";
 import { hasAdminPasscode, verifyAdminPasscode } from "@/lib/auth-helpers";
 
@@ -62,7 +63,7 @@ function PasscodeScreen({ onUnlock }: { onUnlock: () => void }) {
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-sm glass-strong rounded-3xl p-8 text-center">
         <div className="mx-auto size-12 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 grid place-items-center mb-4">
-          <ShieldCheck className="size-5 text-primary" />
+          <img src={nexefyLogo} alt="Nexefy" className="size-5 sm:size-6 object-contain" style={{ filter: "drop-shadow(0 0 8px rgba(37,99,235,.45))" }} />
         </div>
         <h1 className="text-lg font-medium tracking-tight">Admin Console</h1>
         <p className="mt-1 text-sm text-muted-foreground">Enter the admin passcode to continue.</p>

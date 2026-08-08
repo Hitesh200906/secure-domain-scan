@@ -70,7 +70,7 @@ function Dashboard() {
         <div className="px-6 py-5 border-b border-white/[0.06]">
           <Link to="/" className="flex items-center gap-2">
             <img src={nexusLogo} alt="Nexefy" className="size-6 object-contain" />
-            <span className="text-[13px] font-semibold tracking-[0.2em]">NEXUS<span className="text-muted-foreground ml-1.5">SEC</span></span>
+            <span className="text-[13px] font-semibold tracking-[0.2em]">NEXEFY<span className="text-muted-foreground ml-1.5">SEC</span></span>
           </Link>
         </div>
         <nav className="flex-1 p-3 space-y-0.5">
@@ -410,8 +410,8 @@ function Dashboard() {
       >
         <div className="px-5 py-4 border-b border-white/[0.06] flex items-center justify-between">
           <Link to="/" onClick={() => setMobileNav(false)} className="flex items-center gap-2.5">
-            <ShieldCheck className="size-5 text-primary" />
-            <span className="text-[13px] font-semibold tracking-[0.2em]">NEXUS<span className="text-muted-foreground ml-1.5">SEC</span></span>
+            <img src={nexusLogo} alt="Nexefy" className="size-5 object-contain" style={{ filter: "drop-shadow(0 0 8px rgba(37,99,235,.45))" }} />
+            <span className="text-[13px] font-semibold tracking-[0.2em]">NEXEFY<span className="text-muted-foreground ml-1.5">SEC</span></span>
           </Link>
           <button onClick={() => setMobileNav(false)} className="size-8 grid place-items-center rounded-full hover:bg-white/10 transition" aria-label="Close">
             <X className="size-4" />
