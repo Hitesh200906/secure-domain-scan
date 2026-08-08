@@ -279,9 +279,11 @@ function ProfilePage() {
                     </div>
                     <ChevronRight className="size-4 text-muted-foreground" />
                   </div>
-                  <button className="mt-3 w-full rounded-lg border border-white/10 bg-black px-3 py-2 text-xs inline-flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground hover:border-white/25 transition">
-                    <Trash2 className="size-3.5 text-red-500" /> Delete account
+                  <button onClick={() => setConfirmDelete(true)} disabled={deleting}
+                    className="mt-3 w-full rounded-lg border border-white/10 bg-black px-3 py-2 text-xs inline-flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground hover:border-white/25 transition disabled:opacity-60">
+                    {deleting ? <Loader2 className="size-3.5 animate-spin" /> : <Trash2 className="size-3.5 text-red-500" />} Delete account
                   </button>
+
                 </div>
               )}
             </div>
