@@ -10,6 +10,8 @@ import {
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { api } from "@/lib/api-client";
+import { deleteMyAccount } from "@/lib/account.functions";
+
 import { uploadStoreAsset } from "@/lib/uploads";
 import { useAuth } from "@/hooks/use-auth";
 import creditsWallet from "@/assets/credits-wallet.png.asset.json";
@@ -50,13 +52,14 @@ type Tab = "general" | "credits" | "tickets" | "security" | "api";
 type Ticket = { id: string; subject: string; status: string; priority: string; created_at: string; message: string; email: string; name: string };
 type TMsg = { id: string; author_type: string; author_name: string | null; body: string; created_at: string };
 
-const NAV: { key: Tab; label: string; icon: typeof User2; hint: string; tint: string }[] = [
+const NAV: { key: Tab; label: string; icon: typeof User2; hint: string; tint: string; soon?: boolean }[] = [
   { key: "general", label: "General", icon: CircleUserRound, hint: "Profile and account info", tint: "text-[#4d7cff]" },
   { key: "security", label: "Security", icon: ShieldHalf, hint: "Password and sessions", tint: "text-[#4d7cff]" },
   { key: "credits", label: "Credits", icon: Database, hint: "Balance and top-ups", tint: "text-[#4d7cff]" },
   { key: "tickets", label: "Tickets", icon: MessagesSquare, hint: "Support and requests", tint: "text-emerald-400" },
-  { key: "api", label: "API Keys", icon: KeyRound, hint: "Integrations and access", tint: "text-amber-400" },
+  { key: "api", label: "API Keys", icon: KeyRound, hint: "Integrations and access", tint: "text-amber-400", soon: true },
 ];
+
 
 
 
@@ -67,7 +70,16 @@ function ProfilePage() {
   const navigate = useNavigate();
   const search = Route.useSearch();
 
-  const [tab, setTab] = useState<Tab>((search.tab as Tab) ?? "general");
+  const initialTab = ((search.tab as Tab) ?? "general");
+  const [tab, setTab] = useState<Tab>(initialTab === "api" ? "general" : initialTab);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const apiKeysNotice = () =>
+    toast.message("API keys are under construction", {
+      description: "Programmatic access to Nexefy Security is not launched yet. We're finalising key issuance, scoping and rotation — it will be available in your account soon.",
+    });
+
   const [profile, setProfile] = useState({ full_name: "", role_title: "", company: "", plan: "starter", credits: 0, avatar_url: "" });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -149,6 +161,22 @@ function ProfilePage() {
 
   const signOut = async () => { await supabase.auth.signOut(); navigate({ to: "/" }); };
 
+  const removeAccount = async () => {
+    setDeleting(true);
+    try {
+      await deleteMyAccount();
+      await supabase.auth.signOut();
+      toast.success("Your account has been permanently deleted");
+      navigate({ to: "/" });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not delete account");
+    } finally {
+      setDeleting(false);
+      setConfirmDelete(false);
+    }
+  };
+
+
   if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="size-5 animate-spin text-primary" /></div>;
 
   const displayName = profile.full_name || user?.email || "Your account";
@@ -223,7 +251,7 @@ function ProfilePage() {
                   const active = tab === n.key;
                   const count = n.key === "tickets" ? tickets.length : n.key === "credits" ? profile.credits : 0;
                   return (
-                    <button key={n.key} onClick={() => setTab(n.key)}
+                    <button key={n.key} onClick={() => { if (n.soon) { apiKeysNotice(); return; } setTab(n.key); }}
                       className={`group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl border px-3 py-1.5 text-left transition hover:border-white/25 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))] ${
                         active ? "border-white/25 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]" : "border-transparent"
                       }`}>
@@ -233,7 +261,9 @@ function ProfilePage() {
                         <n.icon className={`size-4 ${n.key === "security" ? "text-white" : n.tint} transition ${active ? "" : "grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100"}`} />
                       </span>
                       <span className={`relative min-w-0 flex-1 block text-sm whitespace-nowrap ${active ? "text-white" : "text-neutral-200"}`}>{n.label}</span>
-                      {count > 0 && <span className="relative hidden md:inline text-[10px] rounded-full bg-white/[0.06] px-1.5 py-0.5 text-neutral-300 tabular-nums">{count}</span>}
+                      {n.soon && <span className="relative hidden md:inline text-[9px] uppercase tracking-[0.14em] rounded-full border border-white/12 px-1.5 py-0.5 text-[#9CA3AF]">Soon</span>}
+                      {!n.soon && count > 0 && <span className="relative hidden md:inline text-[10px] rounded-full bg-white/[0.06] px-1.5 py-0.5 text-neutral-300 tabular-nums">{count}</span>}
+
                     </button>
                   );
                 })}
@@ -267,9 +297,11 @@ function ProfilePage() {
                     </div>
                     <ChevronRight className="size-4 text-muted-foreground" />
                   </div>
-                  <button className="mt-3 w-full rounded-lg border border-white/10 bg-black px-3 py-2 text-xs inline-flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground hover:border-white/25 transition">
-                    <Trash2 className="size-3.5 text-red-500" /> Delete account
+                  <button onClick={() => setConfirmDelete(true)} disabled={deleting}
+                    className="mt-3 w-full rounded-lg border border-white/10 bg-black px-3 py-2 text-xs inline-flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground hover:border-white/25 transition disabled:opacity-60">
+                    {deleting ? <Loader2 className="size-3.5 animate-spin" /> : <Trash2 className="size-3.5 text-red-500" />} Delete account
                   </button>
+
                 </div>
               )}
             </div>
@@ -425,19 +457,7 @@ function ProfilePage() {
 
                 <div className="my-5 h-px bg-white/10" />
 
-                <div className="text-base font-semibold text-white">Two-factor authentication</div>
-                <p className="mt-1 text-xs text-[#9CA3AF]">Protect your account with an additional layer.</p>
-                <div className="mt-3 flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black p-3">
-                  <div className="flex items-center gap-3">
-                    <div className="size-9 rounded-lg ring-1 ring-white/10 bg-black grid place-items-center"><Smartphone className="size-4 text-[#2563EB]" /></div>
-                    <div>
-                      <div className="text-sm">Authenticator app</div>
-                      <div className="text-[11px] text-muted-foreground">Not configured</div>
-                    </div>
-                  </div>
-                  <button onClick={() => toast.message("Two-factor authentication", { description: "Authenticator setup is coming soon." })}
-                    className="rounded-lg bg-[#2563EB] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[#1D4ED8]">Enable</button>
-                </div>
+                <TwoFactorBlock />
 
                 <div className="my-5 h-px bg-white/10" />
 
@@ -448,43 +468,146 @@ function ProfilePage() {
                     <div className="size-9 rounded-lg ring-1 ring-white/10 bg-black grid place-items-center"><Monitor className="size-4 text-[#2563EB]" /></div>
                     <div>
                       <div className="text-sm flex items-center gap-2">This device <span className="text-[10px] px-1.5 py-0.5 rounded-full border border-white/10 text-muted-foreground">CURRENT</span></div>
-                      <div className="text-[11px] text-muted-foreground">Active now</div>
+                      <div className="text-[11px] text-muted-foreground">
+                        Signed in {user?.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : "recently"}
+                      </div>
                     </div>
                   </div>
                   <ShieldCheck className="size-4 text-[#2563EB]" />
                 </div>
-              </SectionShell>
-            )}
-
-            {tab === "api" && (
-              <SectionShell title="API keys" desc="Integrate Nexefy Security scans into your own stack.">
-                <div className="rounded-xl border border-white/10 bg-black p-3">
-                  <div className="flex items-center justify-between gap-3 flex-wrap">
-                    <div className="flex items-center gap-3">
-                      <div className="size-9 rounded-lg ring-1 ring-white/10 bg-black grid place-items-center"><Key className="size-4 text-[#2563EB]" /></div>
-                      <div>
-                        <div className="text-sm">Production key</div>
-                        <div className="text-[11px] text-muted-foreground font-mono">nxs_live_••••••••••••3f8a</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <button onClick={() => { navigator.clipboard.writeText("nxs_live_xxxxx"); toast.success("Copied"); }} className="text-xs text-muted-foreground hover:text-white inline-flex items-center gap-1"><Copy className="size-3 text-[#2563EB]" /> Copy</button>
-                      <button onClick={() => toast.message("Revoke key", { description: "Key rotation is coming soon." })} className="text-xs text-destructive hover:underline">Revoke</button>
-                    </div>
-                  </div>
-                </div>
-                <button onClick={() => toast.message("Generate key", { description: "New key generation is coming soon." })}
+                <button
+                  onClick={async () => {
+                    const { error } = await supabase.auth.signOut({ scope: "global" });
+                    if (error) { toast.error(error.message); return; }
+                    toast.success("Signed out on all devices");
+                    navigate({ to: "/" });
+                  }}
                   className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#2563EB] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#1D4ED8]">
-                  <Key className="size-4" /> Generate new key
+                  <LogOut className="size-4" /> Sign out of all devices
                 </button>
               </SectionShell>
             )}
           </motion.div>
         </div>
       </div>
+
+      {/* Delete account confirmation */}
+      {confirmDelete && (
+        <div className="fixed inset-0 z-[90] grid place-items-center bg-black/80 p-4" onClick={() => setConfirmDelete(false)}>
+          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-black p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center gap-3">
+              <span className="size-9 rounded-lg border border-white/10 bg-black grid place-items-center"><AlertTriangle className="size-4 text-red-500" /></span>
+              <div className="text-lg font-semibold text-white">Delete account</div>
+            </div>
+            <p className="mt-3 text-sm text-[#9CA3AF]">
+              This permanently removes your profile, credits, scans, reports and support history. This action cannot be undone.
+            </p>
+            <div className="mt-5 flex justify-end gap-2">
+              <button onClick={() => setConfirmDelete(false)} className="rounded-xl border border-white/12 px-4 py-2 text-sm text-neutral-200 transition hover:border-white/30">Cancel</button>
+              <button onClick={removeAccount} disabled={deleting}
+                className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-500 disabled:opacity-60">
+                {deleting ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />} Delete permanently
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+/* ---------------- Two-factor authentication (TOTP) ---------------- */
+
+type Factor = { id: string; status: string; friendly_name?: string };
+
+function TwoFactorBlock() {
+  const [factors, setFactors] = useState<Factor[]>([]);
+  const [enrolling, setEnrolling] = useState<{ id: string; qr: string; secret: string } | null>(null);
+  const [code, setCode] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const load = async () => {
+    const { data } = await supabase.auth.mfa.listFactors();
+    setFactors(((data?.totp ?? []) as Factor[]).filter((f) => f.status === "verified"));
+  };
+  useEffect(() => { void load(); }, []);
+
+  const start = async () => {
+    setBusy(true);
+    const { data, error } = await supabase.auth.mfa.enroll({ factorType: "totp", friendlyName: `Authenticator ${Date.now()}` });
+    setBusy(false);
+    if (error) { toast.error(error.message); return; }
+    setEnrolling({ id: data.id, qr: data.totp.qr_code, secret: data.totp.secret });
+  };
+
+  const verify = async () => {
+    if (!enrolling || code.trim().length < 6) { toast.error("Enter the 6-digit code"); return; }
+    setBusy(true);
+    const { data: ch, error: chErr } = await supabase.auth.mfa.challenge({ factorId: enrolling.id });
+    if (chErr) { setBusy(false); toast.error(chErr.message); return; }
+    const { error } = await supabase.auth.mfa.verify({ factorId: enrolling.id, challengeId: ch.id, code: code.trim() });
+    setBusy(false);
+    if (error) { toast.error(error.message); return; }
+    setEnrolling(null); setCode("");
+    toast.success("Two-factor authentication enabled");
+    void load();
+  };
+
+  const disable = async (id: string) => {
+    const { error } = await supabase.auth.mfa.unenroll({ factorId: id });
+    if (error) { toast.error(error.message); return; }
+    toast.success("Two-factor authentication disabled");
+    void load();
+  };
+
+  const active = factors[0];
+
+  return (
+    <>
+      <div className="text-base font-semibold text-white">Two-factor authentication</div>
+      <p className="mt-1 text-xs text-[#9CA3AF]">Protect your account with an additional layer.</p>
+      <div className="mt-3 flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black p-3">
+        <div className="flex items-center gap-3">
+          <div className="size-9 rounded-lg ring-1 ring-white/10 bg-black grid place-items-center"><Smartphone className="size-4 text-[#2563EB]" /></div>
+          <div>
+            <div className="text-sm">Authenticator app</div>
+            <div className="text-[11px] text-muted-foreground">{active ? "Enabled" : "Not configured"}</div>
+          </div>
+        </div>
+        {active ? (
+          <button onClick={() => disable(active.id)} className="rounded-lg border border-white/12 px-3 py-1.5 text-xs text-neutral-200 transition hover:border-white/30">Disable</button>
+        ) : (
+          <button onClick={start} disabled={busy}
+            className="rounded-lg bg-[#2563EB] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[#1D4ED8] disabled:opacity-60">
+            {busy ? "Working…" : "Enable"}
+          </button>
+        )}
+      </div>
+
+      {enrolling && (
+        <div className="mt-3 rounded-xl border border-white/10 bg-black p-4">
+          <div className="text-sm text-white">Scan this QR code with your authenticator app</div>
+          <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <img src={enrolling.qr} alt="Two-factor QR code" className="size-40 rounded-lg bg-white p-2" />
+            <div className="flex-1">
+              <div className="text-[11px] text-muted-foreground">Or enter this setup key manually</div>
+              <div className="mt-1 break-all font-mono text-xs text-[#D1D5DB]">{enrolling.secret}</div>
+              <div className="mt-3 flex gap-2">
+                <input value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                  inputMode="numeric" placeholder="123456"
+                  className="w-32 rounded-lg border border-white/12 bg-black px-3 py-2 text-sm tracking-[0.3em] text-white outline-none focus:border-[#2563EB]" />
+                <button onClick={verify} disabled={busy}
+                  className="rounded-lg bg-[#2563EB] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#1D4ED8] disabled:opacity-60">Verify</button>
+                <button onClick={() => { setEnrolling(null); setCode(""); }} className="rounded-lg border border-white/12 px-3 py-2 text-sm text-neutral-300">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 
 
 function OverviewTile({ icon, ring, value, label, hint, action }: {
