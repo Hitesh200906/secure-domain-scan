@@ -58,7 +58,7 @@ export function Navbar() {
           <nav className="flex items-center gap-0.5 md:gap-1">
             {links.map((l) => (
               <Link key={l.to} to={l.to}
-                className="px-1.5 py-1.5 text-[11px] md:px-3.5 md:py-2 md:text-[13px] text-muted-foreground hover:text-white transition rounded-lg"
+                className={`${l.to === "/dashboard" ? "hidden md:inline-flex" : ""} px-1.5 py-1.5 text-[11px] md:px-3.5 md:py-2 md:text-[13px] text-muted-foreground hover:text-white transition rounded-lg`}
                 activeProps={{ className: "text-white" }} activeOptions={{ exact: true }}>
                 {l.label}
               </Link>
