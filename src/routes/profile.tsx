@@ -510,7 +510,54 @@ function OverviewTile({ icon, ring, value, label, hint, action }: {
   );
 }
 
-function IconField({ label, icon, value, onChange, readOnly, placeholder }: {
+function SectionShell({ title, desc, children }: { title: string; desc: string; children: React.ReactNode }) {
+  return (
+    <div className="rounded-[26px] border border-white/10 bg-black p-4 sm:p-6">
+      <div className="flex items-center gap-3">
+        <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-white">{title}</h2>
+        <span className="h-2.5 w-2.5 rounded-full bg-[#2563EB]" />
+      </div>
+      <p className="mt-1 text-xs text-[#9CA3AF]">{desc}</p>
+      <div className="my-4 h-px bg-white/10" />
+      {children}
+    </div>
+  );
+}
+
+function PasswordBlock() {
+  const [current, setCurrent] = useState("");
+  const [next, setNext] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const update = async () => {
+    if (next.length < 8) { toast.error("New password must be at least 8 characters"); return; }
+    setBusy(true);
+    const { error } = await supabase.auth.updateUser({ password: next });
+    setBusy(false);
+    if (error) { toast.error(error.message); return; }
+    setCurrent(""); setNext("");
+    toast.success("Password updated");
+  };
+
+  return (
+    <>
+      <div className="text-base font-semibold text-white">Password</div>
+      <p className="mt-1 text-xs text-[#9CA3AF]">Change your password regularly to keep your account secure.</p>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        <IconField label="Current password" icon={<KeyRound className="size-4 text-[#9CA3AF]" />} type="password"
+          placeholder="••••••••" value={current} onChange={setCurrent} />
+        <IconField label="New password" icon={<KeyRound className="size-4 text-[#9CA3AF]" />} type="password"
+          placeholder="At least 8 characters" value={next} onChange={setNext} />
+      </div>
+      <button onClick={update} disabled={busy || !next}
+        className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#2563EB] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#1D4ED8] disabled:opacity-60">
+        {busy ? <Loader2 className="size-4 animate-spin" /> : <ShieldHalf className="size-4" />} Update password
+      </button>
+    </>
+  );
+}
+
+function IconField({ label, icon, value, onChange, readOnly, placeholder, type }: {
   label: string; icon: React.ReactNode; value: string;
   onChange?: (v: string) => void; readOnly?: boolean; placeholder?: string;
 }) {
