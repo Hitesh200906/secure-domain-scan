@@ -5,7 +5,7 @@ import {
   BadgeCheck, Pencil, CircleUserRound, Copy, Coins, Crown, Database, Key, KeyRound, LifeBuoy,
   Loader2, LogOut, MessageSquare, MessagesSquare, Monitor, Send, ShieldHalf, ShieldCheck, Smartphone,
   Trash2, User2, ChevronRight, AlertTriangle, Zap, Clock, Headphones, ShoppingCart, ArrowRight,
-
+  Briefcase, Building2, Mail, Save, Fingerprint,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,7 +13,6 @@ import { api } from "@/lib/api-client";
 import { uploadStoreAsset } from "@/lib/uploads";
 import { useAuth } from "@/hooks/use-auth";
 import creditsWallet from "@/assets/credits-wallet.png.asset.json";
-import generalPanel from "@/assets/general-panel.png.asset.json";
 import creditsGift from "@/assets/credits-gift.png.asset.json";
 import CreditsCheckout from "@/components/credits/CreditsCheckout";
 import { useAdmin } from "@/hooks/use-admin";
@@ -271,8 +270,75 @@ function ProfilePage() {
           {/* ---------- Right content ---------- */}
           <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="space-y-4">
             {tab === "general" && (
-              <img src={generalPanel.url} alt="General account settings" className="w-full rounded-2xl" />
+              <div className="rounded-[26px] border border-white/10 bg-black p-5 sm:p-8">
+                <div className="flex items-center gap-3">
+                  <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">General</h2>
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#2563EB]" />
+                </div>
+                <p className="mt-2 text-sm text-[#9CA3AF]">Your identity across Nexefy Security reports and notifications.</p>
+
+                <div className="my-6 h-px bg-white/10" />
+
+                <div className="text-lg font-semibold text-white">Account information</div>
+                <p className="mt-1 text-sm text-[#9CA3AF]">Update your personal and professional details.</p>
+
+                <div className="mt-5 grid gap-5 sm:grid-cols-2">
+                  <IconField label="Full name" icon={<User2 className="size-4 text-[#9CA3AF]" />} placeholder="Your name"
+                    value={profile.full_name} onChange={(v) => setProfile({ ...profile, full_name: v })} />
+                  <IconField label="Role / Title" icon={<Briefcase className="size-4 text-[#9CA3AF]" />} placeholder="e.g. Security Analyst"
+                    value={profile.role_title} onChange={(v) => setProfile({ ...profile, role_title: v })} />
+                  <IconField label="Company" icon={<Building2 className="size-4 text-[#9CA3AF]" />} placeholder="e.g. Nexefy Security"
+                    value={profile.company} onChange={(v) => setProfile({ ...profile, company: v })} />
+                  <IconField label="Email" icon={<Mail className="size-4 text-[#9CA3AF]" />} placeholder="you@example.com"
+                    value={user?.email ?? ""} readOnly />
+                </div>
+
+                <div className="mt-6 flex flex-wrap items-center gap-5">
+                  <button onClick={save} disabled={saving || !user}
+                    className="inline-flex items-center gap-2.5 rounded-xl bg-[#2563EB] px-6 py-3.5 text-[15px] font-medium text-white transition hover:bg-[#1D4ED8] disabled:opacity-60">
+                    {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
+                    Save changes
+                  </button>
+                  <div className="flex items-center gap-2.5 text-sm text-[#9CA3AF]">
+                    <ShieldCheck className="size-4 text-[#2563EB]" />
+                    Your information is protected with industry-standard encryption.
+                  </div>
+                </div>
+
+                <div className="my-7 h-px bg-white/10" />
+
+                <div className="text-lg font-semibold text-white">Account details</div>
+                <p className="mt-1 text-sm text-[#9CA3AF]">View your account activity and preferences.</p>
+
+                <div className="mt-4">
+                  <DetailRow
+                    icon={<Fingerprint className="size-5 text-[#22D3EE]" />}
+                    label="User ID"
+                    value={user ? `${user.id.slice(0, 8)}…` : "—"}
+                    onClick={() => { if (user) { navigator.clipboard.writeText(user.id); toast.success("User ID copied"); } }}
+                  />
+                  <DetailRow
+                    icon={<KeyRound className="size-5 text-[#F59E0B]" />}
+                    label="Auth provider"
+                    value={user ? (user.app_metadata?.provider ?? "email") : "—"}
+                    onClick={() => toast.message("Sign-in method", { description: `You signed in with ${user?.app_metadata?.provider ?? "email"}.` })}
+                  />
+                  <DetailRow
+                    icon={<Clock className="size-5 text-[#818CF8]" />}
+                    label="Last sign-in"
+                    value={user?.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : "—"}
+                    onClick={() => toast.message("Last sign-in", { description: user?.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : "No record" })}
+                  />
+                  <DetailRow
+                    icon={<Crown className="size-5 text-[#38BDF8]" />}
+                    label="Plan"
+                    badge={profile.plan}
+                    onClick={() => navigate({ to: "/pricing" })}
+                  />
+                </div>
+              </div>
             )}
+
 
 
             {tab === "credits" && <CreditsSection balance={profile.credits} />}
@@ -433,6 +499,44 @@ function OverviewTile({ icon, ring, value, label, hint, action }: {
     </div>
   );
 }
+
+function IconField({ label, icon, value, onChange, readOnly, placeholder }: {
+  label: string; icon: React.ReactNode; value: string;
+  onChange?: (v: string) => void; readOnly?: boolean; placeholder?: string;
+}) {
+  return (
+    <div>
+      <div className="text-[11px] uppercase tracking-[0.16em] text-[#9CA3AF]">{label}</div>
+      <div className="mt-2 flex items-center gap-3 rounded-xl border border-white/12 bg-black px-4 py-3.5 transition focus-within:border-[#2563EB]">
+        {icon}
+        <input
+          value={value}
+          readOnly={readOnly}
+          placeholder={placeholder}
+          onChange={(e) => onChange?.(e.target.value)}
+          className="w-full bg-transparent text-[15px] text-white placeholder:text-[#6B7280] outline-none read-only:text-[#D1D5DB]"
+        />
+      </div>
+    </div>
+  );
+}
+
+function DetailRow({ icon, label, value, badge, onClick }: {
+  icon: React.ReactNode; label: string; value?: string; badge?: string; onClick?: () => void;
+}) {
+  return (
+    <button onClick={onClick}
+      className="group flex w-full items-center gap-4 border-b border-white/8 py-3.5 text-left transition hover:bg-white/[0.03]">
+      <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-black">{icon}</span>
+      <span className="flex-1 text-[15px] text-white">{label}</span>
+      {badge
+        ? <span className="rounded-lg border border-[#22D3EE]/40 px-3 py-1.5 text-sm capitalize text-[#22D3EE]">{badge}</span>
+        : <span className="text-sm text-[#D1D5DB]">{value}</span>}
+      <ChevronRight className="size-4 text-[#6B7280] transition group-hover:text-white" />
+    </button>
+  );
+}
+
 
 function Banner({ title, desc }: { title: string; desc: string }) {
   return (
