@@ -758,24 +758,30 @@ function CreditsSection({ balance }: { balance: number }) {
               setCredits(Math.min(MAX_CREDITS * 10, Number(raw) || 0));
             }}
             onBlur={() => setDraft(String(credits))}
-            className="w-32 border-b border-[#1F2937] bg-transparent pb-1.5 text-sm text-[#F8FAFC] tabular-nums outline-none transition-colors duration-200 focus:border-[#374151]"
+            className="w-32 border-b bg-transparent pb-1.5 text-sm text-[#F8FAFC] tabular-nums outline-none transition-colors duration-200"
+            style={{ borderColor: "#1F2937" }}
+            onFocus={(e) => (e.currentTarget.style.borderColor = accent)}
           />
-          <span className="text-xs text-[#9CA3AF]">credits</span>
+          <span className="text-xs text-[#9CA3AF]">custom credits</span>
         </div>
 
         <div className="flex items-center">
           <button
             onClick={() => commit(credits - 100)}
-            className="h-8 w-9 border border-[#1F2937] text-sm text-[#9CA3AF] transition-colors duration-200 hover:border-[#374151] hover:text-[#F8FAFC]"
+            className="h-8 w-9 border border-[#1F2937] text-sm text-[#9CA3AF] transition-colors duration-200 hover:text-[#F8FAFC]"
             style={{ borderRadius: "8px 0 0 8px" }}
+            onMouseEnter={(e) => (e.currentTarget.style.borderColor = accent)}
+            onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#1F2937")}
             aria-label="Decrease"
           >
             −
           </button>
           <button
             onClick={() => commit(credits + 100)}
-            className="-ml-px h-8 w-9 border border-[#1F2937] text-sm text-[#9CA3AF] transition-colors duration-200 hover:border-[#374151] hover:text-[#F8FAFC]"
+            className="-ml-px h-8 w-9 border border-[#1F2937] text-sm text-[#9CA3AF] transition-colors duration-200 hover:text-[#F8FAFC]"
             style={{ borderRadius: "0 8px 8px 0" }}
+            onMouseEnter={(e) => (e.currentTarget.style.borderColor = accent)}
+            onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#1F2937")}
             aria-label="Increase"
           >
             +
@@ -787,23 +793,36 @@ function CreditsSection({ balance }: { balance: number }) {
 
       {/* 5. Inline summary + CTA */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <span className="text-xs text-[#9CA3AF] tabular-nums">
-          {valid
-            ? `Balance ${balance.toLocaleString()} · 1 credit = 1 USD · taxes at checkout`
-            : `Minimum ${MIN_CREDITS} credits`}
-        </span>
+        <div className="min-w-0">
+          <div className="text-xs text-[#F8FAFC] tabular-nums">
+            {valid ? `${credits.toLocaleString()} credits · ${fmtMoney(credits * cur.rate)}` : `Minimum ${MIN_CREDITS} credits`}
+          </div>
+          <div className="mt-1 text-[11px] text-[#9CA3AF] tabular-nums">
+            Balance {balance.toLocaleString()} · never expires · taxes at checkout
+          </div>
+        </div>
         <button
           disabled={!valid}
           onClick={() =>
             toast.info(`Checkout opening soon — ${credits.toLocaleString()} credits for ${fmtMoney(credits * cur.rate)}.`)
           }
-          className="group relative overflow-hidden rounded-[10px] border border-[#1F2937] px-6 py-2.5 text-sm font-medium text-[#F8FAFC] transition-all duration-200 hover:border-[#374151] hover:bg-[#0A0A0A] active:scale-[0.99] disabled:cursor-not-allowed disabled:text-[#9CA3AF] disabled:hover:border-[#1F2937] disabled:hover:bg-transparent"
+          className="group relative shrink-0 overflow-hidden rounded-[10px] px-6 py-2.5 text-sm font-semibold text-[#F8FAFC] transition-all duration-200 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
+          style={{
+            background: valid ? `color-mix(in oklab, ${accent} 22%, #000000)` : "transparent",
+            border: `1px solid ${valid ? accent : "#1F2937"}`,
+          }}
+          onMouseEnter={(e) => {
+            if (valid) e.currentTarget.style.background = `color-mix(in oklab, ${accent} 34%, #000000)`;
+          }}
+          onMouseLeave={(e) => {
+            if (valid) e.currentTarget.style.background = `color-mix(in oklab, ${accent} 22%, #000000)`;
+          }}
         >
           <span
             aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-[10px] border border-white/0 transition-all duration-200 group-hover:inset-[3px] group-hover:rounded-[7px] group-hover:border-white/10"
+            className="pointer-events-none absolute inset-0 rounded-[10px] border border-white/0 transition-all duration-200 group-hover:inset-[3px] group-hover:rounded-[7px] group-hover:border-white/15"
           />
-          <span className="relative">Continue</span>
+          <span className="relative">Continue to Payment</span>
         </button>
       </div>
     </div>
