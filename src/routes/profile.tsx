@@ -547,9 +547,9 @@ function ChatBubble({ side, who, when, body }: { side: "user" | "admin"; who: st
 /* ---------------- Buy Credits ---------------- */
 
 const CURRENCIES = [
-  { code: "USD", symbol: "$", rate: 1 },
-  { code: "INR", symbol: "₹", rate: 83 },
-  { code: "EUR", symbol: "€", rate: 0.92 },
+  { code: "USD", symbol: "$", rate: 1, accent: "#3B82F6", label: "US Dollar" },
+  { code: "INR", symbol: "₹", rate: 83, accent: "#22C55E", label: "Indian Rupee" },
+  { code: "EUR", symbol: "€", rate: 0.92, accent: "#F59E0B", label: "Euro" },
 ] as const;
 
 const CREDIT_NODES = [1000, 2500, 5000, 10000] as const;
