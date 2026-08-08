@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { api } from "@/lib/api-client";
 import { uploadStoreAsset } from "@/lib/uploads";
 import { useAuth } from "@/hooks/use-auth";
+import creditsPanel from "@/assets/credits-panel.png.asset.json";
 import { useAdmin } from "@/hooks/use-admin";
 import { RoleBadge } from "@/components/ui/RoleBadge";
 import { BackButton } from "@/components/site/BackButton";
