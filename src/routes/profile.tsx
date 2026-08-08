@@ -320,71 +320,158 @@ function ProfilePage() {
 
             {tab === "credits" && (
               <>
-                <div className="relative overflow-hidden rounded-2xl border border-white/10">
+                {/* Balance hero */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
+                  className="relative overflow-hidden rounded-3xl border border-white/12"
+                >
                   <img src={textureImg} alt="" aria-hidden="true" loading="lazy" width={1280} height={640} className="absolute inset-0 size-full object-cover" />
-                  <div className="absolute inset-0 bg-black/90" />
-                  <div className="relative p-6 sm:p-7 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+                  <div className="absolute inset-0 bg-black/85" />
+                  <div
+                    className="absolute inset-0 opacity-[0.14]"
+                    style={{
+                      backgroundImage:
+                        "linear-gradient(rgba(255,255,255,0.16) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.16) 1px, transparent 1px)",
+                      backgroundSize: "44px 44px",
+                      maskImage: "radial-gradient(ellipse at 20% 30%, black 20%, transparent 75%)",
+                    }}
+                  />
+                  <motion.div
+                    aria-hidden
+                    className="absolute inset-y-0 w-40 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent)]"
+                    animate={{ x: ["-10%", "120%"] }}
+                    transition={{ duration: 7, repeat: Infinity, ease: "linear" }}
+                  />
+
+                  <div className="relative p-6 sm:p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
                     <div>
-                      <div className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-full border border-white/15 bg-black/50 text-neutral-300">
+                      <div className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-full border border-white/15 bg-black/60 text-neutral-300">
                         <Coins className="size-3 text-amber-400" /> Credit balance
                       </div>
-                      <div className="mt-3 flex items-end gap-2">
-                        <span className="text-5xl font-semibold tracking-tight tabular-nums">{profile.credits}</span>
-                        <span className="pb-2 text-sm text-muted-foreground">credits left</span>
+                      <div className="mt-4 flex items-end gap-2">
+                        <motion.span
+                          key={profile.credits}
+                          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}
+                          className="text-6xl font-semibold tracking-tight tabular-nums leading-none"
+                        >
+                          {profile.credits}
+                        </motion.span>
+                        <span className="pb-1 text-sm text-muted-foreground">credits left</span>
                       </div>
-                      <p className="mt-2 text-xs text-muted-foreground max-w-sm">
+                      <p className="mt-3 text-xs text-muted-foreground max-w-sm leading-relaxed">
                         One credit runs one complete full-stack security scan, including the deliverable report.
                       </p>
                       <button
                         onClick={() => document.getElementById("credit-plans")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                        className="mt-4 inline-flex items-center gap-2 rounded-full bg-white text-black px-4 py-2 text-sm font-medium transition hover:scale-[1.02]"
+                        className="group relative mt-5 inline-flex items-center gap-2 overflow-hidden rounded-full border border-white/20 bg-black px-5 py-2.5 text-sm font-medium transition-transform duration-300 hover:scale-[1.03]"
                       >
-                        <Coins className="size-4" /> Buy credits
+                        <span className="absolute inset-0 -translate-y-full bg-white transition-transform duration-500 ease-out group-hover:translate-y-0" />
+                        <Coins className="relative size-4 transition-colors duration-500 group-hover:text-black" />
+                        <span className="relative transition-colors duration-500 group-hover:text-black">Buy credits</span>
                       </button>
                     </div>
                     <div className="sm:text-right">
                       <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Usage this cycle</div>
-                      <div className="mt-2 h-2 w-full sm:w-52 rounded-full bg-white/[0.08] overflow-hidden">
-                        <div className="h-full rounded-full bg-[#4d7cff]" style={{ width: `${Math.min(100, (profile.credits / 50) * 100)}%` }} />
+                      <div className="mt-2 h-2 w-full sm:w-56 rounded-full bg-white/[0.08] overflow-hidden">
+                        <motion.div
+                          className="h-full rounded-full bg-white/70"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${Math.min(100, (profile.credits / 50) * 100)}%` }}
+                          transition={{ duration: 0.9, ease: "easeOut" }}
+                        />
                       </div>
                       <div className="mt-2 text-[11px] text-muted-foreground capitalize">{profile.plan} plan</div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
 
-                <div id="credit-plans" className="grid md:grid-cols-3 gap-4">
-                  {CREDIT_PACKS.map((p) => (
-                    <div key={p.id} className={`relative overflow-hidden rounded-2xl border p-5 flex flex-col ${"popular" in p && p.popular ? "border-white/20 bg-white/[0.04]" : "border-white/10 bg-white/[0.02]"}`}>
-                      {"popular" in p && p.popular && (
-                        <span className="absolute top-4 right-4 text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-white/20 text-neutral-300">Most popular</span>
-                      )}
-                      <div className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">
-                        <Zap className="size-3 text-amber-400" /> {p.name}
-                      </div>
-                      <div className="mt-3 flex items-baseline gap-1">
-                        <span className="text-3xl font-semibold tracking-tight">{p.price > 0 ? `$${p.price}` : "Custom"}</span>
-                        {p.price > 0 && <span className="text-xs text-muted-foreground">{p.per}</span>}
-                      </div>
-                      <div className="mt-1 text-sm font-medium">{p.credits > 0 ? `${p.credits} credits included` : "Custom credit volume"}</div>
-                      <p className="mt-1.5 text-xs text-muted-foreground">{p.blurb}</p>
-                      <ul className="mt-4 space-y-2 flex-1">
-                        {p.perks.map((perk) => (
-                          <li key={perk} className="flex items-start gap-2 text-xs text-muted-foreground">
-                            <Check className="size-3.5 shrink-0 mt-px text-emerald-400" /><span>{perk}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <button onClick={() => toast.info(p.price > 0 ? "Checkout is opening soon — contact us to top up today." : "Talk to our team for a custom plan.")}
-                        className={`mt-5 w-full rounded-full px-4 py-2.5 text-sm font-medium transition hover:scale-[1.02] ${
-                          "popular" in p && p.popular ? "bg-white text-black" : "border border-white/15 hover:border-white/35"
-                        }`}>
-                        {p.price > 0 ? `Choose ${p.name}` : "Talk to sales"}
-                      </button>
-                    </div>
+                {/* Quick facts */}
+                <div className="grid sm:grid-cols-3 gap-4">
+                  {[
+                    { icon: <Zap className="size-4 text-amber-400" />, label: "Per scan", value: "1 credit", hint: "Full-stack audit + report" },
+                    { icon: <Database className="size-4 text-[#4d7cff]" />, label: "Rollover", value: "90 days", hint: "Unused credits stay valid" },
+                    { icon: <Crown className="size-4 text-amber-400" />, label: "Current plan", value: profile.plan, hint: "Upgrade anytime" },
+                  ].map((s, i) => (
+                    <motion.div
+                      key={s.label}
+                      initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.05 * i }}
+                      className="rounded-2xl border border-white/10 bg-black/60 p-4 transition-colors hover:border-white/25"
+                    >
+                      <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-muted-foreground">{s.icon} {s.label}</div>
+                      <div className="mt-2 text-lg font-medium capitalize">{s.value}</div>
+                      <div className="text-[11px] text-muted-foreground">{s.hint}</div>
+                    </motion.div>
                   ))}
                 </div>
+
+                {/* Plans — same cards as the pricing page */}
+                <div id="credit-plans" className="pt-2">
+                  <div className="text-sm font-medium">Plans</div>
+                  <div className="text-xs text-muted-foreground">Pick the coverage that fits your estate.</div>
+                  <div className="mt-4 grid md:grid-cols-3 gap-5">
+                    {CREDIT_PACKS.map((t, i) => {
+                      const popular = "popular" in t && t.popular;
+                      return (
+                        <motion.div
+                          key={t.id}
+                          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.5, delay: i * 0.07 }}
+                          className={`relative rounded-3xl p-px ${popular ? "bg-gradient-to-b from-primary/60 via-secondary/30 to-transparent" : "bg-white/[0.08]"}`}
+                        >
+                          <div className="rounded-[calc(theme(borderRadius.3xl)-1px)] bg-[oklch(0.05_0.008_220)] p-6 h-full flex flex-col">
+                            {popular && (
+                              <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-[0.2em] bg-primary text-primary-foreground px-3 py-1 rounded-full">
+                                Most Popular
+                              </div>
+                            )}
+                            <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{t.name}</div>
+                            <div className="mt-4 flex items-baseline gap-1">
+                              <span className="text-4xl font-semibold tracking-tight">{t.price > 0 ? `$${t.price}` : "Custom"}</span>
+                              {t.price > 0 && <span className="text-sm text-muted-foreground">{t.per}</span>}
+                            </div>
+                            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{t.blurb}</p>
+
+                            <ul className="mt-8 space-y-3 flex-1">
+                              {t.perks.map((f) => (
+                                <li key={f} className="flex items-start gap-2.5 text-sm">
+                                  <Check className="size-4 mt-0.5 text-primary shrink-0" strokeWidth={2} />
+                                  <span className="text-white/90">{f}</span>
+                                </li>
+                              ))}
+                            </ul>
+
+                            <button
+                              onClick={() => toast.info(t.price > 0 ? "Checkout is opening soon — contact us to top up today." : "Talk to our team for a custom plan.")}
+                              className={`group relative mt-8 inline-flex items-center justify-center overflow-hidden rounded-full px-5 py-3 text-sm font-medium transition-transform duration-300 hover:scale-[1.03] ${popular ? "bg-white text-black" : "glass text-white hover:border-white/20"}`}
+                            >
+                              <span className="relative">{t.price > 0 ? `Choose ${t.name}` : "Talk to sales"}</span>
+                            </button>
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* How credits work */}
+                <Card title="How credits work" desc="Simple, predictable consumption.">
+                  <div className="grid sm:grid-cols-3 gap-3">
+                    {[
+                      { n: "01", t: "Start a scan", d: "Submit a domain — one credit is reserved." },
+                      { n: "02", t: "We audit", d: "Full-stack, OWASP and CVE checks run automatically." },
+                      { n: "03", t: "Get the report", d: "Findings, evidence and remediation delivered." },
+                    ].map((s) => (
+                      <div key={s.n} className="rounded-xl border border-white/10 bg-black/60 p-4 transition-colors hover:border-white/25">
+                        <div className="text-[10px] tracking-widest text-muted-foreground">{s.n}</div>
+                        <div className="mt-1.5 text-sm font-medium">{s.t}</div>
+                        <div className="mt-1 text-xs text-muted-foreground leading-relaxed">{s.d}</div>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
               </>
             )}
+
 
             {tab === "tickets" && (
               <>
