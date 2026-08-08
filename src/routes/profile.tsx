@@ -14,6 +14,7 @@ import { uploadStoreAsset } from "@/lib/uploads";
 import { useAuth } from "@/hooks/use-auth";
 import creditsWallet from "@/assets/credits-wallet.png.asset.json";
 import creditsGift from "@/assets/credits-gift.png.asset.json";
+import CreditsCheckout from "@/components/credits/CreditsCheckout";
 import { useAdmin } from "@/hooks/use-admin";
 import { RoleBadge } from "@/components/ui/RoleBadge";
 import { BackButton } from "@/components/site/BackButton";
@@ -729,8 +730,11 @@ function CreditsSection({ balance }: { balance: number }) {
         </button>
       </div>
 
+      {/* Full-page checkout */}
+      {open && <CreditsCheckout onClose={() => setOpen(false)} onContinue={() => {}} />}
+
       {/* Buy dialog */}
-      {open && (
+      {false && (
         <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/70 p-4" onClick={() => setOpen(false)}>
           <div
             className="w-full max-w-md rounded-2xl border border-white/10 bg-black p-6"
