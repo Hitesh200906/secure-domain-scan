@@ -46,12 +46,10 @@ export default function CreditsCheckout({
         <div className="flex items-start justify-between gap-4">
           <div className="w-full max-w-[330px]">
             <div className="text-[26px] font-semibold leading-none tabular-nums text-white">
-              01 <span className="text-[#4B5563]">/ 04</span>
+              01 <span className="text-[#4B5563]">/ 02</span>
             </div>
-            <div className="mt-4 grid grid-cols-4 gap-3">
+            <div className="mt-4 grid grid-cols-2 gap-3">
               <span className="h-[3px] rounded-full bg-[#2563EB]" />
-              <span className="h-[3px] rounded-full bg-white/12" />
-              <span className="h-[3px] rounded-full bg-white/12" />
               <span className="h-[3px] rounded-full bg-white/12" />
             </div>
           </div>
