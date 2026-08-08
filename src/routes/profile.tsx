@@ -547,15 +547,23 @@ function ChatBubble({ side, who, when, body }: { side: "user" | "admin"; who: st
 /* ---------------- Buy Credits ---------------- */
 
 const CURRENCIES = [
-  { code: "USD", symbol: "$", rate: 1, accent: "#3B82F6", label: "US Dollar" },
-  { code: "INR", symbol: "₹", rate: 83, accent: "#22C55E", label: "Indian Rupee" },
-  { code: "EUR", symbol: "€", rate: 0.92, accent: "#F59E0B", label: "Euro" },
+  { code: "USD", symbol: "$", rate: 1, accent: "#3B82F6", label: "US Dollar", region: "United States" },
+  { code: "INR", symbol: "₹", rate: 83, accent: "#22C55E", label: "Indian Rupee", region: "India" },
+  { code: "EUR", symbol: "€", rate: 0.92, accent: "#8B5CF6", label: "Euro", region: "Eurozone" },
 ] as const;
 
 const CREDIT_NODES = [1000, 2500, 5000, 10000] as const;
 const RECOMMENDED = 2500;
 const MIN_CREDITS = 100;
 const MAX_CREDITS = 10000;
+const QUICK_ADD = [500, 1000, 2500] as const;
+
+function bonusFor(c: number) {
+  if (c >= 10000) return 0.1;
+  if (c >= 5000) return 0.06;
+  if (c >= 2500) return 0.03;
+  return 0;
+}
 
 function useCountUp(value: number, duration = 420) {
   const [display, setDisplay] = useState(value);
@@ -588,12 +596,16 @@ function useCountUp(value: number, duration = 420) {
 function CreditsSection({ balance }: { balance: number }) {
   const [curIndex, setCurIndex] = useState(0);
   const cur = CURRENCIES[curIndex];
+  const accent = cur.accent;
   const [credits, setCredits] = useState<number>(RECOMMENDED);
   const [draft, setDraft] = useState<string>(String(RECOMMENDED));
 
   const valid = credits >= MIN_CREDITS;
   const shownCredits = useCountUp(credits);
+  const bonus = Math.round(credits * bonusFor(credits));
+  const shownBonus = useCountUp(bonus);
   const amount = shownCredits * cur.rate;
+
   const fmtMoney = (v: number) =>
     `${cur.symbol}${v.toLocaleString(undefined, { maximumFractionDigits: cur.code === "INR" ? 0 : 2 })}`;
 
@@ -603,234 +615,387 @@ function CreditsSection({ balance }: { balance: number }) {
     setDraft(String(clamped));
   };
 
-  // node positions along the rail (evenly spaced)
   const nodePct = (i: number) => (i / (CREDIT_NODES.length - 1)) * 100;
   const railPct = Math.max(0, Math.min(100, ((credits - MIN_CREDITS) / (MAX_CREDITS - MIN_CREDITS)) * 100));
 
-  const accent = cur.accent;
-
   return (
-    <div className="mx-auto w-full max-w-[640px] rounded-[16px] border border-white/[0.06] bg-black p-6 sm:p-9">
-      {/* 1. Top control strip */}
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+    <div className="mx-auto w-full max-w-[860px]">
+      {/* ============ HEADER ============ */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+      >
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <span
-              aria-hidden
-              className="h-1.5 w-1.5 rounded-full transition-colors duration-300"
-              style={{ background: accent }}
-            />
-            <span className="text-sm font-medium tracking-tight text-[#F8FAFC]">Credits</span>
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" style={{ background: accent }} />
+              <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: accent }} />
+            </span>
+            <span className="text-[10px] uppercase tracking-[0.22em] text-[#9CA3AF]">Billing · Credits</span>
           </div>
-          <p className="mt-2 max-w-[320px] text-xs leading-relaxed text-[#9CA3AF]">
-            Credits power every scan, report and automated check on Nexefy. One credit equals one
-            security action — they never expire and are shared across your whole workspace.
+          <h2 className="mt-2 text-[26px] font-semibold leading-tight tracking-tight text-[#F8FAFC] sm:text-[32px]">
+            Buy credits. Scale instantly.
+          </h2>
+          <p className="mt-2 max-w-[520px] text-sm leading-relaxed text-[#9CA3AF]">
+            Credits fuel every scan, monitor and automated report on Nexefy. One credit = one security
+            action. They never expire, roll over forever and are shared across your entire workspace.
           </p>
         </div>
 
-        {/* currency dial — rotating token switch */}
-        <div className="shrink-0">
-          <div className="relative flex items-center gap-1 rounded-full border border-white/[0.07] p-1">
-            <span
-              aria-hidden
-              className="pointer-events-none absolute top-1 h-8 w-11 rounded-full transition-all duration-300 ease-out"
-              style={{
-                left: 4,
-                transform: `translateX(${curIndex * 48}px)`,
-                background: `color-mix(in oklab, ${accent} 16%, transparent)`,
-                border: `1px solid color-mix(in oklab, ${accent} 45%, transparent)`,
-              }}
-            />
+        <div className="shrink-0 rounded-[12px] border border-white/[0.07] bg-[#050505] px-4 py-3">
+          <div className="text-[10px] uppercase tracking-[0.18em] text-[#9CA3AF]">Current balance</div>
+          <div className="mt-1 flex items-baseline gap-1.5">
+            <Coins className="h-4 w-4" style={{ color: accent }} />
+            <span className="text-xl font-semibold tabular-nums text-[#F8FAFC]">{balance.toLocaleString()}</span>
+            <span className="text-xs text-[#9CA3AF]">credits</span>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ============ MAIN PANEL ============ */}
+      <div className="overflow-hidden rounded-[16px] border border-white/[0.06] bg-black">
+        {/* --- STEP 1 : CURRENCY --- */}
+        <section className="border-b border-white/[0.05] p-6 sm:p-8">
+          <StepHead index="01" title="Choose your currency" hint="Rates locked at checkout" accent={accent} />
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
             {CURRENCIES.map((c, i) => {
               const on = i === curIndex;
               return (
-                <button
+                <motion.button
                   key={c.code}
                   onClick={() => setCurIndex(i)}
-                  title={c.label}
-                  className="relative z-10 flex h-8 w-11 items-center justify-center rounded-full text-sm transition-all duration-300"
-                  style={{ color: on ? c.accent : "#9CA3AF", transform: on ? "scale(1.06)" : "scale(1)" }}
+                  whileHover={{ y: -3 }}
+                  whileTap={{ scale: 0.985 }}
+                  transition={{ type: "spring", stiffness: 420, damping: 30 }}
+                  className="relative overflow-hidden rounded-[12px] border p-4 text-left transition-colors duration-300"
+                  style={{
+                    borderColor: on ? `color-mix(in oklab, ${c.accent} 55%, transparent)` : "rgba(255,255,255,0.07)",
+                    background: on ? `color-mix(in oklab, ${c.accent} 10%, #000000)` : "#050505",
+                  }}
                 >
-                  <span className="font-semibold">{c.symbol}</span>
-                </button>
+                  {on && (
+                    <motion.span
+                      layoutId="cur-glowline"
+                      className="absolute inset-x-0 top-0 h-px"
+                      style={{ background: c.accent }}
+                      transition={{ type: "spring", stiffness: 350, damping: 32 }}
+                    />
+                  )}
+                  <div className="flex items-center justify-between">
+                    <span
+                      className="flex h-9 w-9 items-center justify-center rounded-[10px] text-base font-semibold transition-colors duration-300"
+                      style={{
+                        color: on ? c.accent : "#9CA3AF",
+                        background: on ? `color-mix(in oklab, ${c.accent} 16%, #000000)` : "#0A0A0A",
+                      }}
+                    >
+                      {c.symbol}
+                    </span>
+                    <motion.span
+                      initial={false}
+                      animate={{ opacity: on ? 1 : 0, scale: on ? 1 : 0.7 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <BadgeCheck className="h-4 w-4" style={{ color: c.accent }} />
+                    </motion.span>
+                  </div>
+                  <div className="mt-3 text-sm font-medium text-[#F8FAFC]">{c.code}</div>
+                  <div className="text-xs text-[#9CA3AF]">{c.label} · {c.region}</div>
+                  <div className="mt-2 text-[11px] tabular-nums text-[#6B7280]">
+                    1 credit = {c.symbol}{c.rate.toLocaleString()}
+                  </div>
+                </motion.button>
               );
             })}
           </div>
-          <div className="mt-2 text-center text-[10px] uppercase tracking-[0.18em] text-[#9CA3AF]">
-            {cur.code} · {cur.label}
+        </section>
+
+        {/* --- STEP 2 : AMOUNT --- */}
+        <section className="border-b border-white/[0.05] p-6 sm:p-8">
+          <StepHead index="02" title="Select your credit volume" hint="Drag, tap or type" accent={accent} />
+
+          {/* live display */}
+          <div className="mt-6 text-center">
+            <motion.div
+              key={credits > 0 ? "on" : "off"}
+              className="text-[42px] font-semibold leading-none tracking-tight text-[#F8FAFC] tabular-nums sm:text-[58px]"
+            >
+              {shownCredits.toLocaleString()}
+            </motion.div>
+            <div className="mt-2 text-[11px] uppercase tracking-[0.22em] text-[#6B7280]">credits</div>
+            <div className="mt-3 text-lg font-medium tabular-nums transition-colors duration-300" style={{ color: accent }}>
+              {fmtMoney(amount)}
+            </div>
+            {bonus > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-3 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] tabular-nums"
+                style={{ borderColor: `color-mix(in oklab, ${accent} 40%, transparent)`, color: accent }}
+              >
+                <Crown className="h-3 w-3" />
+                +{shownBonus.toLocaleString()} bonus credits ({Math.round(bonusFor(credits) * 100)}%)
+              </motion.div>
+            )}
           </div>
-        </div>
-      </div>
 
-      {/* 4. Live value display */}
-      <div className="mt-10 text-center">
-        <div className="text-[40px] font-semibold leading-none tracking-tight text-[#F8FAFC] tabular-nums sm:text-[52px]">
-          {shownCredits.toLocaleString()}
-        </div>
-        <div
-          className="mt-3 text-base font-medium tabular-nums transition-colors duration-300"
-          style={{ color: accent }}
-        >
-          {fmtMoney(amount)}
-        </div>
-        <div className="mt-2 text-xs text-[#9CA3AF] tabular-nums">
-          ≈ {shownCredits.toLocaleString()} scans · billed once, no subscription
-        </div>
-      </div>
+          {/* rail */}
+          <div className="mt-10 px-2">
+            <div className="relative h-16">
+              <span aria-hidden className="absolute left-0 right-0 top-3 h-px bg-white/[0.07]" />
+              <motion.span
+                aria-hidden
+                className="absolute left-0 top-3 h-px"
+                style={{ background: accent }}
+                animate={{ width: `${railPct}%` }}
+                transition={{ type: "spring", stiffness: 260, damping: 30 }}
+              />
+              <input
+                type="range"
+                aria-label="Credits"
+                min={MIN_CREDITS}
+                max={MAX_CREDITS}
+                step={100}
+                value={Math.min(MAX_CREDITS, Math.max(MIN_CREDITS, credits))}
+                onChange={(e) => commit(Number(e.target.value))}
+                className="absolute left-0 right-0 top-0 z-20 h-7 w-full cursor-ew-resize appearance-none bg-transparent opacity-0"
+              />
+              {CREDIT_NODES.map((c, i) => {
+                const active = credits === c;
+                return (
+                  <button
+                    key={c}
+                    onClick={() => commit(c)}
+                    className="group absolute top-0 z-30 -translate-x-1/2"
+                    style={{ left: `${nodePct(i)}%` }}
+                  >
+                    <span
+                      className="mx-auto block rounded-full border transition-all duration-200"
+                      style={{
+                        marginTop: active ? 8 : 9,
+                        height: active ? 9 : 7,
+                        width: active ? 9 : 7,
+                        background: active ? accent : "#000000",
+                        borderColor: active ? accent : "#374151",
+                      }}
+                    />
+                    <span
+                      aria-hidden
+                      className="mx-auto mt-1 block w-px transition-all duration-200"
+                      style={{ height: active ? 12 : 0, background: accent }}
+                    />
+                    <span
+                      className={`mt-1 block text-[11px] tabular-nums transition-all duration-200 ${
+                        active ? "-translate-y-[2px] text-[#F8FAFC]" : "text-[#9CA3AF] group-hover:text-[#F8FAFC]"
+                      }`}
+                    >
+                      {c.toLocaleString()}
+                    </span>
+                    {c === RECOMMENDED && (
+                      <span
+                        aria-hidden
+                        className="mx-auto mt-1 block h-[3px] w-[3px] rounded-full"
+                        style={{ background: active ? accent : "#6B7280" }}
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
-      {/* 2. Rail selector */}
-      <div className="mt-12 px-2">
-        <div className="relative h-16">
-          {/* track */}
-          <span aria-hidden className="absolute left-0 right-0 top-3 h-px bg-white/[0.07]" />
-          <span
-            aria-hidden
-            className="absolute left-0 top-3 h-px transition-[width] duration-300 ease-out"
-            style={{ width: `${railPct}%`, background: accent }}
-          />
+          {/* custom credits box */}
+          <div className="mt-8 rounded-[12px] border border-white/[0.07] bg-[#050505] p-5">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-sm font-medium text-[#F8FAFC]">Custom amount</div>
+                <div className="mt-0.5 text-xs text-[#9CA3AF] tabular-nums">
+                  Minimum {MIN_CREDITS.toLocaleString()} · no upper limit
+                </div>
+              </div>
+              <Database className="h-4 w-4 text-[#6B7280]" />
+            </div>
 
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div
+                className="flex flex-1 items-center gap-2 rounded-[10px] border bg-black px-3 py-2 transition-colors duration-200"
+                style={{ borderColor: "#1F2937" }}
+              >
+                <span className="text-sm text-[#6B7280]">#</span>
+                <input
+                  inputMode="numeric"
+                  value={draft}
+                  onChange={(e) => {
+                    const raw = e.target.value.replace(/[^0-9]/g, "");
+                    setDraft(raw);
+                    setCredits(Math.min(MAX_CREDITS * 10, Number(raw) || 0));
+                  }}
+                  onBlur={(e) => {
+                    setDraft(String(credits));
+                    e.currentTarget.parentElement!.style.borderColor = "#1F2937";
+                  }}
+                  onFocus={(e) => (e.currentTarget.parentElement!.style.borderColor = accent)}
+                  className="w-full bg-transparent text-sm text-[#F8FAFC] tabular-nums outline-none"
+                  placeholder="Enter credits"
+                />
+                <span className="text-xs text-[#6B7280]">credits</span>
+              </div>
 
-          {/* drag layer */}
-          <input
-            type="range"
-            aria-label="Credits"
-            min={MIN_CREDITS}
-            max={MAX_CREDITS}
-            step={100}
-            value={Math.min(MAX_CREDITS, Math.max(MIN_CREDITS, credits))}
-            onChange={(e) => commit(Number(e.target.value))}
-            className="absolute left-0 right-0 top-0 z-20 h-7 w-full cursor-ew-resize appearance-none bg-transparent opacity-0"
-          />
+              <div className="flex items-center">
+                <button
+                  onClick={() => commit(credits - 100)}
+                  className="h-9 w-10 border border-[#1F2937] text-sm text-[#9CA3AF] transition-colors duration-200 hover:text-[#F8FAFC]"
+                  style={{ borderRadius: "10px 0 0 10px" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.borderColor = accent)}
+                  onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#1F2937")}
+                  aria-label="Decrease"
+                >
+                  −
+                </button>
+                <button
+                  onClick={() => commit(credits + 100)}
+                  className="-ml-px h-9 w-10 border border-[#1F2937] text-sm text-[#9CA3AF] transition-colors duration-200 hover:text-[#F8FAFC]"
+                  style={{ borderRadius: "0 10px 10px 0" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.borderColor = accent)}
+                  onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#1F2937")}
+                  aria-label="Increase"
+                >
+                  +
+                </button>
+              </div>
+            </div>
 
-          {CREDIT_NODES.map((c, i) => {
-            const active = credits === c;
-            return (
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <span className="text-[11px] uppercase tracking-[0.16em] text-[#6B7280]">Quick add</span>
+              {QUICK_ADD.map((q) => (
+                <motion.button
+                  key={q}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.96 }}
+                  onClick={() => commit(credits + q)}
+                  className="rounded-full border border-white/[0.08] bg-black px-3 py-1 text-[11px] tabular-nums text-[#9CA3AF] transition-colors duration-200 hover:text-[#F8FAFC]"
+                >
+                  +{q.toLocaleString()}
+                </motion.button>
+              ))}
               <button
-                key={c}
-                onClick={() => commit(c)}
-                className="group absolute top-0 z-30 -translate-x-1/2"
-                style={{ left: `${nodePct(i)}%` }}
+                onClick={() => commit(RECOMMENDED)}
+                className="ml-auto text-[11px] text-[#6B7280] underline-offset-4 transition-colors hover:text-[#F8FAFC] hover:underline"
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* --- STEP 3 : SUMMARY --- */}
+        <section className="p-6 sm:p-8">
+          <StepHead index="03" title="Order summary" hint="No subscription · one-time" accent={accent} />
+
+          <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_320px]">
+            {/* breakdown */}
+            <div className="rounded-[12px] border border-white/[0.06] bg-[#050505] p-5">
+              <SummaryRow label={`${credits.toLocaleString()} credits`} value={fmtMoney(credits * cur.rate)} />
+              <SummaryRow
+                label="Volume bonus"
+                value={bonus > 0 ? `+${bonus.toLocaleString()} credits` : "—"}
+                accent={bonus > 0 ? accent : undefined}
+              />
+              <SummaryRow label="Processing fee" value="Free" />
+              <div className="my-4 h-px bg-white/[0.06]" />
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-[#9CA3AF]">Total due</span>
+                <span className="text-xl font-semibold tabular-nums text-[#F8FAFC]">
+                  {fmtMoney(credits * cur.rate)}
+                </span>
+              </div>
+              <div className="mt-1 text-right text-[11px] tabular-nums text-[#6B7280]">
+                {(credits + bonus).toLocaleString()} credits delivered instantly
+              </div>
+            </div>
+
+            {/* checkout */}
+            <div className="rounded-[12px] border border-white/[0.06] bg-[#050505] p-5">
+              <div className="space-y-2.5">
+                {[
+                  { icon: ShieldCheck, text: "PCI-DSS compliant checkout" },
+                  { icon: Key, text: "Credits applied to your key instantly" },
+                  { icon: Coins, text: "Never expire · full rollover" },
+                ].map(({ icon: Icon, text }) => (
+                  <div key={text} className="flex items-center gap-2 text-xs text-[#9CA3AF]">
+                    <Icon className="h-3.5 w-3.5 shrink-0" style={{ color: accent }} />
+                    <span>{text}</span>
+                  </div>
+                ))}
+              </div>
+
+              <motion.button
+                disabled={!valid}
+                whileHover={valid ? { y: -2 } : undefined}
+                whileTap={valid ? { scale: 0.985 } : undefined}
+                transition={{ type: "spring", stiffness: 420, damping: 28 }}
+                onClick={() =>
+                  toast.info(
+                    `Checkout opening soon — ${(credits + bonus).toLocaleString()} credits for ${fmtMoney(credits * cur.rate)}.`
+                  )
+                }
+                className="group relative mt-5 w-full overflow-hidden rounded-[12px] border-0 px-6 py-3.5 text-sm font-semibold text-white transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-45"
+                style={{ background: "#0000DD" }}
               >
                 <span
-                  className="mx-auto block rounded-full border transition-all duration-200"
-                  style={{
-                    marginTop: active ? 8 : 9,
-                    height: active ? 9 : 7,
-                    width: active ? 9 : 7,
-                    background: active ? accent : "#000000",
-                    borderColor: active ? accent : "#374151",
-                  }}
-                />
-                <span
                   aria-hidden
-                  className="mx-auto mt-1 block w-px transition-all duration-200"
-                  style={{ height: active ? 12 : 0, background: accent }}
+                  className="pointer-events-none absolute inset-0 -translate-x-full bg-white/15 transition-transform duration-700 ease-out group-hover:translate-x-full"
                 />
-                <span
-                  className={`mt-1 block text-[11px] tabular-nums transition-all duration-200 ${
-                    active ? "-translate-y-[2px] text-[#F8FAFC]" : "text-[#9CA3AF] group-hover:text-[#F8FAFC]"
-                  }`}
-                >
-                  {c.toLocaleString()}
+                <span className="relative inline-flex items-center justify-center gap-2">
+                  Continue to Payment
+                  <ChevronRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
                 </span>
-                {c === RECOMMENDED && (
-                  <span
-                    aria-hidden
-                    className="mx-auto mt-1 block h-[3px] w-[3px] rounded-full"
-                    style={{ background: active ? accent : "#9CA3AF" }}
-                  />
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+              </motion.button>
 
-      {/* 3. Smart input */}
-      <div className="mt-10 flex items-center justify-between gap-4">
-        <div className="flex min-w-0 items-baseline gap-3">
-          <input
-            inputMode="numeric"
-            value={draft}
-            onChange={(e) => {
-              const raw = e.target.value.replace(/[^0-9]/g, "");
-              setDraft(raw);
-              setCredits(Math.min(MAX_CREDITS * 10, Number(raw) || 0));
-            }}
-            onBlur={(e) => {
-              setDraft(String(credits));
-              e.currentTarget.style.borderColor = "#1F2937";
-            }}
-            className="w-32 border-b bg-transparent pb-1.5 text-sm text-[#F8FAFC] tabular-nums outline-none transition-colors duration-200"
-            style={{ borderColor: "#1F2937" }}
-            onFocus={(e) => (e.currentTarget.style.borderColor = accent)}
-          />
-          <span className="text-xs text-[#9CA3AF]">custom credits</span>
-        </div>
+              <div className="mt-3 text-center text-[11px] text-[#6B7280] tabular-nums">
+                {valid ? "Taxes calculated at checkout" : `Minimum ${MIN_CREDITS} credits required`}
+              </div>
 
-        <div className="flex items-center">
-          <button
-            onClick={() => commit(credits - 100)}
-            className="h-8 w-9 border border-[#1F2937] text-sm text-[#9CA3AF] transition-colors duration-200 hover:text-[#F8FAFC]"
-            style={{ borderRadius: "8px 0 0 8px" }}
-            onMouseEnter={(e) => (e.currentTarget.style.borderColor = accent)}
-            onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#1F2937")}
-            aria-label="Decrease"
-          >
-            −
-          </button>
-          <button
-            onClick={() => commit(credits + 100)}
-            className="-ml-px h-8 w-9 border border-[#1F2937] text-sm text-[#9CA3AF] transition-colors duration-200 hover:text-[#F8FAFC]"
-            style={{ borderRadius: "0 8px 8px 0" }}
-            onMouseEnter={(e) => (e.currentTarget.style.borderColor = accent)}
-            onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#1F2937")}
-            aria-label="Increase"
-          >
-            +
-          </button>
-        </div>
-      </div>
-
-      <div className="my-8 h-px bg-white/[0.05]" />
-
-      {/* 5. Inline summary + CTA */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="min-w-0">
-          <div className="text-xs text-[#F8FAFC] tabular-nums">
-            {valid ? `${credits.toLocaleString()} credits · ${fmtMoney(credits * cur.rate)}` : `Minimum ${MIN_CREDITS} credits`}
+              <div className="mt-4 flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.16em] text-[#4B5563]">
+                <span>Visa</span><span>·</span><span>Mastercard</span><span>·</span><span>UPI</span><span>·</span><span>Amex</span>
+              </div>
+            </div>
           </div>
-          <div className="mt-1 text-[11px] text-[#9CA3AF] tabular-nums">
-            Balance {balance.toLocaleString()} · never expires · taxes at checkout
-          </div>
-        </div>
-        <button
-          disabled={!valid}
-          onClick={() =>
-            toast.info(`Checkout opening soon — ${credits.toLocaleString()} credits for ${fmtMoney(credits * cur.rate)}.`)
-          }
-          className="group relative shrink-0 overflow-hidden rounded-[10px] px-6 py-2.5 text-sm font-semibold text-[#F8FAFC] transition-all duration-200 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
-          style={{
-            background: valid ? `color-mix(in oklab, ${accent} 22%, #000000)` : "transparent",
-            border: `1px solid ${valid ? accent : "#1F2937"}`,
-          }}
-          onMouseEnter={(e) => {
-            if (valid) e.currentTarget.style.background = `color-mix(in oklab, ${accent} 34%, #000000)`;
-          }}
-          onMouseLeave={(e) => {
-            if (valid) e.currentTarget.style.background = `color-mix(in oklab, ${accent} 22%, #000000)`;
-          }}
-        >
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-[10px] border border-white/0 transition-all duration-200 group-hover:inset-[3px] group-hover:rounded-[7px] group-hover:border-white/15"
-          />
-          <span className="relative">Continue to Payment</span>
-        </button>
+        </section>
       </div>
     </div>
   );
 }
+
+function StepHead({ index, title, hint, accent }: { index: string; title: string; hint: string; accent: string }) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center gap-3">
+        <span
+          className="flex h-6 w-6 items-center justify-center rounded-[7px] text-[10px] font-semibold tabular-nums"
+          style={{ color: accent, background: `color-mix(in oklab, ${accent} 14%, #000000)` }}
+        >
+          {index}
+        </span>
+        <span className="text-sm font-medium tracking-tight text-[#F8FAFC]">{title}</span>
+      </div>
+      <span className="hidden text-[11px] text-[#6B7280] sm:block">{hint}</span>
+    </div>
+  );
+}
+
+function SummaryRow({ label, value, accent }: { label: string; value: string; accent?: string }) {
+  return (
+    <div className="flex items-center justify-between py-1.5 text-sm">
+      <span className="text-[#9CA3AF]">{label}</span>
+      <span className="tabular-nums" style={{ color: accent ?? "#F8FAFC" }}>{value}</span>
+    </div>
+  );
+}
+
 
 
 
