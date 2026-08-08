@@ -501,6 +501,44 @@ function OverviewTile({ icon, ring, value, label, hint, action }: {
   );
 }
 
+function IconField({ label, icon, value, onChange, readOnly, placeholder }: {
+  label: string; icon: React.ReactNode; value: string;
+  onChange?: (v: string) => void; readOnly?: boolean; placeholder?: string;
+}) {
+  return (
+    <div>
+      <div className="text-[11px] uppercase tracking-[0.16em] text-[#9CA3AF]">{label}</div>
+      <div className="mt-2 flex items-center gap-3 rounded-xl border border-white/12 bg-black px-4 py-3.5 transition focus-within:border-[#2563EB]">
+        {icon}
+        <input
+          value={value}
+          readOnly={readOnly}
+          placeholder={placeholder}
+          onChange={(e) => onChange?.(e.target.value)}
+          className="w-full bg-transparent text-[15px] text-white placeholder:text-[#6B7280] outline-none read-only:text-[#D1D5DB]"
+        />
+      </div>
+    </div>
+  );
+}
+
+function DetailRow({ icon, label, value, badge, onClick }: {
+  icon: React.ReactNode; label: string; value?: string; badge?: string; onClick?: () => void;
+}) {
+  return (
+    <button onClick={onClick}
+      className="group flex w-full items-center gap-4 border-b border-white/8 py-3.5 text-left transition hover:bg-white/[0.03]">
+      <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-black">{icon}</span>
+      <span className="flex-1 text-[15px] text-white">{label}</span>
+      {badge
+        ? <span className="rounded-lg border border-[#22D3EE]/40 px-3 py-1.5 text-sm capitalize text-[#22D3EE]">{badge}</span>
+        : <span className="text-sm text-[#D1D5DB]">{value}</span>}
+      <ChevronRight className="size-4 text-[#6B7280] transition group-hover:text-white" />
+    </button>
+  );
+}
+
+
 function Banner({ title, desc }: { title: string; desc: string }) {
   return (
     <div className="relative overflow-hidden rounded-2xl border border-white/10">
