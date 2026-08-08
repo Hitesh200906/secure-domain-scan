@@ -197,10 +197,22 @@ function ProfilePage() {
       </div>
 
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-10">
+      <div className="relative mx-auto max-w-7xl px-3 sm:px-6 py-4 sm:py-10">
+        {/* Mobile top bar with menu */}
+        <div className="md:hidden mb-3 flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/70 px-3 py-2 backdrop-blur">
+          <button onClick={() => setNavOpen(true)} aria-label="Open account menu"
+            className="inline-flex items-center gap-2 rounded-lg border border-white/12 px-2.5 py-1.5 text-xs text-neutral-200">
+            <Menu className="size-4" /> Menu
+          </button>
+          <div className="truncate text-sm font-semibold capitalize">{tab === "api" ? "API keys" : tab}</div>
+        </div>
+
+        {navOpen && <div className="fixed inset-0 z-[70] bg-black/70 md:hidden" onClick={() => setNavOpen(false)} />}
+
         <div className="grid md:grid-cols-[minmax(250px,23%)_1fr] gap-4 lg:gap-6 items-start">
           {/* ---------- Left rail — single unified panel ---------- */}
-          <aside className="relative overflow-hidden rounded-2xl border border-white/10 md:sticky md:top-6 md:min-h-[calc(100vh-3rem)] flex flex-col">
+          <aside className={`relative overflow-y-auto rounded-2xl border border-white/10 flex flex-col fixed inset-y-0 left-0 z-[80] w-[84%] max-w-[320px] rounded-l-none transition-transform duration-300 md:transition-none md:static md:z-auto md:w-auto md:max-w-none md:rounded-2xl md:translate-x-0 md:overflow-hidden md:sticky md:top-6 md:min-h-[calc(100vh-3rem)] ${navOpen ? "translate-x-0" : "-translate-x-full"}`}>
+
             <img src={textureImg} alt="" aria-hidden="true" loading="lazy" width={1280} height={640}
               className="absolute inset-0 size-full object-cover" />
             <div className="absolute inset-0 bg-black/90" />
