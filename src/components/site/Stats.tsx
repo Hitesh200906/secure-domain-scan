@@ -1,14 +1,147 @@
+import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { Crosshair, Clock, Activity } from "lucide-react";
 import statsImage from "@/assets/by-the-numbers.png.asset.json";
+
+const stats = [
+  { value: 95, suffix: "%", label: "Accuracy Rate", icon: Crosshair },
+  { value: 24, suffix: "h", label: "Average Delivery", icon: Clock },
+  { value: 99.9, suffix: "%", label: "System Uptime", decimals: 1, icon: Activity },
+];
+
+const HEX = "polygon(14% 0%, 100% 0%, 100% 86%, 86% 100%, 0% 100%, 0% 14%)";
+
+function Counter({
+  value,
+  suffix,
+  decimals = 0,
+}: {
+  value: number;
+  suffix: string;
+  decimals?: number;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const mv = useMotionValue(0);
+  const rounded = useTransform(mv, (v) => v.toFixed(decimals));
+
+  useEffect(() => {
+    if (!inView) return;
+    const controls = animate(mv, value, { duration: 1.8, ease: [0.16, 1, 0.3, 1] });
+    return controls.stop;
+  }, [inView, mv, value]);
+
+  useEffect(() => {
+    return rounded.on("change", (v) => {
+      if (ref.current) ref.current.textContent = v + suffix;
+    });
+  }, [rounded, suffix]);
+
+  return <span ref={ref}>0{suffix}</span>;
+}
 
 export function Stats() {
   return (
-    <section className="bg-black">
+    <section className="relative isolate overflow-hidden bg-black py-16 sm:py-24">
+      {/* Darkened backdrop */}
       <img
         src={statsImage.url}
-        alt="By the numbers: 95% accuracy rate, 24h average delivery, 99.9% system uptime"
+        alt=""
+        aria-hidden
         loading="lazy"
-        className="block w-full"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.18] blur-[2px]"
       />
+      <div className="pointer-events-none absolute inset-0 bg-black/75" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black via-black/60 to-black" />
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.5 }}
+          className="text-center text-[9px] uppercase tracking-[0.35em] text-white/55 sm:text-[11px]"
+        >
+          By the numbers
+        </motion.p>
+
+        <motion.div
+          initial={{ scaleX: 0, opacity: 0 }}
+          whileInView={{ scaleX: 1, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          className="mx-auto mt-4 h-px w-40 bg-gradient-to-r from-transparent via-white/35 to-transparent sm:w-64"
+        />
+
+        <motion.h2
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="mt-6 text-center text-2xl font-semibold leading-[1.15] tracking-tight text-white sm:text-4xl lg:text-5xl"
+        >
+          Engineered for <span className="text-white/45">results.</span>
+          <br />
+          Measured by <span className="text-white/45">data.</span>
+        </motion.h2>
+
+        <div className="mt-10 grid grid-cols-3 gap-2.5 sm:mt-16 sm:gap-6">
+          {stats.map((s, i) => {
+            const Icon = s.icon;
+            return (
+              <motion.div
+                key={s.label}
+                initial={{ opacity: 0, y: 26 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.7, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
+                style={{ clipPath: HEX }}
+                className="group relative bg-white/[0.08] p-px transition-transform duration-500 hover:-translate-y-1.5"
+              >
+                <div
+                  style={{ clipPath: HEX }}
+                  className="relative flex h-full flex-col items-center bg-[#000000] px-2 py-6 sm:px-8 sm:py-12"
+                >
+                  <motion.span
+                    initial={{ scale: 0.7, opacity: 0 }}
+                    whileInView={{ scale: 1, opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.15 + i * 0.12, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex size-9 items-center justify-center rounded-full border border-white/15 bg-black transition-colors duration-300 group-hover:border-white/35 sm:size-14"
+                  >
+                    <Icon className="size-3.5 text-white/85 sm:size-6" strokeWidth={1.5} />
+                  </motion.span>
+
+                  <motion.div
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8, delay: 0.25 + i * 0.12 }}
+                    className="mt-5 h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent sm:mt-9"
+                  />
+
+                  <div className="mt-5 text-center sm:mt-9">
+                    <div className="text-2xl font-bold tabular-nums tracking-tight text-white sm:text-6xl">
+                      <Counter value={s.value} suffix={s.suffix} decimals={s.decimals} />
+                    </div>
+                    <div className="mt-2 text-[7px] uppercase tracking-[0.18em] text-white/55 sm:mt-4 sm:text-[12px] sm:tracking-[0.28em]">
+                      {s.label}
+                    </div>
+                  </div>
+
+                  <motion.div
+                    initial={{ width: 0 }}
+                    whileInView={{ width: 28 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.7, delay: 0.4 + i * 0.12 }}
+                    className="mt-4 h-[2px] rounded-full bg-white/30 sm:mt-8"
+                  />
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
     </section>
   );
 }
