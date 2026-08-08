@@ -1,41 +1,15 @@
 import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
 import { useEffect, useRef } from "react";
-import { Target, Clock, ShieldCheck } from "lucide-react";
-import accuracyAsset from "@/assets/stat-accuracy-bg.png.asset.json";
-import deliveryAsset from "@/assets/stat-delivery-bg.png.asset.json";
-import uptimeAsset from "@/assets/stat-uptime-bg.png.asset.json";
-
-const imgAccuracy = accuracyAsset.url;
-const imgDelivery = deliveryAsset.url;
-const imgUptime = uptimeAsset.url;
+import { Crosshair, Clock, Activity } from "lucide-react";
 
 const stats = [
-  {
-    value: 95,
-    suffix: "%",
-    label: "Accuracy Rate",
-    color: "#3b82f6",
-    icon: Target,
-    image: imgAccuracy,
-  },
-  {
-    value: 24,
-    suffix: "h",
-    label: "Average Delivery",
-    color: "#7c5cff",
-    icon: Clock,
-    image: imgDelivery,
-  },
-  {
-    value: 99.9,
-    suffix: "%",
-    label: "System Uptime",
-    decimals: 1,
-    color: "#22c55e",
-    icon: ShieldCheck,
-    image: imgUptime,
-  },
+  { value: 95, suffix: "%", label: "Accuracy Rate", icon: Crosshair },
+  { value: 24, suffix: "h", label: "Average Delivery", icon: Clock },
+  { value: 99.9, suffix: "%", label: "System Uptime", decimals: 1, icon: Activity },
 ];
+
+const HEX =
+  "polygon(14% 0%, 100% 0%, 100% 86%, 86% 100%, 0% 100%, 0% 14%)";
 
 function Counter({
   value,
@@ -49,9 +23,7 @@ function Counter({
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const mv = useMotionValue(0);
-  const rounded = useTransform(mv, (v) =>
-    v >= 1000 ? Math.round(v).toLocaleString() : v.toFixed(decimals),
-  );
+  const rounded = useTransform(mv, (v) => v.toFixed(decimals));
 
   useEffect(() => {
     if (!inView) return;
@@ -70,71 +42,77 @@ function Counter({
 
 export function Stats() {
   return (
-    <section className="relative py-14 sm:py-20 border-y border-white/[0.06] bg-black">
+    <section className="relative overflow-hidden bg-black py-16 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <motion.h2
+        <motion.p
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5 }}
-          className="text-center text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-muted-foreground"
+          className="text-center text-[9px] sm:text-[11px] uppercase tracking-[0.35em] text-white/55"
         >
           By the numbers
+        </motion.p>
+
+        <motion.div
+          initial={{ scaleX: 0, opacity: 0 }}
+          whileInView={{ scaleX: 1, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          className="mx-auto mt-4 h-px w-40 sm:w-64 bg-gradient-to-r from-transparent via-white/35 to-transparent"
+        />
+
+        <motion.h2
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="mt-6 text-center text-2xl sm:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.15] text-white"
+        >
+          Engineered for <span className="text-white/45">results.</span>
+          <br />
+          Measured by <span className="text-white/45">data.</span>
         </motion.h2>
 
-        <div className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5">
+        <div className="mt-10 sm:mt-16 grid grid-cols-3 gap-2.5 sm:gap-6">
           {stats.map((s, i) => {
             const Icon = s.icon;
             return (
               <motion.div
                 key={s.label}
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 22 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.55, delay: i * 0.08 }}
-                className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-black p-5 sm:p-7 min-h-[190px] sm:min-h-[260px] flex flex-col"
+                transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                style={{ clipPath: HEX }}
+                className="group relative bg-white/[0.07] p-px transition-transform duration-500 hover:-translate-y-1"
               >
-                <img
-                  src={s.image}
-                  alt=""
-                  aria-hidden
-                  loading="lazy"
-                  width={800}
-                  height={600}
-                  className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-65 transition-transform duration-[1200ms] group-hover:scale-105"
-                />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black/20" />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-
-                <div className="relative flex flex-col h-full">
-                  <span
-                    className="inline-flex size-10 sm:size-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.04]"
-                  >
-                    <Icon className="size-4 sm:size-5" strokeWidth={1.8} style={{ color: s.color }} />
+                <div
+                  style={{ clipPath: HEX }}
+                  className="relative flex h-full flex-col items-center bg-[#000000] px-2 py-6 sm:px-8 sm:py-12"
+                >
+                  <span className="flex size-9 sm:size-14 items-center justify-center rounded-full border border-white/15 bg-black">
+                    <Icon className="size-3.5 sm:size-6 text-white/85" strokeWidth={1.5} />
                   </span>
 
-                  <div className="mt-auto pt-8">
-                    <motion.div
-                      initial={{ opacity: 0, y: 18, scale: 0.94 }}
-                      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                      viewport={{ once: true, margin: "-60px" }}
-                      transition={{ duration: 0.7, delay: 0.15 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                      className="text-3xl sm:text-5xl font-semibold tracking-tight text-white"
-                    >
+                  <div className="mt-5 sm:mt-9 h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+                  <div className="mt-5 sm:mt-9 text-center">
+                    <div className="text-2xl sm:text-6xl font-bold tracking-tight text-white tabular-nums">
                       <Counter value={s.value} suffix={s.suffix} decimals={s.decimals} />
-                    </motion.div>
-                    <div className="mt-2 text-[10px] sm:text-xs uppercase tracking-[0.2em] text-white/60">
+                    </div>
+                    <div className="mt-2 sm:mt-4 text-[7px] sm:text-[12px] uppercase tracking-[0.18em] sm:tracking-[0.28em] text-white/55">
                       {s.label}
                     </div>
-                    <motion.div
-                      initial={{ width: 0 }}
-                      whileInView={{ width: 44 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.7, delay: 0.3 + i * 0.08 }}
-                      className="mt-4 h-[3px] rounded-full"
-                      style={{ background: s.color }}
-                    />
                   </div>
+
+                  <motion.div
+                    initial={{ width: 0 }}
+                    whileInView={{ width: 28 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.7, delay: 0.35 + i * 0.1 }}
+                    className="mt-4 sm:mt-8 h-[2px] rounded-full bg-white/30"
+                  />
                 </div>
               </motion.div>
             );
