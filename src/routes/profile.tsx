@@ -559,7 +559,7 @@ function PasswordBlock() {
 
 function IconField({ label, icon, value, onChange, readOnly, placeholder, type }: {
   label: string; icon: React.ReactNode; value: string;
-  onChange?: (v: string) => void; readOnly?: boolean; placeholder?: string;
+  onChange?: (v: string) => void; readOnly?: boolean; placeholder?: string; type?: string;
 }) {
   return (
     <div>
@@ -567,6 +567,7 @@ function IconField({ label, icon, value, onChange, readOnly, placeholder, type }
       <div className="mt-1.5 flex items-center gap-2.5 rounded-lg border border-white/12 bg-black px-3 py-2.5 transition focus-within:border-[#2563EB]">
         {icon}
         <input
+          type={type}
           value={value}
           readOnly={readOnly}
           placeholder={placeholder}
