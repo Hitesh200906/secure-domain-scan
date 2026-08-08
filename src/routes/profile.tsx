@@ -216,9 +216,10 @@ function ProfilePage() {
                   const count = n.key === "tickets" ? tickets.length : n.key === "credits" ? profile.credits : 0;
                   return (
                     <button key={n.key} onClick={() => setTab(n.key)}
-                      className={`group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl px-3 py-1.5 text-left transition hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))] ${
-                        active ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]" : ""
+                      className={`group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl border px-3 py-1.5 text-left transition hover:border-white/25 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))] ${
+                        active ? "border-white/25 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]" : "border-white/10"
                       }`}>
+
                       <span className="relative size-7 rounded-lg grid place-items-center shrink-0">
                         <n.icon className={`size-4 ${n.key === "security" ? "text-white" : n.tint} transition ${active ? "" : "grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100"}`} />
                       </span>
