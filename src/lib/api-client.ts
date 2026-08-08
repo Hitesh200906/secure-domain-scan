@@ -211,6 +211,11 @@ export const api = {
     if (error) throw new Error(error.message);
     return { ok: true as const };
   },
+  closeTicket: async (ticketId: Id) => {
+    const { data, error } = await supabase.rpc("close_my_ticket", { _ticket_id: ticketId });
+    if (error) throw new Error(error.message);
+    return { ok: Boolean(data) };
+  },
 
   // ---- Audit ----
   audit: async (body: AuditInput) => {

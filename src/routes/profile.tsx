@@ -5,7 +5,7 @@ import {
   BadgeCheck, Pencil, CircleUserRound, Copy, Coins, Crown, Database, Key, KeyRound, LifeBuoy,
   Loader2, LogOut, MessageSquare, MessagesSquare, Monitor, Send, ShieldHalf, ShieldCheck, Smartphone,
   Trash2, User2, ChevronRight, AlertTriangle, Zap, Clock, Headphones, ShoppingCart, ArrowRight,
-  Briefcase, Building2, Mail, Save, Fingerprint,
+  Briefcase, Building2, Mail, Save, Fingerprint, Menu, X, CheckCircle2,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -74,6 +74,7 @@ function ProfilePage() {
   const [tab, setTab] = useState<Tab>(initialTab === "api" ? "general" : initialTab);
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
 
   const apiKeysNotice = () =>
     toast.message("API keys are under construction", {
@@ -129,6 +130,18 @@ function ProfilePage() {
       await api.sendTicketMessage(activeTicket.id, body, profile.full_name || user?.email || activeTicket.name);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to send reply");
+    }
+  };
+
+  const closeTicket = async (t: Ticket) => {
+    try {
+      const { ok } = await api.closeTicket(t.id);
+      if (!ok) { toast.error("This ticket is already closed"); return; }
+      setTickets((list) => list.map((x) => (x.id === t.id ? { ...x, status: "closed" } : x)));
+      setActiveTicket((cur) => (cur && cur.id === t.id ? { ...cur, status: "closed" } : cur));
+      toast.success("Ticket closed");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not close ticket");
     }
   };
 
@@ -197,17 +210,33 @@ function ProfilePage() {
       </div>
 
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-10">
+      <div className="relative mx-auto max-w-7xl px-3 sm:px-6 py-4 sm:py-10">
+        {/* Mobile top bar with menu */}
+        <div className="md:hidden mb-3 flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/70 px-3 py-2 backdrop-blur">
+          <button onClick={() => setNavOpen(true)} aria-label="Open account menu"
+            className="inline-flex items-center gap-2 rounded-lg border border-white/12 px-2.5 py-1.5 text-xs text-neutral-200">
+            <Menu className="size-4" /> Menu
+          </button>
+          <div className="truncate text-sm font-semibold capitalize">{tab === "api" ? "API keys" : tab}</div>
+        </div>
+
+        {navOpen && <div className="fixed inset-0 z-[70] bg-black/70 md:hidden" onClick={() => setNavOpen(false)} />}
+
         <div className="grid md:grid-cols-[minmax(250px,23%)_1fr] gap-4 lg:gap-6 items-start">
           {/* ---------- Left rail — single unified panel ---------- */}
-          <aside className="relative overflow-hidden rounded-2xl border border-white/10 md:sticky md:top-6 md:min-h-[calc(100vh-3rem)] flex flex-col">
+          <aside className={`overflow-y-auto rounded-2xl border border-white/10 flex flex-col fixed inset-y-0 left-0 z-[80] w-[84%] max-w-[320px] rounded-l-none transition-transform duration-300 md:transition-none md:static md:z-auto md:w-auto md:max-w-none md:rounded-2xl md:translate-x-0 md:overflow-hidden md:sticky md:top-6 md:min-h-[calc(100vh-3rem)] ${navOpen ? "translate-x-0" : "-translate-x-full"}`}>
+
             <img src={textureImg} alt="" aria-hidden="true" loading="lazy" width={1280} height={640}
               className="absolute inset-0 size-full object-cover" />
             <div className="absolute inset-0 bg-black/90" />
 
             <div className="relative flex flex-col flex-1 p-4">
               {/* Back + title */}
-              <BackButton label="Back" fallback="/" />
+              <div className="flex items-center justify-between gap-2">
+                <BackButton label="Back" fallback="/" />
+                <button onClick={() => setNavOpen(false)} aria-label="Close menu"
+                  className="md:hidden rounded-lg border border-white/12 p-1.5 text-neutral-300"><X className="size-4" /></button>
+              </div>
               <div className="mt-4">
                 <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Nexefy Security</div>
                 <h1 className="mt-1 truncate text-xl font-semibold tracking-tight">Account center</h1>
@@ -246,13 +275,13 @@ function ProfilePage() {
               <div className="my-4 h-px bg-white/10" />
 
               {/* Nav */}
-              <nav className="flex md:block gap-2 md:space-y-1.5 overflow-x-auto md:overflow-visible">
+              <nav className="block space-y-1.5">
                 {NAV.map((n) => {
                   const active = tab === n.key;
                   const count = n.key === "tickets" ? tickets.length : n.key === "credits" ? profile.credits : 0;
                   return (
-                    <button key={n.key} onClick={() => { if (n.soon) { apiKeysNotice(); return; } setTab(n.key); }}
-                      className={`group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl border px-3 py-1.5 text-left transition hover:border-white/25 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))] ${
+                    <button key={n.key} onClick={() => { if (n.soon) { apiKeysNotice(); return; } setTab(n.key); setNavOpen(false); }}
+                      className={`group relative w-full flex items-center gap-2.5 overflow-hidden rounded-xl border px-3 py-1.5 text-left transition hover:border-white/25 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))] ${
                         active ? "border-white/25 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]" : "border-transparent"
                       }`}>
 
@@ -261,8 +290,8 @@ function ProfilePage() {
                         <n.icon className={`size-4 ${n.key === "security" ? "text-white" : n.tint} transition ${active ? "" : "grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100"}`} />
                       </span>
                       <span className={`relative min-w-0 flex-1 block text-sm whitespace-nowrap ${active ? "text-white" : "text-neutral-200"}`}>{n.label}</span>
-                      {n.soon && <span className="relative hidden md:inline text-[9px] uppercase tracking-[0.14em] rounded-full border border-white/12 px-1.5 py-0.5 text-[#9CA3AF]">Soon</span>}
-                      {!n.soon && count > 0 && <span className="relative hidden md:inline text-[10px] rounded-full bg-white/[0.06] px-1.5 py-0.5 text-neutral-300 tabular-nums">{count}</span>}
+                      {n.soon && <span className="relative inline text-[9px] uppercase tracking-[0.14em] rounded-full border border-white/12 px-1.5 py-0.5 text-[#9CA3AF]">Soon</span>}
+                      {!n.soon && count > 0 && <span className="relative inline text-[10px] rounded-full bg-white/[0.06] px-1.5 py-0.5 text-neutral-300 tabular-nums">{count}</span>}
 
                     </button>
                   );
@@ -270,9 +299,9 @@ function ProfilePage() {
 
                 {user && (
                   <>
-                    <div className="hidden md:block my-2 h-px bg-white/10" />
+                    <div className="my-2 h-px bg-white/10" />
                     <button onClick={signOut}
-                      className="group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl border border-transparent px-3 py-1.5 text-left transition hover:border-white/25 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]">
+                      className="group relative w-full flex items-center gap-2.5 overflow-hidden rounded-xl border border-transparent px-3 py-1.5 text-left transition hover:border-white/25 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]">
                       <span className="relative size-7 rounded-lg grid place-items-center shrink-0">
                         <LogOut className="size-4 text-neutral-400 transition-colors group-hover:text-red-500" />
                       </span>
@@ -406,10 +435,20 @@ function ProfilePage() {
                             <span className="text-[9px] uppercase tracking-widest px-1.5 py-0.5 rounded-full border border-white/10 text-muted-foreground">{t.status.replace("_", " ")}</span>
                           </div>
                           <div className="text-[11px] text-muted-foreground mt-1 line-clamp-2">{t.message}</div>
-                          <div className="mt-2 flex items-center justify-between">
+                          <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
                             <span className="text-[10px] text-muted-foreground/70">{new Date(t.created_at).toLocaleString()}</span>
-                            <span className="text-[10px] rounded-full border border-white/15 bg-black px-2 py-0.5 text-neutral-300 inline-flex items-center gap-1">
-                              View <ChevronRight className="size-3" />
+                            <span className="flex items-center gap-1.5">
+                              {t.status !== "closed" && (
+                                <span role="button" tabIndex={0}
+                                  onClick={(e) => { e.stopPropagation(); closeTicket(t); }}
+                                  onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); closeTicket(t); } }}
+                                  className="text-[10px] rounded-full border border-white/15 bg-black px-2 py-0.5 text-neutral-300 inline-flex items-center gap-1 hover:border-white/35 hover:text-white">
+                                  <CheckCircle2 className="size-3 text-[#2563EB]" /> Close
+                                </span>
+                              )}
+                              <span className="text-[10px] rounded-full border border-white/15 bg-black px-2 py-0.5 text-neutral-300 inline-flex items-center gap-1">
+                                View <ChevronRight className="size-3" />
+                              </span>
                             </span>
                           </div>
                         </button>
@@ -418,8 +457,18 @@ function ProfilePage() {
                   </div>
 
                   <div className="rounded-xl border border-white/10 bg-black p-3">
-                    <div className="text-sm font-medium text-white">{activeTicket ? activeTicket.subject : "Conversation"}</div>
-                    <div className="mt-1 text-[11px] text-[#9CA3AF]">{activeTicket ? `Ticket #${activeTicket.id.slice(0, 8)} · ${activeTicket.status.replace("_", " ")}` : "Pick a ticket to view the thread."}</div>
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="truncate text-sm font-medium text-white">{activeTicket ? activeTicket.subject : "Conversation"}</div>
+                        <div className="mt-1 text-[11px] text-[#9CA3AF]">{activeTicket ? `Ticket #${activeTicket.id.slice(0, 8)} · ${activeTicket.status.replace("_", " ")}` : "Pick a ticket to view the thread."}</div>
+                      </div>
+                      {activeTicket && activeTicket.status !== "closed" && (
+                        <button onClick={() => closeTicket(activeTicket)}
+                          className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-white/12 px-2.5 py-1.5 text-[11px] text-neutral-200 transition hover:border-white/30 hover:text-white">
+                          <CheckCircle2 className="size-3.5 text-[#2563EB]" /> Close ticket
+                        </button>
+                      )}
+                    </div>
                     {!activeTicket ? (
                       <div className="text-center py-16 text-sm text-muted-foreground">
                         <MessageSquare className="size-8 mx-auto mb-3 text-[#2563EB]" />
