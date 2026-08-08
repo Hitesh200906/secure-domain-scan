@@ -9,8 +9,6 @@ const stats = [
   { value: 99.9, suffix: "%", label: "System Uptime", decimals: 1, icon: Activity },
 ];
 
-const HEX = "polygon(14% 0%, 100% 0%, 100% 86%, 86% 100%, 0% 100%, 0% 14%)";
-
 function Counter({
   value,
   suffix,
@@ -42,25 +40,25 @@ function Counter({
 
 export function Stats() {
   return (
-    <section className="relative isolate overflow-hidden bg-black py-16 sm:py-24">
-      {/* Darkened backdrop */}
+    <section className="relative isolate overflow-hidden bg-black py-14 sm:py-24">
+      {/* Cinematic backdrop */}
       <img
         src={statsImage.url}
         alt=""
         aria-hidden
         loading="lazy"
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.18] blur-[2px]"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.45]"
       />
-      <div className="pointer-events-none absolute inset-0 bg-black/75" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black via-black/60 to-black" />
+      <div className="pointer-events-none absolute inset-0 bg-black/60" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
+      <div className="relative mx-auto max-w-6xl px-3 sm:px-6">
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5 }}
-          className="text-center text-[9px] uppercase tracking-[0.35em] text-white/55 sm:text-[11px]"
+          className="text-center text-[9px] uppercase tracking-[0.35em] text-white/60 sm:text-[11px]"
         >
           By the numbers
         </motion.p>
@@ -70,7 +68,7 @@ export function Stats() {
           whileInView={{ scaleX: 1, opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto mt-4 h-px w-40 bg-gradient-to-r from-transparent via-white/35 to-transparent sm:w-64"
+          className="mx-auto mt-4 h-px w-40 bg-gradient-to-r from-transparent via-white/40 to-transparent sm:w-64"
         />
 
         <motion.h2
@@ -78,38 +76,38 @@ export function Stats() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="mt-6 text-center text-2xl font-semibold leading-[1.15] tracking-tight text-white sm:text-4xl lg:text-5xl"
+          className="mt-5 text-center text-2xl font-semibold leading-[1.15] tracking-tight text-white sm:mt-7 sm:text-5xl"
         >
           Engineered for <span className="text-white/45">results.</span>
           <br />
           Measured by <span className="text-white/45">data.</span>
         </motion.h2>
 
-        <div className="mt-10 grid grid-cols-3 gap-2.5 sm:mt-16 sm:gap-6">
+        {/* Cards — overlapping, angled-corner glass panels */}
+        <div className="mt-10 flex items-stretch justify-center sm:mt-20">
           {stats.map((s, i) => {
             const Icon = s.icon;
             return (
               <motion.div
                 key={s.label}
-                initial={{ opacity: 0, y: 26 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.7, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
-                style={{ clipPath: HEX }}
-                className="group relative bg-white/[0.08] p-px transition-transform duration-500 hover:-translate-y-1.5"
+                transition={{ duration: 0.75, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
+                style={{ zIndex: 3 - i }}
+                className={`group relative w-1/3 rounded-tl-[36px] rounded-br-[36px] rounded-tr-[14px] rounded-bl-[14px] bg-gradient-to-b from-white/[0.18] via-white/[0.06] to-white/[0.14] p-px transition-transform duration-500 hover:-translate-y-2 sm:rounded-tl-[86px] sm:rounded-br-[86px] sm:rounded-tr-[26px] sm:rounded-bl-[26px] ${
+                  i > 0 ? "-ml-2 sm:-ml-6" : ""
+                }`}
               >
-                <div
-                  style={{ clipPath: HEX }}
-                  className="relative flex h-full flex-col items-center bg-[#000000] px-2 py-6 sm:px-8 sm:py-12"
-                >
+                <div className="flex h-full flex-col items-center rounded-tl-[35px] rounded-br-[35px] rounded-tr-[13px] rounded-bl-[13px] bg-[#000000] px-2 py-6 sm:rounded-tl-[85px] sm:rounded-br-[85px] sm:rounded-tr-[25px] sm:rounded-bl-[25px] sm:px-8 sm:py-12">
                   <motion.span
-                    initial={{ scale: 0.7, opacity: 0 }}
+                    initial={{ scale: 0.75, opacity: 0 }}
                     whileInView={{ scale: 1, opacity: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.15 + i * 0.12, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex size-9 items-center justify-center rounded-full border border-white/15 bg-black transition-colors duration-300 group-hover:border-white/35 sm:size-14"
+                    className="flex size-10 items-center justify-center rounded-full border border-white/20 bg-black transition-colors duration-300 group-hover:border-white/45 sm:size-16"
                   >
-                    <Icon className="size-3.5 text-white/85 sm:size-6" strokeWidth={1.5} />
+                    <Icon className="size-4 text-white/90 sm:size-7" strokeWidth={1.4} />
                   </motion.span>
 
                   <motion.div
@@ -117,24 +115,24 @@ export function Stats() {
                     whileInView={{ scaleX: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8, delay: 0.25 + i * 0.12 }}
-                    className="mt-5 h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent sm:mt-9"
+                    className="mt-5 h-px w-full bg-gradient-to-r from-transparent via-white/25 to-transparent sm:mt-10"
                   />
 
-                  <div className="mt-5 text-center sm:mt-9">
-                    <div className="text-2xl font-bold tabular-nums tracking-tight text-white sm:text-6xl">
+                  <div className="mt-5 text-center sm:mt-10">
+                    <div className="text-[26px] font-bold leading-none tabular-nums tracking-tight text-white sm:text-[68px]">
                       <Counter value={s.value} suffix={s.suffix} decimals={s.decimals} />
                     </div>
-                    <div className="mt-2 text-[7px] uppercase tracking-[0.18em] text-white/55 sm:mt-4 sm:text-[12px] sm:tracking-[0.28em]">
+                    <div className="mt-2 text-[7px] uppercase tracking-[0.16em] text-white/60 sm:mt-5 sm:text-[13px] sm:tracking-[0.28em]">
                       {s.label}
                     </div>
                   </div>
 
                   <motion.div
                     initial={{ width: 0 }}
-                    whileInView={{ width: 28 }}
+                    whileInView={{ width: 30 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.7, delay: 0.4 + i * 0.12 }}
-                    className="mt-4 h-[2px] rounded-full bg-white/30 sm:mt-8"
+                    className="mt-4 h-[2px] rounded-full bg-white/35 sm:mt-9"
                   />
                 </div>
               </motion.div>
