@@ -576,7 +576,7 @@ function CreditsSection({ balance }: { balance: number }) {
       {/* layered background depth */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <div className="absolute -left-40 -top-32 h-[520px] w-[520px] rounded-full bg-[#0A1633] opacity-[0.35] blur-[140px]" />
-        <div className="absolute -right-48 bottom--24 h-[560px] w-[560px] rounded-full bg-[#05070F] opacity-60 blur-[160px]" />
+        <div className="absolute -bottom-24 -right-48 h-[560px] w-[560px] rounded-full bg-[#05070F] opacity-60 blur-[160px]" />
         <div className="absolute left-1/2 top-1/3 h-[420px] w-[720px] -translate-x-1/2 rounded-full bg-[#0A0F1C] opacity-40 blur-[180px]" />
         <div
           className="absolute inset-0 opacity-[0.06] mix-blend-overlay"
