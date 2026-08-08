@@ -47,28 +47,6 @@ const NAV: { key: Tab; label: string; icon: typeof User2; hint: string; tint: st
 ];
 
 
-const CURRENCIES = [
-  { code: "USD", symbol: "$", rate: 1, label: "US Dollar" },
-  { code: "EUR", symbol: "€", rate: 0.92, label: "Euro" },
-  { code: "GBP", symbol: "£", rate: 0.79, label: "British Pound" },
-  { code: "INR", symbol: "₹", rate: 83, label: "Indian Rupee" },
-  { code: "AED", symbol: "AED ", rate: 3.67, label: "UAE Dirham" },
-  { code: "AUD", symbol: "A$", rate: 1.52, label: "Australian Dollar" },
-] as const;
-
-const CREDIT_PRESETS = [
-  { credits: 10, tag: "Starter", tint: "emerald", note: "10 full scans" },
-  { credits: 25, tag: "Popular", tint: "violet", note: "25 full scans" },
-  { credits: 50, tag: "Best value", tint: "amber", note: "50 full scans" },
-  { credits: 100, tag: "Scale", tint: "sky", note: "100 full scans" },
-] as const;
-
-const TINTS: Record<string, { border: string; bg: string; text: string; dot: string }> = {
-  emerald: { border: "border-emerald-400/40", bg: "bg-emerald-500/10", text: "text-emerald-300", dot: "bg-emerald-400" },
-  violet: { border: "border-violet-400/40", bg: "bg-violet-500/10", text: "text-violet-300", dot: "bg-violet-400" },
-  amber: { border: "border-amber-400/40", bg: "bg-amber-500/10", text: "text-amber-300", dot: "bg-amber-400" },
-  sky: { border: "border-sky-400/40", bg: "bg-sky-500/10", text: "text-sky-300", dot: "bg-sky-400" },
-};
 
 
 function ProfilePage() {
@@ -339,77 +317,8 @@ function ProfilePage() {
               </>
             )}
 
-            {tab === "credits" && (
-              <>
-                {/* Balance hero */}
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
-                  className="relative overflow-hidden rounded-3xl border border-white/12"
-                >
-                  <img src={textureImg} alt="" aria-hidden="true" loading="lazy" width={1280} height={640} className="absolute inset-0 size-full object-cover" />
-                  <div className="absolute inset-0 bg-black/85" />
-                  <div
-                    className="absolute inset-0 opacity-[0.14]"
-                    style={{
-                      backgroundImage:
-                        "linear-gradient(rgba(255,255,255,0.16) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.16) 1px, transparent 1px)",
-                      backgroundSize: "44px 44px",
-                      maskImage: "radial-gradient(ellipse at 20% 30%, black 20%, transparent 75%)",
-                    }}
-                  />
-                  <motion.div
-                    aria-hidden
-                    className="absolute inset-y-0 w-40 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent)]"
-                    animate={{ x: ["-10%", "120%"] }}
-                    transition={{ duration: 7, repeat: Infinity, ease: "linear" }}
-                  />
+            {tab === "credits" && <CreditsSection balance={profile.credits} />}
 
-                  <div className="relative p-6 sm:p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-                    <div>
-                      <div className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-full border border-white/15 bg-black/60 text-neutral-300">
-                        <Coins className="size-3 text-amber-400" /> Credit balance
-                      </div>
-                      <div className="mt-4 flex items-end gap-2">
-                        <motion.span
-                          key={profile.credits}
-                          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}
-                          className="text-6xl font-semibold tracking-tight tabular-nums leading-none"
-                        >
-                          {profile.credits}
-                        </motion.span>
-                        <span className="pb-1 text-sm text-muted-foreground">credits left</span>
-                      </div>
-                      <p className="mt-3 text-xs text-muted-foreground max-w-sm leading-relaxed">
-                        One credit runs one complete full-stack security scan, including the deliverable report.
-                      </p>
-                      <button
-                        onClick={() => document.getElementById("credit-plans")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                        className="group relative mt-5 inline-flex items-center gap-2 overflow-hidden rounded-full border border-white/20 bg-black px-5 py-2.5 text-sm font-medium transition-transform duration-300 hover:scale-[1.03]"
-                      >
-                        <span className="absolute inset-0 -translate-y-full bg-white transition-transform duration-500 ease-out group-hover:translate-y-0" />
-                        <Coins className="relative size-4 transition-colors duration-500 group-hover:text-black" />
-                        <span className="relative transition-colors duration-500 group-hover:text-black">Buy credits</span>
-                      </button>
-                    </div>
-                    <div className="sm:text-right">
-                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Usage this cycle</div>
-                      <div className="mt-2 h-2 w-full sm:w-56 rounded-full bg-white/[0.08] overflow-hidden">
-                        <motion.div
-                          className="h-full rounded-full bg-white/70"
-                          initial={{ width: 0 }}
-                          animate={{ width: `${Math.min(100, (profile.credits / 50) * 100)}%` }}
-                          transition={{ duration: 0.9, ease: "easeOut" }}
-                        />
-                      </div>
-                      <div className="mt-2 text-[11px] text-muted-foreground capitalize">{profile.plan} plan</div>
-                    </div>
-                  </div>
-                </motion.div>
-
-                <CreditPurchase />
-
-              </>
-            )}
 
 
             {tab === "tickets" && (
@@ -635,130 +544,156 @@ function ChatBubble({ side, who, when, body }: { side: "user" | "admin"; who: st
   );
 }
 
-function CreditPurchase() {
-  const [selected, setSelected] = useState<number>(25);
-  const [custom, setCustom] = useState<string>("");
-  const [cur, setCur] = useState<(typeof CURRENCIES)[number]>(CURRENCIES[0]);
+/* ---------------- Buy Credits ---------------- */
 
-  const customNum = Math.max(0, Math.floor(Number(custom) || 0));
-  const credits = custom.trim() ? customNum : selected;
-  const usd = credits; // 1 credit = $1
-  const total = usd * cur.rate;
-  const fmt = (n: number) =>
-    `${cur.symbol}${n.toLocaleString(undefined, { maximumFractionDigits: cur.code === "INR" ? 0 : 2 })}`;
+const CURRENCIES = [
+  { code: "USD", symbol: "$", rate: 1, label: "USD ($)" },
+  { code: "INR", symbol: "₹", rate: 83, label: "INR (₹)" },
+  { code: "EUR", symbol: "€", rate: 0.92, label: "EUR (€)" },
+] as const;
+
+const CREDIT_PACKS = [
+  { credits: 1000, desc: "For small teams getting started" },
+  { credits: 2500, desc: "Best for growing workloads", popular: true },
+  { credits: 5000, desc: "For continuous coverage" },
+  { credits: 10000, desc: "Volume usage at scale" },
+] as const;
+
+function CreditsSection({ balance }: { balance: number }) {
+  const [cur, setCur] = useState<(typeof CURRENCIES)[number]>(CURRENCIES[0]);
+  const [selected, setSelected] = useState<number>(2500);
+  const [custom, setCustom] = useState("");
+
+  const customNum = Math.floor(Number(custom) || 0);
+  const usingCustom = custom.trim().length > 0;
+  const credits = usingCustom ? customNum : selected;
+  const valid = credits >= 100;
+  const price = (c: number) =>
+    `${cur.symbol}${(c * cur.rate).toLocaleString(undefined, { maximumFractionDigits: cur.code === "INR" ? 0 : 2 })}`;
 
   return (
-    <div id="credit-plans" className="relative overflow-hidden rounded-3xl border border-white/12 bg-black/70">
-      <div
-        aria-hidden
-        className="absolute inset-0 opacity-[0.10]"
-        style={{
-          backgroundImage:
-            "radial-gradient(600px 240px at 10% 0%, rgba(139,92,246,0.55), transparent 60%), radial-gradient(500px 220px at 90% 100%, rgba(16,185,129,0.45), transparent 60%), radial-gradient(500px 220px at 60% 20%, rgba(56,189,248,0.35), transparent 60%)",
-        }}
-      />
-      <div className="relative p-6 sm:p-8">
-        <div className="flex flex-wrap items-start justify-between gap-4">
+    <div className="mx-auto w-full max-w-[1100px] grid lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] gap-4">
+      {/* LEFT — credits info */}
+      <aside className="rounded-[10px] border border-[#1F2937] bg-[#0A0A0A] p-6 flex flex-col">
+        <div className="flex items-center gap-2 text-[#9CA3AF]">
+          <Coins className="size-4" strokeWidth={1.5} />
+          <span className="text-sm">Your Credits</span>
+        </div>
+        <div className="mt-6 text-5xl font-semibold tracking-tight tabular-nums text-[#F8FAFC]">
+          {balance.toLocaleString()}
+        </div>
+        <p className="mt-2 text-sm text-[#9CA3AF]">Use credits to access features</p>
+
+        <div className="mt-6 h-px bg-[#1F2937]" />
+
+        <dl className="mt-6 space-y-3 text-sm">
+          <div className="flex items-center justify-between">
+            <dt className="text-[#9CA3AF]">Rate</dt>
+            <dd className="text-[#F8FAFC] tabular-nums">1 credit = $1 USD</dd>
+          </div>
+          <div className="flex items-center justify-between">
+            <dt className="text-[#9CA3AF]">Billing</dt>
+            <dd className="text-[#F8FAFC]">Pay as you go</dd>
+          </div>
+          <div className="flex items-center justify-between">
+            <dt className="text-[#9CA3AF]">Expiry</dt>
+            <dd className="text-[#F8FAFC]">Never</dd>
+          </div>
+        </dl>
+
+        <div className="mt-auto pt-8 text-xs text-[#9CA3AF]">Secure • Instant • Transparent</div>
+      </aside>
+
+      {/* RIGHT — purchase */}
+      <section className="rounded-[10px] border border-[#1F2937] bg-[#0A0A0A] p-6">
+        <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <div className="text-sm font-medium">Choose credits</div>
-            <div className="text-xs text-muted-foreground mt-1">
-              Pay as you go — no subscription. Credits never expire.
-            </div>
+            <h2 className="text-base font-medium text-[#F8FAFC]">Buy Credits</h2>
+            <p className="mt-1 text-sm text-[#9CA3AF]">Select a package or enter a custom amount.</p>
           </div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1.5 text-[11px] text-emerald-300">
-            <Coins className="size-3.5" /> 1 credit = $1 USD
-          </div>
+          <label className="text-xs text-[#9CA3AF]">
+            <span className="block mb-1.5">Currency</span>
+            <select
+              value={cur.code}
+              onChange={(e) => setCur(CURRENCIES.find((c) => c.code === e.target.value) ?? CURRENCIES[0])}
+              className="rounded-[6px] border border-[#1F2937] bg-[#111111] px-3 py-2 text-sm text-[#F8FAFC] outline-none transition-colors duration-150 hover:border-[#374151] focus:border-[#1D4ED8]"
+            >
+              {CURRENCIES.map((c) => (
+                <option key={c.code} value={c.code} className="bg-[#111111]">{c.label}</option>
+              ))}
+            </select>
+          </label>
         </div>
 
-        {/* Presets */}
-        <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {CREDIT_PRESETS.map((p) => {
-            const t = TINTS[p.tint];
-            const active = !custom.trim() && selected === p.credits;
+        {/* Packages */}
+        <div className="mt-5 grid sm:grid-cols-2 gap-3">
+          {CREDIT_PACKS.map((p) => {
+            const active = !usingCustom && selected === p.credits;
             return (
               <button
                 key={p.credits}
                 onClick={() => { setCustom(""); setSelected(p.credits); }}
-                className={`text-left rounded-2xl border p-4 transition-colors ${
-                  active ? `${t.border} ${t.bg}` : "border-white/10 bg-black/50 hover:border-white/25"
+                className={`text-left rounded-[8px] border bg-[#111111] p-4 transition-colors duration-150 ${
+                  active ? "border-[#1D4ED8]" : "border-[#1F2937] hover:border-[#374151]"
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <span className={`text-[10px] uppercase tracking-widest ${active ? t.text : "text-muted-foreground"}`}>{p.tag}</span>
-                  <span className={`size-2 rounded-full ${active ? t.dot : "bg-white/15"}`} />
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-lg font-medium tabular-nums text-[#F8FAFC]">
+                    {p.credits.toLocaleString()} Credits
+                  </span>
+                  {"popular" in p && p.popular && (
+                    <span className="rounded-[4px] border border-[#1F2937] px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-[#9CA3AF]">
+                      Popular
+                    </span>
+                  )}
                 </div>
-                <div className="mt-3 text-2xl font-semibold tabular-nums">{p.credits}</div>
-                <div className="text-[11px] text-muted-foreground">{p.note}</div>
-                <div className={`mt-2 text-xs tabular-nums ${active ? t.text : "text-white/70"}`}>{fmt(p.credits * cur.rate)}</div>
+                <div className="mt-1 text-sm tabular-nums text-[#F8FAFC]">{price(p.credits)}</div>
+                <div className="mt-1 text-xs text-[#9CA3AF]">{p.desc}</div>
               </button>
             );
           })}
         </div>
 
-        {/* Custom + currency */}
-        <div className="mt-4 grid md:grid-cols-2 gap-3">
-          <div className="rounded-2xl border border-violet-400/25 bg-violet-500/[0.07] p-4">
-            <div className="text-[10px] uppercase tracking-widest text-violet-300">Custom amount</div>
-            <div className="mt-3 flex items-center gap-2">
-              <input
-                inputMode="numeric"
-                value={custom}
-                onChange={(e) => setCustom(e.target.value.replace(/[^0-9]/g, ""))}
-                placeholder="e.g. 175"
-                className="w-full rounded-xl border border-white/12 bg-black/60 px-3 py-2.5 text-sm outline-none focus:border-violet-400/50"
-              />
-              <span className="text-xs text-muted-foreground shrink-0">credits</span>
-            </div>
-            <div className="mt-2 text-[11px] text-muted-foreground">Any amount from 1 to 10,000 credits.</div>
-          </div>
-
-          <div className="rounded-2xl border border-sky-400/25 bg-sky-500/[0.07] p-4">
-            <div className="text-[10px] uppercase tracking-widest text-sky-300">Pay in your currency</div>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {CURRENCIES.map((c) => (
-                <button
-                  key={c.code}
-                  onClick={() => setCur(c)}
-                  title={c.label}
-                  className={`rounded-lg px-2.5 py-1.5 text-xs border transition-colors ${
-                    cur.code === c.code ? "border-sky-400/50 bg-sky-500/15 text-sky-200" : "border-white/10 bg-black/50 text-white/70 hover:border-white/25"
-                  }`}
-                >
-                  {c.code}
-                </button>
-              ))}
-            </div>
-            <div className="mt-2 text-[11px] text-muted-foreground">Converted at checkout using live rates.</div>
+        {/* Custom */}
+        <div className="mt-3 rounded-[8px] border border-[#1F2937] bg-[#111111] p-4">
+          <label htmlFor="custom-credits" className="text-sm text-[#F8FAFC]">Custom amount</label>
+          <input
+            id="custom-credits"
+            inputMode="numeric"
+            value={custom}
+            onChange={(e) => setCustom(e.target.value.replace(/[^0-9]/g, ""))}
+            placeholder="Enter credits"
+            className="mt-2 w-full rounded-[6px] border border-[#1F2937] bg-[#0A0A0A] px-3 py-2.5 text-sm text-[#F8FAFC] placeholder:text-[#6B7280] outline-none transition-colors duration-150 hover:border-[#374151] focus:border-[#1D4ED8]"
+          />
+          <div className="mt-2 text-xs text-[#9CA3AF]">
+            {usingCustom
+              ? customNum >= 100
+                ? `${customNum.toLocaleString()} credits — ${price(customNum)}`
+                : "Minimum 100 credits."
+              : "Minimum 100 credits."}
           </div>
         </div>
 
-        {/* Summary */}
-        <div className="mt-4 rounded-2xl border border-white/12 bg-black/60 p-5 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
-            <div>
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Credits</div>
-              <div className="mt-1 text-xl font-semibold tabular-nums text-amber-300">{credits || 0}</div>
+        {/* Summary + CTA */}
+        <div className="mt-5 border-t border-[#1F2937] pt-5 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div className="text-xs text-[#9CA3AF]">Total ({cur.code})</div>
+            <div className="mt-1 text-2xl font-semibold tabular-nums text-[#F8FAFC]">
+              {price(valid ? credits : 0)}
             </div>
-            <div>
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Unit price</div>
-              <div className="mt-1 text-xl font-semibold tabular-nums text-emerald-300">{fmt(cur.rate)}</div>
-            </div>
-            <div>
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Total ({cur.code})</div>
-              <div className="mt-1 text-xl font-semibold tabular-nums text-sky-300">{fmt(total)}</div>
+            <div className="mt-1 text-xs text-[#9CA3AF] tabular-nums">
+              {valid ? `${credits.toLocaleString()} credits` : "Select a package"}
             </div>
           </div>
           <button
-            disabled={!credits}
-            onClick={() => toast.info(`Checkout opening soon — ${credits} credits for ${fmt(total)}.`)}
-            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-white/20 bg-black px-6 py-3 text-sm font-medium transition-transform duration-300 hover:scale-[1.03] disabled:opacity-40 disabled:hover:scale-100"
+            disabled={!valid}
+            onClick={() => toast.info(`Checkout opening soon — ${credits.toLocaleString()} credits for ${price(credits)}.`)}
+            className="rounded-[6px] bg-[#1D4ED8] px-6 py-3 text-sm font-medium text-[#F8FAFC] transition-colors duration-150 hover:bg-[#1A43BA] disabled:cursor-not-allowed disabled:bg-[#1F2937] disabled:text-[#6B7280]"
           >
-            <span className="absolute inset-0 -translate-y-full bg-white transition-transform duration-500 ease-out group-hover:translate-y-0" />
-            <Coins className="relative size-4 transition-colors duration-500 group-hover:text-black" />
-            <span className="relative transition-colors duration-500 group-hover:text-black">Continue to payment</span>
+            Buy Credits
           </button>
         </div>
-      </div>
+      </section>
     </div>
   );
 }
