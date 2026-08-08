@@ -352,21 +352,22 @@ function ProfilePage() {
 
 
             {tab === "tickets" && (
-              <>
-                <Banner title="Support tickets" desc="Every conversation you've had with the Nexefy team." />
+              <SectionShell title="Support tickets" desc="Every conversation you've had with the Nexefy team.">
                 <div className="grid xl:grid-cols-[320px_1fr] gap-4">
-                  <Card title="Your tickets" desc={tickets.length ? `${tickets.length} conversation${tickets.length === 1 ? "" : "s"}.` : "Open a request from Contact."}>
-                    <div className="space-y-2 max-h-[520px] overflow-y-auto -mx-2 px-2">
+                  <div className="rounded-xl border border-white/10 bg-black p-3">
+                    <div className="text-sm font-medium text-white">Your tickets</div>
+                    <div className="mt-1 text-[11px] text-[#9CA3AF]">{tickets.length ? `${tickets.length} conversation${tickets.length === 1 ? "" : "s"}.` : "Open a request from Contact."}</div>
+                    <div className="mt-3 space-y-2 max-h-[460px] overflow-y-auto">
                       {tickets.length === 0 && (
                         <div className="text-center py-10">
-                          <LifeBuoy className="size-8 mx-auto text-emerald-400" />
+                          <LifeBuoy className="size-8 mx-auto text-[#2563EB]" />
                           <div className="mt-3 text-sm">No tickets yet</div>
-                          <Link to="/contact" className="mt-4 inline-flex rounded-full bg-white text-black px-4 py-2 text-xs font-medium">Open a ticket</Link>
+                          <Link to="/contact" className="mt-4 inline-flex rounded-xl bg-[#2563EB] px-4 py-2 text-xs font-medium text-white transition hover:bg-[#1D4ED8]">Open a ticket</Link>
                         </div>
                       )}
                       {tickets.map((t) => (
                         <button key={t.id} onClick={() => setActiveTicket(t)}
-                          className={`w-full text-left p-3 rounded-xl border transition ${activeTicket?.id === t.id ? "border-white/20 bg-white/[0.06]" : "border-white/8 hover:border-white/20"}`}>
+                          className={`w-full text-left p-3 rounded-xl border bg-black transition ${activeTicket?.id === t.id ? "border-[#2563EB]" : "border-white/8 hover:border-white/20"}`}>
                           <div className="flex items-center justify-between gap-2">
                             <span className="text-sm font-medium truncate">{t.subject}</span>
                             <span className="text-[9px] uppercase tracking-widest px-1.5 py-0.5 rounded-full border border-white/10 text-muted-foreground">{t.status.replace("_", " ")}</span>
@@ -381,15 +382,18 @@ function ProfilePage() {
                         </button>
                       ))}
                     </div>
-                  </Card>
-                  <Card title={activeTicket ? activeTicket.subject : "Conversation"} desc={activeTicket ? `Ticket #${activeTicket.id.slice(0, 8)} · ${activeTicket.status.replace("_", " ")}` : "Pick a ticket to view the thread."}>
+                  </div>
+
+                  <div className="rounded-xl border border-white/10 bg-black p-3">
+                    <div className="text-sm font-medium text-white">{activeTicket ? activeTicket.subject : "Conversation"}</div>
+                    <div className="mt-1 text-[11px] text-[#9CA3AF]">{activeTicket ? `Ticket #${activeTicket.id.slice(0, 8)} · ${activeTicket.status.replace("_", " ")}` : "Pick a ticket to view the thread."}</div>
                     {!activeTicket ? (
                       <div className="text-center py-16 text-sm text-muted-foreground">
-                        <MessageSquare className="size-8 mx-auto mb-3 text-[#4d7cff]" />
+                        <MessageSquare className="size-8 mx-auto mb-3 text-[#2563EB]" />
                         Select a ticket on the left.
                       </div>
                     ) : (
-                      <div className="flex flex-col h-[520px]">
+                      <div className="mt-3 flex flex-col h-[460px]">
                         <div className="flex-1 overflow-y-auto space-y-3 pr-1">
                           <ChatBubble side="user" who={activeTicket.name} when={activeTicket.created_at} body={activeTicket.message} />
                           {ticketMsgs.map((m) => (
@@ -401,78 +405,78 @@ function ProfilePage() {
                           <textarea value={ticketReply} onChange={(e) => setTicketReply(e.target.value)}
                             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendTicketReply(); } }}
                             placeholder="Reply to our team…" rows={2}
-                            className="flex-1 bg-white/[0.04] border border-white/10 rounded-xl px-3 py-2 text-sm resize-none focus:outline-none focus:border-white/30" />
+                            className="flex-1 bg-black border border-white/12 rounded-xl px-3 py-2 text-sm resize-none focus:outline-none focus:border-[#2563EB]" />
                           <button onClick={sendTicketReply} disabled={!ticketReply.trim()}
-                            className="self-end rounded-xl bg-white text-black px-4 py-2 text-sm font-medium inline-flex items-center gap-1.5 disabled:opacity-50">
+                            className="self-end rounded-xl bg-[#2563EB] px-4 py-2 text-sm font-medium text-white inline-flex items-center gap-1.5 transition hover:bg-[#1D4ED8] disabled:opacity-50">
                             <Send className="size-3.5" /> Send
                           </button>
                         </div>
                       </div>
                     )}
-                  </Card>
+                  </div>
                 </div>
-              </>
+              </SectionShell>
             )}
 
             {tab === "security" && (
-              <>
-                <Banner title="Security" desc="Credentials, two-factor and active sessions for this account." />
-                <div className="grid lg:grid-cols-2 gap-4">
-                  <Card title="Password" desc="Change your password regularly to keep your account secure.">
-                    <Field label="Current password" value="" onChange={() => {}} type="password" />
-                    <Field label="New password" value="" onChange={() => {}} type="password" />
-                    <button className="rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium hover:border-white/30 transition">Update password</button>
-                  </Card>
-                  <Card title="Two-factor authentication" desc="Protect your account with an additional layer.">
-                    <div className="flex items-center justify-between p-4 rounded-xl border border-white/10">
-                      <div className="flex items-center gap-3">
-                        <div className="size-10 rounded-lg border border-white/10 grid place-items-center"><Smartphone className="size-4 text-[#4d7cff]" /></div>
-                        <div>
-                          <div className="text-sm">Authenticator app</div>
-                          <div className="text-[11px] text-muted-foreground">Not configured</div>
-                        </div>
-                      </div>
-                      <button className="text-xs hover:underline">Enable</button>
+              <SectionShell title="Security" desc="Credentials, two-factor and active sessions for this account.">
+                <PasswordBlock />
+
+                <div className="my-5 h-px bg-white/10" />
+
+                <div className="text-base font-semibold text-white">Two-factor authentication</div>
+                <p className="mt-1 text-xs text-[#9CA3AF]">Protect your account with an additional layer.</p>
+                <div className="mt-3 flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black p-3">
+                  <div className="flex items-center gap-3">
+                    <div className="size-9 rounded-lg ring-1 ring-white/10 bg-black grid place-items-center"><Smartphone className="size-4 text-[#2563EB]" /></div>
+                    <div>
+                      <div className="text-sm">Authenticator app</div>
+                      <div className="text-[11px] text-muted-foreground">Not configured</div>
                     </div>
-                  </Card>
-                  <Card title="Active sessions" className="lg:col-span-2">
-                    <div className="flex items-center justify-between p-4 rounded-xl border border-white/10">
-                      <div className="flex items-center gap-3">
-                        <div className="size-10 rounded-lg border border-white/10 grid place-items-center"><Monitor className="size-4 text-[#4d7cff]" /></div>
-                        <div>
-                          <div className="text-sm flex items-center gap-2">This device <span className="text-[10px] px-1.5 py-0.5 rounded-full border border-white/10 text-muted-foreground">CURRENT</span></div>
-                          <div className="text-[11px] text-muted-foreground">Active now</div>
-                        </div>
-                      </div>
-                      <ShieldCheck className="size-4 text-emerald-400" />
-                    </div>
-                  </Card>
+                  </div>
+                  <button onClick={() => toast.message("Two-factor authentication", { description: "Authenticator setup is coming soon." })}
+                    className="rounded-lg bg-[#2563EB] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[#1D4ED8]">Enable</button>
                 </div>
-              </>
+
+                <div className="my-5 h-px bg-white/10" />
+
+                <div className="text-base font-semibold text-white">Active sessions</div>
+                <p className="mt-1 text-xs text-[#9CA3AF]">Devices currently signed in to this account.</p>
+                <div className="mt-3 flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black p-3">
+                  <div className="flex items-center gap-3">
+                    <div className="size-9 rounded-lg ring-1 ring-white/10 bg-black grid place-items-center"><Monitor className="size-4 text-[#2563EB]" /></div>
+                    <div>
+                      <div className="text-sm flex items-center gap-2">This device <span className="text-[10px] px-1.5 py-0.5 rounded-full border border-white/10 text-muted-foreground">CURRENT</span></div>
+                      <div className="text-[11px] text-muted-foreground">Active now</div>
+                    </div>
+                  </div>
+                  <ShieldCheck className="size-4 text-[#2563EB]" />
+                </div>
+              </SectionShell>
             )}
 
             {tab === "api" && (
-              <>
-                <Banner title="API keys" desc="Integrate Nexefy Security scans into your own stack." />
-                <Card title="Keys">
-                  <div className="p-4 rounded-xl border border-white/10">
-                    <div className="flex items-center justify-between gap-3 flex-wrap">
-                      <div className="flex items-center gap-3">
-                        <div className="size-10 rounded-lg border border-white/10 grid place-items-center"><Key className="size-4 text-amber-400" /></div>
-                        <div>
-                          <div className="text-sm">Production key</div>
-                          <div className="text-[11px] text-muted-foreground font-mono">nxs_live_••••••••••••3f8a</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <button onClick={() => { navigator.clipboard.writeText("nxs_live_xxxxx"); toast.success("Copied"); }} className="text-xs text-muted-foreground hover:text-white inline-flex items-center gap-1"><Copy className="size-3 text-[#4d7cff]" /> Copy</button>
-                        <button className="text-xs text-destructive hover:underline">Revoke</button>
+              <SectionShell title="API keys" desc="Integrate Nexefy Security scans into your own stack.">
+                <div className="rounded-xl border border-white/10 bg-black p-3">
+                  <div className="flex items-center justify-between gap-3 flex-wrap">
+                    <div className="flex items-center gap-3">
+                      <div className="size-9 rounded-lg ring-1 ring-white/10 bg-black grid place-items-center"><Key className="size-4 text-[#2563EB]" /></div>
+                      <div>
+                        <div className="text-sm">Production key</div>
+                        <div className="text-[11px] text-muted-foreground font-mono">nxs_live_••••••••••••3f8a</div>
                       </div>
                     </div>
+                    <div className="flex items-center gap-3">
+                      <button onClick={() => { navigator.clipboard.writeText("nxs_live_xxxxx"); toast.success("Copied"); }} className="text-xs text-muted-foreground hover:text-white inline-flex items-center gap-1"><Copy className="size-3 text-[#2563EB]" /> Copy</button>
+                      <button onClick={() => toast.message("Revoke key", { description: "Key rotation is coming soon." })} className="text-xs text-destructive hover:underline">Revoke</button>
+                    </div>
                   </div>
-                  <button className="rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium hover:border-white/30 transition inline-flex items-center gap-2"><Key className="size-4 text-amber-400" /> Generate new key</button>
-                </Card>
-              </>
+                </div>
+                <button onClick={() => toast.message("Generate key", { description: "New key generation is coming soon." })}
+                  className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#2563EB] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#1D4ED8]">
+                  <Key className="size-4" /> Generate new key
+                </button>
+              </SectionShell>
             )}
           </motion.div>
         </div>
