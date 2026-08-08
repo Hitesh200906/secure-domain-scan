@@ -618,8 +618,6 @@ function CreditsSection({ balance }: { balance: number }) {
   const nodePct = (i: number) => (i / (CREDIT_NODES.length - 1)) * 100;
   const railPct = Math.max(0, Math.min(100, ((credits - MIN_CREDITS) / (MAX_CREDITS - MIN_CREDITS)) * 100));
 
-  const tint = (pct: number) => `color-mix(in oklab, ${accent} ${pct}%, #000000)`;
-
   return (
     <div className="mx-auto w-full max-w-[860px]">
       {/* ============ HEADER ============ */}
@@ -900,13 +898,13 @@ function CreditsSection({ balance }: { balance: number }) {
           <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_320px]">
             {/* breakdown */}
             <div className="rounded-[12px] border border-white/[0.06] bg-[#050505] p-5">
-              <Row label={`${credits.toLocaleString()} credits`} value={fmtMoney(credits * cur.rate)} />
-              <Row
+              <SummaryRow label={`${credits.toLocaleString()} credits`} value={fmtMoney(credits * cur.rate)} />
+              <SummaryRow
                 label="Volume bonus"
                 value={bonus > 0 ? `+${bonus.toLocaleString()} credits` : "—"}
                 accent={bonus > 0 ? accent : undefined}
               />
-              <Row label="Processing fee" value="Free" />
+              <SummaryRow label="Processing fee" value="Free" />
               <div className="my-4 h-px bg-white/[0.06]" />
               <div className="flex items-center justify-between">
                 <span className="text-sm text-[#9CA3AF]">Total due</span>
@@ -989,7 +987,7 @@ function StepHead({ index, title, hint, accent }: { index: string; title: string
   );
 }
 
-function Row({ label, value, accent }: { label: string; value: string; accent?: string }) {
+function SummaryRow({ label, value, accent }: { label: string; value: string; accent?: string }) {
   return (
     <div className="flex items-center justify-between py-1.5 text-sm">
       <span className="text-[#9CA3AF]">{label}</span>
