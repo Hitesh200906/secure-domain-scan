@@ -118,11 +118,6 @@ export function Navbar() {
 
         {open && (
           <div className="md:hidden mt-2 bg-black/90 backdrop-blur-xl border border-white/10 rounded-2xl p-4 space-y-1">
-            {links.map((l) => (
-              <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="block px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">
-                {l.label}
-              </Link>
-            ))}
             {user && (
               <>
                 {mode === "security" && (
