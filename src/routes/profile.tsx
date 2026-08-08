@@ -894,14 +894,14 @@ function CreditsSection({ balance }: { balance: number }) {
   const visible = showAll ? txs : txs.slice(0, 5);
 
   return (
-    <div className="space-y-4">
+    <div className="w-full min-w-0 space-y-3 sm:space-y-4">
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <h2 className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-white">
+        <div className="min-w-0">
+          <h2 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-white sm:text-2xl">
             Credits <span className="h-2 w-2 rounded-full bg-[#2563EB]" />
           </h2>
-          <p className="mt-1 text-sm text-[#9CA3AF]">Manage your credits and transactions.</p>
+          <p className="mt-1 text-xs text-[#9CA3AF] sm:text-sm">Manage your credits and transactions.</p>
         </div>
         <div className="hidden sm:flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] px-3.5 py-2.5 text-sm text-white">
           <Coins className="h-4 w-4 text-white" />
@@ -911,84 +911,84 @@ function CreditsSection({ balance }: { balance: number }) {
 
       {/* Balance */}
       <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black">
-        <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-7">
-          <div>
-            <div className="text-[11px] uppercase tracking-[0.18em] text-[#9CA3AF]">Available balance</div>
-            <div className="mt-2 text-5xl font-semibold tabular-nums text-white sm:text-6xl">{bal.toLocaleString()}</div>
-            <div className="mt-1 text-lg text-[#D1D5DB]">Credits</div>
+        <div className="flex items-center justify-between gap-3 p-4 sm:flex-row sm:p-7">
+          <div className="min-w-0">
+            <div className="text-[10px] uppercase tracking-[0.18em] text-[#9CA3AF] sm:text-[11px]">Available balance</div>
+            <div className="mt-1 text-3xl font-semibold tabular-nums text-white sm:mt-2 sm:text-6xl">{bal.toLocaleString()}</div>
+            <div className="mt-0.5 text-sm text-[#D1D5DB] sm:mt-1 sm:text-lg">Credits</div>
             <button
               onClick={() => setOpen(true)}
-              className="mt-5 inline-flex items-center gap-3 rounded-xl bg-[#2563EB] px-5 py-3 text-[15px] font-medium text-white transition hover:bg-[#1D4ED8]"
+              className="mt-3 inline-flex items-center gap-2 rounded-lg bg-[#2563EB] px-3.5 py-2 text-[12px] font-medium text-white transition hover:bg-[#1D4ED8] sm:mt-5 sm:gap-3 sm:rounded-xl sm:px-5 sm:py-3 sm:text-[15px]"
             >
-              <ShoppingCart className="h-4 w-4" />
+              <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               Buy Credits
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </button>
           </div>
           <img
             src={creditsWallet.url}
             alt="Credits wallet with coins"
-            className="w-full max-w-[320px] self-center sm:w-[46%]"
+            className="w-[42%] max-w-[320px] shrink-0 self-center sm:w-[46%]"
             loading="lazy"
           />
         </div>
       </div>
 
       {/* Benefits — 2 x 2 */}
-      <div className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-2">
+      <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10">
         {BENEFITS.map((b) => (
-          <div key={b.title} className="flex items-start gap-4 bg-black p-5">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03]">
-              <b.icon className="h-5 w-5 text-[#3B82F6]" />
+          <div key={b.title} className="flex items-start gap-2.5 bg-black p-3 sm:gap-4 sm:p-5">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] sm:h-11 sm:w-11 sm:rounded-xl">
+              <b.icon className="h-4 w-4 text-[#3B82F6] sm:h-5 sm:w-5" />
             </div>
-            <div>
-              <div className="text-[15px] font-medium text-white">{b.title}</div>
-              <p className="mt-1 text-sm leading-relaxed text-[#9CA3AF]">{b.body}</p>
+            <div className="min-w-0">
+              <div className="text-[12px] font-medium text-white sm:text-[15px]">{b.title}</div>
+              <p className="mt-0.5 text-[11px] leading-snug text-[#9CA3AF] sm:mt-1 sm:text-sm sm:leading-relaxed">{b.body}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Transactions */}
-      <div className="rounded-2xl border border-white/10 bg-black p-5">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-white">Recent Transactions</h3>
+      <div className="min-w-0 rounded-2xl border border-white/10 bg-black p-3.5 sm:p-5">
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="text-[15px] font-semibold text-white sm:text-lg">Recent Transactions</h3>
           {txs.length > 5 && (
             <button
               onClick={() => setShowAll((v) => !v)}
-              className="inline-flex items-center gap-2 text-sm text-[#3B82F6] hover:text-[#60A5FA]"
+              className="inline-flex shrink-0 items-center gap-1.5 text-xs text-[#3B82F6] hover:text-[#60A5FA] sm:gap-2 sm:text-sm"
             >
-              {showAll ? "Show less" : "View All"} <ArrowRight className="h-4 w-4" />
+              {showAll ? "Show less" : "View All"} <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </button>
           )}
         </div>
 
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[620px] text-sm">
+        <div className="mt-3 min-w-0 sm:mt-4">
+          <table className="w-full table-fixed text-[11px] sm:text-sm">
             <thead>
-              <tr className="text-[11px] uppercase tracking-[0.14em] text-[#6B7280]">
-                <th className="pb-3 text-left font-normal">Date</th>
-                <th className="pb-3 text-left font-normal">Description</th>
-                <th className="pb-3 text-left font-normal">Credits</th>
-                <th className="pb-3 text-left font-normal">Balance</th>
-                <th className="pb-3 text-left font-normal">Status</th>
+              <tr className="text-[9px] uppercase tracking-[0.1em] text-[#6B7280] sm:text-[11px] sm:tracking-[0.14em]">
+                <th className="w-[34%] pb-2 text-left font-normal sm:w-auto sm:pb-3">Date</th>
+                <th className="pb-2 text-left font-normal sm:pb-3">Description</th>
+                <th className="w-[22%] pb-2 text-left font-normal sm:w-auto sm:pb-3">Credits</th>
+                <th className="hidden pb-3 text-left font-normal sm:table-cell">Balance</th>
+                <th className="hidden pb-3 text-left font-normal sm:table-cell">Status</th>
               </tr>
             </thead>
             <tbody>
               {visible.map((t) => (
                 <tr key={t.id} className="border-t border-white/[0.06]">
-                  <td className="py-3 text-[#D1D5DB]">
-                    {new Date(t.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
-                    <span className="ml-2 text-[#9CA3AF]">
+                  <td className="py-2 pr-2 text-[#D1D5DB] sm:py-3">
+                    {new Date(t.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                    <span className="ml-1.5 text-[#9CA3AF] sm:ml-2">
                       {new Date(t.created_at).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}
                     </span>
                   </td>
-                  <td className="py-3 text-[#E5E7EB]">{t.description}</td>
-                  <td className={`py-3 tabular-nums ${t.credits >= 0 ? "text-[#22C55E]" : "text-[#EF4444]"}`}>
+                  <td className="truncate py-2 pr-2 text-[#E5E7EB] sm:py-3">{t.description}</td>
+                  <td className={`py-2 tabular-nums sm:py-3 ${t.credits >= 0 ? "text-[#22C55E]" : "text-[#EF4444]"}`}>
                     {t.credits >= 0 ? `+${t.credits.toLocaleString()}` : t.credits.toLocaleString()}
                   </td>
-                  <td className="py-3 tabular-nums text-[#E5E7EB]">{t.balance_after.toLocaleString()}</td>
-                  <td className="py-3">
+                  <td className="hidden py-3 tabular-nums text-[#E5E7EB] sm:table-cell">{t.balance_after.toLocaleString()}</td>
+                  <td className="hidden py-3 sm:table-cell">
                     <span className="inline-flex items-center gap-2 text-[#D1D5DB]">
                       <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E]" />
                       {t.status.charAt(0).toUpperCase() + t.status.slice(1)}
@@ -998,7 +998,7 @@ function CreditsSection({ balance }: { balance: number }) {
               ))}
               {txs.length === 0 && (
                 <tr className="border-t border-white/[0.06]">
-                  <td colSpan={5} className="py-6 text-center text-[#6B7280]">No transactions yet.</td>
+                  <td colSpan={5} className="py-5 text-center text-[11px] text-[#6B7280] sm:py-6 sm:text-sm">No transactions yet.</td>
                 </tr>
               )}
             </tbody>
@@ -1007,19 +1007,20 @@ function CreditsSection({ balance }: { balance: number }) {
       </div>
 
       {/* Need more credits */}
-      <div className="flex flex-col items-center gap-4 rounded-2xl border border-white/10 bg-black p-5 sm:flex-row">
-        <img src={creditsGift.url} alt="Gift box" className="h-20 w-20 object-contain" loading="lazy" />
-        <div className="flex-1 text-center sm:text-left">
-          <div className="text-lg font-semibold text-white">Need more credits?</div>
-          <p className="mt-1 text-sm text-[#9CA3AF]">Top up your balance and keep using all features without interruption.</p>
+      <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black p-3.5 sm:gap-4 sm:p-5">
+        <img src={creditsGift.url} alt="Gift box" className="h-12 w-12 shrink-0 object-contain sm:h-20 sm:w-20" loading="lazy" />
+        <div className="min-w-0 flex-1 text-left">
+          <div className="text-[14px] font-semibold text-white sm:text-lg">Need more credits?</div>
+          <p className="mt-0.5 text-[11px] leading-snug text-[#9CA3AF] sm:mt-1 sm:text-sm">Top up your balance and keep using all features without interruption.</p>
         </div>
         <button
           onClick={() => setOpen(true)}
-          className="inline-flex items-center gap-3 rounded-xl bg-[#2563EB] px-6 py-3 text-[15px] font-medium text-white transition hover:bg-[#1D4ED8]"
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-[#2563EB] px-3 py-2 text-[12px] font-medium text-white transition hover:bg-[#1D4ED8] sm:gap-3 sm:rounded-xl sm:px-6 sm:py-3 sm:text-[15px]"
         >
-          Buy Credits <ArrowRight className="h-4 w-4" />
+          Buy <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
         </button>
       </div>
+
 
       {/* Full-page checkout */}
       {open && step === 1 && (
