@@ -18,6 +18,14 @@ import CreditsCheckout from "@/components/credits/CreditsCheckout";
 import { useAdmin } from "@/hooks/use-admin";
 import { RoleBadge } from "@/components/ui/RoleBadge";
 import { BackButton } from "@/components/site/BackButton";
+import { GoogleLogo, GithubLogo, EmailProviderLogo, IdCardLogo, ClockLogo, PlanLogo } from "@/components/profile/BrandIcons";
+
+function providerLogo(provider?: string) {
+  const p = (provider ?? "email").toLowerCase();
+  if (p === "google") return <GoogleLogo />;
+  if (p === "github") return <GithubLogo />;
+  return <EmailProviderLogo />;
+}
 import textureImg from "@/assets/profile-texture.jpg";
 import pageBgAsset from "@/assets/profile-bg.png.asset.json";
 
