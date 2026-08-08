@@ -233,7 +233,7 @@ function ProfilePage() {
                   const active = tab === n.key;
                   const count = n.key === "tickets" ? tickets.length : n.key === "credits" ? profile.credits : 0;
                   return (
-                    <button key={n.key} onClick={() => setTab(n.key)}
+                    <button key={n.key} onClick={() => { if (n.soon) { apiKeysNotice(); return; } setTab(n.key); }}
                       className={`group relative shrink-0 md:w-full flex items-center gap-2.5 overflow-hidden rounded-xl border px-3 py-1.5 text-left transition hover:border-white/25 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))] ${
                         active ? "border-white/25 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]" : "border-transparent"
                       }`}>
@@ -243,7 +243,9 @@ function ProfilePage() {
                         <n.icon className={`size-4 ${n.key === "security" ? "text-white" : n.tint} transition ${active ? "" : "grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100"}`} />
                       </span>
                       <span className={`relative min-w-0 flex-1 block text-sm whitespace-nowrap ${active ? "text-white" : "text-neutral-200"}`}>{n.label}</span>
-                      {count > 0 && <span className="relative hidden md:inline text-[10px] rounded-full bg-white/[0.06] px-1.5 py-0.5 text-neutral-300 tabular-nums">{count}</span>}
+                      {n.soon && <span className="relative hidden md:inline text-[9px] uppercase tracking-[0.14em] rounded-full border border-white/12 px-1.5 py-0.5 text-[#9CA3AF]">Soon</span>}
+                      {!n.soon && count > 0 && <span className="relative hidden md:inline text-[10px] rounded-full bg-white/[0.06] px-1.5 py-0.5 text-neutral-300 tabular-nums">{count}</span>}
+
                     </button>
                   );
                 })}
