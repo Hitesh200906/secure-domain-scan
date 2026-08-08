@@ -859,7 +859,15 @@ function CreditsSection({ balance }: { balance: number }) {
             setOpen(false);
             setStep(1);
           }}
-          onContinue={() => {}}
+          onContinue={async (total) => {
+            const { data, error } = await supabase.rpc("purchase_credits", { _credits: total });
+            if (error) { toast.error(error.message); return; }
+            setBal(Number(data ?? bal + total));
+            setOpen(false);
+            setStep(1);
+            toast.success(`${total.toLocaleString()} credits added to your balance`);
+            void loadTx();
+          }}
         />
       )}
 
