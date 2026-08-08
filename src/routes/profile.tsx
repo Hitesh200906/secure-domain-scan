@@ -554,8 +554,8 @@ const CURRENCIES = [
 
 const CREDIT_PACKS = [
   { credits: 1000, desc: "For small teams getting started" },
-  { credits: 2500, desc: "Best for growing workloads", popular: true },
-  { credits: 5000, desc: "For continuous coverage" },
+  { credits: 2500, desc: "Best for scaling", popular: true },
+  { credits: 5000, desc: "Continuous coverage" },
   { credits: 10000, desc: "Volume usage at scale" },
 ] as const;
 
@@ -572,128 +572,173 @@ function CreditsSection({ balance }: { balance: number }) {
     `${cur.symbol}${(c * cur.rate).toLocaleString(undefined, { maximumFractionDigits: cur.code === "INR" ? 0 : 2 })}`;
 
   return (
-    <div className="mx-auto w-full max-w-[1100px] grid lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] gap-4">
-      {/* LEFT — credits info */}
-      <aside className="rounded-[10px] border border-[#1F2937] bg-[#0A0A0A] p-6 flex flex-col">
-        <div className="flex items-center gap-2 text-[#9CA3AF]">
-          <Coins className="size-4" strokeWidth={1.5} />
-          <span className="text-sm">Your Credits</span>
-        </div>
-        <div className="mt-6 text-5xl font-semibold tracking-tight tabular-nums text-[#F8FAFC]">
-          {balance.toLocaleString()}
-        </div>
-        <p className="mt-2 text-sm text-[#9CA3AF]">Use credits to access features</p>
+    <section className="relative -mx-4 sm:-mx-6 overflow-hidden bg-[#050505] px-4 sm:px-6 py-16 md:py-[120px]">
+      {/* layered background depth */}
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-40 -top-32 h-[520px] w-[520px] rounded-full bg-[#0A1633] opacity-[0.35] blur-[140px]" />
+        <div className="absolute -bottom-24 -right-48 h-[560px] w-[560px] rounded-full bg-[#05070F] opacity-60 blur-[160px]" />
+        <div className="absolute left-1/2 top-1/3 h-[420px] w-[720px] -translate-x-1/2 rounded-full bg-[#0A0F1C] opacity-40 blur-[180px]" />
+        <div
+          className="absolute inset-0 opacity-[0.06] mix-blend-overlay"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
+          }}
+        />
+      </div>
 
-        <div className="mt-6 h-px bg-[#1F2937]" />
-
-        <dl className="mt-6 space-y-3 text-sm">
-          <div className="flex items-center justify-between">
-            <dt className="text-[#9CA3AF]">Rate</dt>
-            <dd className="text-[#F8FAFC] tabular-nums">1 credit = $1 USD</dd>
+      <div className="relative mx-auto grid w-full max-w-[1200px] gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,560px)] lg:gap-16">
+        {/* LEFT — context + trust */}
+        <div className="flex flex-col justify-center">
+          <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[#1F2937] bg-[#0A0A0A] px-3 py-1 text-xs text-[#9CA3AF]">
+            <Coins className="size-3.5" strokeWidth={1.5} />
+            Credits
           </div>
-          <div className="flex items-center justify-between">
-            <dt className="text-[#9CA3AF]">Billing</dt>
-            <dd className="text-[#F8FAFC]">Pay as you go</dd>
-          </div>
-          <div className="flex items-center justify-between">
-            <dt className="text-[#9CA3AF]">Expiry</dt>
-            <dd className="text-[#F8FAFC]">Never</dd>
-          </div>
-        </dl>
+          <h2 className="mt-6 text-4xl font-semibold leading-[1.1] tracking-tight text-[#F8FAFC] sm:text-5xl">
+            Buy Credits.
+            <br />
+            Scale Instantly.
+          </h2>
+          <p className="mt-5 max-w-[46ch] text-base leading-relaxed text-[#9CA3AF]">
+            Credits power everything on Nexefy Security — automated scans, continuous monitoring,
+            detailed reports and advanced protection features. Top up once, spend as you grow.
+          </p>
 
-        <div className="mt-auto pt-8 text-xs text-[#9CA3AF]">Secure • Instant • Transparent</div>
-      </aside>
-
-      {/* RIGHT — purchase */}
-      <section className="rounded-[10px] border border-[#1F2937] bg-[#0A0A0A] p-6">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h2 className="text-base font-medium text-[#F8FAFC]">Buy Credits</h2>
-            <p className="mt-1 text-sm text-[#9CA3AF]">Select a package or enter a custom amount.</p>
-          </div>
-          <label className="text-xs text-[#9CA3AF]">
-            <span className="block mb-1.5">Currency</span>
-            <select
-              value={cur.code}
-              onChange={(e) => setCur(CURRENCIES.find((c) => c.code === e.target.value) ?? CURRENCIES[0])}
-              className="rounded-[6px] border border-[#1F2937] bg-[#111111] px-3 py-2 text-sm text-[#F8FAFC] outline-none transition-colors duration-150 hover:border-[#374151] focus:border-[#1D4ED8]"
-            >
-              {CURRENCIES.map((c) => (
-                <option key={c.code} value={c.code} className="bg-[#111111]">{c.label}</option>
-              ))}
-            </select>
-          </label>
-        </div>
-
-        {/* Packages */}
-        <div className="mt-5 grid sm:grid-cols-2 gap-3">
-          {CREDIT_PACKS.map((p) => {
-            const active = !usingCustom && selected === p.credits;
-            return (
-              <button
-                key={p.credits}
-                onClick={() => { setCustom(""); setSelected(p.credits); }}
-                className={`text-left rounded-[8px] border bg-[#111111] p-4 transition-colors duration-150 ${
-                  active ? "border-[#1D4ED8]" : "border-[#1F2937] hover:border-[#374151]"
-                }`}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-lg font-medium tabular-nums text-[#F8FAFC]">
-                    {p.credits.toLocaleString()} Credits
-                  </span>
-                  {"popular" in p && p.popular && (
-                    <span className="rounded-[4px] border border-[#1F2937] px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-[#9CA3AF]">
-                      Popular
-                    </span>
-                  )}
+          <ul className="mt-8 space-y-4">
+            {[
+              { t: "Instant activation", d: "Credits land in your account the moment payment clears." },
+              { t: "Transparent pricing", d: "1 credit = 1 USD. No tiers, no surprises." },
+              { t: "No hidden fees", d: "No subscriptions, no expiry, no minimum commitment." },
+            ].map((b) => (
+              <li key={b.t} className="flex gap-3 border-t border-white/[0.05] pt-4 first:border-t-0 first:pt-0">
+                <ShieldCheck className="mt-0.5 size-4 shrink-0 text-[#3B82F6]" strokeWidth={1.5} />
+                <div className="min-w-0">
+                  <div className="text-sm font-medium text-[#F8FAFC]">{b.t}</div>
+                  <div className="mt-1 text-sm text-[#6B7280]">{b.d}</div>
                 </div>
-                <div className="mt-1 text-sm tabular-nums text-[#F8FAFC]">{price(p.credits)}</div>
-                <div className="mt-1 text-xs text-[#9CA3AF]">{p.desc}</div>
-              </button>
-            );
-          })}
-        </div>
+              </li>
+            ))}
+          </ul>
 
-        {/* Custom */}
-        <div className="mt-3 rounded-[8px] border border-[#1F2937] bg-[#111111] p-4">
-          <label htmlFor="custom-credits" className="text-sm text-[#F8FAFC]">Custom amount</label>
-          <input
-            id="custom-credits"
-            inputMode="numeric"
-            value={custom}
-            onChange={(e) => setCustom(e.target.value.replace(/[^0-9]/g, ""))}
-            placeholder="Enter credits"
-            className="mt-2 w-full rounded-[6px] border border-[#1F2937] bg-[#0A0A0A] px-3 py-2.5 text-sm text-[#F8FAFC] placeholder:text-[#6B7280] outline-none transition-colors duration-150 hover:border-[#374151] focus:border-[#1D4ED8]"
-          />
-          <div className="mt-2 text-xs text-[#9CA3AF]">
-            {usingCustom
-              ? customNum >= 100
-                ? `${customNum.toLocaleString()} credits — ${price(customNum)}`
-                : "Minimum 100 credits."
-              : "Minimum 100 credits."}
+          <div className="mt-10 flex items-baseline gap-3 rounded-[12px] border border-[#1F2937] bg-[#0A0A0A] px-5 py-4">
+            <span className="text-xs uppercase tracking-widest text-[#6B7280]">Balance</span>
+            <span className="text-2xl font-semibold tabular-nums text-[#F8FAFC]">{balance.toLocaleString()}</span>
+            <span className="text-sm text-[#9CA3AF]">credits</span>
           </div>
         </div>
 
-        {/* Summary + CTA */}
-        <div className="mt-5 border-t border-[#1F2937] pt-5 flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <div className="text-xs text-[#9CA3AF]">Total ({cur.code})</div>
-            <div className="mt-1 text-2xl font-semibold tabular-nums text-[#F8FAFC]">
-              {price(valid ? credits : 0)}
+        {/* RIGHT — purchase panel */}
+        <div className="rounded-[14px] border border-[#1F2937] bg-[#0A0A0A] p-7 sm:p-9">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-semibold tracking-tight text-[#F8FAFC]">Buy Credits</h3>
+              <p className="mt-1 text-sm text-[#6B7280]">1 Credit = 1 USD</p>
             </div>
-            <div className="mt-1 text-xs text-[#9CA3AF] tabular-nums">
+          </div>
+
+          <div className="my-6 h-px bg-white/[0.05]" />
+
+          {/* Currency */}
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-sm text-[#9CA3AF]">Currency</span>
+            <div className="inline-flex rounded-[10px] border border-[#1F2937] bg-[#111111] p-1">
+              {CURRENCIES.map((c) => {
+                const on = c.code === cur.code;
+                return (
+                  <button
+                    key={c.code}
+                    onClick={() => setCur(c)}
+                    className={`rounded-[7px] px-3 py-1.5 text-sm transition-all duration-200 ${
+                      on ? "bg-[#151515] text-[#F8FAFC]" : "text-[#6B7280] hover:text-[#9CA3AF]"
+                    }`}
+                  >
+                    {c.symbol} {c.code}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Packages */}
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            {CREDIT_PACKS.map((p) => {
+              const active = !usingCustom && selected === p.credits;
+              return (
+                <button
+                  key={p.credits}
+                  onClick={() => { setCustom(""); setSelected(p.credits); }}
+                  className={`group relative overflow-hidden rounded-[12px] border p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#151515] ${
+                    active
+                      ? "border-white/[0.08] bg-[#151515] ring-1 ring-inset ring-[#1D4ED8]/40"
+                      : "border-white/[0.04] bg-[#111111]"
+                  }`}
+                >
+                  {active && <span className="absolute inset-y-0 left-0 w-[2px] bg-[#1D4ED8]" />}
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="text-xl font-semibold tabular-nums tracking-tight text-[#F8FAFC]">
+                      {p.credits.toLocaleString()}
+                    </span>
+                    {"popular" in p && p.popular && (
+                      <span className="rounded-full bg-[#1F2937] px-2 py-0.5 text-[10px] font-medium tracking-wide text-[#F8FAFC]">
+                        Recommended
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-0.5 text-xs uppercase tracking-widest text-[#6B7280]">Credits</div>
+                  <div className="mt-3 text-sm font-medium tabular-nums text-[#F8FAFC]">{price(p.credits)}</div>
+                  <div className="mt-1 text-xs text-[#6B7280]">{p.desc}</div>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Custom */}
+          <div className="mt-6">
+            <label htmlFor="custom-credits" className="text-sm text-[#9CA3AF]">Custom Credits</label>
+            <input
+              id="custom-credits"
+              inputMode="numeric"
+              value={custom}
+              onChange={(e) => setCustom(e.target.value.replace(/[^0-9]/g, ""))}
+              placeholder="Enter credits (min 100)"
+              className="mt-2 w-full rounded-[10px] border border-[#1F2937] bg-[#111111] px-4 py-3 text-sm text-[#F8FAFC] placeholder:text-[#6B7280] outline-none transition-colors duration-200 hover:border-[#374151] focus:border-[#60A5FA]"
+            />
+            <div className="mt-2 text-xs text-[#6B7280] tabular-nums">
+              {usingCustom
+                ? customNum >= 100
+                  ? `${customNum.toLocaleString()} credits — ${price(customNum)}`
+                  : "Minimum 100 credits."
+                : "Minimum 100 credits."}
+            </div>
+          </div>
+
+          <div className="my-6 h-px bg-white/[0.05]" />
+
+          {/* Summary */}
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <div className="text-xs uppercase tracking-widest text-[#6B7280]">Total ({cur.code})</div>
+              <div className="mt-1.5 text-3xl font-semibold tabular-nums tracking-tight text-[#F8FAFC]">
+                {price(valid ? credits : 0)}
+              </div>
+            </div>
+            <div className="text-right text-xs text-[#6B7280] tabular-nums">
               {valid ? `${credits.toLocaleString()} credits` : "Select a package"}
             </div>
           </div>
+
           <button
             disabled={!valid}
             onClick={() => toast.info(`Checkout opening soon — ${credits.toLocaleString()} credits for ${price(credits)}.`)}
-            className="rounded-[6px] bg-[#1D4ED8] px-6 py-3 text-sm font-medium text-[#F8FAFC] transition-colors duration-150 hover:bg-[#1A43BA] disabled:cursor-not-allowed disabled:bg-[#1F2937] disabled:text-[#6B7280]"
+            className="mt-6 w-full rounded-[10px] bg-[#1D4ED8] px-6 py-3.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-[#1E40AF] disabled:cursor-not-allowed disabled:bg-[#1F2937] disabled:text-[#6B7280]"
           >
-            Buy Credits
+            Continue to Payment
           </button>
+
+          <p className="mt-4 text-center text-xs text-[#6B7280]">Secure · Instant · Transparent</p>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }
+
