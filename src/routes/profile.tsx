@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import {
   BadgeCheck, Pencil, CircleUserRound, Copy, Coins, Crown, Database, Key, KeyRound, LifeBuoy,
   Loader2, LogOut, MessageSquare, MessagesSquare, Monitor, Send, ShieldHalf, ShieldCheck, Smartphone,
-  Trash2, User2, ChevronRight, AlertTriangle,
+  Trash2, User2, ChevronRight, AlertTriangle, Zap, Clock, Headphones, ShoppingCart, ArrowRight,
 
 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -12,7 +12,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { api } from "@/lib/api-client";
 import { uploadStoreAsset } from "@/lib/uploads";
 import { useAuth } from "@/hooks/use-auth";
-import creditsPanel from "@/assets/credits-panel.png.asset.json";
+import creditsWallet from "@/assets/credits-wallet.png.asset.json";
+import creditsGift from "@/assets/credits-gift.png.asset.json";
 import { useAdmin } from "@/hooks/use-admin";
 import { RoleBadge } from "@/components/ui/RoleBadge";
 import { BackButton } from "@/components/site/BackButton";
@@ -547,15 +548,246 @@ function ChatBubble({ side, who, when, body }: { side: "user" | "admin"; who: st
 
 /* ---------------- Credits ---------------- */
 
-function CreditsSection(_props: { balance: number }) {
+type CreditTx = {
+  id: string;
+  description: string;
+  credits: number;
+  balance_after: number;
+  status: string;
+  created_at: string;
+};
+
+const BENEFITS = [
+  { icon: Zap, title: "Instant Top-Up", body: "Add credits to your account in seconds." },
+  { icon: ShieldCheck, title: "Safe & Secure", body: "Your payments and data are protected with industry-standard security." },
+  { icon: Clock, title: "No Expiry", body: "Use your credits anytime, anywhere. They never expire." },
+  { icon: Headphones, title: "Dedicated Support", body: "Our support team is available 24/7 to help you with anything." },
+];
+
+const PRESETS = [500, 1000, 2000, 5000] as const;
+
+function CreditsSection({ balance }: { balance: number }) {
+  const [bal, setBal] = useState(balance);
+  const [txs, setTxs] = useState<CreditTx[]>([]);
+  const [showAll, setShowAll] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [amount, setAmount] = useState<number>(1000);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => { setBal(balance); }, [balance]);
+
+  const loadTx = async () => {
+    const { data } = await supabase
+      .from("credit_transactions")
+      .select("id, description, credits, balance_after, status, created_at")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    setTxs((data as CreditTx[]) ?? []);
+  };
+
+  useEffect(() => { void loadTx(); }, []);
+
+  const buy = async () => {
+    if (!amount || amount < 1) { toast.error("Enter a valid credit amount"); return; }
+    setBusy(true);
+    const { data, error } = await supabase.rpc("purchase_credits", { _credits: amount });
+    setBusy(false);
+    if (error) { toast.error(error.message); return; }
+    setBal(Number(data ?? bal + amount));
+    setOpen(false);
+    toast.success(`${amount.toLocaleString()} credits added to your balance`);
+    void loadTx();
+  };
+
+  const visible = showAll ? txs : txs.slice(0, 5);
+
   return (
-    <div className="rounded-2xl border border-white/10 bg-black overflow-hidden">
-      <img
-        src={creditsPanel.url}
-        alt="Nexefy credits dashboard: available balance, top-up benefits and recent transactions"
-        className="w-full h-auto block"
-        loading="lazy"
-      />
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h2 className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-white">
+            Credits <span className="h-2 w-2 rounded-full bg-[#2563EB]" />
+          </h2>
+          <p className="mt-1 text-sm text-[#9CA3AF]">Manage your credits and transactions.</p>
+        </div>
+        <div className="hidden sm:flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] px-3.5 py-2.5 text-sm text-white">
+          <Coins className="h-4 w-4 text-white" />
+          1 Credit = $1.00
+        </div>
+      </div>
+
+      {/* Balance */}
+      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black">
+        <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-7">
+          <div>
+            <div className="text-[11px] uppercase tracking-[0.18em] text-[#9CA3AF]">Available balance</div>
+            <div className="mt-2 text-5xl font-semibold tabular-nums text-white sm:text-6xl">{bal.toLocaleString()}</div>
+            <div className="mt-1 text-lg text-[#D1D5DB]">Credits</div>
+            <button
+              onClick={() => setOpen(true)}
+              className="mt-5 inline-flex items-center gap-3 rounded-xl bg-[#2563EB] px-5 py-3 text-[15px] font-medium text-white transition hover:bg-[#1D4ED8]"
+            >
+              <ShoppingCart className="h-4 w-4" />
+              Buy Credits
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
+          <img
+            src={creditsWallet.url}
+            alt="Credits wallet with coins"
+            className="w-full max-w-[320px] self-center sm:w-[46%]"
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+      {/* Benefits — 2 x 2 */}
+      <div className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-2">
+        {BENEFITS.map((b) => (
+          <div key={b.title} className="flex items-start gap-4 bg-black p-5">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03]">
+              <b.icon className="h-5 w-5 text-[#3B82F6]" />
+            </div>
+            <div>
+              <div className="text-[15px] font-medium text-white">{b.title}</div>
+              <p className="mt-1 text-sm leading-relaxed text-[#9CA3AF]">{b.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Transactions */}
+      <div className="rounded-2xl border border-white/10 bg-black p-5">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold text-white">Recent Transactions</h3>
+          {txs.length > 5 && (
+            <button
+              onClick={() => setShowAll((v) => !v)}
+              className="inline-flex items-center gap-2 text-sm text-[#3B82F6] hover:text-[#60A5FA]"
+            >
+              {showAll ? "Show less" : "View All"} <ArrowRight className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full min-w-[620px] text-sm">
+            <thead>
+              <tr className="text-[11px] uppercase tracking-[0.14em] text-[#6B7280]">
+                <th className="pb-3 text-left font-normal">Date</th>
+                <th className="pb-3 text-left font-normal">Description</th>
+                <th className="pb-3 text-left font-normal">Credits</th>
+                <th className="pb-3 text-left font-normal">Balance</th>
+                <th className="pb-3 text-left font-normal">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {visible.map((t) => (
+                <tr key={t.id} className="border-t border-white/[0.06]">
+                  <td className="py-3 text-[#D1D5DB]">
+                    {new Date(t.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+                    <span className="ml-2 text-[#9CA3AF]">
+                      {new Date(t.created_at).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}
+                    </span>
+                  </td>
+                  <td className="py-3 text-[#E5E7EB]">{t.description}</td>
+                  <td className={`py-3 tabular-nums ${t.credits >= 0 ? "text-[#22C55E]" : "text-[#EF4444]"}`}>
+                    {t.credits >= 0 ? `+${t.credits.toLocaleString()}` : t.credits.toLocaleString()}
+                  </td>
+                  <td className="py-3 tabular-nums text-[#E5E7EB]">{t.balance_after.toLocaleString()}</td>
+                  <td className="py-3">
+                    <span className="inline-flex items-center gap-2 text-[#D1D5DB]">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E]" />
+                      {t.status.charAt(0).toUpperCase() + t.status.slice(1)}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+              {txs.length === 0 && (
+                <tr className="border-t border-white/[0.06]">
+                  <td colSpan={5} className="py-6 text-center text-[#6B7280]">No transactions yet.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Need more credits */}
+      <div className="flex flex-col items-center gap-4 rounded-2xl border border-white/10 bg-black p-5 sm:flex-row">
+        <img src={creditsGift.url} alt="Gift box" className="h-20 w-20 object-contain" loading="lazy" />
+        <div className="flex-1 text-center sm:text-left">
+          <div className="text-lg font-semibold text-white">Need more credits?</div>
+          <p className="mt-1 text-sm text-[#9CA3AF]">Top up your balance and keep using all features without interruption.</p>
+        </div>
+        <button
+          onClick={() => setOpen(true)}
+          className="inline-flex items-center gap-3 rounded-xl bg-[#2563EB] px-6 py-3 text-[15px] font-medium text-white transition hover:bg-[#1D4ED8]"
+        >
+          Buy Credits <ArrowRight className="h-4 w-4" />
+        </button>
+      </div>
+
+      {/* Buy dialog */}
+      {open && (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/70 p-4" onClick={() => setOpen(false)}>
+          <div
+            className="w-full max-w-md rounded-2xl border border-white/10 bg-black p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="text-lg font-semibold text-white">Buy Credits</div>
+            <p className="mt-1 text-sm text-[#9CA3AF]">1 Credit = $1.00</p>
+
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              {PRESETS.map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setAmount(p)}
+                  className={`rounded-xl border px-4 py-3 text-sm transition ${
+                    amount === p ? "border-[#2563EB] bg-[#2563EB]/15 text-white" : "border-white/10 text-[#D1D5DB] hover:border-white/25"
+                  }`}
+                >
+                  {p.toLocaleString()} credits
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-3">
+              <label className="text-[11px] uppercase tracking-[0.14em] text-[#6B7280]">Custom amount</label>
+              <input
+                type="number"
+                min={1}
+                value={amount}
+                onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+                className="mt-1 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-white outline-none focus:border-white/25"
+              />
+            </div>
+
+            <div className="mt-4 flex items-center justify-between text-sm">
+              <span className="text-[#9CA3AF]">Total</span>
+              <span className="tabular-nums text-white">${amount.toLocaleString()}.00</span>
+            </div>
+
+            <div className="mt-5 flex gap-2">
+              <button
+                onClick={() => setOpen(false)}
+                className="flex-1 rounded-xl border border-white/10 px-4 py-3 text-sm text-[#D1D5DB] hover:border-white/25"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={buy}
+                disabled={busy}
+                className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-[#2563EB] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#1D4ED8] disabled:opacity-60"
+              >
+                {busy && <Loader2 className="h-4 w-4 animate-spin" />}
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

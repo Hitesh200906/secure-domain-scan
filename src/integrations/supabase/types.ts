@@ -80,6 +80,36 @@ export type Database = {
         }
         Relationships: []
       }
+      credit_transactions: {
+        Row: {
+          balance_after: number
+          created_at: string
+          credits: number
+          description: string
+          id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          balance_after?: number
+          created_at?: string
+          credits: number
+          description: string
+          id?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          balance_after?: number
+          created_at?: string
+          credits?: number
+          description?: string
+          id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string | null
@@ -717,6 +747,7 @@ export type Database = {
       is_master_admin: { Args: { _user_id: string }; Returns: boolean }
       my_store_ids: { Args: never; Returns: string[] }
       owns_store: { Args: { _store_id: string }; Returns: boolean }
+      purchase_credits: { Args: { _credits: number }; Returns: number }
     }
     Enums: {
       app_role: "master_admin" | "super_admin" | "admin" | "user"
