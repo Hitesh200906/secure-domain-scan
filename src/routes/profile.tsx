@@ -633,3 +633,131 @@ function ChatBubble({ side, who, when, body }: { side: "user" | "admin"; who: st
     </div>
   );
 }
+
+function CreditPurchase() {
+  const [selected, setSelected] = useState<number>(25);
+  const [custom, setCustom] = useState<string>("");
+  const [cur, setCur] = useState<(typeof CURRENCIES)[number]>(CURRENCIES[0]);
+
+  const customNum = Math.max(0, Math.floor(Number(custom) || 0));
+  const credits = custom.trim() ? customNum : selected;
+  const usd = credits; // 1 credit = $1
+  const total = usd * cur.rate;
+  const fmt = (n: number) =>
+    `${cur.symbol}${n.toLocaleString(undefined, { maximumFractionDigits: cur.code === "INR" ? 0 : 2 })}`;
+
+  return (
+    <div id="credit-plans" className="relative overflow-hidden rounded-3xl border border-white/12 bg-black/70">
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-[0.10]"
+        style={{
+          backgroundImage:
+            "radial-gradient(600px 240px at 10% 0%, rgba(139,92,246,0.55), transparent 60%), radial-gradient(500px 220px at 90% 100%, rgba(16,185,129,0.45), transparent 60%), radial-gradient(500px 220px at 60% 20%, rgba(56,189,248,0.35), transparent 60%)",
+        }}
+      />
+      <div className="relative p-6 sm:p-8">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <div className="text-sm font-medium">Choose credits</div>
+            <div className="text-xs text-muted-foreground mt-1">
+              Pay as you go — no subscription. Credits never expire.
+            </div>
+          </div>
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1.5 text-[11px] text-emerald-300">
+            <Coins className="size-3.5" /> 1 credit = $1 USD
+          </div>
+        </div>
+
+        {/* Presets */}
+        <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3">
+          {CREDIT_PRESETS.map((p) => {
+            const t = TINTS[p.tint];
+            const active = !custom.trim() && selected === p.credits;
+            return (
+              <button
+                key={p.credits}
+                onClick={() => { setCustom(""); setSelected(p.credits); }}
+                className={`text-left rounded-2xl border p-4 transition-colors ${
+                  active ? `${t.border} ${t.bg}` : "border-white/10 bg-black/50 hover:border-white/25"
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className={`text-[10px] uppercase tracking-widest ${active ? t.text : "text-muted-foreground"}`}>{p.tag}</span>
+                  <span className={`size-2 rounded-full ${active ? t.dot : "bg-white/15"}`} />
+                </div>
+                <div className="mt-3 text-2xl font-semibold tabular-nums">{p.credits}</div>
+                <div className="text-[11px] text-muted-foreground">{p.note}</div>
+                <div className={`mt-2 text-xs tabular-nums ${active ? t.text : "text-white/70"}`}>{fmt(p.credits * cur.rate)}</div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Custom + currency */}
+        <div className="mt-4 grid md:grid-cols-2 gap-3">
+          <div className="rounded-2xl border border-violet-400/25 bg-violet-500/[0.07] p-4">
+            <div className="text-[10px] uppercase tracking-widest text-violet-300">Custom amount</div>
+            <div className="mt-3 flex items-center gap-2">
+              <input
+                inputMode="numeric"
+                value={custom}
+                onChange={(e) => setCustom(e.target.value.replace(/[^0-9]/g, ""))}
+                placeholder="e.g. 175"
+                className="w-full rounded-xl border border-white/12 bg-black/60 px-3 py-2.5 text-sm outline-none focus:border-violet-400/50"
+              />
+              <span className="text-xs text-muted-foreground shrink-0">credits</span>
+            </div>
+            <div className="mt-2 text-[11px] text-muted-foreground">Any amount from 1 to 10,000 credits.</div>
+          </div>
+
+          <div className="rounded-2xl border border-sky-400/25 bg-sky-500/[0.07] p-4">
+            <div className="text-[10px] uppercase tracking-widest text-sky-300">Pay in your currency</div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {CURRENCIES.map((c) => (
+                <button
+                  key={c.code}
+                  onClick={() => setCur(c)}
+                  title={c.label}
+                  className={`rounded-lg px-2.5 py-1.5 text-xs border transition-colors ${
+                    cur.code === c.code ? "border-sky-400/50 bg-sky-500/15 text-sky-200" : "border-white/10 bg-black/50 text-white/70 hover:border-white/25"
+                  }`}
+                >
+                  {c.code}
+                </button>
+              ))}
+            </div>
+            <div className="mt-2 text-[11px] text-muted-foreground">Converted at checkout using live rates.</div>
+          </div>
+        </div>
+
+        {/* Summary */}
+        <div className="mt-4 rounded-2xl border border-white/12 bg-black/60 p-5 flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+            <div>
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Credits</div>
+              <div className="mt-1 text-xl font-semibold tabular-nums text-amber-300">{credits || 0}</div>
+            </div>
+            <div>
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Unit price</div>
+              <div className="mt-1 text-xl font-semibold tabular-nums text-emerald-300">{fmt(cur.rate)}</div>
+            </div>
+            <div>
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Total ({cur.code})</div>
+              <div className="mt-1 text-xl font-semibold tabular-nums text-sky-300">{fmt(total)}</div>
+            </div>
+          </div>
+          <button
+            disabled={!credits}
+            onClick={() => toast.info(`Checkout opening soon — ${credits} credits for ${fmt(total)}.`)}
+            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-white/20 bg-black px-6 py-3 text-sm font-medium transition-transform duration-300 hover:scale-[1.03] disabled:opacity-40 disabled:hover:scale-100"
+          >
+            <span className="absolute inset-0 -translate-y-full bg-white transition-transform duration-500 ease-out group-hover:translate-y-0" />
+            <Coins className="relative size-4 transition-colors duration-500 group-hover:text-black" />
+            <span className="relative transition-colors duration-500 group-hover:text-black">Continue to payment</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
