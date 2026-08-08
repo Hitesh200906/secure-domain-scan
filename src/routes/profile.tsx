@@ -46,12 +46,29 @@ const NAV: { key: Tab; label: string; icon: typeof User2; hint: string; tint: st
 ];
 
 
-const CREDIT_PACKS = [
-  { id: "starter", name: "Starter", credits: 10, price: 49, per: "/month", blurb: "Run a full security audit on a single domain. Get an AI-generated report in minutes.", perks: ["1 domain", "Weekly scans", "AI vulnerability report", "Email alerts", "Community support"] },
-  { id: "professional", name: "Professional", credits: 50, price: 199, per: "/month", blurb: "Continuous monitoring, advanced detection, and remediation playbooks for production estates.", perks: ["10 domains", "Daily scans", "OWASP Top 10 + CVE feeds", "Slack & PagerDuty alerts", "Priority email support", "PDF & JSON exports"], popular: true },
-  { id: "custom", name: "Custom", credits: 0, price: 0, per: "Custom", blurb: "Dedicated infrastructure, SAML SSO, custom integrations, and a named security engineer.", perks: ["Unlimited domains", "Real-time monitoring", "SAML SSO + audit log export", "Dedicated security engineer", "99.99% SLA", "Custom integrations"] },
-
+const CURRENCIES = [
+  { code: "USD", symbol: "$", rate: 1, label: "US Dollar" },
+  { code: "EUR", symbol: "€", rate: 0.92, label: "Euro" },
+  { code: "GBP", symbol: "£", rate: 0.79, label: "British Pound" },
+  { code: "INR", symbol: "₹", rate: 83, label: "Indian Rupee" },
+  { code: "AED", symbol: "AED ", rate: 3.67, label: "UAE Dirham" },
+  { code: "AUD", symbol: "A$", rate: 1.52, label: "Australian Dollar" },
 ] as const;
+
+const CREDIT_PRESETS = [
+  { credits: 10, tag: "Starter", tint: "emerald", note: "10 full scans" },
+  { credits: 25, tag: "Popular", tint: "violet", note: "25 full scans" },
+  { credits: 50, tag: "Best value", tint: "amber", note: "50 full scans" },
+  { credits: 100, tag: "Scale", tint: "sky", note: "100 full scans" },
+] as const;
+
+const TINTS: Record<string, { border: string; bg: string; text: string; dot: string }> = {
+  emerald: { border: "border-emerald-400/40", bg: "bg-emerald-500/10", text: "text-emerald-300", dot: "bg-emerald-400" },
+  violet: { border: "border-violet-400/40", bg: "bg-violet-500/10", text: "text-violet-300", dot: "bg-violet-400" },
+  amber: { border: "border-amber-400/40", bg: "bg-amber-500/10", text: "text-amber-300", dot: "bg-amber-400" },
+  sky: { border: "border-sky-400/40", bg: "bg-sky-500/10", text: "text-sky-300", dot: "bg-sky-400" },
+};
+
 
 function ProfilePage() {
   const { user } = useAuth();
@@ -388,90 +405,8 @@ function ProfilePage() {
                   </div>
                 </motion.div>
 
-                {/* Quick facts */}
-                <div className="grid sm:grid-cols-3 gap-4">
-                  {[
-                    { icon: <Zap className="size-4 text-amber-400" />, label: "Per scan", value: "1 credit", hint: "Full-stack audit + report" },
-                    { icon: <Database className="size-4 text-[#4d7cff]" />, label: "Rollover", value: "90 days", hint: "Unused credits stay valid" },
-                    { icon: <Crown className="size-4 text-amber-400" />, label: "Current plan", value: profile.plan, hint: "Upgrade anytime" },
-                  ].map((s, i) => (
-                    <motion.div
-                      key={s.label}
-                      initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.05 * i }}
-                      className="rounded-2xl border border-white/10 bg-black/60 p-4 transition-colors hover:border-white/25"
-                    >
-                      <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-muted-foreground">{s.icon} {s.label}</div>
-                      <div className="mt-2 text-lg font-medium capitalize">{s.value}</div>
-                      <div className="text-[11px] text-muted-foreground">{s.hint}</div>
-                    </motion.div>
-                  ))}
-                </div>
+                <CreditPurchase />
 
-                {/* Plans — same cards as the pricing page */}
-                <div id="credit-plans" className="pt-2">
-                  <div className="text-sm font-medium">Plans</div>
-                  <div className="text-xs text-muted-foreground">Pick the coverage that fits your estate.</div>
-                  <div className="mt-4 grid md:grid-cols-3 gap-5">
-                    {CREDIT_PACKS.map((t, i) => {
-                      const popular = "popular" in t && t.popular;
-                      return (
-                        <motion.div
-                          key={t.id}
-                          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.5, delay: i * 0.07 }}
-                          className={`relative rounded-3xl p-px ${popular ? "bg-gradient-to-b from-primary/60 via-secondary/30 to-transparent" : "bg-white/[0.08]"}`}
-                        >
-                          <div className="rounded-[calc(theme(borderRadius.3xl)-1px)] bg-[oklch(0.05_0.008_220)] p-6 h-full flex flex-col">
-                            {popular && (
-                              <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-[0.2em] bg-primary text-primary-foreground px-3 py-1 rounded-full">
-                                Most Popular
-                              </div>
-                            )}
-                            <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{t.name}</div>
-                            <div className="mt-4 flex items-baseline gap-1">
-                              <span className="text-4xl font-semibold tracking-tight">{t.price > 0 ? `$${t.price}` : "Custom"}</span>
-                              {t.price > 0 && <span className="text-sm text-muted-foreground">{t.per}</span>}
-                            </div>
-                            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{t.blurb}</p>
-
-                            <ul className="mt-8 space-y-3 flex-1">
-                              {t.perks.map((f) => (
-                                <li key={f} className="flex items-start gap-2.5 text-sm">
-                                  <Check className="size-4 mt-0.5 text-primary shrink-0" strokeWidth={2} />
-                                  <span className="text-white/90">{f}</span>
-                                </li>
-                              ))}
-                            </ul>
-
-                            <button
-                              onClick={() => toast.info(t.price > 0 ? "Checkout is opening soon — contact us to top up today." : "Talk to our team for a custom plan.")}
-                              className={`group relative mt-8 inline-flex items-center justify-center overflow-hidden rounded-full px-5 py-3 text-sm font-medium transition-transform duration-300 hover:scale-[1.03] ${popular ? "bg-white text-black" : "glass text-white hover:border-white/20"}`}
-                            >
-                              <span className="relative">{t.price > 0 ? `Choose ${t.name}` : "Talk to sales"}</span>
-                            </button>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* How credits work */}
-                <Card title="How credits work" desc="Simple, predictable consumption.">
-                  <div className="grid sm:grid-cols-3 gap-3">
-                    {[
-                      { n: "01", t: "Start a scan", d: "Submit a domain — one credit is reserved." },
-                      { n: "02", t: "We audit", d: "Full-stack, OWASP and CVE checks run automatically." },
-                      { n: "03", t: "Get the report", d: "Findings, evidence and remediation delivered." },
-                    ].map((s) => (
-                      <div key={s.n} className="rounded-xl border border-white/10 bg-black/60 p-4 transition-colors hover:border-white/25">
-                        <div className="text-[10px] tracking-widest text-muted-foreground">{s.n}</div>
-                        <div className="mt-1.5 text-sm font-medium">{s.t}</div>
-                        <div className="mt-1 text-xs text-muted-foreground leading-relaxed">{s.d}</div>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
               </>
             )}
 
