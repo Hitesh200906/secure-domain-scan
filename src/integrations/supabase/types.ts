@@ -477,13 +477,20 @@ export type Database = {
           findings_count: number | null
           full_name: string
           id: string
+          manual_code: string | null
+          otp_attempts: number
+          otp_code: string | null
           plan: string
           role_title: string | null
           score: number | null
           status: string
           target_url: string
           user_id: string
+          verification_expires_at: string | null
           verification_method: string
+          verification_notes: string | null
+          verification_status: string
+          verified_at: string | null
         }
         Insert: {
           business_email?: string | null
@@ -493,13 +500,20 @@ export type Database = {
           findings_count?: number | null
           full_name: string
           id?: string
+          manual_code?: string | null
+          otp_attempts?: number
+          otp_code?: string | null
           plan?: string
           role_title?: string | null
           score?: number | null
           status?: string
           target_url: string
           user_id: string
+          verification_expires_at?: string | null
           verification_method: string
+          verification_notes?: string | null
+          verification_status?: string
+          verified_at?: string | null
         }
         Update: {
           business_email?: string | null
@@ -509,13 +523,20 @@ export type Database = {
           findings_count?: number | null
           full_name?: string
           id?: string
+          manual_code?: string | null
+          otp_attempts?: number
+          otp_code?: string | null
           plan?: string
           role_title?: string | null
           score?: number | null
           status?: string
           target_url?: string
           user_id?: string
+          verification_expires_at?: string | null
           verification_method?: string
+          verification_notes?: string | null
+          verification_status?: string
+          verified_at?: string | null
         }
         Relationships: []
       }
