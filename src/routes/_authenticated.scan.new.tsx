@@ -60,6 +60,13 @@ function ScanNewPage() {
   });
   const [verification, setVerification] = useState<"email" | "manual">("email");
   const [loading, setLoading] = useState(false);
+  const [flow, setFlow] = useState<Flow>(null);
+
+  const startEmail = useServerFn(startEmailVerification);
+  const confirmEmail = useServerFn(confirmEmailVerification);
+  const startManual = useServerFn(startManualVerification);
+  const confirmManual = useServerFn(confirmManualVerification);
+
 
   useEffect(() => {
     if (user?.email) setForm((f) => ({ ...f, email: f.email || user.email! }));
