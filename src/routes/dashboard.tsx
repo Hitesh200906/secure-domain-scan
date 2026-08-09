@@ -303,16 +303,18 @@ function Overview({
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {[
-          { label: "Security Score", value: score, suffix: "/100", logo: kpiScoreAsset.url, trend: "+4.2%" },
-          { label: "Issues In Report", value: findings, logo: kpiIssuesAsset.url, trend: active?.status ?? "pending" },
-          { label: "Reports Filed", value: scansCount, logo: kpiReportsAsset.url, trend: "all time" },
-          { label: "Credits Left", value: credits, logo: kpiCreditsAsset.url, trend: "wallet" },
+          { label: "Security Score", value: score, suffix: "/100", logo: kpiScoreAsset.url, trend: "+4.2%", tint: "#3B82F6" },
+          { label: "Issues In Report", value: findings, logo: kpiIssuesAsset.url, trend: active?.status ?? "pending", tint: "#F59E0B" },
+          { label: "Reports Filed", value: scansCount, logo: kpiReportsAsset.url, trend: "all time", tint: "#8B5CF6" },
+          { label: "Credits Left", value: credits, logo: kpiCreditsAsset.url, trend: "wallet", tint: "#10B981" },
         ].map((k, i) => (
           <motion.div key={k.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.05 }}
-            className="glass rounded-2xl p-4 sm:p-5 relative overflow-hidden group hover:border-white/15 transition">
+            className="relative overflow-hidden rounded-2xl border p-4 sm:p-5 group transition"
+            style={{ borderColor: `${k.tint}33`, background: `linear-gradient(150deg, ${k.tint}26 0%, ${k.tint}0D 20%, oklch(0.05 0.008 240) 55%, #000 100%)` }}>
+            <div className="absolute left-0 top-0 h-full w-[3px]" style={{ background: `linear-gradient(180deg, ${k.tint}, transparent)` }} />
             <div className="flex items-start justify-between gap-2">
               <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{k.label}</div>
-              <div className="size-10 shrink-0 rounded-xl grid place-items-center border border-white/10 bg-white/[0.04]">
+              <div className="size-10 shrink-0 rounded-xl grid place-items-center border" style={{ borderColor: `${k.tint}33`, background: `${k.tint}1A` }}>
                 <img src={k.logo} alt="" loading="lazy" width={816} height={816} className="size-7 object-contain" />
               </div>
             </div>
@@ -320,25 +322,28 @@ function Overview({
               <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">{k.value}</div>
               {k.suffix && <div className="text-sm text-muted-foreground">{k.suffix}</div>}
             </div>
-            <div className="mt-2 text-[11px] text-muted-foreground inline-flex items-center gap-1 capitalize">
-              <TrendingUp className="size-3 text-emerald-400" /> {k.trend}
+            <div className="mt-2 text-[11px] inline-flex items-center gap-1 capitalize" style={{ color: k.tint }}>
+              <TrendingUp className="size-3" /> {k.trend}
             </div>
           </motion.div>
         ))}
       </div>
 
+
       {/* Chart + breakdown */}
       <div className="grid lg:grid-cols-3 gap-4">
-        <div className="glass rounded-2xl p-5 sm:p-6 lg:col-span-2">
+        <div className="relative overflow-hidden rounded-2xl border border-[#3B82F6]/25 p-5 sm:p-6 lg:col-span-2"
+          style={{ background: "linear-gradient(160deg, rgba(59,130,246,0.16) 0%, rgba(59,130,246,0.05) 20%, oklch(0.05 0.008 240) 55%, #000 100%)" }}>
           <div className="flex items-center justify-between mb-4">
             <div>
               <div className="text-sm font-medium">Threat Activity</div>
               <div className="text-[11px] text-muted-foreground mt-0.5">{active ? active.target_url : "sample data"} · last 24 hours</div>
             </div>
-            <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest">
-              <span className="size-1.5 rounded-full bg-zinc-400 animate-pulse" /> Realtime
+            <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-[#7DD3FC]">
+              <span className="size-1.5 rounded-full bg-[#22D3EE] animate-pulse" /> Realtime
             </div>
           </div>
+
           <Chart data={trend} />
           <div className="mt-4 grid grid-cols-3 gap-3 pt-4 border-t border-white/[0.06]">
             {[
@@ -354,11 +359,13 @@ function Overview({
           </div>
         </div>
 
-        <div className="glass rounded-2xl p-5 sm:p-6">
+        <div className="relative overflow-hidden rounded-2xl border border-[#8B5CF6]/25 p-5 sm:p-6"
+          style={{ background: "linear-gradient(160deg, rgba(139,92,246,0.16) 0%, rgba(139,92,246,0.05) 20%, oklch(0.05 0.008 280) 55%, #000 100%)" }}>
           <div className="flex items-center justify-between">
             <div className="text-sm font-medium">Risk Distribution</div>
-            <BarChart3 className="size-4 text-muted-foreground" />
+            <BarChart3 className="size-4 text-[#A78BFA]" />
           </div>
+
           <div className="mt-5 space-y-3.5">
             {[
               { label: "Critical", val: Math.max(0, Math.floor(findings * 0.08)), color: "oklch(0.65 0.22 25)", icon: ShieldAlert },
@@ -389,7 +396,7 @@ function Overview({
                   <span className="font-mono">{p.v}</span>
                 </div>
                 <div className="mt-1 h-1 rounded-full bg-white/5 overflow-hidden">
-                  <motion.div initial={{ width: 0 }} animate={{ width: `${p.v}%` }} transition={{ duration: 1, ease: "easeOut" }} className="h-full bg-gradient-to-r from-zinc-500 to-zinc-300" />
+                  <motion.div initial={{ width: 0 }} animate={{ width: `${p.v}%` }} transition={{ duration: 1, ease: "easeOut" }} className="h-full bg-gradient-to-r from-[#7C3AED] to-[#38BDF8]" />
                 </div>
               </div>
             ))}
@@ -418,32 +425,42 @@ function Overview({
           </div>
         </button>
 
-        <div className="glass rounded-2xl p-5 sm:p-6">
+        <div className="relative overflow-hidden rounded-2xl border border-[#EF4444]/25 p-5 sm:p-6"
+          style={{ background: "linear-gradient(160deg, rgba(239,68,68,0.16) 0%, rgba(239,68,68,0.05) 20%, oklch(0.05 0.008 20) 55%, #000 100%)" }}>
           <div className="flex items-center justify-between">
-            <div className="text-sm font-medium">Live Threat Intel</div>
-            <Wifi className="size-4 text-zinc-300 animate-pulse" />
+            <div className="text-sm font-medium inline-flex items-center gap-2">
+              <span className="size-1.5 rounded-full bg-[#F87171] animate-pulse" /> Live Threat Intel
+            </div>
+            <Wifi className="size-4 text-[#F87171] animate-pulse" />
           </div>
-          <ul className="mt-4 space-y-3">
+          <ul className="mt-4 space-y-2">
             {[
-              { ip: "185.220.101.47", country: "RU", type: "Brute force", time: "2m ago" },
-              { ip: "45.155.205.211", country: "CN", type: "SQL injection", time: "8m ago" },
-              { ip: "23.95.182.94", country: "US", type: "Port scan", time: "14m ago" },
-              { ip: "104.244.78.10", country: "DE", type: "XSS attempt", time: "22m ago" },
-            ].map((t) => (
-              <li key={t.ip} className="flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2.5">
-                  <div className="size-7 rounded-lg glass grid place-items-center text-[10px] font-mono text-zinc-300">{t.country}</div>
-                  <div>
-                    <div className="font-mono">{t.ip}</div>
-                    <div className="text-muted-foreground text-[10px] mt-0.5">{t.type}</div>
+              { ip: "185.220.101.47", country: "RU", type: "Brute force", time: "2m ago", sev: "#EF4444" },
+              { ip: "45.155.205.211", country: "CN", type: "SQL injection", time: "8m ago", sev: "#F59E0B" },
+              { ip: "23.95.182.94", country: "US", type: "Port scan", time: "14m ago", sev: "#38BDF8" },
+              { ip: "104.244.78.10", country: "DE", type: "XSS attempt", time: "22m ago", sev: "#F59E0B" },
+            ].map((t, i) => (
+              <motion.li key={t.ip} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.1 + i * 0.08 }}
+                className="flex items-center justify-between text-xs rounded-xl border border-white/[0.06] bg-black/40 px-2.5 py-2 hover:border-white/12 transition">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="size-7 rounded-lg grid place-items-center text-[10px] font-mono border"
+                    style={{ borderColor: `${t.sev}40`, background: `${t.sev}1A`, color: t.sev }}>{t.country}</div>
+                  <div className="min-w-0">
+                    <div className="font-mono truncate">{t.ip}</div>
+                    <div className="text-[10px] mt-0.5" style={{ color: t.sev }}>{t.type}</div>
                   </div>
                 </div>
-                <span className="text-muted-foreground/70 text-[10px]">{t.time}</span>
-              </li>
+                <span className="text-muted-foreground/70 text-[10px] shrink-0">{t.time}</span>
+              </motion.li>
             ))}
           </ul>
+          <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-[10px] uppercase tracking-widest text-muted-foreground">
+            <span>Feed active</span>
+            <span className="text-[#F87171]">4 events</span>
+          </div>
         </div>
       </div>
+
 
       {/* Quick actions */}
       <div className="glass rounded-2xl p-5 sm:p-6">
@@ -586,12 +603,13 @@ function NavBtn({ icon: Icon, label, active, onClick, badge, soon }: {
   icon: typeof LayoutDashboard; label: string; active?: boolean; onClick: () => void; badge?: string; soon?: boolean;
 }) {
   return (
-    <button onClick={onClick} className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition ${active ? "bg-white/[0.06] text-white" : "text-muted-foreground hover:bg-white/[0.03] hover:text-white"}`}>
-      <Icon className="size-4" />
+    <button onClick={onClick} className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition ${active ? "bg-white text-black font-medium shadow-[0_2px_10px_-4px_rgba(0,0,0,0.8)]" : "text-muted-foreground hover:bg-white/[0.03] hover:text-white"}`}>
+      <Icon className={`size-4 ${active ? "text-black" : ""}`} />
       <span className="flex-1 text-left">{label}</span>
-      {badge && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/10 text-zinc-200">{badge}</span>}
+      {badge && <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${active ? "bg-black/10 text-black" : "bg-white/10 text-zinc-200"}`}>{badge}</span>}
       {soon && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-400/15 text-amber-300 uppercase tracking-wider">soon</span>}
     </button>
+
   );
 }
 
@@ -616,10 +634,11 @@ function ScoreRing({ value }: { value: number }) {
           strokeDasharray={c} initial={{ strokeDashoffset: c }} animate={{ strokeDashoffset: offset }} transition={{ duration: 1.6, ease: "easeOut" }} />
         <defs>
           <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="oklch(0.62 0.02 250)" />
-            <stop offset="100%" stopColor="oklch(0.55 0.015 240)" />
+            <stop offset="0%" stopColor="#3B82F6" />
+            <stop offset="100%" stopColor="#22D3EE" />
           </linearGradient>
         </defs>
+
       </svg>
       <div className="absolute inset-0 grid place-items-center">
         <div className="text-center">
@@ -641,23 +660,26 @@ function Chart({ data }: { data: number[] }) {
     <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-40">
       <defs>
         <linearGradient id="ca" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="oklch(0.62 0.02 250)" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="oklch(0.62 0.02 250)" stopOpacity="0" />
+          <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.38" />
+          <stop offset="55%" stopColor="#6366F1" stopOpacity="0.14" />
+          <stop offset="100%" stopColor="#3B82F6" stopOpacity="0" />
         </linearGradient>
         <linearGradient id="cl" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="oklch(0.62 0.02 250)" />
-          <stop offset="100%" stopColor="oklch(0.55 0.015 240)" />
+          <stop offset="0%" stopColor="#2563EB" />
+          <stop offset="60%" stopColor="#38BDF8" />
+          <stop offset="100%" stopColor="#22D3EE" />
         </linearGradient>
       </defs>
       {[0.25, 0.5, 0.75].map((y) => (
-        <line key={y} x1="0" y1={h * y} x2={w} y2={h * y} stroke="oklch(1 0 0 / 0.04)" />
+        <line key={y} x1="0" y1={h * y} x2={w} y2={h * y} stroke="oklch(1 0 0 / 0.05)" strokeDasharray="4 8" />
       ))}
       <motion.polygon points={area} fill="url(#ca)" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }} />
-      <motion.polyline points={points} fill="none" stroke="url(#cl)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+      <motion.polyline points={points} fill="none" stroke="url(#cl)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
         initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4, ease: "easeOut" }} />
       {data.map((v, i) => i % 4 === 0 && (
-        <circle key={i} cx={i * step} cy={h - (v / max) * h * 0.85 - 8} r="2.5" fill="oklch(0.62 0.02 250)" />
+        <circle key={i} cx={i * step} cy={h - (v / max) * h * 0.85 - 8} r="2.8" fill="#22D3EE" />
       ))}
+
     </svg>
   );
 }
