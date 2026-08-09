@@ -172,7 +172,7 @@ function Dashboard() {
       <SidebarLink to="/scan/new" icon={ScanSearch} label="New Scan" onClick={onNav} />
       <div className="px-3 pt-5 pb-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">Account</div>
       <SidebarLink to="/profile" icon={UserIcon} label="Profile" onClick={onNav} />
-      <SidebarLink to="/pricing" icon={CreditCard} label="Billing" onClick={onNav} />
+      <SidebarLink to="/profile" search={{ tab: "credits" }} icon={CreditCard} label="Billing" onClick={onNav} />
       <SidebarLink to="/contact" icon={Settings} label="Support" onClick={onNav} />
     </>
   );
@@ -305,10 +305,11 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
 
   return (
     <div className="p-4 sm:p-6 space-y-6">
-      <div className={`glass rounded-2xl px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 ${report.demo ? "border-amber-500/30" : ""}`}>
+      <div className="glass rounded-2xl px-5 py-3.5 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="size-9 rounded-xl grid place-items-center" style={{ background: report.demo ? "#3a2c10" : "#132a3d" }}>
-            <FileText className="size-4" style={{ color: report.demo ? "#d8a53c" : "#5aa0d6" }} />
+          <div className="size-9 rounded-xl grid place-items-center" style={{ background: "#132a3d" }}>
+            <FileText className="size-4" style={{ color: "#5aa0d6" }} />
+
           </div>
           <div className="min-w-0">
             <div className="text-sm font-medium truncate">
@@ -330,7 +331,7 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: "Security Score", value: report.score, suffix: "/100", icon: Shield, trend: report.demo ? "demo data" : "from report", color: scoreColor(report.score) },
-          { label: "Open Findings", value: report.findings, icon: AlertTriangle, trend: `${report.status}`, color: "#b5702a" },
+          { label: "Open Findings", value: report.findings, icon: AlertTriangle, trend: `${report.status}`, color: "#b52a20" },
           { label: "Assets Monitored", value: scans.length || 1, icon: Globe2, trend: `${scans.length} scans`, color: "#5aa0d6" },
           { label: "Credits Left", value: profile?.credits ?? 0, icon: Zap, trend: `${profile?.plan ?? "starter"}`, color: "#ffffff" },
         ].map((k, i) => (
@@ -412,7 +413,7 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
               <div className="text-[11px] text-muted-foreground mt-0.5">{scans.length} total this month</div>
             </div>
             <Link to="/scan/new" search={{ plan: "professional" as const }}
-              className="rounded-lg bg-[#1b3a5c] hover:bg-[#234a75] text-white px-3.5 py-2 text-xs font-medium inline-flex items-center gap-1.5 transition">
+              className="rounded-lg bg-white hover:bg-white/90 text-black px-3.5 py-2 text-xs font-medium inline-flex items-center gap-1.5 transition">
               Start new <ArrowUpRight className="size-3.5" />
             </Link>
           </div>
@@ -422,8 +423,9 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
               <div className="size-12 mx-auto rounded-full glass grid place-items-center text-primary"><ScanSearch className="size-5" /></div>
               <div className="mt-4 text-sm">No scans yet</div>
               <p className="mt-1 text-xs text-muted-foreground">Run your first security scan in under 60 seconds.</p>
-              <Link to="/scan/new" search={{ plan: "professional" as const }} className="mt-5 inline-flex rounded-lg bg-[#1b3a5c] hover:bg-[#234a75] text-white px-4 py-2 text-xs font-medium transition">Start your first scan</Link>
+              <Link to="/scan/new" search={{ plan: "professional" as const }} className="mt-5 inline-flex rounded-lg bg-white hover:bg-white/90 text-black px-4 py-2 text-xs font-medium transition">Start your first scan</Link>
             </div>
+
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -633,9 +635,9 @@ function StatusPill({ status }: { status: string }) {
 }
 
 /* -------------------------------- widgets -------------------------------- */
-function SidebarLink({ to, icon: Icon, label, onClick }: { to: string; icon: typeof LayoutDashboard; label: string; onClick?: () => void }) {
+function SidebarLink({ to, icon: Icon, label, onClick, search }: { to: string; icon: typeof LayoutDashboard; label: string; onClick?: () => void; search?: Record<string, string> }) {
   return (
-    <Link to={to} onClick={onClick} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition text-muted-foreground hover:bg-white/[0.03] hover:text-white">
+    <Link to={to} search={search as never} onClick={onClick} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition text-muted-foreground hover:bg-white/[0.03] hover:text-white">
       <Icon className="size-4" />
       <span className="flex-1">{label}</span>
     </Link>
