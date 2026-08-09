@@ -84,3 +84,15 @@ export async function fetchRazorpayPayment(paymentId: string): Promise<{
   if (!res.ok) throw new Error("Could not verify the payment");
   return (await res.json()) as { status: string; order_id: string; amount: number; currency: string };
 }
+
+/** All payments captured against a Razorpay order (used for reconciliation). */
+export async function fetchOrderPayments(orderId: string): Promise<
+  Array<{ id: string; status: string }>
+> {
+  const res = await fetch(`https://api.razorpay.com/v1/orders/${orderId}/payments`, {
+    headers: { Authorization: authHeader() },
+  });
+  if (!res.ok) return [];
+  const body = (await res.json()) as { items?: Array<{ id: string; status: string }> };
+  return body.items ?? [];
+}
