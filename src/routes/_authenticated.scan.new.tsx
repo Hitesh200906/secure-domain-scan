@@ -75,7 +75,7 @@ function ScanNewPage() {
     if (!user) return;
     setLoading(true);
     try {
-      await api.createScan({
+      const { scan } = await api.createScan({
         full_name: form.full_name,
         role_title: form.role_title,
         company: form.company,
@@ -84,15 +84,24 @@ function ScanNewPage() {
         business_email: form.business_email,
         plan,
         verification_method: verification,
-      });
-      toast.success("Scan request submitted");
-      navigate({ to: "/dashboard" });
+        status: "awaiting_verification",
+      } as never);
+      const scanId = (scan as { id: string }).id;
+
+      if (verification === "email") {
+        const res = await startEmail({ data: { scan_id: scanId } });
+        setFlow({ kind: "email", scanId, sentTo: res.sent_to, hint: res.delivered ? null : res.code });
+      } else {
+        const res = await startManual({ data: { scan_id: scanId } });
+        setFlow({ kind: "manual", scanId, code: res.code, token: res.token });
+      }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to submit scan");
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-black">
