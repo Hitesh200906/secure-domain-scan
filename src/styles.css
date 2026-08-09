@@ -35,12 +35,6 @@
   --color-teal-glow: var(--teal-glow);
   --color-surface: var(--surface);
   --color-surface-elevated: var(--surface-elevated);
-  --color-accent-indigo: var(--accent-indigo);
-  --color-accent-sky: var(--accent-sky);
-  --color-accent-emerald: var(--accent-emerald);
-  --color-accent-amber: var(--accent-amber);
-  --color-accent-rose: var(--accent-rose);
-  --color-accent-violet: var(--accent-violet);
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-display: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -85,14 +79,6 @@
 
   --cyan-glow: oklch(0.86 0.16 200);
   --teal-glow: oklch(0.75 0.13 180);
-
-  /* Dashboard accent system — professional, non-glowing */
-  --accent-indigo: oklch(0.58 0.16 268);
-  --accent-sky: oklch(0.66 0.13 232);
-  --accent-emerald: oklch(0.68 0.14 162);
-  --accent-amber: oklch(0.76 0.14 72);
-  --accent-rose: oklch(0.62 0.19 18);
-  --accent-violet: oklch(0.62 0.15 300);
 
   /* Gradients & shadows */
   --gradient-radial-cyan: radial-gradient(ellipse at center, oklch(0.86 0.16 200 / 0.18), transparent 60%);
