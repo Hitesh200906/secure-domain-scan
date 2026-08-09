@@ -11,7 +11,7 @@ import {
 } from "./razorpay.server";
 
 const OrderInput = z.object({
-  credits: z.number().int().min(100).max(100000),
+  credits: z.number().int().min(1).max(100000),
   currency: z.string().min(3).max(4),
 });
 

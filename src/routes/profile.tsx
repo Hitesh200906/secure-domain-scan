@@ -884,7 +884,7 @@ function CreditsSection({ balance }: { balance: number }) {
 
   const pay = async (credits: number) => {
     if (busy) return;
-    if (!credits || credits < 100) { toast.error("Minimum 100 credits"); return; }
+    if (!credits || credits < 1) { toast.error("Minimum 1 credit"); return; }
     setBusy(true);
     try {
       const ok = await loadRazorpay();
