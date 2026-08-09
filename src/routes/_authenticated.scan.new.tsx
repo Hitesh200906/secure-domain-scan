@@ -374,21 +374,22 @@ function VerifCard({
 
     >
       <div className="flex items-start gap-3">
-        <span className="size-9 shrink-0 grid place-items-center rounded-xl bg-[#0d0d0f] border border-white/[0.08]">
+        <span className={`size-9 shrink-0 grid place-items-center rounded-xl ${selected ? "bg-white/70" : "bg-[#0d0d0f] border border-white/[0.08]"}`}>
           {icon}
         </span>
         <div className="flex-1">
-          <div className="text-sm font-medium text-white">{title}</div>
-          <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">{desc}</p>
+          <div className={`text-sm font-medium ${selected ? "text-[#0a1020]" : "text-white"}`}>{title}</div>
+          <p className={`mt-1 text-[11px] leading-relaxed ${selected ? "text-[#0a1020]/70" : "text-muted-foreground"}`}>{desc}</p>
         </div>
         <span
-          className={`size-5 shrink-0 rounded-full grid place-items-center border transition ${
-            selected ? "bg-sky-500 border-sky-500 text-white" : "border-white/25"
+          className={`size-5 shrink-0 rounded-full grid place-items-center transition ${
+            selected ? "bg-[#0000DD] text-white" : "border border-white/25"
           }`}
         >
           {selected && <Check className="size-3" />}
         </span>
       </div>
+
     </button>
   );
 }
