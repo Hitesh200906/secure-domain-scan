@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, useSearch, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Check, Loader2, Lock, Crosshair, ChevronDown } from "lucide-react";
@@ -98,9 +98,17 @@ function ScanNewPage() {
     <div className="min-h-screen bg-black">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 py-8 sm:py-12">
         <div className="flex items-center justify-between">
-          <Link to="/dashboard" className="text-xs text-muted-foreground hover:text-white">
-            ← Back to dashboard
-          </Link>
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof window !== "undefined" && window.history.length > 1) window.history.back();
+              else navigate({ to: "/" });
+            }}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-muted-foreground transition hover:bg-white/[0.07] hover:text-white"
+          >
+            ← Back
+          </button>
+
           <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground font-mono">
             {info.name} · {info.credits} credits
           </div>
@@ -223,7 +231,7 @@ function ScanNewPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-2xl px-6 py-4 text-[15px] font-medium text-white bg-[#0000DD] hover:bg-[#0000b8] transition-colors inline-flex items-center justify-center gap-3 disabled:opacity-60"
+              className="w-full rounded-2xl px-6 py-4 text-[15px] font-medium text-white bg-[#2563EB] hover:bg-[#1D4ED8] transition-colors inline-flex items-center justify-center gap-3 disabled:opacity-60"
             >
               {loading ? <Loader2 className="size-4 animate-spin" /> : <Crosshair className="size-4" />}
               Execute Scan
