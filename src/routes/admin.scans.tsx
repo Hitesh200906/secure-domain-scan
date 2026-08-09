@@ -62,13 +62,49 @@ function ScansPage() {
   };
 
   const filtered = rows.filter((r) => filter === "all" || r.status === filter);
+  const incoming = rows.filter((r) => r.status === "pending" && r.verification_status === "verified");
 
   return (
     <AdminShell title="Scan Management" description={`${rows.length} scan requests across all customers.`}>
-      <div className="flex gap-2 mb-4">
-        {["all", "pending", "in_progress", "completed", "failed"].map((s) => (
+      <Section title={`Incoming scan requests (${incoming.length})`}>
+        {incoming.length === 0 ? (
+          <div className="py-8 text-center text-sm text-muted-foreground">No verified requests waiting.</div>
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2">
+            {incoming.map((s) => (
+              <div key={s.id} className="rounded-xl border border-white/5 bg-black/40 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="truncate text-sm text-white">{s.target_url}</div>
+                    <div className="text-[11px] text-muted-foreground">
+                      {s.full_name} · {s.business_email || s.email}
+                    </div>
+                  </div>
+                  <Badge tone="ok">verified</Badge>
+                </div>
+                <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+                  <Badge tone="info">{s.plan}</Badge>
+                  <span>via {s.verification_method === "manual" ? "site code (AI checked)" : "email code"}</span>
+                  <span>· {new Date(s.created_at).toLocaleString()}</span>
+                </div>
+                <div className="mt-3 flex gap-2">
+                  <button onClick={() => act(s, { status: "in_progress" }, "scan.start")} className="rounded-lg bg-[#2563EB] px-3 py-1.5 text-[11px] font-medium text-white hover:bg-[#1D4ED8]">
+                    Start scan
+                  </button>
+                  <button onClick={() => act(s, { status: "failed" }, "scan.reject")} className="rounded-lg glass px-3 py-1.5 text-[11px] hover:text-rose-300">
+                    Reject
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Section>
+
+      <div className="flex flex-wrap gap-2 my-4">
+        {["all", "awaiting_verification", "pending", "in_progress", "completed", "failed"].map((s) => (
           <button key={s} onClick={() => setFilter(s)} className={`text-xs px-3 py-1.5 rounded-full border transition ${filter === s ? "bg-primary text-primary-foreground border-primary" : "glass"}`}>
-            {s.replace("_", " ")}
+            {s.replace(/_/g, " ")}
           </button>
         ))}
       </div>
@@ -77,8 +113,10 @@ function ScansPage() {
           <table className="w-full text-sm min-w-[900px]">
             <thead><tr className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
               <th className="text-left px-2 py-2">Scan</th><th className="text-left px-2">User</th><th className="text-left px-2">Plan</th>
+              <th className="text-left px-2">Verification</th>
               <th className="text-left px-2">Status</th><th className="text-left px-2">Date</th><th className="text-right px-2">Actions</th>
             </tr></thead>
+
             <tbody>
               {filtered.map((s) => (
                 <tr key={s.id} className="border-t border-white/5">
