@@ -412,7 +412,7 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
               <div className="text-[11px] text-muted-foreground mt-0.5">{scans.length} total this month</div>
             </div>
             <Link to="/scan/new" search={{ plan: "professional" as const }}
-              className="rounded-lg bg-[#1b3a5c] hover:bg-[#234a75] text-white px-3.5 py-2 text-xs font-medium inline-flex items-center gap-1.5 transition">
+              className="rounded-lg bg-white hover:bg-white/90 text-black px-3.5 py-2 text-xs font-medium inline-flex items-center gap-1.5 transition">
               Start new <ArrowUpRight className="size-3.5" />
             </Link>
           </div>
@@ -422,8 +422,9 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
               <div className="size-12 mx-auto rounded-full glass grid place-items-center text-primary"><ScanSearch className="size-5" /></div>
               <div className="mt-4 text-sm">No scans yet</div>
               <p className="mt-1 text-xs text-muted-foreground">Run your first security scan in under 60 seconds.</p>
-              <Link to="/scan/new" search={{ plan: "professional" as const }} className="mt-5 inline-flex rounded-lg bg-[#1b3a5c] hover:bg-[#234a75] text-white px-4 py-2 text-xs font-medium transition">Start your first scan</Link>
+              <Link to="/scan/new" search={{ plan: "professional" as const }} className="mt-5 inline-flex rounded-lg bg-white hover:bg-white/90 text-black px-4 py-2 text-xs font-medium transition">Start your first scan</Link>
             </div>
+
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
