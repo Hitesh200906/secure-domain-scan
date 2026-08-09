@@ -139,7 +139,7 @@ function Dashboard() {
               <div className="text-[10px] uppercase tracking-widest text-primary">{profile?.plan ?? "starter"} Plan</div>
               <div className="text-sm mt-1.5 font-medium">{profile?.credits ?? 0} credits left</div>
               <div className="mt-2.5 h-1 rounded-full bg-white/10 overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-primary to-secondary" style={{ width: `${Math.min(100, ((profile?.credits ?? 0) / 15) * 100)}%` }} />
+                <div className="h-full bg-gradient-to-r from-zinc-500 to-zinc-300" style={{ width: `${Math.min(100, ((profile?.credits ?? 0) / 15) * 100)}%` }} />
               </div>
               <Link to="/pricing" className="mt-3 block text-[11px] text-primary hover:underline">Upgrade plan →</Link>
             </div>
@@ -184,7 +184,7 @@ function Dashboard() {
               <button className="size-9 rounded-full glass grid place-items-center hover:border-white/20 transition">
                 <Bell className="size-4" />
               </button>
-              <Link to="/scan/new" search={{ plan: 'professional' as const }} className="rounded-full bg-[#0000DD] text-white px-4 py-2 text-xs font-medium inline-flex items-center gap-1.5 hover:bg-[#1a1aff] transition">
+              <Link to="/scan/new" search={{ plan: 'professional' as const }} className="rounded-full bg-white text-black px-4 py-2 text-xs font-medium inline-flex items-center gap-1.5 hover:bg-white/85 transition">
                 <ScanSearch className="size-3.5" /> New Scan
               </Link>
             </div>
@@ -279,7 +279,7 @@ function Overview({
                 : "Submit your first scan to populate the overview with real posture data."}
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
-              <button onClick={onBrowse} className="rounded-full bg-[#0000DD] px-4 py-2 text-xs font-medium text-white hover:bg-[#1a1aff] transition inline-flex items-center gap-1.5">
+              <button onClick={onBrowse} className="rounded-full bg-white text-black px-4 py-2 text-xs font-medium text-black hover:bg-white/85 transition inline-flex items-center gap-1.5">
                 <FileText className="size-3.5" /> Browse scan reports
               </button>
               {pinned && (
@@ -312,7 +312,7 @@ function Overview({
               </div>
             </div>
             <div className="mt-3 flex items-baseline gap-1">
-              <div className={`text-2xl sm:text-3xl font-semibold tracking-tight ${k.glow ? "text-gradient-accent" : "text-white"}`}>{k.value}</div>
+              <div className={`text-2xl sm:text-3xl font-semibold tracking-tight ${k.glow ? "text-white" : "text-white"}`}>{k.value}</div>
               {k.suffix && <div className="text-sm text-muted-foreground">{k.suffix}</div>}
             </div>
             <div className="mt-2 text-[11px] text-muted-foreground inline-flex items-center gap-1 capitalize">
@@ -384,7 +384,7 @@ function Overview({
                   <span className="font-mono">{p.v}</span>
                 </div>
                 <div className="mt-1 h-1 rounded-full bg-white/5 overflow-hidden">
-                  <motion.div initial={{ width: 0 }} animate={{ width: `${p.v}%` }} transition={{ duration: 1, ease: "easeOut" }} className="h-full bg-gradient-to-r from-primary to-secondary" />
+                  <motion.div initial={{ width: 0 }} animate={{ width: `${p.v}%` }} transition={{ duration: 1, ease: "easeOut" }} className="h-full bg-gradient-to-r from-zinc-500 to-zinc-300" />
                 </div>
               </div>
             ))}
@@ -406,7 +406,7 @@ function Overview({
             <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
               Connect your site with a single API key and let the Nexefy AI monitor, detect and neutralise threats around the clock.
             </p>
-            <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[#0000DD] px-4 py-2 text-xs font-medium text-white group-hover:bg-[#1a1aff] transition">
+            <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-white text-black px-4 py-2 text-xs font-medium text-white group-hover:bg-white/85 transition">
               <Radar className="size-3.5" /> Activate Live Security
             </span>
           </div>
@@ -490,7 +490,7 @@ function Reports({
           <div className="size-12 mx-auto rounded-full glass grid place-items-center text-primary"><ScanSearch className="size-5" /></div>
           <div className="mt-4 text-sm">No reports yet</div>
           <p className="mt-1 text-xs text-muted-foreground">Submit your first scan and it will appear here within minutes.</p>
-          <Link to="/scan/new" search={{ plan: 'professional' as const }} className="mt-5 inline-flex rounded-full bg-[#0000DD] text-white px-4 py-2 text-xs font-medium">Start your first scan</Link>
+          <Link to="/scan/new" search={{ plan: 'professional' as const }} className="mt-5 inline-flex rounded-full bg-white text-black px-4 py-2 text-xs font-medium">Start your first scan</Link>
         </div>
       ) : (
         <div className="grid md:grid-cols-2 gap-4">
@@ -521,7 +521,7 @@ function Reports({
 
                 <div className="mt-3 h-1.5 rounded-full bg-white/[0.05] overflow-hidden">
                   <motion.div initial={{ width: 0 }} animate={{ width: s.status === "completed" ? "100%" : s.status === "running" ? "62%" : "18%" }}
-                    transition={{ duration: 1 }} className="h-full rounded-full bg-gradient-to-r from-primary to-secondary" />
+                    transition={{ duration: 1 }} className="h-full rounded-full bg-gradient-to-r from-zinc-500 to-zinc-300" />
                 </div>
                 <div className="mt-1.5 text-[10px] text-muted-foreground">
                   Verification: {s.verification_status ?? "pending"}
@@ -533,7 +533,7 @@ function Reports({
                       Remove from dashboard
                     </button>
                   ) : (
-                    <button onClick={() => onPin(s.id)} className="rounded-full bg-[#0000DD] px-4 py-2 text-xs font-medium text-white hover:bg-[#1a1aff] transition inline-flex items-center gap-1.5">
+                    <button onClick={() => onPin(s.id)} className="rounded-full bg-white text-black px-4 py-2 text-xs font-medium text-black hover:bg-white/85 transition inline-flex items-center gap-1.5">
                       <Upload className="size-3.5" /> Upload Report to Dashboard
                     </button>
                   )}
@@ -611,7 +611,7 @@ function ScoreRing({ value }: { value: number }) {
       </svg>
       <div className="absolute inset-0 grid place-items-center">
         <div className="text-center">
-          <div className="text-3xl sm:text-4xl font-semibold text-gradient-accent">{value}</div>
+          <div className="text-3xl sm:text-4xl font-semibold text-white">{value}</div>
           <div className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Secure</div>
         </div>
       </div>
