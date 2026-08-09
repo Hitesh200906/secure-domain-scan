@@ -1101,6 +1101,15 @@ function CreditsSection({ balance }: { balance: number }) {
       </div>
 
 
+      <PaymentStatus
+        phase={phase}
+        credited={credited}
+        balance={bal}
+        message={payMsg}
+        onRetry={retryVerify}
+        onClose={() => { setPhase("idle"); setOpen(false); setStep(1); }}
+      />
+
       {/* Full-page checkout */}
       {open && step === 1 && (
         <CreditsCheckout
