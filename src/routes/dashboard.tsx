@@ -586,12 +586,13 @@ function NavBtn({ icon: Icon, label, active, onClick, badge, soon }: {
   icon: typeof LayoutDashboard; label: string; active?: boolean; onClick: () => void; badge?: string; soon?: boolean;
 }) {
   return (
-    <button onClick={onClick} className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition ${active ? "bg-white/[0.06] text-white" : "text-muted-foreground hover:bg-white/[0.03] hover:text-white"}`}>
-      <Icon className="size-4" />
+    <button onClick={onClick} className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition ${active ? "bg-white text-black font-medium shadow-[0_2px_10px_-4px_rgba(0,0,0,0.8)]" : "text-muted-foreground hover:bg-white/[0.03] hover:text-white"}`}>
+      <Icon className={`size-4 ${active ? "text-black" : ""}`} />
       <span className="flex-1 text-left">{label}</span>
-      {badge && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/10 text-zinc-200">{badge}</span>}
+      {badge && <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${active ? "bg-black/10 text-black" : "bg-white/10 text-zinc-200"}`}>{badge}</span>}
       {soon && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-400/15 text-amber-300 uppercase tracking-wider">soon</span>}
     </button>
+
   );
 }
 
