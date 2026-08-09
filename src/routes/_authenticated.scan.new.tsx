@@ -244,7 +244,7 @@ function ScanNewPage() {
                 onClick={() => setVerification("email")}
                 icon={<Emoji size="sm">📧</Emoji>}
                 title="Email Verification"
-                desc="We'll send a confirmation link to your business email. Click the link to confirm domain ownership and queue the scan."
+                desc="We'll send a 6-digit code to your business email. Enter it after pressing Execute Scan to confirm ownership and queue the scan."
               />
               <VerifCard
                 selected={verification === "manual"}
