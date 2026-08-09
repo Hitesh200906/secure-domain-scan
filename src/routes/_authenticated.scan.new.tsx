@@ -98,9 +98,17 @@ function ScanNewPage() {
     <div className="min-h-screen bg-black">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 py-8 sm:py-12">
         <div className="flex items-center justify-between">
-          <Link to="/dashboard" className="text-xs text-muted-foreground hover:text-white">
-            ← Back to dashboard
-          </Link>
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof window !== "undefined" && window.history.length > 1) window.history.back();
+              else navigate({ to: "/features" });
+            }}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-muted-foreground transition hover:bg-white/[0.07] hover:text-white"
+          >
+            ← Back
+          </button>
+
           <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground font-mono">
             {info.name} · {info.credits} credits
           </div>
