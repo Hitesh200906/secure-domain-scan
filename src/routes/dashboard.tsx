@@ -118,8 +118,8 @@ function Dashboard() {
   return (
     <div className="min-h-screen flex bg-background relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute top-0 -left-40 size-[600px] rounded-full bg-[oklch(0.55_0.22_265_/0.10)] blur-[120px] animate-aurora-1" />
-        <div className="absolute bottom-0 -right-40 size-[600px] rounded-full bg-[oklch(0.75_0.13_180_/0.07)] blur-[120px] animate-aurora-2" />
+        <div className="absolute top-0 -left-40 size-[600px] rounded-full bg-[oklch(0.35_0.01_250_/0.10)] blur-[120px] animate-aurora-1" />
+        <div className="absolute bottom-0 -right-40 size-[600px] rounded-full bg-[oklch(0.30_0.01_250_/0.08)] blur-[120px] animate-aurora-2" />
         <div className="absolute inset-0 grid-bg opacity-30 animate-grid-pan" />
       </div>
 
@@ -136,12 +136,12 @@ function Dashboard() {
           <div className="glass rounded-2xl p-4 relative overflow-hidden">
             <div className="absolute inset-0 animate-shimmer opacity-40" />
             <div className="relative">
-              <div className="text-[10px] uppercase tracking-widest text-primary">{profile?.plan ?? "starter"} Plan</div>
+              <div className="text-[10px] uppercase tracking-widest text-zinc-300">{profile?.plan ?? "starter"} Plan</div>
               <div className="text-sm mt-1.5 font-medium">{profile?.credits ?? 0} credits left</div>
               <div className="mt-2.5 h-1 rounded-full bg-white/10 overflow-hidden">
                 <div className="h-full bg-gradient-to-r from-zinc-500 to-zinc-300" style={{ width: `${Math.min(100, ((profile?.credits ?? 0) / 15) * 100)}%` }} />
               </div>
-              <Link to="/pricing" className="mt-3 block text-[11px] text-primary hover:underline">Upgrade plan →</Link>
+              <Link to="/pricing" className="mt-3 block text-[11px] text-zinc-300 hover:underline">Upgrade plan →</Link>
             </div>
           </div>
           {user && (
@@ -268,7 +268,7 @@ function Overview({
         <div className="relative p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center gap-6 justify-between">
           <div className="min-w-0">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              {pinned ? <><Pin className="size-3 text-primary" /> Pinned report</> : <><Clock className="size-3" /> Latest report</>}
+              {pinned ? <><Pin className="size-3 text-zinc-300" /> Pinned report</> : <><Clock className="size-3" /> Latest report</>}
             </div>
             <h2 className="mt-3 text-2xl sm:text-3xl font-semibold tracking-tight truncate">
               {active ? active.target_url : "No reports yet"}
@@ -298,9 +298,9 @@ function Overview({
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {[
-          { label: "Security Score", value: score, suffix: "/100", icon: ShieldCheck, trend: "+4.2%", tint: "oklch(0.62 0.19 265)", glow: true },
+          { label: "Security Score", value: score, suffix: "/100", icon: ShieldCheck, trend: "+4.2%", tint: "oklch(0.62 0.02 250)", glow: true },
           { label: "Issues In Report", value: findings, icon: Bug, trend: active?.status ?? "pending", tint: "oklch(0.78 0.17 50)" },
-          { label: "Reports Filed", value: scansCount, icon: FileText, trend: "all time", tint: "oklch(0.75 0.13 180)" },
+          { label: "Reports Filed", value: scansCount, icon: FileText, trend: "all time", tint: "oklch(0.55 0.015 240)" },
           { label: "Credits Left", value: credits, icon: Zap, trend: "wallet", tint: "oklch(0.85 0.16 90)" },
         ].map((k, i) => (
           <motion.div key={k.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.05 }}
@@ -331,7 +331,7 @@ function Overview({
               <div className="text-[11px] text-muted-foreground mt-0.5">{active ? active.target_url : "sample data"} · last 24 hours</div>
             </div>
             <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest">
-              <span className="size-1.5 rounded-full bg-primary animate-pulse" /> Realtime
+              <span className="size-1.5 rounded-full bg-zinc-400 animate-pulse" /> Realtime
             </div>
           </div>
           <Chart data={trend} />
@@ -359,7 +359,7 @@ function Overview({
               { label: "Critical", val: Math.max(0, Math.floor(findings * 0.08)), color: "oklch(0.65 0.22 25)", icon: ShieldAlert },
               { label: "High", val: Math.max(0, Math.floor(findings * 0.22)), color: "oklch(0.78 0.17 50)", icon: AlertTriangle },
               { label: "Medium", val: Math.max(0, Math.floor(findings * 0.38)), color: "oklch(0.85 0.16 90)", icon: Eye },
-              { label: "Low", val: Math.max(0, Math.floor(findings * 0.32)), color: "oklch(0.75 0.13 180)", icon: CheckCircle2 },
+              { label: "Low", val: Math.max(0, Math.floor(findings * 0.32)), color: "oklch(0.55 0.015 240)", icon: CheckCircle2 },
             ].map((r) => (
               <div key={r.label}>
                 <div className="flex items-center justify-between text-xs">
@@ -400,13 +400,13 @@ function Overview({
           <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-transparent" />
           <div className="relative p-6 sm:p-8 max-w-md">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              <Cpu className="size-3 text-primary" /> Under construction
+              <Cpu className="size-3 text-zinc-300" /> Under construction
             </div>
             <h3 className="mt-3 text-xl sm:text-2xl font-semibold tracking-tight">Live Security — 24/7 AI protection</h3>
             <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
               Connect your site with a single API key and let the Nexefy AI monitor, detect and neutralise threats around the clock.
             </p>
-            <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-white text-black px-4 py-2 text-xs font-medium text-white group-hover:bg-white/85 transition">
+            <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-white text-black px-4 py-2 text-xs font-medium group-hover:bg-white/85 transition">
               <Radar className="size-3.5" /> Activate Live Security
             </span>
           </div>
@@ -415,7 +415,7 @@ function Overview({
         <div className="glass rounded-2xl p-5 sm:p-6">
           <div className="flex items-center justify-between">
             <div className="text-sm font-medium">Live Threat Intel</div>
-            <Wifi className="size-4 text-primary animate-pulse" />
+            <Wifi className="size-4 text-zinc-300 animate-pulse" />
           </div>
           <ul className="mt-4 space-y-3">
             {[
@@ -426,7 +426,7 @@ function Overview({
             ].map((t) => (
               <li key={t.ip} className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2.5">
-                  <div className="size-7 rounded-lg glass grid place-items-center text-[10px] font-mono text-primary">{t.country}</div>
+                  <div className="size-7 rounded-lg glass grid place-items-center text-[10px] font-mono text-zinc-300">{t.country}</div>
                   <div>
                     <div className="font-mono">{t.ip}</div>
                     <div className="text-muted-foreground text-[10px] mt-0.5">{t.type}</div>
@@ -443,7 +443,7 @@ function Overview({
       <div className="glass rounded-2xl p-5 sm:p-6">
         <div className="flex items-center justify-between">
           <div className="text-sm font-medium">Quick Actions</div>
-          <Sparkles className="size-4 text-primary" />
+          <Sparkles className="size-4 text-zinc-300" />
         </div>
         <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
           {[
@@ -452,8 +452,8 @@ function Overview({
             { l: "Security Center", icon: Lock, to: "/profile" as const },
             { l: "Support", icon: Activity, to: "/contact" as const },
           ].map((a) => (
-            <Link key={a.l} to={a.to} className="rounded-xl glass p-3 text-xs hover:border-primary/40 transition group">
-              <a.icon className="size-4 text-primary mb-2 group-hover:scale-110 transition" />
+            <Link key={a.l} to={a.to} className="rounded-xl glass p-3 text-xs hover:border-white/25 transition group">
+              <a.icon className="size-4 text-zinc-300 mb-2 group-hover:scale-110 transition" />
               <div>{a.l}</div>
             </Link>
           ))}
@@ -476,7 +476,7 @@ function Reports({
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-transparent" />
         <div className="relative p-6 sm:p-8 max-w-lg">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            <FileText className="size-3 text-primary" /> Scan reports
+            <FileText className="size-3 text-zinc-300" /> Scan reports
           </div>
           <h2 className="mt-3 text-2xl sm:text-3xl font-semibold tracking-tight">Every report you submitted</h2>
           <p className="mt-2 text-xs sm:text-sm text-muted-foreground">
@@ -487,7 +487,7 @@ function Reports({
 
       {scans.length === 0 ? (
         <div className="glass rounded-2xl px-6 py-16 text-center">
-          <div className="size-12 mx-auto rounded-full glass grid place-items-center text-primary"><ScanSearch className="size-5" /></div>
+          <div className="size-12 mx-auto rounded-full glass grid place-items-center text-zinc-300"><ScanSearch className="size-5" /></div>
           <div className="mt-4 text-sm">No reports yet</div>
           <p className="mt-1 text-xs text-muted-foreground">Submit your first scan and it will appear here within minutes.</p>
           <Link to="/scan/new" search={{ plan: 'professional' as const }} className="mt-5 inline-flex rounded-full bg-white text-black px-4 py-2 text-xs font-medium">Start your first scan</Link>
@@ -498,23 +498,23 @@ function Reports({
             const isPinned = s.id === pinned;
             return (
               <motion.div key={s.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
-                className={`rounded-2xl border p-5 bg-black/60 backdrop-blur-xl transition ${isPinned ? "border-primary/50" : "border-white/[0.08] hover:border-white/20"}`}>
+                className={`rounded-2xl border p-5 bg-black/60 backdrop-blur-xl transition ${isPinned ? "border-white/30" : "border-white/[0.08] hover:border-white/20"}`}>
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="size-10 rounded-xl grid place-items-center border border-white/10 bg-[oklch(0.62_0.19_265_/0.15)]">
-                      <Globe2 className="size-4 text-primary" />
+                    <div className="size-10 rounded-xl grid place-items-center border border-white/10 bg-[oklch(0.30_0.01_250_/0.55)]">
+                      <Globe2 className="size-4 text-zinc-300" />
                     </div>
                     <div className="min-w-0">
                       <div className="font-mono text-sm truncate">{s.target_url}</div>
                       <div className="text-[11px] text-muted-foreground mt-0.5 capitalize">{s.plan} plan · {new Date(s.created_at).toLocaleString()}</div>
                     </div>
                   </div>
-                  {isPinned && <span className="shrink-0 inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-primary"><Pin className="size-3" /> On dashboard</span>}
+                  {isPinned && <span className="shrink-0 inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-zinc-300"><Pin className="size-3" /> On dashboard</span>}
                 </div>
 
                 <div className="mt-4 grid grid-cols-3 gap-2">
                   <Stat label="Status" value={s.status} icon={s.status === "completed" ? CheckCircle2 : Clock}
-                    tone={s.status === "completed" ? "text-emerald-400" : s.status === "running" ? "text-primary" : "text-muted-foreground"} />
+                    tone={s.status === "completed" ? "text-emerald-400" : s.status === "running" ? "text-zinc-300" : "text-muted-foreground"} />
                   <Stat label="Score" value={s.score != null ? `${s.score}/100` : "—"} icon={Shield} tone="text-white" />
                   <Stat label="Issues" value={s.findings_count != null ? String(s.findings_count) : "—"} icon={Bug} tone="text-amber-400" />
                 </div>
@@ -577,7 +577,7 @@ function NavBtn({ icon: Icon, label, active, onClick, badge, soon }: {
     <button onClick={onClick} className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition ${active ? "bg-white/[0.06] text-white" : "text-muted-foreground hover:bg-white/[0.03] hover:text-white"}`}>
       <Icon className="size-4" />
       <span className="flex-1 text-left">{label}</span>
-      {badge && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/15 text-primary">{badge}</span>}
+      {badge && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/10 text-zinc-200">{badge}</span>}
       {soon && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-400/15 text-amber-300 uppercase tracking-wider">soon</span>}
     </button>
   );
@@ -604,8 +604,8 @@ function ScoreRing({ value }: { value: number }) {
           strokeDasharray={c} initial={{ strokeDashoffset: c }} animate={{ strokeDashoffset: offset }} transition={{ duration: 1.6, ease: "easeOut" }} />
         <defs>
           <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="oklch(0.62 0.19 265)" />
-            <stop offset="100%" stopColor="oklch(0.75 0.13 180)" />
+            <stop offset="0%" stopColor="oklch(0.62 0.02 250)" />
+            <stop offset="100%" stopColor="oklch(0.55 0.015 240)" />
           </linearGradient>
         </defs>
       </svg>
@@ -629,12 +629,12 @@ function Chart({ data }: { data: number[] }) {
     <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-40">
       <defs>
         <linearGradient id="ca" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="oklch(0.62 0.19 265)" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="oklch(0.62 0.19 265)" stopOpacity="0" />
+          <stop offset="0%" stopColor="oklch(0.62 0.02 250)" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="oklch(0.62 0.02 250)" stopOpacity="0" />
         </linearGradient>
         <linearGradient id="cl" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="oklch(0.62 0.19 265)" />
-          <stop offset="100%" stopColor="oklch(0.75 0.13 180)" />
+          <stop offset="0%" stopColor="oklch(0.62 0.02 250)" />
+          <stop offset="100%" stopColor="oklch(0.55 0.015 240)" />
         </linearGradient>
       </defs>
       {[0.25, 0.5, 0.75].map((y) => (
@@ -644,7 +644,7 @@ function Chart({ data }: { data: number[] }) {
       <motion.polyline points={points} fill="none" stroke="url(#cl)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
         initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4, ease: "easeOut" }} />
       {data.map((v, i) => i % 4 === 0 && (
-        <circle key={i} cx={i * step} cy={h - (v / max) * h * 0.85 - 8} r="2.5" fill="oklch(0.62 0.19 265)" />
+        <circle key={i} cx={i * step} cy={h - (v / max) * h * 0.85 - 8} r="2.5" fill="oklch(0.62 0.02 250)" />
       ))}
     </svg>
   );
