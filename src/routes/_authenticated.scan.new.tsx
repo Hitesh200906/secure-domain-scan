@@ -223,7 +223,7 @@ function ScanNewPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-2xl px-6 py-4 text-[15px] font-medium text-white bg-[#0b1a3a] border border-white/10 hover:bg-[#0000DD] transition-colors inline-flex items-center justify-center gap-3 disabled:opacity-60"
+              className="w-full rounded-2xl px-6 py-4 text-[15px] font-medium text-white bg-[#0000DD] hover:bg-[#0000b8] transition-colors inline-flex items-center justify-center gap-3 disabled:opacity-60"
             >
               {loading ? <Loader2 className="size-4 animate-spin" /> : <Crosshair className="size-4" />}
               Execute Scan
@@ -366,28 +366,30 @@ function VerifCard({
     <button
       type="button"
       onClick={onClick}
-      className={`text-left rounded-2xl p-4 border transition ${
+      className={`text-left rounded-2xl p-4 border border-transparent transition ${
         selected
-          ? "border-sky-500/50 bg-[#0b1220]"
-          : "border-white/[0.07] bg-[#0a0a0c] hover:border-white/20"
+          ? "bg-[#dbe9ff]"
+          : "bg-[#0a0a0c] hover:bg-[#101014]"
       }`}
+
     >
       <div className="flex items-start gap-3">
-        <span className="size-9 shrink-0 grid place-items-center rounded-xl bg-[#0d0d0f] border border-white/[0.08]">
+        <span className={`size-9 shrink-0 grid place-items-center rounded-xl ${selected ? "bg-white/70" : "bg-[#0d0d0f] border border-white/[0.08]"}`}>
           {icon}
         </span>
         <div className="flex-1">
-          <div className="text-sm font-medium text-white">{title}</div>
-          <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">{desc}</p>
+          <div className={`text-sm font-medium ${selected ? "text-[#0a1020]" : "text-white"}`}>{title}</div>
+          <p className={`mt-1 text-[11px] leading-relaxed ${selected ? "text-[#0a1020]/70" : "text-muted-foreground"}`}>{desc}</p>
         </div>
         <span
-          className={`size-5 shrink-0 rounded-full grid place-items-center border transition ${
-            selected ? "bg-sky-500 border-sky-500 text-white" : "border-white/25"
+          className={`size-5 shrink-0 rounded-full grid place-items-center transition ${
+            selected ? "bg-[#0000DD] text-white" : "border border-white/25"
           }`}
         >
           {selected && <Check className="size-3" />}
         </span>
       </div>
+
     </button>
   );
 }
