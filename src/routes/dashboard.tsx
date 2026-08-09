@@ -123,9 +123,9 @@ function Dashboard() {
   return (
     <div className="h-screen flex bg-background relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute top-0 -left-40 size-[600px] rounded-full bg-[oklch(0.35_0.01_250_/0.10)] blur-[120px] animate-aurora-1" />
-        <div className="absolute bottom-0 -right-40 size-[600px] rounded-full bg-[oklch(0.30_0.01_250_/0.08)] blur-[120px] animate-aurora-2" />
-        <div className="absolute inset-0 grid-bg opacity-30 animate-grid-pan" />
+        <div className="absolute top-0 -left-40 size-[600px] rounded-full bg-[color-mix(in_oklab,var(--accent-indigo)_14%,transparent)] blur-[140px] animate-aurora-1" />
+        <div className="absolute bottom-0 -right-40 size-[600px] rounded-full bg-[color-mix(in_oklab,var(--accent-sky)_10%,transparent)] blur-[140px] animate-aurora-2" />
+        <div className="absolute inset-0 grid-bg opacity-25 animate-grid-pan" />
       </div>
 
       {/* Sidebar */}
@@ -138,15 +138,14 @@ function Dashboard() {
         </div>
         <nav className="flex-1 min-h-0 p-3 space-y-0.5">{nav}</nav>
         <div className="p-3 border-t border-white/[0.06] space-y-2">
-          <div className="glass rounded-2xl p-4 relative overflow-hidden">
-            <div className="absolute inset-0 animate-shimmer opacity-40" />
+          <div className="rounded-2xl p-4 relative overflow-hidden border border-[color-mix(in_oklab,var(--accent-indigo)_28%,transparent)] bg-[color-mix(in_oklab,var(--accent-indigo)_10%,black)]">
             <div className="relative">
-              <div className="text-[10px] uppercase tracking-widest text-zinc-300">{profile?.plan ?? "starter"} Plan</div>
+              <div className="text-[10px] uppercase tracking-widest text-accent-sky capitalize">{profile?.plan ?? "starter"} Plan</div>
               <div className="text-sm mt-1.5 font-medium">{profile?.credits ?? 0} credits left</div>
               <div className="mt-2.5 h-1 rounded-full bg-white/10 overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-zinc-500 to-zinc-300" style={{ width: `${Math.min(100, ((profile?.credits ?? 0) / 15) * 100)}%` }} />
+                <div className="h-full bg-gradient-to-r from-accent-indigo to-accent-sky" style={{ width: `${Math.min(100, ((profile?.credits ?? 0) / 15) * 100)}%` }} />
               </div>
-              <Link to="/pricing" className="mt-3 block text-[11px] text-zinc-300 hover:underline">Upgrade plan →</Link>
+              <Link to="/pricing" className="mt-3 block text-[11px] text-accent-sky hover:underline">Upgrade plan →</Link>
             </div>
           </div>
           {user && (
@@ -266,14 +265,15 @@ function Overview({
     <>
       {/* Report context banner */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-black">
+        className="relative overflow-hidden rounded-3xl border border-[color-mix(in_oklab,var(--accent-indigo)_26%,transparent)] bg-black">
         <img src={shieldImg} alt="Security posture" loading="lazy" width={1024} height={768}
-          className="absolute inset-0 size-full object-cover opacity-45" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent" />
+          className="absolute inset-0 size-full object-cover opacity-35" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-transparent" />
+        <div className="absolute inset-0 bg-[linear-gradient(115deg,color-mix(in_oklab,var(--accent-indigo)_20%,transparent),transparent_60%)]" />
         <div className="relative p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center gap-6 justify-between">
           <div className="min-w-0">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              {pinned ? <><Pin className="size-3 text-zinc-300" /> Pinned report</> : <><Clock className="size-3" /> Latest report</>}
+            <div className="inline-flex items-center gap-2 rounded-full border border-[color-mix(in_oklab,var(--accent-sky)_32%,transparent)] bg-[color-mix(in_oklab,var(--accent-sky)_12%,transparent)] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-accent-sky">
+              {pinned ? <><Pin className="size-3" /> Pinned report</> : <><Clock className="size-3" /> Latest report</>}
             </div>
             <h2 className="mt-3 text-2xl sm:text-3xl font-semibold tracking-tight truncate">
               {active ? active.target_url : "No reports yet"}
@@ -303,25 +303,31 @@ function Overview({
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {[
-          { label: "Security Score", value: score, suffix: "/100", logo: kpiScoreAsset.url, trend: "+4.2%" },
-          { label: "Issues In Report", value: findings, logo: kpiIssuesAsset.url, trend: active?.status ?? "pending" },
-          { label: "Reports Filed", value: scansCount, logo: kpiReportsAsset.url, trend: "all time" },
-          { label: "Credits Left", value: credits, logo: kpiCreditsAsset.url, trend: "wallet" },
+          { label: "Security Score", value: score, suffix: "/100", logo: kpiScoreAsset.url, trend: "+4.2%", tint: "var(--accent-emerald)" },
+          { label: "Issues In Report", value: findings, logo: kpiIssuesAsset.url, trend: active?.status ?? "pending", tint: "var(--accent-rose)" },
+          { label: "Reports Filed", value: scansCount, logo: kpiReportsAsset.url, trend: "all time", tint: "var(--accent-indigo)" },
+          { label: "Credits Left", value: credits, logo: kpiCreditsAsset.url, trend: "wallet", tint: "var(--accent-amber)" },
         ].map((k, i) => (
           <motion.div key={k.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.05 }}
-            className="glass rounded-2xl p-4 sm:p-5 relative overflow-hidden group hover:border-white/15 transition">
+            className="rounded-2xl p-4 sm:p-5 relative overflow-hidden group transition backdrop-blur-xl"
+            style={{
+              background: `linear-gradient(160deg, color-mix(in oklab, ${k.tint} 13%, black), black 72%)`,
+              border: `1px solid color-mix(in oklab, ${k.tint} 26%, transparent)`,
+            }}>
+            <div className="absolute inset-x-0 top-0 h-[2px]" style={{ background: `linear-gradient(90deg, ${k.tint}, transparent)` }} />
             <div className="flex items-start justify-between gap-2">
               <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{k.label}</div>
-              <div className="size-10 shrink-0 rounded-xl grid place-items-center border border-white/10 bg-white/[0.04]">
+              <div className="size-10 shrink-0 rounded-xl grid place-items-center border"
+                style={{ borderColor: `color-mix(in oklab, ${k.tint} 30%, transparent)`, background: `color-mix(in oklab, ${k.tint} 12%, transparent)` }}>
                 <img src={k.logo} alt="" loading="lazy" width={816} height={816} className="size-7 object-contain" />
               </div>
             </div>
             <div className="mt-3 flex items-baseline gap-1">
-              <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">{k.value}</div>
+              <div className="text-2xl sm:text-3xl font-semibold tracking-tight" style={{ color: k.tint }}>{k.value}</div>
               {k.suffix && <div className="text-sm text-muted-foreground">{k.suffix}</div>}
             </div>
             <div className="mt-2 text-[11px] text-muted-foreground inline-flex items-center gap-1 capitalize">
-              <TrendingUp className="size-3 text-emerald-400" /> {k.trend}
+              <TrendingUp className="size-3" style={{ color: k.tint }} /> {k.trend}
             </div>
           </motion.div>
         ))}
@@ -335,16 +341,16 @@ function Overview({
               <div className="text-sm font-medium">Threat Activity</div>
               <div className="text-[11px] text-muted-foreground mt-0.5">{active ? active.target_url : "sample data"} · last 24 hours</div>
             </div>
-            <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest">
-              <span className="size-1.5 rounded-full bg-zinc-400 animate-pulse" /> Realtime
+            <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-accent-emerald">
+              <span className="size-1.5 rounded-full bg-accent-emerald animate-pulse" /> Realtime
             </div>
           </div>
           <Chart data={trend} />
           <div className="mt-4 grid grid-cols-3 gap-3 pt-4 border-t border-white/[0.06]">
             {[
-              { l: "Blocked", v: String(Math.max(120, findings * 52)), c: "text-emerald-400" },
-              { l: "Investigating", v: String(Math.max(1, Math.round(findings * 0.4))), c: "text-amber-400" },
-              { l: "Critical", v: String(Math.max(0, Math.floor(findings * 0.08))), c: "text-destructive" },
+              { l: "Blocked", v: String(Math.max(120, findings * 52)), c: "text-accent-emerald" },
+              { l: "Investigating", v: String(Math.max(1, Math.round(findings * 0.4))), c: "text-accent-amber" },
+              { l: "Critical", v: String(Math.max(0, Math.floor(findings * 0.08))), c: "text-accent-rose" },
             ].map((s) => (
               <div key={s.l}>
                 <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{s.l}</div>
@@ -361,10 +367,10 @@ function Overview({
           </div>
           <div className="mt-5 space-y-3.5">
             {[
-              { label: "Critical", val: Math.max(0, Math.floor(findings * 0.08)), color: "oklch(0.65 0.22 25)", icon: ShieldAlert },
-              { label: "High", val: Math.max(0, Math.floor(findings * 0.22)), color: "oklch(0.78 0.17 50)", icon: AlertTriangle },
-              { label: "Medium", val: Math.max(0, Math.floor(findings * 0.38)), color: "oklch(0.85 0.16 90)", icon: Eye },
-              { label: "Low", val: Math.max(0, Math.floor(findings * 0.32)), color: "oklch(0.55 0.015 240)", icon: CheckCircle2 },
+              { label: "Critical", val: Math.max(0, Math.floor(findings * 0.08)), color: "var(--accent-rose)", icon: ShieldAlert },
+              { label: "High", val: Math.max(0, Math.floor(findings * 0.22)), color: "var(--accent-amber)", icon: AlertTriangle },
+              { label: "Medium", val: Math.max(0, Math.floor(findings * 0.38)), color: "var(--accent-sky)", icon: Eye },
+              { label: "Low", val: Math.max(0, Math.floor(findings * 0.32)), color: "var(--accent-emerald)", icon: CheckCircle2 },
             ].map((r) => (
               <div key={r.label}>
                 <div className="flex items-center justify-between text-xs">
@@ -379,17 +385,17 @@ function Overview({
           </div>
           <div className="mt-5 pt-4 border-t border-white/[0.06] space-y-2">
             {[
-              { l: "Application", v: Math.min(99, score + 5), icon: Fingerprint },
-              { l: "Infrastructure", v: Math.max(40, score - 2), icon: Server },
-              { l: "Identity", v: Math.max(35, score - 9), icon: KeyRound },
+              { l: "Application", v: Math.min(99, score + 5), icon: Fingerprint, c: "var(--accent-indigo)" },
+              { l: "Infrastructure", v: Math.max(40, score - 2), icon: Server, c: "var(--accent-sky)" },
+              { l: "Identity", v: Math.max(35, score - 9), icon: KeyRound, c: "var(--accent-violet)" },
             ].map((p) => (
               <div key={p.l}>
                 <div className="flex justify-between text-[11px]">
-                  <span className="text-muted-foreground inline-flex items-center gap-1.5"><p.icon className="size-3" />{p.l}</span>
-                  <span className="font-mono">{p.v}</span>
+                  <span className="text-muted-foreground inline-flex items-center gap-1.5"><p.icon className="size-3" style={{ color: p.c }} />{p.l}</span>
+                  <span className="font-mono" style={{ color: p.c }}>{p.v}</span>
                 </div>
                 <div className="mt-1 h-1 rounded-full bg-white/5 overflow-hidden">
-                  <motion.div initial={{ width: 0 }} animate={{ width: `${p.v}%` }} transition={{ duration: 1, ease: "easeOut" }} className="h-full bg-gradient-to-r from-zinc-500 to-zinc-300" />
+                  <motion.div initial={{ width: 0 }} animate={{ width: `${p.v}%` }} transition={{ duration: 1, ease: "easeOut" }} className="h-full" style={{ background: p.c }} />
                 </div>
               </div>
             ))}
@@ -399,14 +405,13 @@ function Overview({
 
       {/* Live security promo + intel */}
       <div className="grid lg:grid-cols-3 gap-4">
-        <button onClick={onLive} className="group relative lg:col-span-2 overflow-hidden rounded-2xl border border-white/[0.08] bg-black text-left">
+        <button onClick={onLive} className="group relative lg:col-span-2 overflow-hidden rounded-2xl border border-[color-mix(in_oklab,var(--accent-indigo)_28%,transparent)] bg-black text-left">
           <img src={liveSocAsset.url} alt="Nexefy live security operations centre" loading="lazy" width={1536} height={1024}
-            className="absolute inset-0 size-full object-cover opacity-70 transition duration-700 group-hover:scale-105" />
-          <div className="absolute inset-0 bg-black/30" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black/30" />
+            className="absolute inset-0 size-full object-cover opacity-10 transition duration-700 group-hover:scale-105" />
+          <div className="absolute inset-0 bg-[linear-gradient(120deg,color-mix(in_oklab,var(--accent-indigo)_22%,transparent),transparent_65%)]" />
           <div className="relative p-6 sm:p-8 max-w-md">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              <Cpu className="size-3 text-zinc-300" /> Under construction
+            <div className="inline-flex items-center gap-2 rounded-full border border-[color-mix(in_oklab,var(--accent-amber)_35%,transparent)] bg-[color-mix(in_oklab,var(--accent-amber)_12%,transparent)] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-accent-amber">
+              <Cpu className="size-3" /> Under construction
             </div>
             <h3 className="mt-3 text-xl sm:text-2xl font-semibold tracking-tight">Live Security — 24/7 AI protection</h3>
             <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
@@ -418,24 +423,25 @@ function Overview({
           </div>
         </button>
 
-        <div className="glass rounded-2xl p-5 sm:p-6">
+        <div className="rounded-2xl p-5 sm:p-6 border border-[color-mix(in_oklab,var(--accent-sky)_20%,transparent)] bg-[linear-gradient(170deg,color-mix(in_oklab,var(--accent-sky)_9%,black),black_75%)] backdrop-blur-xl">
           <div className="flex items-center justify-between">
             <div className="text-sm font-medium">Live Threat Intel</div>
-            <Wifi className="size-4 text-zinc-300 animate-pulse" />
+            <Wifi className="size-4 text-accent-sky animate-pulse" />
           </div>
           <ul className="mt-4 space-y-3">
             {[
-              { ip: "185.220.101.47", country: "RU", type: "Brute force", time: "2m ago" },
-              { ip: "45.155.205.211", country: "CN", type: "SQL injection", time: "8m ago" },
-              { ip: "23.95.182.94", country: "US", type: "Port scan", time: "14m ago" },
-              { ip: "104.244.78.10", country: "DE", type: "XSS attempt", time: "22m ago" },
+              { ip: "185.220.101.47", country: "RU", type: "Brute force", time: "2m ago", c: "var(--accent-rose)" },
+              { ip: "45.155.205.211", country: "CN", type: "SQL injection", time: "8m ago", c: "var(--accent-amber)" },
+              { ip: "23.95.182.94", country: "US", type: "Port scan", time: "14m ago", c: "var(--accent-sky)" },
+              { ip: "104.244.78.10", country: "DE", type: "XSS attempt", time: "22m ago", c: "var(--accent-violet)" },
             ].map((t) => (
               <li key={t.ip} className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2.5">
-                  <div className="size-7 rounded-lg glass grid place-items-center text-[10px] font-mono text-zinc-300">{t.country}</div>
+                  <div className="size-7 rounded-lg grid place-items-center text-[10px] font-mono border"
+                    style={{ color: t.c, borderColor: `color-mix(in oklab, ${t.c} 32%, transparent)`, background: `color-mix(in oklab, ${t.c} 12%, transparent)` }}>{t.country}</div>
                   <div>
                     <div className="font-mono">{t.ip}</div>
-                    <div className="text-muted-foreground text-[10px] mt-0.5">{t.type}</div>
+                    <div className="text-[10px] mt-0.5" style={{ color: t.c }}>{t.type}</div>
                   </div>
                 </div>
                 <span className="text-muted-foreground/70 text-[10px]">{t.time}</span>
@@ -449,17 +455,18 @@ function Overview({
       <div className="glass rounded-2xl p-5 sm:p-6">
         <div className="flex items-center justify-between">
           <div className="text-sm font-medium">Quick Actions</div>
-          <Sparkles className="size-4 text-zinc-300" />
+          <Sparkles className="size-4 text-accent-violet" />
         </div>
         <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
           {[
-            { l: "New Scan", icon: ScanSearch, to: "/scan/new" as const },
-            { l: "Buy Credits", icon: CreditCard, to: "/profile" as const },
-            { l: "Security Center", icon: Lock, to: "/profile" as const },
-            { l: "Support", icon: Activity, to: "/contact" as const },
+            { l: "New Scan", icon: ScanSearch, to: "/scan/new" as const, c: "var(--accent-indigo)" },
+            { l: "Buy Credits", icon: CreditCard, to: "/profile" as const, c: "var(--accent-amber)" },
+            { l: "Security Center", icon: Lock, to: "/profile" as const, c: "var(--accent-emerald)" },
+            { l: "Support", icon: Activity, to: "/contact" as const, c: "var(--accent-sky)" },
           ].map((a) => (
-            <Link key={a.l} to={a.to} className="rounded-xl glass p-3 text-xs hover:border-white/25 transition group">
-              <a.icon className="size-4 text-zinc-300 mb-2 group-hover:scale-110 transition" />
+            <Link key={a.l} to={a.to} className="rounded-xl p-3 text-xs transition group border hover:-translate-y-0.5"
+              style={{ borderColor: `color-mix(in oklab, ${a.c} 24%, transparent)`, background: `color-mix(in oklab, ${a.c} 8%, transparent)` }}>
+              <a.icon className="size-4 mb-2 group-hover:scale-110 transition" style={{ color: a.c }} />
               <div>{a.l}</div>
             </Link>
           ))}
@@ -476,13 +483,14 @@ function Reports({
 }: { scans: Scan[]; pinned: string | null; onPin: (id: string) => void; onUnpin: () => void; onLive: () => void }) {
   return (
     <>
-      <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-black">
+      <div className="relative overflow-hidden rounded-3xl border border-[color-mix(in_oklab,var(--accent-violet)_26%,transparent)] bg-black">
         <img src={reportsImg} alt="Scan reports" loading="lazy" width={1024} height={768}
-          className="absolute right-0 top-0 h-full w-2/3 object-cover opacity-50" />
+          className="absolute right-0 top-0 h-full w-2/3 object-cover opacity-40" />
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-transparent" />
+        <div className="absolute inset-0 bg-[linear-gradient(115deg,color-mix(in_oklab,var(--accent-violet)_18%,transparent),transparent_60%)]" />
         <div className="relative p-6 sm:p-8 max-w-lg">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            <FileText className="size-3 text-zinc-300" /> Scan reports
+          <div className="inline-flex items-center gap-2 rounded-full border border-[color-mix(in_oklab,var(--accent-violet)_32%,transparent)] bg-[color-mix(in_oklab,var(--accent-violet)_12%,transparent)] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-accent-violet">
+            <FileText className="size-3" /> Scan reports
           </div>
           <h2 className="mt-3 text-2xl sm:text-3xl font-semibold tracking-tight">Every report you submitted</h2>
           <p className="mt-2 text-xs sm:text-sm text-muted-foreground">
@@ -510,30 +518,30 @@ function Reports({
             const isPinned = s.id === pinned;
             return (
               <motion.div key={s.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
-                className={`rounded-2xl border p-5 bg-black/60 backdrop-blur-xl transition ${isPinned ? "border-white/30" : "border-white/[0.08] hover:border-white/20"}`}>
+                className={`rounded-2xl border p-5 backdrop-blur-xl transition ${isPinned ? "border-[color-mix(in_oklab,var(--accent-indigo)_45%,transparent)] bg-[linear-gradient(165deg,color-mix(in_oklab,var(--accent-indigo)_12%,black),black_78%)]" : "border-white/[0.08] bg-black/60 hover:border-[color-mix(in_oklab,var(--accent-indigo)_30%,transparent)]"}`}>
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="size-10 rounded-xl grid place-items-center border border-white/10 bg-[oklch(0.30_0.01_250_/0.55)]">
-                      <Globe2 className="size-4 text-zinc-300" />
+                    <div className="size-10 rounded-xl grid place-items-center border border-[color-mix(in_oklab,var(--accent-sky)_30%,transparent)] bg-[color-mix(in_oklab,var(--accent-sky)_12%,transparent)]">
+                      <Globe2 className="size-4 text-accent-sky" />
                     </div>
                     <div className="min-w-0">
                       <div className="font-mono text-sm truncate">{s.target_url}</div>
                       <div className="text-[11px] text-muted-foreground mt-0.5 capitalize">{s.plan} plan · {new Date(s.created_at).toLocaleString()}</div>
                     </div>
                   </div>
-                  {isPinned && <span className="shrink-0 inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-zinc-300"><Pin className="size-3" /> On dashboard</span>}
+                  {isPinned && <span className="shrink-0 inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-accent-indigo"><Pin className="size-3" /> On dashboard</span>}
                 </div>
 
                 <div className="mt-4 grid grid-cols-3 gap-2">
                   <Stat label="Status" value={s.status} icon={s.status === "completed" ? CheckCircle2 : Clock}
-                    tone={s.status === "completed" ? "text-emerald-400" : s.status === "running" ? "text-zinc-300" : "text-muted-foreground"} />
-                  <Stat label="Score" value={s.score != null ? `${s.score}/100` : "—"} icon={Shield} tone="text-white" />
-                  <Stat label="Issues" value={s.findings_count != null ? String(s.findings_count) : "—"} icon={Bug} tone="text-amber-400" />
+                    tone={s.status === "completed" ? "text-accent-emerald" : s.status === "running" ? "text-accent-sky" : "text-muted-foreground"} />
+                  <Stat label="Score" value={s.score != null ? `${s.score}/100` : "—"} icon={Shield} tone="text-accent-indigo" />
+                  <Stat label="Issues" value={s.findings_count != null ? String(s.findings_count) : "—"} icon={Bug} tone="text-accent-amber" />
                 </div>
 
                 <div className="mt-3 h-1.5 rounded-full bg-white/[0.05] overflow-hidden">
                   <motion.div initial={{ width: 0 }} animate={{ width: s.status === "completed" ? "100%" : s.status === "running" ? "62%" : "18%" }}
-                    transition={{ duration: 1 }} className="h-full rounded-full bg-gradient-to-r from-zinc-500 to-zinc-300" />
+                    transition={{ duration: 1 }} className="h-full rounded-full bg-gradient-to-r from-accent-indigo to-accent-sky" />
                 </div>
                 <div className="mt-1.5 text-[10px] text-muted-foreground">
                   Verification: {s.verification_status ?? "pending"}
@@ -586,11 +594,11 @@ function NavBtn({ icon: Icon, label, active, onClick, badge, soon }: {
   icon: typeof LayoutDashboard; label: string; active?: boolean; onClick: () => void; badge?: string; soon?: boolean;
 }) {
   return (
-    <button onClick={onClick} className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition ${active ? "bg-white/[0.06] text-white" : "text-muted-foreground hover:bg-white/[0.03] hover:text-white"}`}>
-      <Icon className="size-4" />
+    <button onClick={onClick} className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition ${active ? "bg-[color-mix(in_oklab,var(--accent-indigo)_18%,transparent)] text-white border border-[color-mix(in_oklab,var(--accent-indigo)_32%,transparent)]" : "text-muted-foreground hover:bg-white/[0.03] hover:text-white border border-transparent"}`}>
+      <Icon className={`size-4 ${active ? "text-accent-sky" : ""}`} />
       <span className="flex-1 text-left">{label}</span>
-      {badge && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/10 text-zinc-200">{badge}</span>}
-      {soon && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-400/15 text-amber-300 uppercase tracking-wider">soon</span>}
+      {badge && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[color-mix(in_oklab,var(--accent-sky)_22%,transparent)] text-accent-sky">{badge}</span>}
+      {soon && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-[color-mix(in_oklab,var(--accent-amber)_18%,transparent)] text-accent-amber uppercase tracking-wider">soon</span>}
     </button>
   );
 }
@@ -616,8 +624,8 @@ function ScoreRing({ value }: { value: number }) {
           strokeDasharray={c} initial={{ strokeDashoffset: c }} animate={{ strokeDashoffset: offset }} transition={{ duration: 1.6, ease: "easeOut" }} />
         <defs>
           <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="oklch(0.62 0.02 250)" />
-            <stop offset="100%" stopColor="oklch(0.55 0.015 240)" />
+            <stop offset="0%" stopColor="var(--accent-emerald)" />
+            <stop offset="100%" stopColor="var(--accent-sky)" />
           </linearGradient>
         </defs>
       </svg>
@@ -641,12 +649,12 @@ function Chart({ data }: { data: number[] }) {
     <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-40">
       <defs>
         <linearGradient id="ca" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="oklch(0.62 0.02 250)" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="oklch(0.62 0.02 250)" stopOpacity="0" />
+          <stop offset="0%" stopColor="var(--accent-indigo)" stopOpacity="0.45" />
+          <stop offset="100%" stopColor="var(--accent-indigo)" stopOpacity="0" />
         </linearGradient>
         <linearGradient id="cl" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="oklch(0.62 0.02 250)" />
-          <stop offset="100%" stopColor="oklch(0.55 0.015 240)" />
+          <stop offset="0%" stopColor="var(--accent-indigo)" />
+          <stop offset="100%" stopColor="var(--accent-sky)" />
         </linearGradient>
       </defs>
       {[0.25, 0.5, 0.75].map((y) => (
@@ -656,7 +664,7 @@ function Chart({ data }: { data: number[] }) {
       <motion.polyline points={points} fill="none" stroke="url(#cl)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
         initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4, ease: "easeOut" }} />
       {data.map((v, i) => i % 4 === 0 && (
-        <circle key={i} cx={i * step} cy={h - (v / max) * h * 0.85 - 8} r="2.5" fill="oklch(0.62 0.02 250)" />
+        <circle key={i} cx={i * step} cy={h - (v / max) * h * 0.85 - 8} r="2.5" fill="var(--accent-sky)" />
       ))}
     </svg>
   );
