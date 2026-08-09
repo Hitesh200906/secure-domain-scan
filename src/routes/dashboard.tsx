@@ -305,10 +305,11 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
 
   return (
     <div className="p-4 sm:p-6 space-y-6">
-      <div className={`glass rounded-2xl px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 ${report.demo ? "border-amber-500/30" : ""}`}>
+      <div className="glass rounded-2xl px-5 py-3.5 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="size-9 rounded-xl grid place-items-center" style={{ background: report.demo ? "#3a2c10" : "#132a3d" }}>
-            <FileText className="size-4" style={{ color: report.demo ? "#d8a53c" : "#5aa0d6" }} />
+          <div className="size-9 rounded-xl grid place-items-center" style={{ background: "#132a3d" }}>
+            <FileText className="size-4" style={{ color: "#5aa0d6" }} />
+
           </div>
           <div className="min-w-0">
             <div className="text-sm font-medium truncate">
