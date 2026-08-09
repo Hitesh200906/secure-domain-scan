@@ -302,25 +302,31 @@ function Overview({
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {[
-          { label: "Security Score", value: score, suffix: "/100", logo: kpiScoreAsset.url, trend: "+4.2%" },
-          { label: "Issues In Report", value: findings, logo: kpiIssuesAsset.url, trend: active?.status ?? "pending" },
-          { label: "Reports Filed", value: scansCount, logo: kpiReportsAsset.url, trend: "all time" },
-          { label: "Credits Left", value: credits, logo: kpiCreditsAsset.url, trend: "wallet" },
+          { label: "Security Score", value: score, suffix: "/100", logo: kpiScoreAsset.url, trend: "+4.2%", tint: "var(--accent-emerald)" },
+          { label: "Issues In Report", value: findings, logo: kpiIssuesAsset.url, trend: active?.status ?? "pending", tint: "var(--accent-rose)" },
+          { label: "Reports Filed", value: scansCount, logo: kpiReportsAsset.url, trend: "all time", tint: "var(--accent-indigo)" },
+          { label: "Credits Left", value: credits, logo: kpiCreditsAsset.url, trend: "wallet", tint: "var(--accent-amber)" },
         ].map((k, i) => (
           <motion.div key={k.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.05 }}
-            className="glass rounded-2xl p-4 sm:p-5 relative overflow-hidden group hover:border-white/15 transition">
+            className="rounded-2xl p-4 sm:p-5 relative overflow-hidden group transition backdrop-blur-xl"
+            style={{
+              background: `linear-gradient(160deg, color-mix(in oklab, ${k.tint} 13%, black), black 72%)`,
+              border: `1px solid color-mix(in oklab, ${k.tint} 26%, transparent)`,
+            }}>
+            <div className="absolute inset-x-0 top-0 h-[2px]" style={{ background: `linear-gradient(90deg, ${k.tint}, transparent)` }} />
             <div className="flex items-start justify-between gap-2">
               <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{k.label}</div>
-              <div className="size-10 shrink-0 rounded-xl grid place-items-center border border-white/10 bg-white/[0.04]">
+              <div className="size-10 shrink-0 rounded-xl grid place-items-center border"
+                style={{ borderColor: `color-mix(in oklab, ${k.tint} 30%, transparent)`, background: `color-mix(in oklab, ${k.tint} 12%, transparent)` }}>
                 <img src={k.logo} alt="" loading="lazy" width={816} height={816} className="size-7 object-contain" />
               </div>
             </div>
             <div className="mt-3 flex items-baseline gap-1">
-              <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">{k.value}</div>
+              <div className="text-2xl sm:text-3xl font-semibold tracking-tight" style={{ color: k.tint }}>{k.value}</div>
               {k.suffix && <div className="text-sm text-muted-foreground">{k.suffix}</div>}
             </div>
             <div className="mt-2 text-[11px] text-muted-foreground inline-flex items-center gap-1 capitalize">
-              <TrendingUp className="size-3 text-emerald-400" /> {k.trend}
+              <TrendingUp className="size-3" style={{ color: k.tint }} /> {k.trend}
             </div>
           </motion.div>
         ))}
