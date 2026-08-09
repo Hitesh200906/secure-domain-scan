@@ -124,7 +124,7 @@ function Dashboard() {
                   <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
                   <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
                 </span>
-                All systems operational · {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+                All systems operational{time ? ` · ${time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}` : ""}
               </div>
               <div className="flex items-center gap-3 mt-1 flex-wrap">
                 <h1 className="text-2xl font-medium tracking-tight">{user ? `Welcome back${profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}` : "Security Dashboard"}</h1>
