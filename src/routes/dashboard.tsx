@@ -123,9 +123,9 @@ function Dashboard() {
   return (
     <div className="h-screen flex bg-background relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute top-0 -left-40 size-[600px] rounded-full bg-[oklch(0.35_0.01_250_/0.10)] blur-[120px] animate-aurora-1" />
-        <div className="absolute bottom-0 -right-40 size-[600px] rounded-full bg-[oklch(0.30_0.01_250_/0.08)] blur-[120px] animate-aurora-2" />
-        <div className="absolute inset-0 grid-bg opacity-30 animate-grid-pan" />
+        <div className="absolute top-0 -left-40 size-[600px] rounded-full bg-[color-mix(in_oklab,var(--accent-indigo)_14%,transparent)] blur-[140px] animate-aurora-1" />
+        <div className="absolute bottom-0 -right-40 size-[600px] rounded-full bg-[color-mix(in_oklab,var(--accent-sky)_10%,transparent)] blur-[140px] animate-aurora-2" />
+        <div className="absolute inset-0 grid-bg opacity-25 animate-grid-pan" />
       </div>
 
       {/* Sidebar */}
@@ -138,15 +138,14 @@ function Dashboard() {
         </div>
         <nav className="flex-1 min-h-0 p-3 space-y-0.5">{nav}</nav>
         <div className="p-3 border-t border-white/[0.06] space-y-2">
-          <div className="glass rounded-2xl p-4 relative overflow-hidden">
-            <div className="absolute inset-0 animate-shimmer opacity-40" />
+          <div className="rounded-2xl p-4 relative overflow-hidden border border-[color-mix(in_oklab,var(--accent-indigo)_28%,transparent)] bg-[color-mix(in_oklab,var(--accent-indigo)_10%,black)]">
             <div className="relative">
-              <div className="text-[10px] uppercase tracking-widest text-zinc-300">{profile?.plan ?? "starter"} Plan</div>
+              <div className="text-[10px] uppercase tracking-widest text-accent-sky capitalize">{profile?.plan ?? "starter"} Plan</div>
               <div className="text-sm mt-1.5 font-medium">{profile?.credits ?? 0} credits left</div>
               <div className="mt-2.5 h-1 rounded-full bg-white/10 overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-zinc-500 to-zinc-300" style={{ width: `${Math.min(100, ((profile?.credits ?? 0) / 15) * 100)}%` }} />
+                <div className="h-full bg-gradient-to-r from-accent-indigo to-accent-sky" style={{ width: `${Math.min(100, ((profile?.credits ?? 0) / 15) * 100)}%` }} />
               </div>
-              <Link to="/pricing" className="mt-3 block text-[11px] text-zinc-300 hover:underline">Upgrade plan →</Link>
+              <Link to="/pricing" className="mt-3 block text-[11px] text-accent-sky hover:underline">Upgrade plan →</Link>
             </div>
           </div>
           {user && (
@@ -586,11 +585,11 @@ function NavBtn({ icon: Icon, label, active, onClick, badge, soon }: {
   icon: typeof LayoutDashboard; label: string; active?: boolean; onClick: () => void; badge?: string; soon?: boolean;
 }) {
   return (
-    <button onClick={onClick} className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition ${active ? "bg-white/[0.06] text-white" : "text-muted-foreground hover:bg-white/[0.03] hover:text-white"}`}>
-      <Icon className="size-4" />
+    <button onClick={onClick} className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition ${active ? "bg-[color-mix(in_oklab,var(--accent-indigo)_18%,transparent)] text-white border border-[color-mix(in_oklab,var(--accent-indigo)_32%,transparent)]" : "text-muted-foreground hover:bg-white/[0.03] hover:text-white border border-transparent"}`}>
+      <Icon className={`size-4 ${active ? "text-accent-sky" : ""}`} />
       <span className="flex-1 text-left">{label}</span>
-      {badge && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/10 text-zinc-200">{badge}</span>}
-      {soon && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-400/15 text-amber-300 uppercase tracking-wider">soon</span>}
+      {badge && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[color-mix(in_oklab,var(--accent-sky)_22%,transparent)] text-accent-sky">{badge}</span>}
+      {soon && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-[color-mix(in_oklab,var(--accent-amber)_18%,transparent)] text-accent-amber uppercase tracking-wider">soon</span>}
     </button>
   );
 }
