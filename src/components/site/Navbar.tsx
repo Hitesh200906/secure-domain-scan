@@ -20,15 +20,10 @@ export function Navbar() {
   const { user, isAdmin: admin } = useAdmin();
   const { mode } = useAppMode();
   const navigate = useNavigate();
-  const links =
-    mode === "security"
-      ? [...baseLinks, { to: "/dashboard" as const, label: "Dashboard" }]
-      : [
-          { to: "/discover" as const, label: "Discover" },
-          { to: "/business" as const, label: "Business" },
-          { to: "/contact" as const, label: "Contact" },
-        ];
-
+  const links = [
+    ...baseLinks,
+    ...(mode === "security" ? [{ to: "/dashboard" as const, label: "Dashboard" }] : []),
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
