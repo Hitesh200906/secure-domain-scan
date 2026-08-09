@@ -188,6 +188,51 @@ export type Database = {
           },
         ]
       }
+      payments: {
+        Row: {
+          amount: number
+          bonus_credits: number
+          created_at: string
+          credits: number
+          currency: string
+          id: string
+          order_id: string
+          payment_id: string | null
+          provider: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          bonus_credits?: number
+          created_at?: string
+          credits: number
+          currency?: string
+          id?: string
+          order_id: string
+          payment_id?: string | null
+          provider?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          bonus_credits?: number
+          created_at?: string
+          credits?: number
+          currency?: string
+          id?: string
+          order_id?: string
+          payment_id?: string | null
+          provider?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       pricing_plans: {
         Row: {
           active: boolean
@@ -770,6 +815,10 @@ export type Database = {
       my_store_ids: { Args: never; Returns: string[] }
       owns_store: { Args: { _store_id: string }; Returns: boolean }
       purchase_credits: { Args: { _credits: number }; Returns: number }
+      settle_payment: {
+        Args: { _order_id: string; _payment_id: string }
+        Returns: number
+      }
     }
     Enums: {
       app_role: "master_admin" | "super_admin" | "admin" | "user"
