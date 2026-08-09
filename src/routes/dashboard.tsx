@@ -172,7 +172,7 @@ function Dashboard() {
       <SidebarLink to="/scan/new" icon={ScanSearch} label="New Scan" onClick={onNav} />
       <div className="px-3 pt-5 pb-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">Account</div>
       <SidebarLink to="/profile" icon={UserIcon} label="Profile" onClick={onNav} />
-      <SidebarLink to="/pricing" icon={CreditCard} label="Billing" onClick={onNav} />
+      <SidebarLink to="/profile" search={{ tab: "credits" }} icon={CreditCard} label="Billing" onClick={onNav} />
       <SidebarLink to="/contact" icon={Settings} label="Support" onClick={onNav} />
     </>
   );
