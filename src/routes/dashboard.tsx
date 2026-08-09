@@ -359,11 +359,13 @@ function Overview({
           </div>
         </div>
 
-        <div className="glass rounded-2xl p-5 sm:p-6">
+        <div className="relative overflow-hidden rounded-2xl border border-[#8B5CF6]/25 p-5 sm:p-6"
+          style={{ background: "linear-gradient(160deg, rgba(139,92,246,0.16) 0%, rgba(139,92,246,0.05) 20%, oklch(0.05 0.008 280) 55%, #000 100%)" }}>
           <div className="flex items-center justify-between">
             <div className="text-sm font-medium">Risk Distribution</div>
-            <BarChart3 className="size-4 text-muted-foreground" />
+            <BarChart3 className="size-4 text-[#A78BFA]" />
           </div>
+
           <div className="mt-5 space-y-3.5">
             {[
               { label: "Critical", val: Math.max(0, Math.floor(findings * 0.08)), color: "oklch(0.65 0.22 25)", icon: ShieldAlert },
