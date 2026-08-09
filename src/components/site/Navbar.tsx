@@ -89,23 +89,23 @@ export function Navbar() {
                   to="/signup"
                   className="group relative inline-flex items-center gap-2 rounded-lg px-4 py-1.5 text-[13px] font-medium text-[#F8FAFC] overflow-hidden transition-all duration-300 hover:-translate-y-0.5 border border-white/10"
                   style={{
-                    background:
-                      "linear-gradient(90deg, #0000DD 0%, #0000DD 100%)",
+                    background: "#000000",
                     boxShadow:
-                      "inset 0 1px 0 rgba(255,255,255,.08), 0 6px 16px rgba(0,0,0,.35), 0 0 18px rgba(47,96,255,.18)",
+                      "inset 0 1px 0 rgba(255,255,255,.06), 0 6px 16px rgba(0,0,0,.45)",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.boxShadow =
-                      "inset 0 1px 0 rgba(255,255,255,.10), 0 10px 22px rgba(0,0,0,.40), 0 0 24px rgba(47,96,255,.30)";
+                      "inset 0 1px 0 rgba(255,255,255,.10), 0 10px 22px rgba(0,0,0,.55)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.boxShadow =
-                      "inset 0 1px 0 rgba(255,255,255,.08), 0 6px 16px rgba(0,0,0,.35), 0 0 18px rgba(47,96,255,.18)";
+                      "inset 0 1px 0 rgba(255,255,255,.06), 0 6px 16px rgba(0,0,0,.45)";
                   }}
                 >
                   <span className="relative">Sign Up</span>
                   <span className="relative text-lg font-light leading-none transition-transform duration-300 group-hover:translate-x-1">→</span>
                 </Link>
+
 
               </>
             )}
