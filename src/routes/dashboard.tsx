@@ -265,14 +265,15 @@ function Overview({
     <>
       {/* Report context banner */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-black">
+        className="relative overflow-hidden rounded-3xl border border-[color-mix(in_oklab,var(--accent-indigo)_26%,transparent)] bg-black">
         <img src={shieldImg} alt="Security posture" loading="lazy" width={1024} height={768}
-          className="absolute inset-0 size-full object-cover opacity-45" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent" />
+          className="absolute inset-0 size-full object-cover opacity-35" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-transparent" />
+        <div className="absolute inset-0 bg-[linear-gradient(115deg,color-mix(in_oklab,var(--accent-indigo)_20%,transparent),transparent_60%)]" />
         <div className="relative p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center gap-6 justify-between">
           <div className="min-w-0">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              {pinned ? <><Pin className="size-3 text-zinc-300" /> Pinned report</> : <><Clock className="size-3" /> Latest report</>}
+            <div className="inline-flex items-center gap-2 rounded-full border border-[color-mix(in_oklab,var(--accent-sky)_32%,transparent)] bg-[color-mix(in_oklab,var(--accent-sky)_12%,transparent)] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-accent-sky">
+              {pinned ? <><Pin className="size-3" /> Pinned report</> : <><Clock className="size-3" /> Latest report</>}
             </div>
             <h2 className="mt-3 text-2xl sm:text-3xl font-semibold tracking-tight truncate">
               {active ? active.target_url : "No reports yet"}
@@ -482,13 +483,14 @@ function Reports({
 }: { scans: Scan[]; pinned: string | null; onPin: (id: string) => void; onUnpin: () => void; onLive: () => void }) {
   return (
     <>
-      <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-black">
+      <div className="relative overflow-hidden rounded-3xl border border-[color-mix(in_oklab,var(--accent-violet)_26%,transparent)] bg-black">
         <img src={reportsImg} alt="Scan reports" loading="lazy" width={1024} height={768}
-          className="absolute right-0 top-0 h-full w-2/3 object-cover opacity-50" />
+          className="absolute right-0 top-0 h-full w-2/3 object-cover opacity-40" />
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-transparent" />
+        <div className="absolute inset-0 bg-[linear-gradient(115deg,color-mix(in_oklab,var(--accent-violet)_18%,transparent),transparent_60%)]" />
         <div className="relative p-6 sm:p-8 max-w-lg">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            <FileText className="size-3 text-zinc-300" /> Scan reports
+          <div className="inline-flex items-center gap-2 rounded-full border border-[color-mix(in_oklab,var(--accent-violet)_32%,transparent)] bg-[color-mix(in_oklab,var(--accent-violet)_12%,transparent)] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-accent-violet">
+            <FileText className="size-3" /> Scan reports
           </div>
           <h2 className="mt-3 text-2xl sm:text-3xl font-semibold tracking-tight">Every report you submitted</h2>
           <p className="mt-2 text-xs sm:text-sm text-muted-foreground">
