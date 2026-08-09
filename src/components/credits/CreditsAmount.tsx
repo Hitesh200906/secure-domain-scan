@@ -162,7 +162,7 @@ export default function CreditsAmount({
                     type="range"
                     min={1}
                     max={5000}
-                    step={50}
+                    step={1}
                     value={credits}
                     aria-label="Power Credits amount"
                     onChange={(e) => setValue(Number(e.target.value))}
