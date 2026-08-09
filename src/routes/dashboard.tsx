@@ -199,19 +199,9 @@ function Dashboard() {
 
         <div className="p-4 sm:p-6 space-y-5">
           {tab === "overview" ? (
-            <Overview
-              active={active}
-              pinned={!!pinned && !!active && active.id === pinned}
-              onUnpin={unpin}
-              onBrowse={() => setTab("reports")}
-              score={score}
-              findings={totalFindings}
-              trend={trend}
-              scansCount={scans.length}
-              credits={profile?.credits ?? 0}
-              onLive={openLive}
-            />
+            <Overview />
           ) : (
+
             <Reports scans={scans} pinned={pinned} onPin={pinReport} onUnpin={unpin} onLive={openLive} />
           )}
         </div>
