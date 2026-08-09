@@ -404,14 +404,13 @@ function Overview({
 
       {/* Live security promo + intel */}
       <div className="grid lg:grid-cols-3 gap-4">
-        <button onClick={onLive} className="group relative lg:col-span-2 overflow-hidden rounded-2xl border border-white/[0.08] bg-black text-left">
+        <button onClick={onLive} className="group relative lg:col-span-2 overflow-hidden rounded-2xl border border-[color-mix(in_oklab,var(--accent-indigo)_28%,transparent)] bg-black text-left">
           <img src={liveSocAsset.url} alt="Nexefy live security operations centre" loading="lazy" width={1536} height={1024}
-            className="absolute inset-0 size-full object-cover opacity-70 transition duration-700 group-hover:scale-105" />
-          <div className="absolute inset-0 bg-black/30" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black/30" />
+            className="absolute inset-0 size-full object-cover opacity-10 transition duration-700 group-hover:scale-105" />
+          <div className="absolute inset-0 bg-[linear-gradient(120deg,color-mix(in_oklab,var(--accent-indigo)_22%,transparent),transparent_65%)]" />
           <div className="relative p-6 sm:p-8 max-w-md">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              <Cpu className="size-3 text-zinc-300" /> Under construction
+            <div className="inline-flex items-center gap-2 rounded-full border border-[color-mix(in_oklab,var(--accent-amber)_35%,transparent)] bg-[color-mix(in_oklab,var(--accent-amber)_12%,transparent)] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-accent-amber">
+              <Cpu className="size-3" /> Under construction
             </div>
             <h3 className="mt-3 text-xl sm:text-2xl font-semibold tracking-tight">Live Security — 24/7 AI protection</h3>
             <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
@@ -423,24 +422,25 @@ function Overview({
           </div>
         </button>
 
-        <div className="glass rounded-2xl p-5 sm:p-6">
+        <div className="rounded-2xl p-5 sm:p-6 border border-[color-mix(in_oklab,var(--accent-sky)_20%,transparent)] bg-[linear-gradient(170deg,color-mix(in_oklab,var(--accent-sky)_9%,black),black_75%)] backdrop-blur-xl">
           <div className="flex items-center justify-between">
             <div className="text-sm font-medium">Live Threat Intel</div>
-            <Wifi className="size-4 text-zinc-300 animate-pulse" />
+            <Wifi className="size-4 text-accent-sky animate-pulse" />
           </div>
           <ul className="mt-4 space-y-3">
             {[
-              { ip: "185.220.101.47", country: "RU", type: "Brute force", time: "2m ago" },
-              { ip: "45.155.205.211", country: "CN", type: "SQL injection", time: "8m ago" },
-              { ip: "23.95.182.94", country: "US", type: "Port scan", time: "14m ago" },
-              { ip: "104.244.78.10", country: "DE", type: "XSS attempt", time: "22m ago" },
+              { ip: "185.220.101.47", country: "RU", type: "Brute force", time: "2m ago", c: "var(--accent-rose)" },
+              { ip: "45.155.205.211", country: "CN", type: "SQL injection", time: "8m ago", c: "var(--accent-amber)" },
+              { ip: "23.95.182.94", country: "US", type: "Port scan", time: "14m ago", c: "var(--accent-sky)" },
+              { ip: "104.244.78.10", country: "DE", type: "XSS attempt", time: "22m ago", c: "var(--accent-violet)" },
             ].map((t) => (
               <li key={t.ip} className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2.5">
-                  <div className="size-7 rounded-lg glass grid place-items-center text-[10px] font-mono text-zinc-300">{t.country}</div>
+                  <div className="size-7 rounded-lg grid place-items-center text-[10px] font-mono border"
+                    style={{ color: t.c, borderColor: `color-mix(in oklab, ${t.c} 32%, transparent)`, background: `color-mix(in oklab, ${t.c} 12%, transparent)` }}>{t.country}</div>
                   <div>
                     <div className="font-mono">{t.ip}</div>
-                    <div className="text-muted-foreground text-[10px] mt-0.5">{t.type}</div>
+                    <div className="text-[10px] mt-0.5" style={{ color: t.c }}>{t.type}</div>
                   </div>
                 </div>
                 <span className="text-muted-foreground/70 text-[10px]">{t.time}</span>
@@ -454,17 +454,18 @@ function Overview({
       <div className="glass rounded-2xl p-5 sm:p-6">
         <div className="flex items-center justify-between">
           <div className="text-sm font-medium">Quick Actions</div>
-          <Sparkles className="size-4 text-zinc-300" />
+          <Sparkles className="size-4 text-accent-violet" />
         </div>
         <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
           {[
-            { l: "New Scan", icon: ScanSearch, to: "/scan/new" as const },
-            { l: "Buy Credits", icon: CreditCard, to: "/profile" as const },
-            { l: "Security Center", icon: Lock, to: "/profile" as const },
-            { l: "Support", icon: Activity, to: "/contact" as const },
+            { l: "New Scan", icon: ScanSearch, to: "/scan/new" as const, c: "var(--accent-indigo)" },
+            { l: "Buy Credits", icon: CreditCard, to: "/profile" as const, c: "var(--accent-amber)" },
+            { l: "Security Center", icon: Lock, to: "/profile" as const, c: "var(--accent-emerald)" },
+            { l: "Support", icon: Activity, to: "/contact" as const, c: "var(--accent-sky)" },
           ].map((a) => (
-            <Link key={a.l} to={a.to} className="rounded-xl glass p-3 text-xs hover:border-white/25 transition group">
-              <a.icon className="size-4 text-zinc-300 mb-2 group-hover:scale-110 transition" />
+            <Link key={a.l} to={a.to} className="rounded-xl p-3 text-xs transition group border hover:-translate-y-0.5"
+              style={{ borderColor: `color-mix(in oklab, ${a.c} 24%, transparent)`, background: `color-mix(in oklab, ${a.c} 8%, transparent)` }}>
+              <a.icon className="size-4 mb-2 group-hover:scale-110 transition" style={{ color: a.c }} />
               <div>{a.l}</div>
             </Link>
           ))}
