@@ -145,7 +145,7 @@ function ScansPage() {
                   </td>
                 </tr>
               ))}
-              {filtered.length === 0 && <tr><td colSpan={6} className="py-12 text-center text-sm text-muted-foreground">No scans.</td></tr>}
+              {filtered.length === 0 && <tr><td colSpan={7} className="py-12 text-center text-sm text-muted-foreground">No scans.</td></tr>}
             </tbody>
           </table>
         </div>
