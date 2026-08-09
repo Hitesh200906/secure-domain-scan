@@ -492,7 +492,7 @@ function Reports({
       </div>
 
       {scans.length === 0 ? (
-        <div className="glass rounded-2xl px-6 py-16 text-center">
+        
         <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-black px-6 py-20 text-center">
           <img src={noReportsAsset.url} alt="" loading="lazy" width={1536} height={768}
             className="absolute inset-0 size-full object-cover opacity-45" />
