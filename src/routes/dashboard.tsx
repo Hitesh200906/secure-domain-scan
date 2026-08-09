@@ -29,96 +29,11 @@ export const Route = createFileRoute("/dashboard")({
   component: Dashboard,
 });
 
-type Scan = {
-  id: string; target_url: string; status: string; score: number | null;
-  findings_count: number | null; created_at: string; plan: string;
-  full_name?: string | null; company?: string | null; email?: string | null;
-  role_title?: string | null; verification_method?: string | null;
-  verification_status?: string | null; business_email?: string | null;
-};
+import {
+  type Scan, type ReportModel, ACTIVE_KEY, buildReport, DEMO_REPORT, scoreColor, seeded, hash,
+} from "@/lib/report-model";
+void seeded; void hash;
 
-const ACTIVE_KEY = "nexefy:active-report";
-
-/* ---------- deterministic helpers (SSR-safe) ---------- */
-function hash(str: string) {
-  let h = 2166136261;
-  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
-  return Math.abs(h);
-}
-function seeded(seed: string, i: number) {
-  return (hash(`${seed}:${i}`) % 1000) / 1000;
-}
-
-type ReportModel = {
-  id: string;
-  demo: boolean;
-  target: string;
-  status: string;
-  plan: string;
-  score: number;
-  findings: number;
-  createdAt: string;
-  requester: { name: string; email: string; company: string; role: string; verification: string; verified: string };
-  posture: { label: string; value: number; color: string }[];
-  trend: number[];
-  threats: { ip: string; country: string; type: string; ago: string }[];
-};
-
-const POSTURE_COLORS = ["#1e6f5c", "#2b4f81", "#6b4a86"];
-
-function buildReport(scan: Scan): ReportModel {
-  const seed = scan.id;
-  const score = scan.score ?? 55 + Math.round(seeded(seed, 99) * 40);
-  const findings = scan.findings_count ?? 4 + Math.round(seeded(seed, 98) * 30);
-  const types = ["Brute force", "SQL injection", "Port scan", "XSS attempt", "Credential stuffing", "Directory traversal"];
-  const countries = ["RU", "CN", "US", "DE", "BR", "NL"];
-  return {
-    id: scan.id,
-    demo: false,
-    target: scan.target_url,
-    status: scan.status,
-    plan: scan.plan,
-    score,
-    findings,
-    createdAt: scan.created_at,
-    requester: {
-      name: scan.full_name ?? "—",
-      email: scan.email ?? "—",
-      company: scan.company ?? "—",
-      role: scan.role_title ?? "—",
-      verification: scan.verification_method ?? "—",
-      verified: scan.verification_status ?? "pending",
-    },
-    posture: [
-      { label: "Application", value: Math.min(99, Math.max(35, score + Math.round(seeded(seed, 1) * 10) - 4)), color: POSTURE_COLORS[0] },
-      { label: "Infrastructure", value: Math.min(99, Math.max(35, score + Math.round(seeded(seed, 2) * 12) - 8)), color: POSTURE_COLORS[1] },
-      { label: "Identity", value: Math.min(99, Math.max(30, score - Math.round(seeded(seed, 3) * 16))), color: POSTURE_COLORS[2] },
-    ],
-    trend: Array.from({ length: 24 }, (_, i) => 30 + Math.sin(i * 0.6 + hash(seed) % 7) * 18 + seeded(seed, i) * 18),
-    threats: Array.from({ length: 4 }, (_, i) => ({
-      ip: `${45 + Math.round(seeded(seed, i + 10) * 180)}.${Math.round(seeded(seed, i + 20) * 250)}.${Math.round(seeded(seed, i + 30) * 250)}.${Math.round(seeded(seed, i + 40) * 250)}`,
-      country: countries[Math.round(seeded(seed, i + 50) * (countries.length - 1))],
-      type: types[Math.round(seeded(seed, i + 60) * (types.length - 1))],
-      ago: `${2 + i * 6}m ago`,
-    })),
-  };
-}
-
-const DEMO_REPORT: ReportModel = {
-  ...buildReport({
-    id: "demo-report", target_url: "demo.nexefy.app", status: "completed", score: 78,
-    findings_count: 21, created_at: "2026-01-01T00:00:00.000Z", plan: "professional",
-    full_name: "Demo User", company: "Nexefy Demo Co.", email: "demo@nexefy.app",
-    role_title: "Security Lead", verification_method: "email", verification_status: "verified",
-  }),
-  demo: true,
-};
-
-function scoreColor(v: number) {
-  if (v >= 80) return "#1f8a52"; // dark green
-  if (v >= 40) return "#1b6ef3"; // neon-ish blue
-  return "#b52a20"; // dark red
-}
 
 /* --------------------------------- page --------------------------------- */
 function Dashboard() {
