@@ -3,8 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Activity, AlertTriangle, BarChart3, Bell, CheckCircle2, Clock,
   CreditCard, Globe2, LayoutDashboard, LogOut, ScanSearch, Settings,
-  Shield, ShieldAlert, ShieldCheck, Sparkles, TrendingUp, User as UserIcon,
-  Zap, ArrowUpRight, Search, Lock, Wifi, Server, Eye, Menu, X,
+  Shield, ShieldAlert, Sparkles, TrendingUp, User as UserIcon,
+  ArrowUpRight, Search, Lock, Wifi, Server, Eye, Menu, X,
   FileText, Radar, Upload, Pin, Cpu, Fingerprint, KeyRound, Bug,
 } from "lucide-react";
 import { motion } from "framer-motion";
