@@ -16,8 +16,13 @@ import { useAdmin } from "@/hooks/use-admin";
 import { RoleBadge } from "@/components/ui/RoleBadge";
 import { ComingSoonDialog, type ComingSoonInfo } from "@/components/site/ComingSoonDialog";
 import shieldImg from "@/assets/dash-shield.jpg";
-import aiCoreImg from "@/assets/dash-ai-core.jpg";
 import reportsImg from "@/assets/dash-reports.jpg";
+import liveSocAsset from "@/assets/live-security-soc.png.asset.json";
+import noReportsAsset from "@/assets/no-reports-bg.jpg.asset.json";
+import kpiScoreAsset from "@/assets/kpi-score.png.asset.json";
+import kpiIssuesAsset from "@/assets/kpi-issues.png.asset.json";
+import kpiReportsAsset from "@/assets/kpi-reports.png.asset.json";
+import kpiCreditsAsset from "@/assets/kpi-credits.png.asset.json";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -116,7 +121,7 @@ function Dashboard() {
   );
 
   return (
-    <div className="min-h-screen flex bg-background relative overflow-hidden">
+    <div className="h-screen flex bg-background relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute top-0 -left-40 size-[600px] rounded-full bg-[oklch(0.35_0.01_250_/0.10)] blur-[120px] animate-aurora-1" />
         <div className="absolute bottom-0 -right-40 size-[600px] rounded-full bg-[oklch(0.30_0.01_250_/0.08)] blur-[120px] animate-aurora-2" />
@@ -124,14 +129,14 @@ function Dashboard() {
       </div>
 
       {/* Sidebar */}
-      <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r border-white/[0.06] bg-[oklch(0.04_0.008_220)]/80 backdrop-blur-xl">
+      <aside className="hidden lg:flex w-64 shrink-0 flex-col h-screen overflow-hidden border-r border-white/[0.06] bg-[oklch(0.04_0.008_220)]/80 backdrop-blur-xl">
         <div className="px-6 py-5 border-b border-white/[0.06]">
           <Link to="/" className="flex items-center gap-2">
             <img src={nexusLogo} alt="Nexefy" className="size-6 object-contain" />
             <span className="text-[13px] font-semibold tracking-[0.2em]">NEXEFY<span className="text-muted-foreground ml-1.5">SEC</span></span>
           </Link>
         </div>
-        <nav className="flex-1 p-3 space-y-0.5">{nav}</nav>
+        <nav className="flex-1 min-h-0 p-3 space-y-0.5">{nav}</nav>
         <div className="p-3 border-t border-white/[0.06] space-y-2">
           <div className="glass rounded-2xl p-4 relative overflow-hidden">
             <div className="absolute inset-0 animate-shimmer opacity-40" />
@@ -152,7 +157,7 @@ function Dashboard() {
         </div>
       </aside>
 
-      <div className="flex-1 min-w-0 relative">
+      <div className="flex-1 min-w-0 relative h-screen overflow-y-auto">
         {/* Header */}
         <header className="sticky top-0 z-20 backdrop-blur-xl bg-background/70 border-b border-white/[0.06]">
           <div className="flex items-center justify-between px-4 sm:px-6 py-4 gap-3">
