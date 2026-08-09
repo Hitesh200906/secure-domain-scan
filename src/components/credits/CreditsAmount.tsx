@@ -233,12 +233,13 @@ export default function CreditsAmount({
 
             <button
               type="button"
-              onClick={() => onContinue?.(credits + bonus)}
+              onClick={() => onContinue?.(credits)}
               className="flex w-full items-center gap-2 rounded-[12px] bg-gradient-to-r from-[#1E40AF] via-[#1D4ED8] to-[#2563EB] px-3 py-2.5 text-[12px] font-medium text-white transition hover:brightness-110 sm:gap-3 sm:rounded-[16px] sm:px-7 sm:py-5 sm:text-[18px]"
             >
               <span className="flex-1 text-center">Continue to payment</span>
               <ArrowRight className="h-4 w-4 shrink-0 sm:h-5 sm:w-5" />
             </button>
+
           </div>
         </div>
       </div>

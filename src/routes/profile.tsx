@@ -18,6 +18,8 @@ import creditsWallet from "@/assets/credits-wallet.png.asset.json";
 import creditsGift from "@/assets/credits-gift.png.asset.json";
 import CreditsCheckout from "@/components/credits/CreditsCheckout";
 import CreditsAmount from "@/components/credits/CreditsAmount";
+import { loadRazorpay, openRazorpay } from "@/lib/razorpay-checkout";
+import { createCreditsOrder as createOrder, verifyCreditsPayment as verifyPayment } from "@/lib/razorpay.functions";
 import { useAdmin } from "@/hooks/use-admin";
 import { RoleBadge } from "@/components/ui/RoleBadge";
 import { BackButton } from "@/components/site/BackButton";
@@ -863,6 +865,7 @@ function CreditsSection({ balance }: { balance: number }) {
   const [showAll, setShowAll] = useState(false);
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
+  const [currency, setCurrency] = useState("USD");
   const [amount, setAmount] = useState<number>(1000);
   const [busy, setBusy] = useState(false);
 
@@ -879,17 +882,37 @@ function CreditsSection({ balance }: { balance: number }) {
 
   useEffect(() => { void loadTx(); }, []);
 
-  const buy = async () => {
-    if (!amount || amount < 1) { toast.error("Enter a valid credit amount"); return; }
+  const pay = async (credits: number) => {
+    if (busy) return;
+    if (!credits || credits < 100) { toast.error("Minimum 100 credits"); return; }
     setBusy(true);
-    const { data, error } = await supabase.rpc("purchase_credits", { _credits: amount });
-    setBusy(false);
-    if (error) { toast.error(error.message); return; }
-    setBal(Number(data ?? bal + amount));
-    setOpen(false);
-    toast.success(`${amount.toLocaleString()} credits added to your balance`);
-    void loadTx();
+    try {
+      const ok = await loadRazorpay();
+      if (!ok) throw new Error("Payment window could not be loaded");
+      const order = await createOrder({ data: { credits, currency } });
+      const res = await openRazorpay({
+        key: order.key_id,
+        amount: order.amount,
+        currency: order.currency,
+        orderId: order.order_id,
+        description: `${credits.toLocaleString()} Power Credits`,
+      });
+      const settled = await verifyPayment({ data: res });
+      setBal(settled.balance);
+      setOpen(false);
+      setStep(1);
+      toast.success(`${settled.credited.toLocaleString()} credits added to your balance`);
+      void loadTx();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Payment failed";
+      if (msg !== "Payment cancelled") toast.error(msg);
+    } finally {
+      setBusy(false);
+    }
   };
+
+  const buy = () => void pay(amount);
+
 
   const visible = showAll ? txs : txs.slice(0, 5);
 
@@ -1024,7 +1047,13 @@ function CreditsSection({ balance }: { balance: number }) {
 
       {/* Full-page checkout */}
       {open && step === 1 && (
-        <CreditsCheckout onClose={() => setOpen(false)} onContinue={() => setStep(2)} />
+        <CreditsCheckout
+          onClose={() => setOpen(false)}
+          onContinue={(c) => {
+            setCurrency(c.code);
+            setStep(2);
+          }}
+        />
       )}
       {open && step === 2 && (
         <CreditsAmount
@@ -1032,17 +1061,10 @@ function CreditsSection({ balance }: { balance: number }) {
             setOpen(false);
             setStep(1);
           }}
-          onContinue={async (total) => {
-            const { data, error } = await supabase.rpc("purchase_credits", { _credits: total });
-            if (error) { toast.error(error.message); return; }
-            setBal(Number(data ?? bal + total));
-            setOpen(false);
-            setStep(1);
-            toast.success(`${total.toLocaleString()} credits added to your balance`);
-            void loadTx();
-          }}
+          onContinue={(base) => void pay(base)}
         />
       )}
+
 
       {/* Buy dialog */}
       {false && (
