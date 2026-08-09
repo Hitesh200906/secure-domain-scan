@@ -115,10 +115,9 @@ const DEMO_REPORT: ReportModel = {
 };
 
 function scoreColor(v: number) {
-  if (v >= 80) return "#2f9e6a";
-  if (v >= 60) return "#b8912f";
-  if (v >= 40) return "#c07a2c";
-  return "#c0392b";
+  if (v >= 80) return "#1f8a52"; // dark green
+  if (v >= 40) return "#1b6ef3"; // neon-ish blue
+  return "#b52a20"; // dark red
 }
 
 /* --------------------------------- page --------------------------------- */
