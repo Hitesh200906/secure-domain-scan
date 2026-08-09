@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate, useSearch, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Code2, Loader2, Mail, ScanSearch } from "lucide-react";
+import { ArrowRight, Check, Loader2, Lock, Crosshair, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
+import scanConfigImg from "@/assets/scan-config.png.asset.json";
 
 type Plan = "starter" | "professional" | "enterprise";
 
@@ -14,13 +15,32 @@ const PLAN_INFO: Record<Plan, { name: string; credits: number }> = {
   enterprise: { name: "Enterprise", credits: 999 },
 };
 
+const ROLES = [
+  "Security Engineer",
+  "Founder / CEO",
+  "CTO",
+  "Developer",
+  "IT Manager",
+  "Compliance Officer",
+  "Other",
+];
+
 export const Route = createFileRoute("/_authenticated/scan/new")({
   validateSearch: (s: Record<string, unknown>): { plan: Plan } => {
     const p = String(s.plan ?? "professional");
     const plan: Plan = p === "starter" || p === "enterprise" ? p : "professional";
     return { plan };
   },
-  head: () => ({ meta: [{ title: "New Scan — Nexefy Security" }] }),
+  head: () => ({
+    meta: [
+      { title: "New Scan — Nexefy Security" },
+      { name: "description", content: "Submit a new AI-powered website security scan: your details, target URL, and domain ownership verification." },
+      { property: "og:title", content: "New Scan — Nexefy Security" },
+      { property: "og:description", content: "Submit a new AI-powered website security scan request." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: ScanNewPage,
 });
 
@@ -32,7 +52,7 @@ function ScanNewPage() {
 
   const [form, setForm] = useState({
     full_name: "",
-    role_title: "",
+    role_title: "Security Engineer",
     company: "",
     email: "",
     target_url: "",
@@ -45,8 +65,10 @@ function ScanNewPage() {
     if (user?.email) setForm((f) => ({ ...f, email: f.email || user.email! }));
   }, [user]);
 
-  const update = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm({ ...form, [k]: e.target.value });
+  const update =
+    (k: keyof typeof form) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+      setForm({ ...form, [k]: e.target.value });
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,115 +95,299 @@ function ScanNewPage() {
   };
 
   return (
-    <div className="min-h-screen relative">
-      <div className="absolute inset-0 hero-gradient -z-10 opacity-60" />
-      <div className="absolute inset-0 grid-bg opacity-30 -z-10" />
-
-      <div className="mx-auto max-w-4xl px-6 py-12">
-        <Link to="/dashboard" className="text-xs text-muted-foreground hover:text-white">
-          ← Back to dashboard
-        </Link>
-
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6 flex items-center gap-4"
-        >
-          <div className="size-12 rounded-full glass grid place-items-center text-primary">
-            <ScanSearch className="size-5" />
+    <div className="min-h-screen bg-black">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 py-8 sm:py-12">
+        <div className="flex items-center justify-between">
+          <Link to="/dashboard" className="text-xs text-muted-foreground hover:text-white">
+            ← Back to dashboard
+          </Link>
+          <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground font-mono">
+            {info.name} · {info.credits} credits
           </div>
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight">Scan Request</h1>
-            <div className="text-xs uppercase tracking-[0.18em] text-primary mt-1 font-mono">
-              PLAN: {info.name.toUpperCase()} — {info.credits} CREDITS
+        </div>
+
+        <form onSubmit={submit} className="mt-6 space-y-5">
+          {/* Your Information */}
+          <Card>
+            <CardHead
+              icon={<Emoji>👤</Emoji>}
+              title="Your Information"
+              desc="Tell us about yourself and your role."
+            />
+            <div className="mt-6 grid sm:grid-cols-2 gap-x-6 gap-y-5">
+              <Field
+                label="Full Name"
+                icon={<Emoji size="sm">👤</Emoji>}
+                value={form.full_name}
+                onChange={update("full_name")}
+                placeholder="Jane Smith"
+                required
+              />
+              <SelectField
+                label="Role / Title"
+                icon={<Emoji size="sm">💼</Emoji>}
+                value={form.role_title}
+                onChange={update("role_title")}
+                options={ROLES}
+              />
+              <Field
+                label="Company Name"
+                icon={<Emoji size="sm">🏢</Emoji>}
+                value={form.company}
+                onChange={update("company")}
+                placeholder="Acme Corp"
+              />
+              <Field
+                label="Your Email"
+                type="email"
+                icon={<Emoji size="sm">✉️</Emoji>}
+                value={form.email}
+                onChange={update("email")}
+                placeholder="you@example.com"
+                required
+              />
+              <div className="sm:col-span-2">
+                <Field
+                  label="Business Email"
+                  type="email"
+                  icon={<Emoji size="sm">📫</Emoji>}
+                  value={form.business_email}
+                  onChange={update("business_email")}
+                  placeholder="security@example.com"
+                />
+              </div>
             </div>
-          </div>
-        </motion.div>
+          </Card>
 
-        <form onSubmit={submit} className="mt-10 space-y-10">
-          <section className="grid sm:grid-cols-2 gap-5">
-            <Field label="Full Name" value={form.full_name} onChange={update("full_name")} placeholder="Jane Smith" required />
-            <Field label="Role / Title" value={form.role_title} onChange={update("role_title")} placeholder="Security Engineer" />
-            <Field label="Company Name" value={form.company} onChange={update("company")} placeholder="Acme Corp" />
-            <Field label="Your Email" type="email" value={form.email} onChange={update("email")} placeholder="jane@example.com" required />
-            <Field label="Target Website URL" type="url" value={form.target_url} onChange={update("target_url")} placeholder="https://example.com" required />
-            <Field label="Business Email" type="email" value={form.business_email} onChange={update("business_email")} placeholder="security@example.com" />
-          </section>
+          {/* Scan Configuration */}
+          <Card>
+            <div className="grid md:grid-cols-[1fr_auto] gap-6 items-start">
+              <div>
+                <CardHead
+                  icon={<Emoji>🌐</Emoji>}
+                  title="Scan Configuration"
+                  desc="Provide the website you want us to scan."
+                />
+                <div className="mt-6">
+                  <Field
+                    label="Target Website URL"
+                    type="url"
+                    icon={<Emoji size="sm">🔗</Emoji>}
+                    value={form.target_url}
+                    onChange={update("target_url")}
+                    placeholder="https://example.com"
+                    required
+                  />
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Enter the full URL of the website you want to scan.
+                  </p>
+                </div>
+              </div>
+              <img
+                src={scanConfigImg.url}
+                alt="Illustration of a browser window with a globe being inspected by a magnifying glass"
+                loading="lazy"
+                width={1024}
+                height={768}
+                className="hidden md:block w-[320px] h-auto rounded-xl"
+              />
+            </div>
+          </Card>
 
-          <section>
-            <h2 className="text-xl font-semibold">Ownership Verification</h2>
-            <p className="mt-1.5 text-sm text-muted-foreground">We need to confirm you own the domain before scanning it.</p>
-
-            <div className="mt-5 grid sm:grid-cols-2 gap-4">
+          {/* Domain Ownership Verification */}
+          <Card>
+            <CardHead
+              icon={<Emoji>🛡️</Emoji>}
+              title="Domain Ownership Verification"
+              desc="Choose a method to verify that you own the domain."
+            />
+            <div className="mt-6 grid sm:grid-cols-2 gap-4">
               <VerifCard
                 selected={verification === "email"}
                 onClick={() => setVerification("email")}
-                icon={<Mail className="size-4" />}
+                icon={<Emoji size="sm">📧</Emoji>}
                 title="Email Verification"
-                desc="We send a confirmation link to your business email. Click it to confirm domain ownership and queue the scan."
+                desc="We'll send a confirmation link to your business email. Click the link to confirm domain ownership and queue the scan."
               />
               <VerifCard
                 selected={verification === "manual"}
                 onClick={() => setVerification("manual")}
-                icon={<Code2 className="size-4" />}
+                icon={<span className="text-base font-mono text-sky-300">{"</>"}</span>}
                 title="Manual Code"
                 desc="We generate a 6-character code. Paste it anywhere on your site (footer, meta tag, hidden div). Our AI crawls your site to verify it's there."
               />
             </div>
-          </section>
+          </Card>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-2xl px-6 py-4 text-base font-medium text-white bg-gradient-to-r from-[oklch(0.45_0.13_180)] to-[oklch(0.55_0.15_180)] hover:shadow-[0_0_40px_-4px_oklch(0.75_0.13_180_/0.7)] transition inline-flex items-center justify-center gap-2 disabled:opacity-60"
-          >
-            {loading && <Loader2 className="size-4 animate-spin" />}
-            Execute Scan →
-          </button>
+          <div className="pt-1">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-2xl px-6 py-4 text-[15px] font-medium text-white bg-[#0b1a3a] border border-white/10 hover:bg-[#0000DD] transition-colors inline-flex items-center justify-center gap-3 disabled:opacity-60"
+            >
+              {loading ? <Loader2 className="size-4 animate-spin" /> : <Crosshair className="size-4" />}
+              Execute Scan
+              <ArrowRight className="size-4" />
+            </button>
+            <p className="mt-3 text-[11px] text-muted-foreground text-center inline-flex w-full items-center justify-center gap-1.5">
+              <Lock className="size-3" /> Your data is secure and encrypted.
+            </p>
+          </div>
         </form>
       </div>
     </div>
   );
 }
 
-function Field({ label, value, onChange, type = "text", placeholder, required }: {
-  label: string; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  type?: string; placeholder?: string; required?: boolean;
+function Card({ children }: { children: React.ReactNode }) {
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="rounded-3xl bg-[#050505] border border-white/[0.07] p-5 sm:p-7"
+    >
+      {children}
+    </motion.section>
+  );
+}
+
+function Emoji({ children, size = "md" }: { children: React.ReactNode; size?: "sm" | "md" }) {
+  return (
+    <span
+      className={`grid place-items-center rounded-xl bg-[#0d0d0f] border border-white/[0.08] ${
+        size === "md" ? "size-11 text-2xl" : "size-8 text-base"
+      }`}
+    >
+      {children}
+    </span>
+  );
+}
+
+function CardHead({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
+  return (
+    <div className="flex items-center gap-4">
+      {icon}
+      <div>
+        <h2 className="text-lg sm:text-xl font-semibold tracking-tight text-white">{title}</h2>
+        <p className="text-xs text-muted-foreground mt-0.5">{desc}</p>
+      </div>
+    </div>
+  );
+}
+
+const inputShell =
+  "mt-2 flex items-center gap-3 rounded-xl bg-[#0a0a0c] border border-white/[0.08] px-3 py-2.5 focus-within:border-white/20 transition";
+
+function Field({
+  label,
+  icon,
+  value,
+  onChange,
+  type = "text",
+  placeholder,
+  required,
+}: {
+  label: string;
+  icon: React.ReactNode;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  type?: string;
+  placeholder?: string;
+  required?: boolean;
 }) {
   return (
     <label className="block">
-      <span className="text-sm text-white">{label}</span>
-      <input
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        required={required}
-        className="mt-2 w-full rounded-xl bg-[oklch(0.06_0.008_220)] border border-white/10 px-4 py-3 text-sm text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition"
-      />
+      <span className="text-xs text-muted-foreground">{label}</span>
+      <div className={inputShell}>
+        {icon}
+        <input
+          type={type}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          required={required}
+          className="flex-1 bg-transparent text-sm text-white placeholder:text-muted-foreground/60 focus:outline-none"
+        />
+      </div>
     </label>
   );
 }
 
-function VerifCard({ selected, onClick, icon, title, desc }: {
-  selected: boolean; onClick: () => void; icon: React.ReactNode; title: string; desc: string;
+function SelectField({
+  label,
+  icon,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  icon: React.ReactNode;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  options: string[];
+}) {
+  return (
+    <label className="block">
+      <span className="text-xs text-muted-foreground">{label}</span>
+      <div className={`${inputShell} relative`}>
+        {icon}
+        <select
+          value={value}
+          onChange={onChange}
+          className="flex-1 appearance-none bg-transparent text-sm text-white focus:outline-none pr-6"
+        >
+          {options.map((o) => (
+            <option key={o} value={o} className="bg-[#0a0a0c]">
+              {o}
+            </option>
+          ))}
+        </select>
+        <ChevronDown className="size-4 text-muted-foreground absolute right-3 pointer-events-none" />
+      </div>
+    </label>
+  );
+}
+
+function VerifCard({
+  selected,
+  onClick,
+  icon,
+  title,
+  desc,
+}: {
+  selected: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`text-left rounded-2xl p-5 border transition ${
-        selected ? "border-primary/60 bg-primary/[0.04] shadow-[0_0_30px_-10px_oklch(0.86_0.16_200_/0.5)]" : "border-white/10 bg-white/[0.02] hover:border-white/20"
+      className={`text-left rounded-2xl p-4 border transition ${
+        selected
+          ? "border-sky-500/50 bg-[#0b1220]"
+          : "border-white/[0.07] bg-[#0a0a0c] hover:border-white/20"
       }`}
     >
-      <div className="flex items-center gap-3">
-        <span className={`size-5 rounded-full border-2 grid place-items-center transition ${selected ? "border-primary" : "border-white/30"}`}>
-          {selected && <span className="size-2 rounded-full bg-primary" />}
+      <div className="flex items-start gap-3">
+        <span className="size-9 shrink-0 grid place-items-center rounded-xl bg-[#0d0d0f] border border-white/[0.08]">
+          {icon}
         </span>
-        <span className="text-primary">{icon}</span>
-        <span className="text-base font-medium">{title}</span>
+        <div className="flex-1">
+          <div className="text-sm font-medium text-white">{title}</div>
+          <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">{desc}</p>
+        </div>
+        <span
+          className={`size-5 shrink-0 rounded-full grid place-items-center border transition ${
+            selected ? "bg-sky-500 border-sky-500 text-white" : "border-white/25"
+          }`}
+        >
+          {selected && <Check className="size-3" />}
+        </span>
       </div>
-      <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{desc}</p>
     </button>
   );
 }
