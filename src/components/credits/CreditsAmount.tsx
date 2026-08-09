@@ -160,7 +160,7 @@ export default function CreditsAmount({
                   </div>
                   <input
                     type="range"
-                    min={100}
+                    min={1}
                     max={5000}
                     step={50}
                     value={credits}
@@ -187,7 +187,7 @@ export default function CreditsAmount({
                     onChange={(e) => {
                       const raw = e.target.value.replace(/\D/g, "");
                       setManual(raw);
-                      if (raw) setCredits(Math.min(100000, Math.max(100, Number(raw))));
+                      if (raw) setCredits(Math.min(100000, Math.max(1, Number(raw))));
                     }}
                     placeholder="e.g. 1500"
                     className="w-full min-w-0 bg-transparent text-[10px] text-white placeholder:text-[#6B7280] outline-none sm:text-[16px]"
@@ -195,7 +195,7 @@ export default function CreditsAmount({
                   <span className="hidden whitespace-nowrap text-[14px] text-[#9CA3AF] sm:inline">Power Credits</span>
                   <Zap className="h-3 w-3 shrink-0 text-[#93A5FF] sm:h-4 sm:w-4" />
                 </div>
-                <p className="mt-2 text-[8px] text-[#9CA3AF] sm:mt-3 sm:text-[13px]">Minimum 100 Power Credits</p>
+                <p className="mt-2 text-[8px] text-[#9CA3AF] sm:mt-3 sm:text-[13px]">Minimum 1 Power Credit</p>
                 <div className="mt-2 flex gap-2 rounded-[10px] border border-white/[0.08] bg-white/[0.02] p-2 sm:mt-4 sm:gap-3 sm:rounded-[14px] sm:p-4">
                   <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-[7px] bg-white/[0.05] sm:h-9 sm:w-9 sm:rounded-[10px]">
                     <Zap className="h-2.5 w-2.5 text-[#93A5FF] sm:h-4 sm:w-4" />
