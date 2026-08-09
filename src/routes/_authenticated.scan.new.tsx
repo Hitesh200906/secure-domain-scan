@@ -1,13 +1,26 @@
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Check, Loader2, Lock, Crosshair, ChevronDown } from "lucide-react";
+import { ArrowRight, Check, Loader2, Lock, Crosshair, ChevronDown, Copy, ShieldCheck, X } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
 import scanConfigImg from "@/assets/scan-config.png.asset.json";
+import {
+  startEmailVerification,
+  confirmEmailVerification,
+  startManualVerification,
+  confirmManualVerification,
+} from "@/lib/scan-verification.functions";
+
+type Flow =
+  | null
+  | { kind: "email"; scanId: string; sentTo: string; hint: string | null }
+  | { kind: "manual"; scanId: string; code: string; token: string };
 
 type Plan = "starter" | "professional" | "enterprise";
+
 
 const PLAN_INFO: Record<Plan, { name: string; credits: number }> = {
   starter: { name: "Starter", credits: 1 },
