@@ -317,7 +317,7 @@ function Overview({
               </div>
             </div>
             <div className="mt-3 flex items-baseline gap-1">
-              <div className={`text-2xl sm:text-3xl font-semibold tracking-tight ${k.glow ? "text-white" : "text-white"}`}>{k.value}</div>
+              <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">{k.value}</div>
               {k.suffix && <div className="text-sm text-muted-foreground">{k.suffix}</div>}
             </div>
             <div className="mt-2 text-[11px] text-muted-foreground inline-flex items-center gap-1 capitalize">
@@ -493,10 +493,16 @@ function Reports({
 
       {scans.length === 0 ? (
         <div className="glass rounded-2xl px-6 py-16 text-center">
-          <div className="size-12 mx-auto rounded-full glass grid place-items-center text-zinc-300"><ScanSearch className="size-5" /></div>
-          <div className="mt-4 text-sm">No reports yet</div>
-          <p className="mt-1 text-xs text-muted-foreground">Submit your first scan and it will appear here within minutes.</p>
-          <Link to="/scan/new" search={{ plan: 'professional' as const }} className="mt-5 inline-flex rounded-full bg-white text-black px-4 py-2 text-xs font-medium">Start your first scan</Link>
+        <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-black px-6 py-20 text-center">
+          <img src={noReportsAsset.url} alt="" loading="lazy" width={1536} height={768}
+            className="absolute inset-0 size-full object-cover opacity-45" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/85" />
+          <div className="relative">
+            <div className="size-12 mx-auto rounded-full border border-white/12 bg-white/[0.05] grid place-items-center text-zinc-300"><ScanSearch className="size-5" /></div>
+            <div className="mt-4 text-sm">No reports yet</div>
+            <p className="mt-1 text-xs text-muted-foreground">Submit your first scan and it will appear here within minutes.</p>
+            <Link to="/scan/new" search={{ plan: 'professional' as const }} className="mt-5 inline-flex rounded-full bg-white text-black px-4 py-2 text-xs font-medium hover:bg-white/85 transition">Start your first scan</Link>
+          </div>
         </div>
       ) : (
         <div className="grid md:grid-cols-2 gap-4">
