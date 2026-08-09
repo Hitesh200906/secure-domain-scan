@@ -8,7 +8,7 @@ import { CheckCircle2, XCircle, Trash2, Upload } from "lucide-react";
 
 export const Route = createFileRoute("/admin/scans")({ component: ScansPage });
 
-type Scan = { id: string; user_id: string; full_name: string; email: string; target_url: string; plan: string; status: string; created_at: string };
+type Scan = { id: string; user_id: string; full_name: string; email: string; business_email?: string | null; target_url: string; plan: string; status: string; verification_method?: string | null; verification_status?: string | null; verified_at?: string | null; created_at: string };
 
 function ScansPage() {
   const [rows, setRows] = useState<Scan[]>([]);
