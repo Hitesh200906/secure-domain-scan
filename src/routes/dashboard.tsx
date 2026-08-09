@@ -303,17 +303,17 @@ function Overview({
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {[
-          { label: "Security Score", value: score, suffix: "/100", icon: ShieldCheck, trend: "+4.2%", tint: "oklch(0.62 0.02 250)", glow: true },
-          { label: "Issues In Report", value: findings, icon: Bug, trend: active?.status ?? "pending", tint: "oklch(0.78 0.17 50)" },
-          { label: "Reports Filed", value: scansCount, icon: FileText, trend: "all time", tint: "oklch(0.55 0.015 240)" },
-          { label: "Credits Left", value: credits, icon: Zap, trend: "wallet", tint: "oklch(0.85 0.16 90)" },
+          { label: "Security Score", value: score, suffix: "/100", logo: kpiScoreAsset.url, trend: "+4.2%" },
+          { label: "Issues In Report", value: findings, logo: kpiIssuesAsset.url, trend: active?.status ?? "pending" },
+          { label: "Reports Filed", value: scansCount, logo: kpiReportsAsset.url, trend: "all time" },
+          { label: "Credits Left", value: credits, logo: kpiCreditsAsset.url, trend: "wallet" },
         ].map((k, i) => (
           <motion.div key={k.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.05 }}
             className="glass rounded-2xl p-4 sm:p-5 relative overflow-hidden group hover:border-white/15 transition">
-            <div className="flex items-start justify-between">
+            <div className="flex items-start justify-between gap-2">
               <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{k.label}</div>
-              <div className="size-8 rounded-xl grid place-items-center border border-white/10" style={{ background: `color-mix(in oklab, ${k.tint} 16%, transparent)` }}>
-                <k.icon className="size-4" style={{ color: k.tint }} />
+              <div className="size-10 shrink-0 rounded-xl grid place-items-center border border-white/10 bg-white/[0.04]">
+                <img src={k.logo} alt="" loading="lazy" width={816} height={816} className="size-7 object-contain" />
               </div>
             </div>
             <div className="mt-3 flex items-baseline gap-1">
@@ -400,9 +400,10 @@ function Overview({
       {/* Live security promo + intel */}
       <div className="grid lg:grid-cols-3 gap-4">
         <button onClick={onLive} className="group relative lg:col-span-2 overflow-hidden rounded-2xl border border-white/[0.08] bg-black text-left">
-          <img src={aiCoreImg} alt="Nexefy Live AI core" loading="lazy" width={1024} height={768}
-            className="absolute right-0 top-0 h-full w-1/2 object-cover opacity-70 transition duration-700 group-hover:scale-105" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-transparent" />
+          <img src={liveSocAsset.url} alt="Nexefy live security operations centre" loading="lazy" width={1536} height={1024}
+            className="absolute inset-0 size-full object-cover opacity-70 transition duration-700 group-hover:scale-105" />
+          <div className="absolute inset-0 bg-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black/30" />
           <div className="relative p-6 sm:p-8 max-w-md">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
               <Cpu className="size-3 text-zinc-300" /> Under construction
