@@ -223,7 +223,7 @@ function ScanNewPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-2xl px-6 py-4 text-[15px] font-medium text-white bg-[#0b1a3a] border border-white/10 hover:bg-[#0000DD] transition-colors inline-flex items-center justify-center gap-3 disabled:opacity-60"
+              className="w-full rounded-2xl px-6 py-4 text-[15px] font-medium text-white bg-[#0000DD] hover:bg-[#0000b8] transition-colors inline-flex items-center justify-center gap-3 disabled:opacity-60"
             >
               {loading ? <Loader2 className="size-4 animate-spin" /> : <Crosshair className="size-4" />}
               Execute Scan
