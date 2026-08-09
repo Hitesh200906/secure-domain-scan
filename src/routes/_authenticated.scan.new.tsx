@@ -272,9 +272,190 @@ function ScanNewPage() {
           </div>
         </form>
       </div>
+
+      {flow?.kind === "email" && (
+        <EmailOtpDialog
+          sentTo={flow.sentTo}
+          hint={flow.hint}
+          onClose={() => setFlow(null)}
+          onResend={async () => {
+            const res = await startEmail({ data: { scan_id: flow.scanId } });
+            setFlow({ ...flow, hint: res.delivered ? null : res.code });
+            toast.success("New code generated");
+          }}
+          onSubmit={async (code) => {
+            await confirmEmail({ data: { scan_id: flow.scanId, code } });
+            setFlow(null);
+            toast.success("Verified — your scan request was sent to our security console");
+            navigate({ to: "/dashboard" });
+          }}
+        />
+      )}
+
+      {flow?.kind === "manual" && (
+        <ManualCodeDialog
+          code={flow.code}
+          token={flow.token}
+          onClose={() => setFlow(null)}
+          onVerify={async () => {
+            const res = await confirmManual({ data: { scan_id: flow.scanId } });
+            if (!res.verified) {
+              toast.error(res.message);
+              return false;
+            }
+            setFlow(null);
+            toast.success("Verified — your scan request was sent to our security console");
+            navigate({ to: "/dashboard" });
+            return true;
+          }}
+        />
+      )}
     </div>
   );
 }
+
+function Dialog({ title, subtitle, onClose, children }: { title: string; subtitle: string; onClose: () => void; children: React.ReactNode }) {
+  return (
+    <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/80 p-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96, y: 8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        className="w-full max-w-md rounded-2xl bg-[#050505] p-6 shadow-2xl"
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="inline-flex items-center gap-2 text-white font-medium">
+              <ShieldCheck className="size-4 text-[#2563EB]" /> {title}
+            </div>
+            <p className="mt-1 text-[12px] leading-relaxed text-muted-foreground">{subtitle}</p>
+          </div>
+          <button type="button" onClick={onClose} className="rounded-lg p-1.5 text-muted-foreground hover:bg-white/5 hover:text-white">
+            <X className="size-4" />
+          </button>
+        </div>
+        {children}
+      </motion.div>
+    </div>
+  );
+}
+
+function EmailOtpDialog({
+  sentTo,
+  hint,
+  onClose,
+  onResend,
+  onSubmit,
+}: {
+  sentTo: string;
+  hint: string | null;
+  onClose: () => void;
+  onResend: () => Promise<void>;
+  onSubmit: (code: string) => Promise<void>;
+}) {
+  const [code, setCode] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const go = async () => {
+    if (code.trim().length !== 6) return toast.error("Enter the 6-digit code");
+    setBusy(true);
+    try {
+      await onSubmit(code.trim());
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Verification failed");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Dialog title="Enter verification code" subtitle={`We sent a 6-digit code to ${sentTo}. Enter it below to submit your scan request.`} onClose={onClose}>
+      <input
+        value={code}
+        onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+        inputMode="numeric"
+        placeholder="••••••"
+        className="mt-5 w-full rounded-xl bg-[#0a0a0c] px-4 py-3 text-center text-2xl tracking-[0.5em] text-white outline-none placeholder:text-white/20"
+      />
+      {hint && (
+        <p className="mt-2 text-center text-[11px] text-amber-300/80">
+          Email sending isn’t configured yet — your code is <span className="font-mono text-white">{hint}</span>
+        </p>
+      )}
+      <button
+        type="button"
+        onClick={go}
+        disabled={busy}
+        className="mt-4 w-full rounded-xl bg-[#2563EB] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#1D4ED8] disabled:opacity-60 inline-flex items-center justify-center gap-2"
+      >
+        {busy ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />} Continue
+      </button>
+      <button type="button" onClick={() => onResend().catch(() => toast.error("Could not resend"))} className="mt-3 w-full text-[11px] text-muted-foreground hover:text-white">
+        Resend code
+      </button>
+    </Dialog>
+  );
+}
+
+function ManualCodeDialog({
+  code,
+  token,
+  onClose,
+  onVerify,
+}: {
+  code: string;
+  token: string;
+  onClose: () => void;
+  onVerify: () => Promise<boolean>;
+}) {
+  const [busy, setBusy] = useState(false);
+  const snippet = `<meta name="nexefy-site-verification" content="${code}" />`;
+
+  return (
+    <Dialog
+      title="Add your verification code"
+      subtitle="Place this 6-digit code anywhere on your site — the HTML header, footer, or a hidden element. Then let our AI confirm it."
+      onClose={onClose}
+    >
+      <div className="mt-5 rounded-xl bg-[#0a0a0c] p-4">
+        <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Your code</div>
+        <div className="mt-1 font-mono text-2xl tracking-[0.3em] text-white">{code}</div>
+        <div className="mt-4 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Recommended snippet</div>
+        <code className="mt-1 block break-all rounded-lg bg-black/60 p-2.5 font-mono text-[11px] text-sky-300">{snippet}</code>
+        <button
+          type="button"
+          onClick={() => {
+            navigator.clipboard.writeText(snippet);
+            toast.success("Snippet copied");
+          }}
+          className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-white/[0.06] px-3 py-1.5 text-[11px] text-white hover:bg-white/10"
+        >
+          <Copy className="size-3" /> Copy snippet
+        </button>
+        <p className="mt-3 text-[11px] text-muted-foreground">
+          Any visible or hidden occurrence of <span className="font-mono text-white/80">{token}</span> or the code itself works.
+        </p>
+      </div>
+      <button
+        type="button"
+        disabled={busy}
+        onClick={async () => {
+          setBusy(true);
+          try {
+            await onVerify();
+          } catch (e) {
+            toast.error(e instanceof Error ? e.message : "Verification failed");
+          } finally {
+            setBusy(false);
+          }
+        }}
+        className="mt-4 w-full rounded-xl bg-[#2563EB] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#1D4ED8] disabled:opacity-60 inline-flex items-center justify-center gap-2"
+      >
+        {busy ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />} I’ve added the code
+      </button>
+    </Dialog>
+  );
+}
+
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
