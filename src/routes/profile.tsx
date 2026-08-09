@@ -868,6 +868,10 @@ function CreditsSection({ balance }: { balance: number }) {
   const [currency, setCurrency] = useState("USD");
   const [amount, setAmount] = useState<number>(1000);
   const [busy, setBusy] = useState(false);
+  const [phase, setPhase] = useState<PaymentPhase>("idle");
+  const [payMsg, setPayMsg] = useState<string>();
+  const [credited, setCredited] = useState<number>();
+  const lastResult = useRef<RazorpayResult | null>(null);
 
   useEffect(() => { setBal(balance); }, [balance]);
 
@@ -881,6 +885,52 @@ function CreditsSection({ balance }: { balance: number }) {
   };
 
   useEffect(() => { void loadTx(); }, []);
+
+  // Safety net: if a previous payment succeeded but the browser lost the
+  // callback, settle it as soon as the credits page loads.
+  useEffect(() => {
+    void (async () => {
+      try {
+        const r = await reconcilePayments({ data: undefined });
+        if (r.credited > 0) {
+          if (typeof r.balance === "number") setBal(r.balance);
+          toast.success(`${r.credited.toLocaleString()} credits added to your balance`);
+          void loadTx();
+        }
+      } catch { /* silent */ }
+    })();
+  }, []);
+
+  const finishSuccess = (newBalance: number, added: number) => {
+    setBal(newBalance);
+    setCredited(added);
+    setPhase("success");
+    void loadTx();
+    setTimeout(() => {
+      setPhase("idle");
+      setOpen(false);
+      setStep(1);
+    }, 2500);
+  };
+
+  const runVerify = async (res: RazorpayResult) => {
+    setPhase("verifying");
+    try {
+      const settled = await verifyPayment({ data: res });
+      finishSuccess(settled.balance, settled.credited);
+    } catch {
+      // Signature/verify path failed — try the server-side reconciliation.
+      try {
+        const r = await reconcilePayments({ data: undefined });
+        if (r.credited > 0) {
+          finishSuccess(r.balance ?? bal, r.credited);
+          return;
+        }
+      } catch { /* fall through */ }
+      setPayMsg("Payment verification failed. Contact support if you were charged.");
+      setPhase("error");
+    }
+  };
 
   const pay = async (credits: number) => {
     if (busy) return;
@@ -897,18 +947,19 @@ function CreditsSection({ balance }: { balance: number }) {
         orderId: order.order_id,
         description: `${credits.toLocaleString()} Power Credits`,
       });
-      const settled = await verifyPayment({ data: res });
-      setBal(settled.balance);
-      setOpen(false);
-      setStep(1);
-      toast.success(`${settled.credited.toLocaleString()} credits added to your balance`);
-      void loadTx();
+      lastResult.current = res;
+      await runVerify(res);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Payment failed";
       if (msg !== "Payment cancelled") toast.error(msg);
     } finally {
       setBusy(false);
     }
+  };
+
+  const retryVerify = () => {
+    if (lastResult.current) void runVerify(lastResult.current);
+    else setPhase("idle");
   };
 
   const buy = () => void pay(amount);
