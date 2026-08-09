@@ -30,9 +30,9 @@ export const Route = createFileRoute("/dashboard")({
 });
 
 import {
-  type Scan, type ReportModel, ACTIVE_KEY, buildReport, DEMO_REPORT, scoreColor, seeded, hash,
+  type Scan, type ReportModel, ACTIVE_KEY, buildReport, DEMO_REPORT, scoreColor,
 } from "@/lib/report-model";
-void seeded; void hash;
+
 
 
 /* --------------------------------- page --------------------------------- */
