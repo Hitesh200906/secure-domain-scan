@@ -102,7 +102,7 @@ function ScanNewPage() {
             type="button"
             onClick={() => {
               if (typeof window !== "undefined" && window.history.length > 1) window.history.back();
-              else navigate({ to: "/features" });
+              else navigate({ to: "/" });
             }}
             className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-muted-foreground transition hover:bg-white/[0.07] hover:text-white"
           >
@@ -231,7 +231,7 @@ function ScanNewPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-2xl px-6 py-4 text-[15px] font-medium text-white bg-[#0000DD] hover:bg-[#0000b8] transition-colors inline-flex items-center justify-center gap-3 disabled:opacity-60"
+              className="w-full rounded-2xl px-6 py-4 text-[15px] font-medium text-white bg-[#2563EB] hover:bg-[#1D4ED8] transition-colors inline-flex items-center justify-center gap-3 disabled:opacity-60"
             >
               {loading ? <Loader2 className="size-4 animate-spin" /> : <Crosshair className="size-4" />}
               Execute Scan
