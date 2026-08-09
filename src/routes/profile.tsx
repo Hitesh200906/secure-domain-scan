@@ -18,8 +18,13 @@ import creditsWallet from "@/assets/credits-wallet.png.asset.json";
 import creditsGift from "@/assets/credits-gift.png.asset.json";
 import CreditsCheckout from "@/components/credits/CreditsCheckout";
 import CreditsAmount from "@/components/credits/CreditsAmount";
-import { loadRazorpay, openRazorpay } from "@/lib/razorpay-checkout";
-import { createCreditsOrder as createOrder, verifyCreditsPayment as verifyPayment } from "@/lib/razorpay.functions";
+import { loadRazorpay, openRazorpay, type RazorpayResult } from "@/lib/razorpay-checkout";
+import PaymentStatus, { type PaymentPhase } from "@/components/credits/PaymentStatus";
+import {
+  createCreditsOrder as createOrder,
+  verifyCreditsPayment as verifyPayment,
+  reconcileCreditsPayments as reconcilePayments,
+} from "@/lib/razorpay.functions";
 import { useAdmin } from "@/hooks/use-admin";
 import { RoleBadge } from "@/components/ui/RoleBadge";
 import { BackButton } from "@/components/site/BackButton";
@@ -868,6 +873,10 @@ function CreditsSection({ balance }: { balance: number }) {
   const [currency, setCurrency] = useState("USD");
   const [amount, setAmount] = useState<number>(1000);
   const [busy, setBusy] = useState(false);
+  const [phase, setPhase] = useState<PaymentPhase>("idle");
+  const [payMsg, setPayMsg] = useState<string>();
+  const [credited, setCredited] = useState<number>();
+  const lastResult = useRef<RazorpayResult | null>(null);
 
   useEffect(() => { setBal(balance); }, [balance]);
 
@@ -881,6 +890,52 @@ function CreditsSection({ balance }: { balance: number }) {
   };
 
   useEffect(() => { void loadTx(); }, []);
+
+  // Safety net: if a previous payment succeeded but the browser lost the
+  // callback, settle it as soon as the credits page loads.
+  useEffect(() => {
+    void (async () => {
+      try {
+        const r = await reconcilePayments({ data: undefined });
+        if (r.credited > 0) {
+          if (typeof r.balance === "number") setBal(r.balance);
+          toast.success(`${r.credited.toLocaleString()} credits added to your balance`);
+          void loadTx();
+        }
+      } catch { /* silent */ }
+    })();
+  }, []);
+
+  const finishSuccess = (newBalance: number, added: number) => {
+    setBal(newBalance);
+    setCredited(added);
+    setPhase("success");
+    void loadTx();
+    setTimeout(() => {
+      setPhase("idle");
+      setOpen(false);
+      setStep(1);
+    }, 2500);
+  };
+
+  const runVerify = async (res: RazorpayResult) => {
+    setPhase("verifying");
+    try {
+      const settled = await verifyPayment({ data: res });
+      finishSuccess(settled.balance, settled.credited);
+    } catch {
+      // Signature/verify path failed — try the server-side reconciliation.
+      try {
+        const r = await reconcilePayments({ data: undefined });
+        if (r.credited > 0) {
+          finishSuccess(r.balance ?? bal, r.credited);
+          return;
+        }
+      } catch { /* fall through */ }
+      setPayMsg("Payment verification failed. Contact support if you were charged.");
+      setPhase("error");
+    }
+  };
 
   const pay = async (credits: number) => {
     if (busy) return;
@@ -897,18 +952,19 @@ function CreditsSection({ balance }: { balance: number }) {
         orderId: order.order_id,
         description: `${credits.toLocaleString()} Power Credits`,
       });
-      const settled = await verifyPayment({ data: res });
-      setBal(settled.balance);
-      setOpen(false);
-      setStep(1);
-      toast.success(`${settled.credited.toLocaleString()} credits added to your balance`);
-      void loadTx();
+      lastResult.current = res;
+      await runVerify(res);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Payment failed";
       if (msg !== "Payment cancelled") toast.error(msg);
     } finally {
       setBusy(false);
     }
+  };
+
+  const retryVerify = () => {
+    if (lastResult.current) void runVerify(lastResult.current);
+    else setPhase("idle");
   };
 
   const buy = () => void pay(amount);
@@ -1044,6 +1100,15 @@ function CreditsSection({ balance }: { balance: number }) {
         </button>
       </div>
 
+
+      <PaymentStatus
+        phase={phase}
+        credited={credited}
+        balance={bal}
+        message={payMsg}
+        onRetry={retryVerify}
+        onClose={() => { setPhase("idle"); setOpen(false); setStep(1); }}
+      />
 
       {/* Full-page checkout */}
       {open && step === 1 && (
