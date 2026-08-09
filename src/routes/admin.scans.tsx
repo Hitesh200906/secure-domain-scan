@@ -126,7 +126,14 @@ function ScansPage() {
                   </td>
                   <td className="px-2"><div className="text-sm">{s.full_name}</div><div className="text-[11px] text-muted-foreground">{s.email}</div></td>
                   <td className="px-2"><Badge tone="info">{s.plan}</Badge></td>
+                  <td className="px-2">
+                    <Badge tone={s.verification_status === "verified" ? "ok" : "warn"}>
+                      {s.verification_status ?? "unverified"}
+                    </Badge>
+                    <div className="text-[10px] text-muted-foreground mt-1">{s.verification_method ?? "—"}</div>
+                  </td>
                   <td className="px-2"><Badge tone={s.status === "completed" ? "ok" : s.status === "failed" ? "danger" : "warn"}>{s.status}</Badge></td>
+
                   <td className="px-2 text-muted-foreground text-xs">{new Date(s.created_at).toLocaleString()}</td>
                   <td className="px-2 py-3 text-right">
                     <div className="inline-flex gap-1">
