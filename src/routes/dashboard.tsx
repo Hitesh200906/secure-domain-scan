@@ -617,10 +617,11 @@ function ScoreRing({ value }: { value: number }) {
           strokeDasharray={c} initial={{ strokeDashoffset: c }} animate={{ strokeDashoffset: offset }} transition={{ duration: 1.6, ease: "easeOut" }} />
         <defs>
           <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="oklch(0.62 0.02 250)" />
-            <stop offset="100%" stopColor="oklch(0.55 0.015 240)" />
+            <stop offset="0%" stopColor="#3B82F6" />
+            <stop offset="100%" stopColor="#22D3EE" />
           </linearGradient>
         </defs>
+
       </svg>
       <div className="absolute inset-0 grid place-items-center">
         <div className="text-center">
