@@ -340,16 +340,16 @@ function Overview({
               <div className="text-sm font-medium">Threat Activity</div>
               <div className="text-[11px] text-muted-foreground mt-0.5">{active ? active.target_url : "sample data"} · last 24 hours</div>
             </div>
-            <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest">
-              <span className="size-1.5 rounded-full bg-zinc-400 animate-pulse" /> Realtime
+            <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-accent-emerald">
+              <span className="size-1.5 rounded-full bg-accent-emerald animate-pulse" /> Realtime
             </div>
           </div>
           <Chart data={trend} />
           <div className="mt-4 grid grid-cols-3 gap-3 pt-4 border-t border-white/[0.06]">
             {[
-              { l: "Blocked", v: String(Math.max(120, findings * 52)), c: "text-emerald-400" },
-              { l: "Investigating", v: String(Math.max(1, Math.round(findings * 0.4))), c: "text-amber-400" },
-              { l: "Critical", v: String(Math.max(0, Math.floor(findings * 0.08))), c: "text-destructive" },
+              { l: "Blocked", v: String(Math.max(120, findings * 52)), c: "text-accent-emerald" },
+              { l: "Investigating", v: String(Math.max(1, Math.round(findings * 0.4))), c: "text-accent-amber" },
+              { l: "Critical", v: String(Math.max(0, Math.floor(findings * 0.08))), c: "text-accent-rose" },
             ].map((s) => (
               <div key={s.l}>
                 <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{s.l}</div>
@@ -366,10 +366,10 @@ function Overview({
           </div>
           <div className="mt-5 space-y-3.5">
             {[
-              { label: "Critical", val: Math.max(0, Math.floor(findings * 0.08)), color: "oklch(0.65 0.22 25)", icon: ShieldAlert },
-              { label: "High", val: Math.max(0, Math.floor(findings * 0.22)), color: "oklch(0.78 0.17 50)", icon: AlertTriangle },
-              { label: "Medium", val: Math.max(0, Math.floor(findings * 0.38)), color: "oklch(0.85 0.16 90)", icon: Eye },
-              { label: "Low", val: Math.max(0, Math.floor(findings * 0.32)), color: "oklch(0.55 0.015 240)", icon: CheckCircle2 },
+              { label: "Critical", val: Math.max(0, Math.floor(findings * 0.08)), color: "var(--accent-rose)", icon: ShieldAlert },
+              { label: "High", val: Math.max(0, Math.floor(findings * 0.22)), color: "var(--accent-amber)", icon: AlertTriangle },
+              { label: "Medium", val: Math.max(0, Math.floor(findings * 0.38)), color: "var(--accent-sky)", icon: Eye },
+              { label: "Low", val: Math.max(0, Math.floor(findings * 0.32)), color: "var(--accent-emerald)", icon: CheckCircle2 },
             ].map((r) => (
               <div key={r.label}>
                 <div className="flex items-center justify-between text-xs">
@@ -384,17 +384,17 @@ function Overview({
           </div>
           <div className="mt-5 pt-4 border-t border-white/[0.06] space-y-2">
             {[
-              { l: "Application", v: Math.min(99, score + 5), icon: Fingerprint },
-              { l: "Infrastructure", v: Math.max(40, score - 2), icon: Server },
-              { l: "Identity", v: Math.max(35, score - 9), icon: KeyRound },
+              { l: "Application", v: Math.min(99, score + 5), icon: Fingerprint, c: "var(--accent-indigo)" },
+              { l: "Infrastructure", v: Math.max(40, score - 2), icon: Server, c: "var(--accent-sky)" },
+              { l: "Identity", v: Math.max(35, score - 9), icon: KeyRound, c: "var(--accent-violet)" },
             ].map((p) => (
               <div key={p.l}>
                 <div className="flex justify-between text-[11px]">
-                  <span className="text-muted-foreground inline-flex items-center gap-1.5"><p.icon className="size-3" />{p.l}</span>
-                  <span className="font-mono">{p.v}</span>
+                  <span className="text-muted-foreground inline-flex items-center gap-1.5"><p.icon className="size-3" style={{ color: p.c }} />{p.l}</span>
+                  <span className="font-mono" style={{ color: p.c }}>{p.v}</span>
                 </div>
                 <div className="mt-1 h-1 rounded-full bg-white/5 overflow-hidden">
-                  <motion.div initial={{ width: 0 }} animate={{ width: `${p.v}%` }} transition={{ duration: 1, ease: "easeOut" }} className="h-full bg-gradient-to-r from-zinc-500 to-zinc-300" />
+                  <motion.div initial={{ width: 0 }} animate={{ width: `${p.v}%` }} transition={{ duration: 1, ease: "easeOut" }} className="h-full" style={{ background: p.c }} />
                 </div>
               </div>
             ))}
