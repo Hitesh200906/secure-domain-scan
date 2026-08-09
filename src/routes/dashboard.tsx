@@ -425,32 +425,42 @@ function Overview({
           </div>
         </button>
 
-        <div className="glass rounded-2xl p-5 sm:p-6">
+        <div className="relative overflow-hidden rounded-2xl border border-[#EF4444]/25 p-5 sm:p-6"
+          style={{ background: "linear-gradient(160deg, rgba(239,68,68,0.16) 0%, rgba(239,68,68,0.05) 20%, oklch(0.05 0.008 20) 55%, #000 100%)" }}>
           <div className="flex items-center justify-between">
-            <div className="text-sm font-medium">Live Threat Intel</div>
-            <Wifi className="size-4 text-zinc-300 animate-pulse" />
+            <div className="text-sm font-medium inline-flex items-center gap-2">
+              <span className="size-1.5 rounded-full bg-[#F87171] animate-pulse" /> Live Threat Intel
+            </div>
+            <Wifi className="size-4 text-[#F87171] animate-pulse" />
           </div>
-          <ul className="mt-4 space-y-3">
+          <ul className="mt-4 space-y-2">
             {[
-              { ip: "185.220.101.47", country: "RU", type: "Brute force", time: "2m ago" },
-              { ip: "45.155.205.211", country: "CN", type: "SQL injection", time: "8m ago" },
-              { ip: "23.95.182.94", country: "US", type: "Port scan", time: "14m ago" },
-              { ip: "104.244.78.10", country: "DE", type: "XSS attempt", time: "22m ago" },
-            ].map((t) => (
-              <li key={t.ip} className="flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2.5">
-                  <div className="size-7 rounded-lg glass grid place-items-center text-[10px] font-mono text-zinc-300">{t.country}</div>
-                  <div>
-                    <div className="font-mono">{t.ip}</div>
-                    <div className="text-muted-foreground text-[10px] mt-0.5">{t.type}</div>
+              { ip: "185.220.101.47", country: "RU", type: "Brute force", time: "2m ago", sev: "#EF4444" },
+              { ip: "45.155.205.211", country: "CN", type: "SQL injection", time: "8m ago", sev: "#F59E0B" },
+              { ip: "23.95.182.94", country: "US", type: "Port scan", time: "14m ago", sev: "#38BDF8" },
+              { ip: "104.244.78.10", country: "DE", type: "XSS attempt", time: "22m ago", sev: "#F59E0B" },
+            ].map((t, i) => (
+              <motion.li key={t.ip} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.1 + i * 0.08 }}
+                className="flex items-center justify-between text-xs rounded-xl border border-white/[0.06] bg-black/40 px-2.5 py-2 hover:border-white/12 transition">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="size-7 rounded-lg grid place-items-center text-[10px] font-mono border"
+                    style={{ borderColor: `${t.sev}40`, background: `${t.sev}1A`, color: t.sev }}>{t.country}</div>
+                  <div className="min-w-0">
+                    <div className="font-mono truncate">{t.ip}</div>
+                    <div className="text-[10px] mt-0.5" style={{ color: t.sev }}>{t.type}</div>
                   </div>
                 </div>
-                <span className="text-muted-foreground/70 text-[10px]">{t.time}</span>
-              </li>
+                <span className="text-muted-foreground/70 text-[10px] shrink-0">{t.time}</span>
+              </motion.li>
             ))}
           </ul>
+          <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-[10px] uppercase tracking-widest text-muted-foreground">
+            <span>Feed active</span>
+            <span className="text-[#F87171]">4 events</span>
+          </div>
         </div>
       </div>
+
 
       {/* Quick actions */}
       <div className="glass rounded-2xl p-5 sm:p-6">
