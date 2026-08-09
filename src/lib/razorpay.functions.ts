@@ -89,3 +89,40 @@ export const verifyCreditsPayment = createServerFn({ method: "POST" })
 
     return { balance: Number(balance ?? 0), credited: row.credits + row.bonus_credits };
   });
+
+/**
+ * Safety net: settles any of the signed-in user's still-pending orders that
+ * Razorpay reports as paid. Used when the browser lost the success callback.
+ */
+export const reconcileCreditsPayments = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { fetchOrderPayments } = await import("./razorpay.server");
+
+    const { data: pending } = await supabaseAdmin
+      .from("payments")
+      .select("order_id, credits, bonus_credits")
+      .eq("user_id", context.userId)
+      .eq("status", "created")
+      .order("created_at", { ascending: false })
+      .limit(5);
+
+    let credited = 0;
+    let balance: number | null = null;
+
+    for (const p of pending ?? []) {
+      const payments = await fetchOrderPayments(p.order_id);
+      const paid = payments.find((x) => x.status === "captured" || x.status === "authorized");
+      if (!paid) continue;
+      const { data: bal, error } = await supabaseAdmin.rpc("settle_payment", {
+        _order_id: p.order_id,
+        _payment_id: paid.id,
+      });
+      if (error) continue;
+      credited += p.credits + p.bonus_credits;
+      balance = Number(bal ?? 0);
+    }
+
+    return { credited, balance };
+  });
