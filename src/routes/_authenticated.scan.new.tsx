@@ -366,11 +366,12 @@ function VerifCard({
     <button
       type="button"
       onClick={onClick}
-      className={`text-left rounded-2xl p-4 border transition ${
+      className={`text-left rounded-2xl p-4 border border-transparent transition ${
         selected
-          ? "border-sky-500/50 bg-[#0b1220]"
-          : "border-white/[0.07] bg-[#0a0a0c] hover:border-white/20"
+          ? "bg-[#dbe9ff]"
+          : "bg-[#0a0a0c] hover:bg-[#101014]"
       }`}
+
     >
       <div className="flex items-start gap-3">
         <span className="size-9 shrink-0 grid place-items-center rounded-xl bg-[#0d0d0f] border border-white/[0.08]">
