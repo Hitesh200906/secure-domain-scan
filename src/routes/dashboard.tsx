@@ -518,30 +518,30 @@ function Reports({
             const isPinned = s.id === pinned;
             return (
               <motion.div key={s.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
-                className={`rounded-2xl border p-5 bg-black/60 backdrop-blur-xl transition ${isPinned ? "border-white/30" : "border-white/[0.08] hover:border-white/20"}`}>
+                className={`rounded-2xl border p-5 backdrop-blur-xl transition ${isPinned ? "border-[color-mix(in_oklab,var(--accent-indigo)_45%,transparent)] bg-[linear-gradient(165deg,color-mix(in_oklab,var(--accent-indigo)_12%,black),black_78%)]" : "border-white/[0.08] bg-black/60 hover:border-[color-mix(in_oklab,var(--accent-indigo)_30%,transparent)]"}`}>
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="size-10 rounded-xl grid place-items-center border border-white/10 bg-[oklch(0.30_0.01_250_/0.55)]">
-                      <Globe2 className="size-4 text-zinc-300" />
+                    <div className="size-10 rounded-xl grid place-items-center border border-[color-mix(in_oklab,var(--accent-sky)_30%,transparent)] bg-[color-mix(in_oklab,var(--accent-sky)_12%,transparent)]">
+                      <Globe2 className="size-4 text-accent-sky" />
                     </div>
                     <div className="min-w-0">
                       <div className="font-mono text-sm truncate">{s.target_url}</div>
                       <div className="text-[11px] text-muted-foreground mt-0.5 capitalize">{s.plan} plan · {new Date(s.created_at).toLocaleString()}</div>
                     </div>
                   </div>
-                  {isPinned && <span className="shrink-0 inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-zinc-300"><Pin className="size-3" /> On dashboard</span>}
+                  {isPinned && <span className="shrink-0 inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-accent-indigo"><Pin className="size-3" /> On dashboard</span>}
                 </div>
 
                 <div className="mt-4 grid grid-cols-3 gap-2">
                   <Stat label="Status" value={s.status} icon={s.status === "completed" ? CheckCircle2 : Clock}
-                    tone={s.status === "completed" ? "text-emerald-400" : s.status === "running" ? "text-zinc-300" : "text-muted-foreground"} />
-                  <Stat label="Score" value={s.score != null ? `${s.score}/100` : "—"} icon={Shield} tone="text-white" />
-                  <Stat label="Issues" value={s.findings_count != null ? String(s.findings_count) : "—"} icon={Bug} tone="text-amber-400" />
+                    tone={s.status === "completed" ? "text-accent-emerald" : s.status === "running" ? "text-accent-sky" : "text-muted-foreground"} />
+                  <Stat label="Score" value={s.score != null ? `${s.score}/100` : "—"} icon={Shield} tone="text-accent-indigo" />
+                  <Stat label="Issues" value={s.findings_count != null ? String(s.findings_count) : "—"} icon={Bug} tone="text-accent-amber" />
                 </div>
 
                 <div className="mt-3 h-1.5 rounded-full bg-white/[0.05] overflow-hidden">
                   <motion.div initial={{ width: 0 }} animate={{ width: s.status === "completed" ? "100%" : s.status === "running" ? "62%" : "18%" }}
-                    transition={{ duration: 1 }} className="h-full rounded-full bg-gradient-to-r from-zinc-500 to-zinc-300" />
+                    transition={{ duration: 1 }} className="h-full rounded-full bg-gradient-to-r from-accent-indigo to-accent-sky" />
                 </div>
                 <div className="mt-1.5 text-[10px] text-muted-foreground">
                   Verification: {s.verification_status ?? "pending"}
