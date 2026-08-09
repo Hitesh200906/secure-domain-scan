@@ -331,7 +331,7 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: "Security Score", value: report.score, suffix: "/100", icon: Shield, trend: report.demo ? "demo data" : "from report", color: scoreColor(report.score) },
-          { label: "Open Findings", value: report.findings, icon: AlertTriangle, trend: `${report.status}`, color: "#b5702a" },
+          { label: "Open Findings", value: report.findings, icon: AlertTriangle, trend: `${report.status}`, color: "#b52a20" },
           { label: "Assets Monitored", value: scans.length || 1, icon: Globe2, trend: `${scans.length} scans`, color: "#5aa0d6" },
           { label: "Credits Left", value: profile?.credits ?? 0, icon: Zap, trend: `${profile?.plan ?? "starter"}`, color: "#ffffff" },
         ].map((k, i) => (
