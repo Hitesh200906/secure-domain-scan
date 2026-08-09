@@ -5,7 +5,7 @@ import {
   CreditCard, Globe2, LayoutDashboard, LogOut, ScanSearch, Settings,
   Shield, ShieldAlert, ShieldCheck, Sparkles, TrendingUp, User as UserIcon,
   Zap, ArrowUpRight, Search, Lock, Wifi, Server, Eye, Menu, X,
-  FileText, Radar, Upload, Pin, Cpu, Fingerprint, KeyRound, Bug,网 as _unused,
+  FileText, Radar, Upload, Pin, Cpu, Fingerprint, KeyRound, Bug,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
