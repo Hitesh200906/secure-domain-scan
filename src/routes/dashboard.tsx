@@ -635,9 +635,9 @@ function StatusPill({ status }: { status: string }) {
 }
 
 /* -------------------------------- widgets -------------------------------- */
-function SidebarLink({ to, icon: Icon, label, onClick }: { to: string; icon: typeof LayoutDashboard; label: string; onClick?: () => void }) {
+function SidebarLink({ to, icon: Icon, label, onClick, search }: { to: string; icon: typeof LayoutDashboard; label: string; onClick?: () => void; search?: Record<string, string> }) {
   return (
-    <Link to={to} onClick={onClick} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition text-muted-foreground hover:bg-white/[0.03] hover:text-white">
+    <Link to={to} search={search as never} onClick={onClick} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition text-muted-foreground hover:bg-white/[0.03] hover:text-white">
       <Icon className="size-4" />
       <span className="flex-1">{label}</span>
     </Link>
