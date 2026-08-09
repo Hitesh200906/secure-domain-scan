@@ -643,23 +643,26 @@ function Chart({ data }: { data: number[] }) {
     <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-40">
       <defs>
         <linearGradient id="ca" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="oklch(0.62 0.02 250)" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="oklch(0.62 0.02 250)" stopOpacity="0" />
+          <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.38" />
+          <stop offset="55%" stopColor="#6366F1" stopOpacity="0.14" />
+          <stop offset="100%" stopColor="#3B82F6" stopOpacity="0" />
         </linearGradient>
         <linearGradient id="cl" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="oklch(0.62 0.02 250)" />
-          <stop offset="100%" stopColor="oklch(0.55 0.015 240)" />
+          <stop offset="0%" stopColor="#2563EB" />
+          <stop offset="60%" stopColor="#38BDF8" />
+          <stop offset="100%" stopColor="#22D3EE" />
         </linearGradient>
       </defs>
       {[0.25, 0.5, 0.75].map((y) => (
-        <line key={y} x1="0" y1={h * y} x2={w} y2={h * y} stroke="oklch(1 0 0 / 0.04)" />
+        <line key={y} x1="0" y1={h * y} x2={w} y2={h * y} stroke="oklch(1 0 0 / 0.05)" strokeDasharray="4 8" />
       ))}
       <motion.polygon points={area} fill="url(#ca)" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }} />
-      <motion.polyline points={points} fill="none" stroke="url(#cl)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+      <motion.polyline points={points} fill="none" stroke="url(#cl)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
         initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4, ease: "easeOut" }} />
       {data.map((v, i) => i % 4 === 0 && (
-        <circle key={i} cx={i * step} cy={h - (v / max) * h * 0.85 - 8} r="2.5" fill="oklch(0.62 0.02 250)" />
+        <circle key={i} cx={i * step} cy={h - (v / max) * h * 0.85 - 8} r="2.8" fill="#22D3EE" />
       ))}
+
     </svg>
   );
 }
