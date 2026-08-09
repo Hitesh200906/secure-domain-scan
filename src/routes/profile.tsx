@@ -18,6 +18,8 @@ import creditsWallet from "@/assets/credits-wallet.png.asset.json";
 import creditsGift from "@/assets/credits-gift.png.asset.json";
 import CreditsCheckout from "@/components/credits/CreditsCheckout";
 import CreditsAmount from "@/components/credits/CreditsAmount";
+import { loadRazorpay, openRazorpay } from "@/lib/razorpay-checkout";
+import { createCreditsOrder as createOrder, verifyCreditsPayment as verifyPayment } from "@/lib/razorpay.functions";
 import { useAdmin } from "@/hooks/use-admin";
 import { RoleBadge } from "@/components/ui/RoleBadge";
 import { BackButton } from "@/components/site/BackButton";
