@@ -332,16 +332,18 @@ function Overview({
 
       {/* Chart + breakdown */}
       <div className="grid lg:grid-cols-3 gap-4">
-        <div className="glass rounded-2xl p-5 sm:p-6 lg:col-span-2">
+        <div className="relative overflow-hidden rounded-2xl border border-[#3B82F6]/25 p-5 sm:p-6 lg:col-span-2"
+          style={{ background: "linear-gradient(160deg, rgba(59,130,246,0.16) 0%, rgba(59,130,246,0.05) 20%, oklch(0.05 0.008 240) 55%, #000 100%)" }}>
           <div className="flex items-center justify-between mb-4">
             <div>
               <div className="text-sm font-medium">Threat Activity</div>
               <div className="text-[11px] text-muted-foreground mt-0.5">{active ? active.target_url : "sample data"} · last 24 hours</div>
             </div>
-            <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest">
-              <span className="size-1.5 rounded-full bg-zinc-400 animate-pulse" /> Realtime
+            <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-[#7DD3FC]">
+              <span className="size-1.5 rounded-full bg-[#22D3EE] animate-pulse" /> Realtime
             </div>
           </div>
+
           <Chart data={trend} />
           <div className="mt-4 grid grid-cols-3 gap-3 pt-4 border-t border-white/[0.06]">
             {[
