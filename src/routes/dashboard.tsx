@@ -396,7 +396,7 @@ function Overview({
                   <span className="font-mono">{p.v}</span>
                 </div>
                 <div className="mt-1 h-1 rounded-full bg-white/5 overflow-hidden">
-                  <motion.div initial={{ width: 0 }} animate={{ width: `${p.v}%` }} transition={{ duration: 1, ease: "easeOut" }} className="h-full bg-gradient-to-r from-zinc-500 to-zinc-300" />
+                  <motion.div initial={{ width: 0 }} animate={{ width: `${p.v}%` }} transition={{ duration: 1, ease: "easeOut" }} className="h-full bg-gradient-to-r from-[#7C3AED] to-[#38BDF8]" />
                 </div>
               </div>
             ))}
