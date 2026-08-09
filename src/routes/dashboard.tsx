@@ -437,7 +437,30 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
           </ul>
         </div>
       </div>
+
+      {/* Deep report CTA */}
+      <div className="rounded-2xl border border-white/10 bg-black/60 px-6 py-6 sm:px-8 sm:py-7 flex flex-col md:flex-row md:items-center gap-5 md:gap-8">
+        <div className="min-w-0 flex-1">
+          <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
+            <FileText className="size-3" /> Full technical report
+          </div>
+          <h3 className="mt-2 text-base sm:text-lg font-medium text-white">
+            View the full details and vulnerabilities and bugs of your website deeply.
+          </h3>
+          <p className="mt-1.5 text-xs sm:text-[13px] text-muted-foreground max-w-2xl">
+            Every finding with severity, CVSS score, affected asset, reproduction evidence and step-by-step remediation guidance — compiled for {report.demo ? "the demo target" : report.target}.
+          </p>
+        </div>
+        <Link
+          to="/report/$id"
+          params={{ id: report.id }}
+          className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-white text-black hover:bg-white/90 px-5 py-2.5 text-xs sm:text-sm font-medium transition"
+        >
+          View full report <ArrowUpRight className="size-4" />
+        </Link>
+      </div>
     </div>
+
   );
 }
 
