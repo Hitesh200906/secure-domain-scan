@@ -45,6 +45,7 @@ function Dashboard() {
   }, [user]);
 
   useEffect(() => {
+    setTime(new Date());
     const i = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(i);
   }, []);
