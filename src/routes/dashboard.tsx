@@ -181,18 +181,8 @@ function Dashboard() {
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="hidden md:flex items-center gap-2 rounded-full glass px-3.5 py-2 text-xs text-muted-foreground w-64">
-                <Search className="size-3.5" />
-                <input placeholder="Search scan reports…" className="bg-transparent outline-none flex-1 text-white placeholder:text-muted-foreground" />
-              </div>
-              <button className="size-9 rounded-full glass grid place-items-center hover:border-white/20 transition">
-                <Bell className="size-4" />
-              </button>
-              <Link to="/scan/new" search={{ plan: 'professional' as const }} className="rounded-full bg-white text-black px-4 py-2 text-xs font-medium inline-flex items-center gap-1.5 hover:bg-white/85 transition">
-                <ScanSearch className="size-3.5" /> New Scan
-              </Link>
-            </div>
+            <div className="flex items-center gap-2" />
+
           </div>
           {/* Mobile section tabs */}
           <div className="lg:hidden flex gap-2 px-4 pb-3 overflow-x-auto">
