@@ -303,16 +303,18 @@ function Overview({
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {[
-          { label: "Security Score", value: score, suffix: "/100", logo: kpiScoreAsset.url, trend: "+4.2%" },
-          { label: "Issues In Report", value: findings, logo: kpiIssuesAsset.url, trend: active?.status ?? "pending" },
-          { label: "Reports Filed", value: scansCount, logo: kpiReportsAsset.url, trend: "all time" },
-          { label: "Credits Left", value: credits, logo: kpiCreditsAsset.url, trend: "wallet" },
+          { label: "Security Score", value: score, suffix: "/100", logo: kpiScoreAsset.url, trend: "+4.2%", tint: "#3B82F6" },
+          { label: "Issues In Report", value: findings, logo: kpiIssuesAsset.url, trend: active?.status ?? "pending", tint: "#F59E0B" },
+          { label: "Reports Filed", value: scansCount, logo: kpiReportsAsset.url, trend: "all time", tint: "#8B5CF6" },
+          { label: "Credits Left", value: credits, logo: kpiCreditsAsset.url, trend: "wallet", tint: "#10B981" },
         ].map((k, i) => (
           <motion.div key={k.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.05 }}
-            className="glass rounded-2xl p-4 sm:p-5 relative overflow-hidden group hover:border-white/15 transition">
+            className="relative overflow-hidden rounded-2xl border p-4 sm:p-5 group transition"
+            style={{ borderColor: `${k.tint}33`, background: `linear-gradient(150deg, ${k.tint}26 0%, ${k.tint}0D 20%, oklch(0.05 0.008 240) 55%, #000 100%)` }}>
+            <div className="absolute left-0 top-0 h-full w-[3px]" style={{ background: `linear-gradient(180deg, ${k.tint}, transparent)` }} />
             <div className="flex items-start justify-between gap-2">
               <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{k.label}</div>
-              <div className="size-10 shrink-0 rounded-xl grid place-items-center border border-white/10 bg-white/[0.04]">
+              <div className="size-10 shrink-0 rounded-xl grid place-items-center border" style={{ borderColor: `${k.tint}33`, background: `${k.tint}1A` }}>
                 <img src={k.logo} alt="" loading="lazy" width={816} height={816} className="size-7 object-contain" />
               </div>
             </div>
@@ -320,12 +322,13 @@ function Overview({
               <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">{k.value}</div>
               {k.suffix && <div className="text-sm text-muted-foreground">{k.suffix}</div>}
             </div>
-            <div className="mt-2 text-[11px] text-muted-foreground inline-flex items-center gap-1 capitalize">
-              <TrendingUp className="size-3 text-emerald-400" /> {k.trend}
+            <div className="mt-2 text-[11px] inline-flex items-center gap-1 capitalize" style={{ color: k.tint }}>
+              <TrendingUp className="size-3" /> {k.trend}
             </div>
           </motion.div>
         ))}
       </div>
+
 
       {/* Chart + breakdown */}
       <div className="grid lg:grid-cols-3 gap-4">
