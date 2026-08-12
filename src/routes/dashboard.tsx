@@ -131,17 +131,8 @@ function Dashboard() {
           <NavLinks />
         </nav>
         <div className="p-3 space-y-2" style={{ borderTop: `1px solid ${C.border}` }}>
-          <div className="rounded-xl p-4" style={{ background: C.elevated, border: `1px solid ${C.border}` }}>
-            <div className="flex items-center justify-between">
-              <div className="text-[10px] uppercase tracking-[0.18em]" style={{ color: C.sub }}>{profile?.plan ?? "starter"} plan</div>
-              <Zap className="size-3.5" style={{ color: C.blue }} />
-            </div>
-            <div className="text-[15px] mt-1.5 font-semibold tabular-nums">{(profile?.credits ?? 0).toLocaleString()}<span className="text-[11px] font-normal ml-1" style={{ color: C.sub }}>credits</span></div>
-            <div className="mt-2.5 h-1 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.07)" }}>
-              <div className="h-full rounded-full" style={{ width: `${Math.min(100, ((profile?.credits ?? 0) / 15) * 100)}%`, background: `linear-gradient(90deg, ${C.blue}, ${C.cyan})` }} />
-            </div>
-            <Link to="/pricing" className="mt-3 inline-flex items-center gap-1 text-[11px] hover:underline" style={{ color: C.blue }}>Upgrade plan <ArrowRight className="size-3" /></Link>
-          </div>
+          <PlanCard plan={profile?.plan ?? "starter"} credits={profile?.credits ?? 0} />
+
           {user && (
             <button onClick={signOut} className="w-full text-left px-3 py-2 rounded-lg text-xs inline-flex items-center gap-2 transition hover:bg-white/[0.04]" style={{ color: C.sub }}>
               <LogOut className="size-3.5" /> Sign out
@@ -828,6 +819,62 @@ function StatusPill({ status }: { status: string }) {
 }
 
 /* -------------------------------- widgets -------------------------------- */
+
+function PlanCard({ plan, credits }: { plan: string; credits: number }) {
+  const total = 150000;
+  const pct = Math.max(0, Math.min(100, (credits / total) * 100));
+  return (
+    <div className="relative overflow-hidden rounded-2xl p-3.5" style={{ background: "#000", border: "1px solid rgba(255,255,255,0.10)" }}>
+      {/* diagonal sheen shapes */}
+      <div className="pointer-events-none absolute inset-0 opacity-70">
+        <div className="absolute -right-6 -top-10 h-40 w-16 rotate-[35deg] bg-white/[0.045]" />
+        <div className="absolute right-6 -top-14 h-44 w-8 rotate-[35deg] bg-white/[0.03]" />
+        <div className="absolute right-0 top-0 h-full w-[1px] rotate-[35deg] origin-top" style={{ background: "linear-gradient(180deg,transparent,rgba(34,211,238,0.5),transparent)" }} />
+      </div>
+
+      <div className="relative flex items-center justify-between gap-2">
+        <div className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1" style={{ border: "1px solid rgba(255,255,255,0.14)" }}>
+          <Zap className="size-3" style={{ color: C.cyan }} />
+          <span className="text-[8.5px] uppercase tracking-[0.22em] font-medium">{plan} plan</span>
+        </div>
+        <div className="inline-flex items-center gap-1.5 rounded-full px-2 py-1" style={{ border: "1px solid rgba(255,255,255,0.14)" }}>
+          <span className="relative flex size-1.5">
+            <span className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping" style={{ background: C.cyan }} />
+            <span className="relative inline-flex size-1.5 rounded-full" style={{ background: C.cyan }} />
+          </span>
+          <span className="text-[9px]">Active</span>
+        </div>
+      </div>
+
+      <div className="relative mt-3">
+        <div className="text-[9px] uppercase tracking-[0.2em]" style={{ color: C.sub }}>Credits left</div>
+        <div className="mt-0.5 text-[26px] leading-none font-bold tabular-nums tracking-tight">{credits.toLocaleString()}</div>
+        <div className="mt-1 text-[10px]" style={{ color: C.sub }}>out of <span className="text-white font-medium">{total.toLocaleString()}</span> total</div>
+      </div>
+
+      <div className="relative mt-3 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.12)" }}>
+        <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1.1, ease: "easeOut" }}
+          className="h-full rounded-full" style={{ background: C.cyan }} />
+      </div>
+      <div className="relative mt-1.5 flex items-center justify-between text-[9.5px]">
+        <span style={{ color: C.cyan }}>{Math.round(pct)}% remaining</span>
+        <span style={{ color: C.sub }}>{total.toLocaleString()} total</span>
+      </div>
+
+      <Link to="/pricing" className="relative mt-3 flex items-center gap-2.5 rounded-xl px-2.5 py-2.5 transition hover:bg-white/[0.03]" style={{ border: "1px solid rgba(255,255,255,0.10)" }}>
+        <span className="grid place-items-center size-8 shrink-0 rounded-full" style={{ border: "1px solid rgba(255,255,255,0.14)" }}>
+          <TrendingUp className="size-3.5" style={{ color: C.cyan }} />
+        </span>
+        <span className="min-w-0">
+          <span className="block text-[11px] font-semibold leading-tight">Upgrade plan</span>
+          <span className="block text-[9.5px] leading-tight" style={{ color: C.sub }}>Unlock more credits</span>
+        </span>
+        <ArrowRight className="ml-auto size-3.5 shrink-0" style={{ color: C.cyan }} />
+      </Link>
+    </div>
+  );
+}
+
 const navItemBase =
   "group relative w-full flex items-center gap-2.5 overflow-hidden rounded-xl border px-3 py-1.5 text-left transition hover:border-white/25 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]";
 const navItemActive = "border-white/25 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]";
