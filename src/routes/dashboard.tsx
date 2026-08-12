@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Activity, AlertTriangle, BarChart3, Bell, CheckCircle2, Clock,
+  Activity, AlertTriangle, Bell, CheckCircle2, Clock,
   CreditCard, Globe2, LayoutDashboard, LogOut, ScanSearch, Settings,
-  Shield, ShieldAlert, TrendingUp, User as UserIcon,
-  Zap, ArrowUpRight, Search, Wifi, FileText, Eye, Menu, X, UploadCloud,
-  Building2, Mail, BadgeCheck,
+  Shield, TrendingUp, User as UserIcon,
+  Zap, ArrowUpRight, ArrowRight, Search, Radar, FileText, Menu, X, UploadCloud,
+  Building2, Mail, BadgeCheck, Plus, Server,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -33,7 +33,26 @@ import {
   type Scan, type ReportModel, ACTIVE_KEY, buildReport, DEMO_REPORT, scoreColor,
 } from "@/lib/report-model";
 
+/* ------------------------------ design tokens ----------------------------- */
+const C = {
+  base: "#07090D",
+  surface: "#0B0F16",
+  elevated: "#101620",
+  border: "#1B2430",
+  text: "#F5F7FA",
+  sub: "#8B98A8",
+  muted: "#596575",
+  blue: "#3B82F6",
+  cyan: "#22D3EE",
+};
 
+const SEV = {
+  Critical: "#EF4444",
+  High: "#F97316",
+  Medium: "#EAB308",
+  Low: "#60A5FA",
+};
+const OK = "#22C55E";
 
 /* --------------------------------- page --------------------------------- */
 function Dashboard() {
@@ -81,11 +100,11 @@ function Dashboard() {
 
   const NavLinks = ({ onNav }: { onNav?: () => void }) => (
     <>
-      <div className="px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">Workspace</div>
+      <div className="px-3 py-2 text-[10px] uppercase tracking-[0.2em]" style={{ color: C.muted }}>Workspace</div>
       <SidebarButton icon={LayoutDashboard} label="Overview" active={view === "overview"} onClick={() => { setView("overview"); onNav?.(); }} />
       <SidebarButton icon={FileText} label="Scan Reports" active={view === "reports"} badge={scans.length ? String(scans.length) : undefined} onClick={() => { setView("reports"); onNav?.(); }} />
       <SidebarLink to="/scan/new" icon={ScanSearch} label="New Scan" onClick={onNav} />
-      <div className="px-3 pt-5 pb-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">Account</div>
+      <div className="px-3 pt-5 pb-2 text-[10px] uppercase tracking-[0.2em]" style={{ color: C.muted }}>Account</div>
       <SidebarLink to="/profile" icon={UserIcon} label="Profile" onClick={onNav} />
       <SidebarLink to="/profile" search={{ tab: "credits" }} icon={CreditCard} label="Billing" onClick={onNav} />
       <SidebarLink to="/contact" icon={Settings} label="Support" onClick={onNav} />
@@ -93,39 +112,38 @@ function Dashboard() {
   );
 
   return (
-    <div className="h-screen flex bg-background relative overflow-hidden">
-      {/* Ambient background */}
+    <div className="h-screen flex relative overflow-hidden" style={{ background: C.base, color: C.text }}>
+      {/* Ambient control-room background */}
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute top-0 -left-40 size-[600px] rounded-full bg-[oklch(0.86_0.16_200_/0.08)] blur-[120px] animate-aurora-1" />
-        <div className="absolute bottom-0 -right-40 size-[600px] rounded-full bg-[oklch(0.75_0.13_180_/0.08)] blur-[120px] animate-aurora-2" />
-        <div className="absolute inset-0 grid-bg opacity-30 animate-grid-pan" />
+        <div className="absolute inset-0" style={{ background: `radial-gradient(1200px 620px at 22% -10%, rgba(59,130,246,0.10), transparent 60%), radial-gradient(900px 520px at 100% 8%, rgba(34,211,238,0.055), transparent 62%)` }} />
+        <div className="absolute inset-0 opacity-[0.035]" style={{ backgroundImage: "linear-gradient(to right,#8fb7ff 1px,transparent 1px),linear-gradient(to bottom,#8fb7ff 1px,transparent 1px)", backgroundSize: "64px 64px", maskImage: "radial-gradient(ellipse at 40% 0%, black 20%, transparent 75%)" }} />
       </div>
 
       {/* Static sidebar */}
-      <aside className="hidden lg:flex w-64 shrink-0 h-screen flex-col border-r border-white/[0.06] bg-[oklch(0.04_0.008_220)]/80 backdrop-blur-xl">
-        <div className="px-6 py-5 border-b border-white/[0.06]">
-          <Link to="/" className="flex items-center gap-2">
+      <aside className="hidden lg:flex w-[248px] shrink-0 h-screen flex-col" style={{ borderRight: `1px solid ${C.border}`, background: "rgba(11,15,22,0.6)", backdropFilter: "blur(14px)" }}>
+        <div className="px-5 py-5" style={{ borderBottom: `1px solid ${C.border}` }}>
+          <Link to="/" className="flex items-center gap-2.5">
             <img src={nexusLogo} alt="Nexefy" className="size-6 object-contain" />
-            <span className="text-[13px] font-semibold tracking-[0.2em]">NEXEFY<span className="text-muted-foreground ml-1.5">SEC</span></span>
+            <span className="text-[12px] font-semibold tracking-[0.24em]">NEXEFY<span className="ml-1.5" style={{ color: C.muted }}>SEC</span></span>
           </Link>
         </div>
         <nav className="flex-1 p-3 space-y-0.5 overflow-hidden">
           <NavLinks />
         </nav>
-        <div className="p-3 border-t border-white/[0.06] space-y-2">
-          <div className="glass rounded-2xl p-4 relative overflow-hidden">
-            <div className="absolute inset-0 animate-shimmer opacity-40" />
-            <div className="relative">
-              <div className="text-[10px] uppercase tracking-widest text-primary">{profile?.plan ?? "starter"} Plan</div>
-              <div className="text-sm mt-1.5 font-medium">{profile?.credits ?? 0} credits left</div>
-              <div className="mt-2.5 h-1 rounded-full bg-white/10 overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-primary to-secondary" style={{ width: `${Math.min(100, ((profile?.credits ?? 0) / 15) * 100)}%` }} />
-              </div>
-              <Link to="/pricing" className="mt-3 block text-[11px] text-primary hover:underline">Upgrade plan →</Link>
+        <div className="p-3 space-y-2" style={{ borderTop: `1px solid ${C.border}` }}>
+          <div className="rounded-xl p-4" style={{ background: C.elevated, border: `1px solid ${C.border}` }}>
+            <div className="flex items-center justify-between">
+              <div className="text-[10px] uppercase tracking-[0.18em]" style={{ color: C.sub }}>{profile?.plan ?? "starter"} plan</div>
+              <Zap className="size-3.5" style={{ color: C.blue }} />
             </div>
+            <div className="text-[15px] mt-1.5 font-semibold tabular-nums">{(profile?.credits ?? 0).toLocaleString()}<span className="text-[11px] font-normal ml-1" style={{ color: C.sub }}>credits</span></div>
+            <div className="mt-2.5 h-1 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.07)" }}>
+              <div className="h-full rounded-full" style={{ width: `${Math.min(100, ((profile?.credits ?? 0) / 15) * 100)}%`, background: `linear-gradient(90deg, ${C.blue}, ${C.cyan})` }} />
+            </div>
+            <Link to="/pricing" className="mt-3 inline-flex items-center gap-1 text-[11px] hover:underline" style={{ color: C.blue }}>Upgrade plan <ArrowRight className="size-3" /></Link>
           </div>
           {user && (
-            <button onClick={signOut} className="w-full text-left px-3 py-2 rounded-xl text-xs text-muted-foreground hover:text-white hover:bg-white/[0.03] inline-flex items-center gap-2">
+            <button onClick={signOut} className="w-full text-left px-3 py-2 rounded-lg text-xs inline-flex items-center gap-2 transition hover:bg-white/[0.04]" style={{ color: C.sub }}>
               <LogOut className="size-3.5" /> Sign out
             </button>
           )}
@@ -134,68 +152,58 @@ function Dashboard() {
 
       {/* Scrollable content */}
       <div className="flex-1 min-w-0 h-screen overflow-y-auto relative">
-        <header className="sticky top-0 z-20 backdrop-blur-xl bg-background/80 border-b border-white/[0.07]">
-          <div className="flex items-center justify-between px-4 sm:px-6 py-3 gap-3">
+        <header className="sticky top-0 z-20" style={{ background: "rgba(7,9,13,0.82)", backdropFilter: "blur(16px)", borderBottom: `1px solid ${C.border}` }}>
+          <div className="flex items-center justify-between px-4 sm:px-7 py-3.5 gap-3">
             <div className="flex items-center gap-3 min-w-0">
-              <button onClick={() => setMobileNav(true)} className="lg:hidden size-9 shrink-0 rounded-lg border border-white/10 grid place-items-center hover:bg-white/[0.05] transition" aria-label="Open menu">
+              <button onClick={() => setMobileNav(true)} className="lg:hidden size-9 shrink-0 rounded-lg grid place-items-center transition hover:bg-white/[0.05]" style={{ border: `1px solid ${C.border}` }} aria-label="Open menu">
                 <Menu className="size-4" />
               </button>
               <div className="min-w-0">
-                <h1 className="text-[15px] font-semibold tracking-tight truncate">{view === "reports" ? "Scan Reports" : "Overview"}</h1>
-                <p className="text-[11px] text-muted-foreground truncate">
+                <h1 className="text-[17px] font-semibold tracking-[-0.01em] truncate">{view === "reports" ? "Scan Reports" : "Overview"}</h1>
+                <p className="text-[11.5px] truncate" style={{ color: C.sub }}>
                   {view === "reports" ? "Submitted scans and their reports" : "Security posture across your monitored assets"}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="hidden xl:flex items-center gap-1.5 text-[11px] text-muted-foreground border border-white/[0.08] rounded-lg px-2.5 py-1.5">
-                <span className="size-1.5 rounded-full bg-emerald-500" />
+              <div className="hidden xl:flex items-center gap-2 text-[11px] rounded-lg px-3 py-1.5" style={{ border: `1px solid ${C.border}`, color: C.sub }}>
+                <span className="relative flex size-1.5">
+                  <span className="absolute inline-flex h-full w-full rounded-full animate-ping" style={{ background: OK, opacity: 0.5 }} />
+                  <span className="relative inline-flex size-1.5 rounded-full" style={{ background: OK }} />
+                </span>
                 All systems operational
-                <span className="text-muted-foreground/60 font-mono">{mounted && time ? time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : ""}</span>
+                <span className="font-mono tabular-nums" style={{ color: C.muted }}>{mounted && time ? time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : ""}</span>
               </div>
-              <div className="hidden md:flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-1.5 text-xs text-muted-foreground w-56 lg:w-64">
+              <div className="hidden md:flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs w-52 lg:w-64" style={{ border: `1px solid ${C.border}`, background: "rgba(255,255,255,0.02)", color: C.sub }}>
                 <Search className="size-3.5" />
-                <input placeholder="Search…" className="bg-transparent outline-none flex-1 min-w-0 text-white placeholder:text-muted-foreground" />
-                <kbd className="text-[10px] text-muted-foreground/60 border border-white/10 rounded px-1 py-0.5">⌘K</kbd>
+                <input placeholder="Search assets, findings…" className="bg-transparent outline-none flex-1 min-w-0 text-white placeholder:text-[#596575]" />
+                <kbd className="text-[10px] rounded px-1 py-0.5" style={{ border: `1px solid ${C.border}`, color: C.muted }}>⌘K</kbd>
               </div>
-              <button className="size-9 rounded-lg border border-white/[0.08] grid place-items-center hover:bg-white/[0.05] transition" aria-label="Notifications">
+              <button className="size-9 rounded-lg grid place-items-center transition hover:bg-white/[0.05]" style={{ border: `1px solid ${C.border}` }} aria-label="Notifications">
                 <Bell className="size-4" />
               </button>
-              <Link to="/profile" search={{ tab: "general" }} className="hidden sm:grid size-9 rounded-lg border border-white/[0.08] place-items-center hover:bg-white/[0.05] transition" aria-label="Profile">
+              <Link to="/profile" search={{ tab: "general" }} className="hidden sm:grid size-9 rounded-lg place-items-center transition hover:bg-white/[0.05]" style={{ border: `1px solid ${C.border}` }} aria-label="Profile">
                 <UserIcon className="size-4" />
-              </Link>
-              <Link to="/scan/new" search={{ plan: "professional" as const }} className="rounded-lg bg-white text-black px-3 sm:px-4 py-2 text-xs font-medium inline-flex items-center gap-1.5 hover:bg-white/90 transition">
-                <ScanSearch className="size-3.5" /> <span className="hidden xs:inline">New Scan</span>
               </Link>
             </div>
           </div>
-          {view === "overview" && (
-            <div className="px-4 sm:px-6 pb-3 flex flex-wrap items-center gap-2.5">
-              <span className="text-[13px] text-white/90">
-                {greeting()}{profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : user ? "" : ""}
-              </span>
-              <span className="text-[11px] text-muted-foreground">Security overview for your workspace.</span>
-              <RoleBadge role={role} size="md" />
-            </div>
-          )}
         </header>
-
 
         {view === "reports" ? (
           <ReportsSection scans={scans} activeId={activeId} onUpload={uploadReport} mounted={mounted} />
         ) : (
-          <Overview report={report} profile={profile} scans={scans} mounted={mounted} onOpenReports={() => setView("reports")} />
+          <Overview report={report} profile={profile} scans={scans} mounted={mounted} onOpenReports={() => setView("reports")} role={role} name={profile?.full_name ?? null} />
         )}
       </div>
 
       {/* Mobile nav drawer */}
       <div onClick={() => setMobileNav(false)}
-        className={`lg:hidden fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm transition-opacity ${mobileNav ? "opacity-100" : "opacity-0 pointer-events-none"}`} />
-      <aside className={`lg:hidden fixed left-0 top-0 z-[70] h-full w-72 bg-[oklch(0.04_0.008_220)] border-r border-white/10 shadow-2xl flex flex-col transition-transform duration-300 ${mobileNav ? "translate-x-0" : "-translate-x-full"}`}>
-        <div className="px-5 py-4 border-b border-white/[0.06] flex items-center justify-between">
+        className={`lg:hidden fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm transition-opacity ${mobileNav ? "opacity-100" : "opacity-0 pointer-events-none"}`} />
+      <aside className={`lg:hidden fixed left-0 top-0 z-[70] h-full w-72 shadow-2xl flex flex-col transition-transform duration-300 ${mobileNav ? "translate-x-0" : "-translate-x-full"}`} style={{ background: C.surface, borderRight: `1px solid ${C.border}` }}>
+        <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: `1px solid ${C.border}` }}>
           <Link to="/" onClick={() => setMobileNav(false)} className="flex items-center gap-2.5">
             <img src={nexusLogo} alt="Nexefy" className="size-5 object-contain" />
-            <span className="text-[13px] font-semibold tracking-[0.2em]">NEXEFY<span className="text-muted-foreground ml-1.5">SEC</span></span>
+            <span className="text-[12px] font-semibold tracking-[0.24em]">NEXEFY<span className="ml-1.5" style={{ color: C.muted }}>SEC</span></span>
           </Link>
           <button onClick={() => setMobileNav(false)} className="size-8 grid place-items-center rounded-full hover:bg-white/10 transition" aria-label="Close">
             <X className="size-4" />
@@ -205,8 +213,8 @@ function Dashboard() {
           <NavLinks onNav={() => setMobileNav(false)} />
         </nav>
         {user && (
-          <div className="p-3 border-t border-white/[0.06]">
-            <button onClick={signOut} className="w-full text-left px-3 py-2 rounded-xl text-xs text-muted-foreground hover:text-white hover:bg-white/[0.03] inline-flex items-center gap-2">
+          <div className="p-3" style={{ borderTop: `1px solid ${C.border}` }}>
+            <button onClick={signOut} className="w-full text-left px-3 py-2 rounded-lg text-xs inline-flex items-center gap-2 hover:bg-white/[0.04]" style={{ color: C.sub }}>
               <LogOut className="size-3.5" /> Sign out
             </button>
           </div>
@@ -221,17 +229,20 @@ function greeting() {
   return h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
 }
 
-/* -------------------------------- overview -------------------------------- */
-const SEV = {
-  Critical: "#d64545",
-  High: "#d18b2c",
-  Medium: "#c2ae3a",
-  Low: "#6b8cae",
-};
-
-function Panel({ className = "", children }: { className?: string; children: React.ReactNode }) {
+/* -------------------------------- primitives ------------------------------ */
+function Panel({ className = "", children, glow = false }: { className?: string; children: React.ReactNode; glow?: boolean }) {
   return (
-    <section className={`rounded-xl border border-white/[0.07] bg-[oklch(0.055_0.006_240)] transition-colors hover:border-white/[0.12] ${className}`}>
+    <section
+      className={`group relative rounded-2xl transition-all duration-200 hover:-translate-y-px ${className}`}
+      style={{
+        border: `1px solid ${C.border}`,
+        background: `linear-gradient(180deg, ${C.elevated} 0%, ${C.surface} 62%, #090C12 100%)`,
+        boxShadow: "0 1px 0 0 rgba(255,255,255,0.03) inset, 0 18px 40px -28px rgba(0,0,0,0.9)",
+      }}
+    >
+      {glow && (
+        <div className="pointer-events-none absolute inset-x-6 -top-px h-px" style={{ background: `linear-gradient(90deg, transparent, ${C.blue}66, transparent)` }} />
+      )}
       {children}
     </section>
   );
@@ -239,18 +250,59 @@ function Panel({ className = "", children }: { className?: string; children: Rea
 
 function PanelHead({ title, sub, right }: { title: string; sub?: string; right?: React.ReactNode }) {
   return (
-    <div className="flex items-start justify-between gap-3 px-5 py-4 border-b border-white/[0.06]">
+    <div className="flex items-start justify-between gap-3 px-5 py-4" style={{ borderBottom: `1px solid ${C.border}` }}>
       <div className="min-w-0">
-        <h2 className="text-[13px] font-semibold tracking-tight text-white">{title}</h2>
-        {sub && <p className="text-[11px] text-muted-foreground mt-0.5 truncate">{sub}</p>}
+        <h2 className="text-[13px] font-semibold tracking-tight">{title}</h2>
+        {sub && <p className="text-[11px] mt-0.5 truncate" style={{ color: C.sub }}>{sub}</p>}
       </div>
       {right && <div className="shrink-0">{right}</div>}
     </div>
   );
 }
 
-function Overview({ report, profile, scans, mounted, onOpenReports }: {
-  report: ReportModel; profile: { plan: string; credits: number } | null; scans: Scan[]; mounted: boolean; onOpenReports: () => void;
+function LivePill({ label = "Live" }: { label?: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 text-[9.5px] uppercase tracking-[0.18em] rounded-md px-2 py-1"
+      style={{ border: `1px solid ${C.cyan}33`, color: C.cyan, background: "rgba(34,211,238,0.06)" }}>
+      {label}
+      <span className="relative flex size-1.5">
+        <span className="absolute inline-flex h-full w-full rounded-full animate-ping" style={{ background: C.cyan, opacity: 0.55 }} />
+        <span className="relative inline-flex size-1.5 rounded-full" style={{ background: C.cyan }} />
+      </span>
+    </span>
+  );
+}
+
+function useCountUp(target: number, duration = 900) {
+  const [v, setV] = useState(0);
+  const ref = useRef(0);
+  useEffect(() => {
+    let raf = 0;
+    const start = performance.now();
+    const from = ref.current;
+    const tick = (t: number) => {
+      const p = Math.min(1, (t - start) / duration);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const val = from + (target - from) * eased;
+      ref.current = val;
+      setV(val);
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, duration]);
+  return v;
+}
+
+function CountNumber({ value, className = "", style }: { value: number; className?: string; style?: React.CSSProperties }) {
+  const v = useCountUp(value);
+  return <span className={`tabular-nums ${className}`} style={style}>{Math.round(v).toLocaleString()}</span>;
+}
+
+/* -------------------------------- overview -------------------------------- */
+function Overview({ report, profile, scans, mounted, onOpenReports, role, name }: {
+  report: ReportModel; profile: { plan: string; credits: number } | null; scans: Scan[]; mounted: boolean;
+  onOpenReports: () => void; role: string | null | undefined; name: string | null;
 }) {
   const risk = [
     { label: "Critical", val: Math.max(1, Math.floor(report.findings * 0.08)), color: SEV.Critical },
@@ -264,131 +316,171 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
   const blocked = report.findings * 52;
   const investigating = Math.max(1, Math.floor(report.findings * 0.4));
   const critical = Math.max(1, Math.floor(report.findings * 0.08));
-
-  const kpis = [
-    {
-      label: "Security Score", value: `${report.score}`, suffix: "/100", icon: Shield,
-      note: "Risk-weighted across monitored assets", color: scoreColor(report.score),
-      tag: report.score >= 80 ? "Strong" : report.score >= 40 ? "Good" : "At risk",
-    },
-    { label: "Open Findings", value: `${report.findings}`, icon: AlertTriangle, note: "Across monitored assets", color: "#ffffff", tag: report.status },
-    { label: "Assets Monitored", value: `${scans.length || 1}`, icon: Globe2, note: `${scans.length} scans this month`, color: "#ffffff", tag: null },
-    { label: "Credits Left", value: (profile?.credits ?? 0).toLocaleString(), icon: Zap, note: `${profile?.plan ?? "starter"} plan`, color: "#ffffff", tag: null },
-  ];
+  const weakest = [...report.posture].sort((a, b) => a.value - b.value)[0];
+  const sc = scoreColor(report.score);
+  const scoreLabel = report.score >= 80 ? "Strong" : report.score >= 40 ? "Good" : "At risk";
 
   return (
-    <div className="p-4 sm:p-6 space-y-5 max-w-[1600px]">
-      {/* Welcome / demo banner */}
-      {report.demo ? (
-        <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 sm:px-5 py-3.5 flex flex-col sm:flex-row sm:items-center gap-3">
+    <div className="px-4 sm:px-7 py-5 sm:py-6 space-y-5 max-w-[1560px]">
+      {/* Hero / welcome */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h2 className="text-[22px] sm:text-[26px] font-semibold tracking-[-0.02em]">
+              {greeting()}{name ? `, ${name.split(" ")[0]}` : ""}
+            </h2>
+            <RoleBadge role={role as never} size="md" />
+          </div>
+          <p className="mt-1.5 text-[12.5px]" style={{ color: C.sub }}>
+            {report.score >= 70
+              ? "Your security environment is looking healthy."
+              : "Some areas of your environment need attention."}
+          </p>
+        </div>
+        <Link
+          to="/scan/new" search={{ plan: "professional" as const }}
+          className="group shrink-0 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-medium text-white transition-all hover:-translate-y-px"
+          style={{ background: `linear-gradient(180deg, #4C8DF8, ${C.blue})`, boxShadow: `0 1px 0 0 rgba(255,255,255,0.22) inset, 0 10px 24px -14px ${C.blue}` }}
+        >
+          <Plus className="size-4" /> New Scan
+        </Link>
+      </div>
+
+      {/* Demo banner */}
+      {report.demo && (
+        <div className="rounded-xl px-4 sm:px-5 py-3.5 flex flex-col sm:flex-row sm:items-center gap-3"
+          style={{ border: `1px solid ${C.border}`, background: "linear-gradient(90deg, rgba(59,130,246,0.06), transparent 70%)" }}>
           <div className="flex items-start gap-3 min-w-0 flex-1">
-            <div className="size-8 shrink-0 rounded-lg grid place-items-center border border-white/[0.08] bg-white/[0.03]">
-              <FileText className="size-3.5 text-muted-foreground" />
+            <div className="size-8 shrink-0 rounded-lg grid place-items-center" style={{ border: `1px solid ${C.border}`, background: C.elevated }}>
+              <FileText className="size-3.5" style={{ color: C.blue }} />
             </div>
             <div className="min-w-0">
-              <div className="text-[12px] font-medium text-white">Demo environment</div>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                You're currently viewing sample security data. Run your first scan to populate the dashboard with real findings.
+              <div className="text-[12px] font-medium">Demo environment</div>
+              <p className="text-[11.5px] mt-0.5" style={{ color: C.sub }}>
+                You're currently viewing sample security data. Run a scan to populate your dashboard with real findings.
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <button onClick={onOpenReports} className="rounded-lg border border-white/10 hover:bg-white/[0.05] px-3 py-1.5 text-[11px] font-medium transition">Manage reports</button>
-            <Link to="/scan/new" search={{ plan: "professional" as const }} className="rounded-lg bg-white text-black hover:bg-white/90 px-3 py-1.5 text-[11px] font-medium transition">Run First Scan</Link>
-          </div>
-        </div>
-      ) : (
-        <div className="rounded-xl border border-white/[0.07] bg-white/[0.015] px-4 sm:px-5 py-3.5 flex flex-wrap items-center justify-between gap-3">
-          <div className="min-w-0">
-            <div className="text-[12px] font-medium text-white truncate">Active report · {report.target}</div>
-            <div className="text-[11px] text-muted-foreground truncate">
-              {report.requester.company} · {report.plan} plan{mounted ? ` · ${new Date(report.createdAt).toLocaleDateString()}` : ""}
-            </div>
-          </div>
-          <button onClick={onOpenReports} className="rounded-lg border border-white/10 hover:bg-white/[0.05] px-3 py-1.5 text-[11px] font-medium transition inline-flex items-center gap-1.5">
-            <FileText className="size-3.5" /> Manage reports
-          </button>
+          <Link to="/scan/new" search={{ plan: "professional" as const }}
+            className="shrink-0 inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-[11.5px] font-medium transition hover:bg-white/[0.05]"
+            style={{ border: `1px solid ${C.border}`, color: C.text }}>
+            Run First Scan <ArrowRight className="size-3.5" />
+          </Link>
         </div>
       )}
 
       {/* KPI row */}
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
-        {kpis.map((k, i) => (
-          <motion.div key={k.label} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: i * 0.04 }}
-            className="rounded-xl border border-white/[0.07] bg-[oklch(0.055_0.006_240)] p-4 sm:p-5 transition-colors hover:border-white/[0.13]">
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground truncate">{k.label}</span>
-              <k.icon className="size-3.5 text-muted-foreground/50 shrink-0" />
-            </div>
-            <div className="mt-3 flex items-end justify-between gap-3">
-              <div className="flex items-baseline gap-1 min-w-0">
-                <span className="text-2xl sm:text-3xl font-semibold tracking-tight tabular-nums truncate" style={{ color: k.color }}>{k.value}</span>
-                {k.suffix && <span className="text-xs text-muted-foreground">{k.suffix}</span>}
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3.5">
+        {/* Security score */}
+        <KpiCard label="Security Score" icon={Shield} accent={sc} glow>
+          <div className="flex items-center gap-4">
+            <ScoreRing value={report.score} size={78} stroke={8} compact />
+            <div className="min-w-0">
+              <div className="flex items-baseline gap-1">
+                <CountNumber value={report.score} className="text-[30px] leading-none font-semibold" style={{ color: sc }} />
+                <span className="text-[12px]" style={{ color: C.muted }}>/100</span>
               </div>
-              {k.label === "Security Score" && (
-                <div className="hidden sm:block shrink-0"><ScoreRing value={report.score} size={52} /></div>
-              )}
+              <span className="mt-2 inline-flex text-[10px] uppercase tracking-[0.14em] rounded px-1.5 py-0.5"
+                style={{ color: sc, border: `1px solid ${sc}44`, background: `${sc}12` }}>{scoreLabel}</span>
             </div>
-            <div className="mt-2.5 flex items-center gap-2">
-              {k.tag && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded border border-white/10 text-white/70 capitalize shrink-0">{k.tag}</span>
-              )}
-              <span className="text-[10px] text-muted-foreground truncate">{k.note}</span>
-            </div>
-          </motion.div>
-        ))}
+          </div>
+          <p className="mt-3 text-[10.5px]" style={{ color: C.muted }}>Risk-weighted across monitored assets</p>
+        </KpiCard>
+
+        {/* Open findings */}
+        <KpiCard label="Open Findings" icon={AlertTriangle} accent={SEV.High}>
+          <CountNumber value={report.findings} className="text-[30px] leading-none font-semibold" />
+          <div className="mt-3 flex h-1.5 w-full overflow-hidden rounded-full" style={{ background: "rgba(255,255,255,0.05)" }}>
+            {risk.map((r, i) => (
+              <motion.div key={r.label} initial={{ width: 0 }} animate={{ width: `${(r.val / riskTotal) * 100}%` }}
+                transition={{ duration: 0.7, delay: 0.1 + i * 0.06, ease: "easeOut" }} style={{ background: r.color }} />
+            ))}
+          </div>
+          <p className="mt-2 text-[10.5px]" style={{ color: C.muted }}>Open vulnerabilities across assets</p>
+        </KpiCard>
+
+        {/* Assets */}
+        <KpiCard label="Assets Monitored" icon={Server} accent={C.cyan}>
+          <CountNumber value={scans.length || 1} className="text-[30px] leading-none font-semibold" />
+          <div className="mt-3 flex items-end gap-[3px] h-6">
+            {Array.from({ length: 18 }).map((_, i) => (
+              <motion.span key={i} initial={{ height: 2 }} animate={{ height: 4 + ((i * 7) % 5) * 4 }}
+                transition={{ duration: 0.5, delay: i * 0.02 }}
+                className="w-full rounded-[1px]"
+                style={{ background: i % 3 === 0 ? `${C.cyan}88` : "rgba(255,255,255,0.10)" }} />
+            ))}
+          </div>
+          <p className="mt-2 text-[10.5px]" style={{ color: C.muted }}>Protected assets · {scans.length} scans</p>
+        </KpiCard>
+
+        {/* Credits */}
+        <KpiCard label="Credits" icon={Zap} accent={C.blue}>
+          <CountNumber value={profile?.credits ?? 0} className="text-[30px] leading-none font-semibold" />
+          <div className="mt-3 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.05)" }}>
+            <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(100, ((profile?.credits ?? 0) / 200) * 100)}%` }}
+              transition={{ duration: 0.8, ease: "easeOut" }} className="h-full" style={{ background: `linear-gradient(90deg, ${C.blue}, ${C.cyan})` }} />
+          </div>
+          <p className="mt-2 text-[10.5px] capitalize" style={{ color: C.muted }}>Credits remaining · {profile?.plan ?? "starter"} plan</p>
+        </KpiCard>
       </div>
 
       {/* Posture + risk distribution */}
-      <div className="grid lg:grid-cols-3 gap-4">
-        <Panel className="lg:col-span-2">
-          <PanelHead title="Overall Security Posture" sub="Risk-weighted across monitored assets" />
+      <div className="grid lg:grid-cols-5 gap-3.5">
+        <Panel className="lg:col-span-3" glow>
+          <PanelHead
+            title="Overall Security Posture"
+            sub="Risk-weighted across monitored assets"
+            right={<span className="text-[11px] font-mono tabular-nums" style={{ color: sc }}>{report.score} / 100</span>}
+          />
           <div className="p-5 grid sm:grid-cols-[auto_1fr] gap-6 items-center">
-            <div className="flex items-center gap-4">
-              <ScoreRing value={report.score} size={124} />
-              <div className="sm:hidden">
-                <div className="text-lg font-semibold" style={{ color: scoreColor(report.score) }}>{report.score}/100</div>
-              </div>
-            </div>
+            <div className="mx-auto sm:mx-0"><ScoreRing value={report.score} size={132} stroke={9} /></div>
             <div className="space-y-4">
-              {report.posture.map((p, i) => (
-                <div key={p.label}>
-                  <div className="flex items-baseline justify-between text-[11px]">
-                    <span className="text-muted-foreground">{p.label}</span>
-                    <span className="font-mono tabular-nums text-white/90">{p.value}</span>
+              {report.posture.map((p, i) => {
+                const isWeak = weakest && p.label === weakest.label;
+                const col = i === 0 ? C.blue : i === 1 ? "#4F7FE8" : C.cyan;
+                return (
+                  <div key={p.label}>
+                    <div className="flex items-baseline justify-between text-[11.5px]">
+                      <span className="inline-flex items-center gap-2" style={{ color: C.sub }}>
+                        {p.label}
+                        {isWeak && <span className="text-[9px] uppercase tracking-[0.14em] rounded px-1.5 py-0.5" style={{ color: SEV.Medium, border: `1px solid ${SEV.Medium}33` }}>Focus</span>}
+                      </span>
+                      <span className="font-mono tabular-nums">{p.value}</span>
+                    </div>
+                    <div className="mt-1.5 h-[7px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.05)" }}>
+                      <motion.div initial={{ width: 0 }} animate={{ width: `${p.value}%` }} transition={{ duration: 0.9, delay: i * 0.08, ease: "easeOut" }}
+                        className="h-full rounded-full" style={{ background: `linear-gradient(90deg, ${col}, ${col}bb)` }} />
+                    </div>
                   </div>
-                  <div className="mt-1.5 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
-                    <motion.div initial={{ width: 0 }} animate={{ width: `${p.value}%` }} transition={{ duration: 0.8, delay: i * 0.08, ease: "easeOut" }}
-                      className="h-full rounded-full" style={{ background: p.color }} />
-                  </div>
-                </div>
-              ))}
-              <p className="text-[11px] text-muted-foreground pt-1">
-                Weakest area: <span className="text-white/85">{[...report.posture].sort((a, b) => a.value - b.value)[0]?.label}</span>
+                );
+              })}
+              <p className="text-[11px] pt-1" style={{ color: C.muted }}>
+                Weakest area: <span style={{ color: C.text }}>{weakest?.label}</span> — prioritise remediation here first.
               </p>
             </div>
           </div>
         </Panel>
 
-        <Panel>
-          <PanelHead title="Risk Distribution" sub={`${riskTotal} findings by severity`} right={<BarChart3 className="size-4 text-muted-foreground/60" />} />
-          <div className="p-5">
-            <div className="flex h-2 w-full overflow-hidden rounded-full bg-white/[0.05]">
-              {risk.map((r, i) => (
-                <motion.div key={r.label} initial={{ width: 0 }} animate={{ width: `${(r.val / riskTotal) * 100}%` }}
-                  transition={{ duration: 0.7, delay: i * 0.06, ease: "easeOut" }} style={{ background: r.color }} className="h-full" />
-              ))}
+        <Panel className="lg:col-span-2">
+          <PanelHead title="Risk Distribution" sub={`${riskTotal} findings by severity`} />
+          <div className="p-5 flex flex-col sm:flex-row items-center gap-5">
+            <Donut segments={risk} total={riskTotal} />
+            <div className="flex-1 w-full min-w-0">
+              <ul className="grid grid-cols-2 sm:grid-cols-1 gap-x-4 gap-y-2.5">
+                {risk.map((r) => (
+                  <li key={r.label} className="flex items-center justify-between text-[11.5px]">
+                    <span className="inline-flex items-center gap-2" style={{ color: C.sub }}>
+                      <span className="size-1.5 rounded-full" style={{ background: r.color }} />{r.label}
+                    </span>
+                    <span className="font-mono tabular-nums">{r.val}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 pt-3 text-[10.5px] leading-relaxed" style={{ color: C.muted, borderTop: `1px solid ${C.border}` }}>
+                <span className="block uppercase tracking-[0.16em] text-[9.5px] mb-1" style={{ color: C.sub }}>Risk posture</span>
+                Most findings are concentrated in medium and low severity categories.
+              </p>
             </div>
-            <ul className="mt-5 space-y-3">
-              {risk.map((r) => (
-                <li key={r.label} className="flex items-center justify-between text-[11px]">
-                  <span className="inline-flex items-center gap-2 text-muted-foreground">
-                    <span className="size-2 rounded-sm" style={{ background: r.color }} />{r.label}
-                  </span>
-                  <span className="font-mono tabular-nums text-white/90">{r.val}</span>
-                </li>
-              ))}
-            </ul>
           </div>
         </Panel>
       </div>
@@ -398,56 +490,52 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
         <PanelHead
           title="Threat Activity"
           sub={`Last 24 hours · ${report.demo ? "demo feed" : report.target}`}
-          right={
-            <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] text-muted-foreground border border-white/10 rounded px-2 py-1">
-              <span className="relative flex size-1.5">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400/70 animate-ping" />
-                <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
-              </span>
-              Live
-            </span>
-          }
+          right={<LivePill />}
         />
         <div className="p-5">
           <div className="grid grid-cols-3 gap-3 sm:gap-6">
             {[
-              { l: "Blocked", v: blocked.toLocaleString(), c: "#2f9e6a" },
-              { l: "Investigating", v: investigating.toLocaleString(), c: "#d18b2c" },
-              { l: "Critical", v: critical.toLocaleString(), c: SEV.Critical },
+              { l: "Blocked", v: blocked, c: OK },
+              { l: "Investigating", v: investigating, c: SEV.High },
+              { l: "Critical", v: critical, c: SEV.Critical },
             ].map((s) => (
               <div key={s.l} className="min-w-0">
-                <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground truncate">{s.l}</div>
-                <div className="mt-1 text-xl sm:text-2xl font-semibold tabular-nums" style={{ color: s.c }}>{s.v}</div>
+                <div className="text-[10px] uppercase tracking-[0.18em] truncate" style={{ color: C.muted }}>{s.l}</div>
+                <CountNumber value={s.v} className="mt-1 block text-xl sm:text-2xl font-semibold" style={{ color: s.c }} />
               </div>
             ))}
           </div>
-          <div className="mt-4 pt-4 border-t border-white/[0.06]">
-            <Chart data={report.trend} height={110} />
+          <div className="mt-4 pt-4" style={{ borderTop: `1px solid ${C.border}` }}>
+            <Chart data={report.trend} height={112} />
+            <div className="mt-2 flex justify-between text-[9.5px] font-mono" style={{ color: C.muted }}>
+              {["24h ago", "18h", "12h", "6h", "now"].map((t) => <span key={t}>{t}</span>)}
+            </div>
           </div>
         </div>
       </Panel>
 
       {/* Recent scans + live feed */}
-      <div className="grid lg:grid-cols-3 gap-4">
+      <div className="grid lg:grid-cols-3 gap-3.5">
         <Panel className="lg:col-span-2 overflow-hidden">
           <PanelHead
             title="Recent Scans"
             sub={`${scans.length} total this month`}
-            right={
-              <button onClick={onOpenReports} className="text-[11px] text-muted-foreground hover:text-white transition">View all</button>
-            }
+            right={<button onClick={onOpenReports} className="text-[11px] inline-flex items-center gap-1 transition hover:text-white" style={{ color: C.sub }}>View all <ArrowRight className="size-3" /></button>}
           />
           {scans.length === 0 ? (
-            <div className="px-5 py-10 text-center">
-              <div className="size-10 mx-auto rounded-lg border border-white/[0.08] bg-white/[0.02] grid place-items-center">
-                <ScanSearch className="size-4 text-muted-foreground" />
+            <div className="px-5 py-12 text-center">
+              <div className="relative mx-auto size-14 grid place-items-center">
+                <span className="absolute inset-0 rounded-full animate-ping" style={{ border: `1px solid ${C.blue}33` }} />
+                <span className="absolute inset-2 rounded-full" style={{ border: `1px solid ${C.border}` }} />
+                <Radar className="size-5" style={{ color: C.blue }} />
               </div>
-              <div className="mt-3 text-[13px] font-medium text-white">No scans yet</div>
-              <p className="mt-1 text-[11px] text-muted-foreground max-w-sm mx-auto">
-                Run your first security scan to start building your security history.
+              <div className="mt-4 text-[13.5px] font-medium">No scans yet</div>
+              <p className="mt-1 text-[11.5px] max-w-sm mx-auto" style={{ color: C.sub }}>
+                Start your first security scan to begin building your security history.
               </p>
               <Link to="/scan/new" search={{ plan: "professional" as const }}
-                className="mt-4 inline-flex rounded-lg bg-white hover:bg-white/90 text-black px-4 py-2 text-[11px] font-medium transition">
+                className="mt-4 inline-flex rounded-lg px-4 py-2 text-[11.5px] font-medium text-white transition hover:-translate-y-px"
+                style={{ background: `linear-gradient(180deg, #4C8DF8, ${C.blue})`, boxShadow: `0 1px 0 0 rgba(255,255,255,0.2) inset` }}>
                 Start New Scan
               </Link>
             </div>
@@ -455,7 +543,7 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
             <div className="overflow-x-auto">
               <table className="w-full text-sm min-w-[560px]">
                 <thead>
-                  <tr className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                  <tr className="text-[9.5px] uppercase tracking-[0.18em]" style={{ color: C.muted }}>
                     <th className="text-left font-normal px-5 py-3">Target</th>
                     <th className="text-left font-normal py-3">Plan</th>
                     <th className="text-left font-normal py-3">Status</th>
@@ -465,17 +553,17 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
                 </thead>
                 <tbody>
                   {scans.map((r) => (
-                    <tr key={r.id} className="border-t border-white/[0.05] hover:bg-white/[0.02] transition">
+                    <tr key={r.id} className="transition hover:bg-white/[0.02]" style={{ borderTop: `1px solid ${C.border}` }}>
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-2.5">
-                          <div className="size-6 rounded border border-white/[0.08] bg-white/[0.02] grid place-items-center"><Globe2 className="size-3 text-muted-foreground" /></div>
+                          <div className="size-6 rounded-md grid place-items-center" style={{ border: `1px solid ${C.border}`, background: C.elevated }}><Globe2 className="size-3" style={{ color: C.sub }} /></div>
                           <span className="font-mono text-xs truncate max-w-[220px]">{r.target_url}</span>
                         </div>
                       </td>
-                      <td className="py-3 text-xs capitalize text-muted-foreground">{r.plan}</td>
+                      <td className="py-3 text-xs capitalize" style={{ color: C.sub }}>{r.plan}</td>
                       <td className="py-3"><StatusPill status={r.status} /></td>
-                      <td className="py-3 font-mono text-xs tabular-nums">{r.score != null ? `${r.score}/100` : "—"}</td>
-                      <td className="px-5 py-3 text-right text-xs text-muted-foreground">{mounted ? new Date(r.created_at).toLocaleDateString() : ""}</td>
+                      <td className="py-3 font-mono text-xs tabular-nums" style={{ color: r.score != null ? scoreColor(r.score) : C.muted }}>{r.score != null ? `${r.score}/100` : "—"}</td>
+                      <td className="px-5 py-3 text-right text-xs" style={{ color: C.sub }}>{mounted ? new Date(r.created_at).toLocaleDateString() : ""}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -485,49 +573,53 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
         </Panel>
 
         <Panel>
-          <PanelHead
-            title="Live Threat Activity"
-            sub="Real-time security events across monitored assets"
-            right={<Wifi className="size-4 text-muted-foreground/60" />}
-          />
-          <ul className="divide-y divide-white/[0.05]">
+          <PanelHead title="Live Threat Activity" sub="Real-time events across monitored assets" right={<LivePill />} />
+          <ul>
             {report.threats.map((t, i) => {
               const sev = sevOrder[i % 4];
               return (
-                <motion.li key={t.ip} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, delay: i * 0.06 }}
-                  className="px-5 py-3 flex items-center justify-between gap-3">
+                <motion.li key={t.ip} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.32, delay: i * 0.07 }}
+                  className="px-5 py-3.5 flex items-center justify-between gap-3 transition hover:bg-white/[0.02]"
+                  style={{ borderTop: i === 0 ? "none" : `1px solid ${C.border}` }}>
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="size-7 shrink-0 rounded border border-white/[0.08] bg-white/[0.02] grid place-items-center text-[10px] font-mono text-muted-foreground">{t.country}</div>
+                    <div className="size-7 shrink-0 rounded-md grid place-items-center text-[10px] font-mono"
+                      style={{ border: `1px solid ${C.border}`, background: C.elevated, color: C.sub }}>{t.country}</div>
                     <div className="min-w-0">
-                      <div className="font-mono text-[12px] text-white truncate">{t.ip}</div>
-                      <div className="text-[10px] text-muted-foreground mt-0.5 truncate">{t.type} · {t.ago}</div>
+                      <div className="font-mono text-[12px] truncate">{t.ip}</div>
+                      <div className="text-[10.5px] mt-0.5 truncate" style={{ color: C.sub }}>{t.type}</div>
                     </div>
                   </div>
-                  <span className="shrink-0 text-[9px] uppercase tracking-[0.14em] px-1.5 py-0.5 rounded border"
-                    style={{ color: SEV[sev], borderColor: `${SEV[sev]}55` }}>{sev}</span>
+                  <div className="shrink-0 text-right">
+                    <span className="inline-flex items-center gap-1.5 text-[9px] uppercase tracking-[0.14em] px-1.5 py-0.5 rounded"
+                      style={{ color: SEV[sev], border: `1px solid ${SEV[sev]}40`, background: `${SEV[sev]}0f` }}>
+                      <span className="size-1 rounded-full" style={{ background: SEV[sev] }} />{sev}
+                    </span>
+                    <div className="text-[9.5px] mt-1 font-mono" style={{ color: C.muted }}>{t.ago}</div>
+                  </div>
                 </motion.li>
               );
             })}
           </ul>
-          <div className="px-5 py-3 border-t border-white/[0.06]">
-            <Link to="/report/$id" params={{ id: report.id }} className="text-[11px] text-muted-foreground hover:text-white transition inline-flex items-center gap-1">
-              View all activity <ArrowUpRight className="size-3" />
+          <div className="px-5 py-3" style={{ borderTop: `1px solid ${C.border}` }}>
+            <Link to="/report/$id" params={{ id: report.id }} className="text-[11px] inline-flex items-center gap-1 transition hover:text-white" style={{ color: C.sub }}>
+              View all activity <ArrowRight className="size-3" />
             </Link>
           </div>
         </Panel>
       </div>
 
-      {/* Recent workspace activity (preserved) */}
+      {/* Workspace activity */}
       {scans.length > 0 && (
         <Panel>
-          <PanelHead title="Activity" sub="Latest workspace events" right={<Activity className="size-4 text-muted-foreground/60" />} />
+          <PanelHead title="Activity" sub="Latest workspace events" right={<Activity className="size-4" style={{ color: C.muted }} />} />
           <ul className="p-5 space-y-3.5">
             {scans.slice(0, 5).map((s) => (
               <li key={s.id} className="flex gap-3">
-                <span className={`mt-1.5 size-1.5 rounded-full shrink-0 ${s.status === "completed" ? "bg-emerald-500" : s.status === "running" ? "bg-[#5a8fe8] animate-pulse" : "bg-muted-foreground"}`} />
+                <span className="mt-1.5 size-1.5 rounded-full shrink-0"
+                  style={{ background: s.status === "completed" ? OK : s.status === "running" ? C.blue : C.muted }} />
                 <div className="min-w-0 flex-1">
-                  <div className="text-xs text-white/90 truncate">Scan {s.status} for <span className="font-mono">{s.target_url}</span></div>
-                  <div className="text-[10px] text-muted-foreground mt-0.5">{mounted ? new Date(s.created_at).toLocaleString() : ""}</div>
+                  <div className="text-xs truncate">Scan {s.status} for <span className="font-mono" style={{ color: C.sub }}>{s.target_url}</span></div>
+                  <div className="text-[10px] mt-0.5" style={{ color: C.muted }}>{mounted ? new Date(s.created_at).toLocaleString() : ""}</div>
                 </div>
               </li>
             ))}
@@ -536,21 +628,23 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
       )}
 
       {/* Security intelligence CTA */}
-      <div className="relative overflow-hidden rounded-xl border border-white/[0.09] bg-[oklch(0.05_0.006_240)]">
-        <div className="pointer-events-none absolute inset-0 opacity-[0.05]"
-          style={{ backgroundImage: "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
-        <div className="relative px-5 sm:px-7 py-6 flex flex-col md:flex-row md:items-center gap-5 md:gap-8">
+      <div className="relative overflow-hidden rounded-2xl" style={{ border: `1px solid ${C.border}`, background: `linear-gradient(120deg, ${C.elevated}, ${C.surface} 55%, #080B10)` }}>
+        <div className="pointer-events-none absolute inset-0 opacity-[0.06]"
+          style={{ backgroundImage: "linear-gradient(to right,#9dc0ff 1px,transparent 1px),linear-gradient(to bottom,#9dc0ff 1px,transparent 1px)", backgroundSize: "34px 34px", maskImage: "linear-gradient(90deg, transparent, black 40%, transparent)" }} />
+        <div className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full" style={{ background: `radial-gradient(circle, ${C.blue}22, transparent 65%)` }} />
+        <div className="relative px-5 sm:px-7 py-7 flex flex-col md:flex-row md:items-center gap-5 md:gap-8">
           <div className="min-w-0 flex-1">
-            <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              <FileText className="size-3" /> Security Intelligence
+            <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em]" style={{ color: C.cyan }}>
+              <TrendingUp className="size-3" /> Security Intelligence
             </div>
-            <h3 className="mt-2 text-base sm:text-lg font-semibold tracking-tight text-white">Full technical report</h3>
-            <p className="mt-1.5 text-[12px] sm:text-[13px] text-muted-foreground max-w-2xl">
-              Deep-dive into vulnerabilities, findings, affected assets, CVSS scores, reproduction evidence, and remediation guidance for {report.demo ? "the demo target" : report.target}.
+            <h3 className="mt-2 text-[17px] sm:text-[20px] font-semibold tracking-[-0.01em]">Full technical report</h3>
+            <p className="mt-1.5 text-[12.5px] max-w-2xl leading-relaxed" style={{ color: C.sub }}>
+              Deep-dive into vulnerabilities, CVSS scores, affected assets, reproduction evidence, and remediation guidance for {report.demo ? "the demo target" : report.target}.
             </p>
           </div>
           <Link to="/report/$id" params={{ id: report.id }}
-            className="shrink-0 inline-flex items-center justify-center gap-2 rounded-lg bg-white text-black hover:bg-white/90 px-5 py-2.5 text-xs sm:text-[13px] font-medium transition">
+            className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-white transition-all hover:-translate-y-px"
+            style={{ background: `linear-gradient(180deg, #4C8DF8, ${C.blue})`, boxShadow: `0 1px 0 0 rgba(255,255,255,0.22) inset, 0 12px 28px -16px ${C.blue}` }}>
             View Full Technical Report <ArrowUpRight className="size-4" />
           </Link>
         </div>
@@ -559,40 +653,103 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
   );
 }
 
+function KpiCard({ label, icon: Icon, accent, children, glow }: {
+  label: string; icon: typeof Shield; accent: string; children: React.ReactNode; glow?: boolean;
+}) {
+  return (
+    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}
+      className="relative rounded-2xl p-4 sm:p-5 transition-all duration-200 hover:-translate-y-px"
+      style={{
+        border: `1px solid ${C.border}`,
+        background: `linear-gradient(180deg, ${C.elevated}, ${C.surface} 70%, #090C12)`,
+        boxShadow: "0 1px 0 0 rgba(255,255,255,0.035) inset, 0 18px 40px -30px rgba(0,0,0,0.9)",
+      }}>
+      {glow && <div className="pointer-events-none absolute inset-x-5 -top-px h-px" style={{ background: `linear-gradient(90deg, transparent, ${accent}77, transparent)` }} />}
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] uppercase tracking-[0.18em]" style={{ color: C.muted }}>{label}</span>
+        <Icon className="size-3.5" style={{ color: accent }} />
+      </div>
+      <div className="mt-3.5">{children}</div>
+    </motion.div>
+  );
+}
+
+function Donut({ segments, total }: { segments: { label: string; val: number; color: string }[]; total: number }) {
+  const r = 46, c = 2 * Math.PI * r;
+  let acc = 0;
+  return (
+    <div className="relative size-[124px] shrink-0">
+      <svg viewBox="0 0 120 120" className="size-full -rotate-90">
+        <circle cx="60" cy="60" r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="10" />
+        {segments.map((s, i) => {
+          const frac = s.val / total;
+          const dash = frac * c;
+          const off = -acc * c;
+          acc += frac;
+          return (
+            <motion.circle key={s.label} cx="60" cy="60" r={r} fill="none" stroke={s.color} strokeWidth="10"
+              strokeDasharray={`${dash} ${c - dash}`} strokeDashoffset={off}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: i * 0.08 }} />
+          );
+        })}
+      </svg>
+      <div className="absolute inset-0 grid place-items-center text-center">
+        <div>
+          <CountNumber value={total} className="block text-[22px] leading-none font-semibold" />
+          <div className="text-[9px] uppercase tracking-[0.16em] mt-1" style={{ color: C.muted }}>Findings</div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /* -------------------------------- reports -------------------------------- */
 function ReportsSection({ scans, activeId, onUpload, mounted }: {
   scans: Scan[]; activeId: string | null; onUpload: (id: string) => void; mounted: boolean;
 }) {
   return (
-    <div className="p-4 sm:p-6 space-y-4">
-      <div className="glass rounded-2xl px-5 py-4">
-        <div className="text-sm font-medium">Submitted scan reports</div>
-        <div className="text-[11px] text-muted-foreground mt-0.5">
-          Every scan you submitted, with full submission details and status. Upload one to the overview dashboard to drive its metrics.
+    <div className="px-4 sm:px-7 py-5 sm:py-6 space-y-4 max-w-[1560px]">
+      <Panel glow>
+        <div className="px-5 py-4">
+          <div className="text-[13px] font-semibold">Submitted scan reports</div>
+          <div className="text-[11.5px] mt-0.5" style={{ color: C.sub }}>
+            Every scan you submitted, with full submission details and status. Upload one to the overview dashboard to drive its metrics.
+          </div>
         </div>
-      </div>
+      </Panel>
 
       {scans.length === 0 ? (
-        <div className="glass rounded-2xl px-6 py-16 text-center">
-          <div className="size-12 mx-auto rounded-full glass grid place-items-center text-[#5aa0d6]"><FileText className="size-5" /></div>
-          <div className="mt-4 text-sm">No reports submitted yet</div>
-          <p className="mt-1 text-xs text-muted-foreground">Once you submit a scan, its report will appear here.</p>
-          <Link to="/scan/new" search={{ plan: "professional" as const }} className="mt-5 inline-flex rounded-lg bg-[#1b3a5c] hover:bg-[#234a75] text-white px-4 py-2 text-xs font-medium transition">Submit a scan</Link>
-        </div>
+        <Panel>
+          <div className="px-6 py-16 text-center">
+            <div className="size-12 mx-auto rounded-xl grid place-items-center" style={{ border: `1px solid ${C.border}`, background: C.elevated }}>
+              <FileText className="size-5" style={{ color: C.blue }} />
+            </div>
+            <div className="mt-4 text-[13.5px] font-medium">No reports submitted yet</div>
+            <p className="mt-1 text-[11.5px]" style={{ color: C.sub }}>Once you submit a scan, its report will appear here.</p>
+            <Link to="/scan/new" search={{ plan: "professional" as const }}
+              className="mt-5 inline-flex rounded-lg px-4 py-2 text-xs font-medium text-white transition hover:-translate-y-px"
+              style={{ background: `linear-gradient(180deg, #4C8DF8, ${C.blue})` }}>Submit a scan</Link>
+          </div>
+        </Panel>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-3.5">
           {scans.map((s) => {
             const r = buildReport(s);
             const active = activeId === s.id;
             return (
-              <div key={s.id} className={`glass rounded-2xl p-5 transition ${active ? "border-emerald-500/40" : "hover:border-white/15"}`}>
+              <div key={s.id} className="rounded-2xl p-5 transition-all hover:-translate-y-px"
+                style={{
+                  border: `1px solid ${active ? `${OK}55` : C.border}`,
+                  background: `linear-gradient(180deg, ${C.elevated}, ${C.surface} 70%, #090C12)`,
+                }}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="flex items-start gap-3 min-w-0">
-                    <div className="size-10 rounded-xl grid place-items-center bg-[#132a3d]"><Globe2 className="size-4 text-[#5aa0d6]" /></div>
+                    <div className="size-10 rounded-xl grid place-items-center" style={{ border: `1px solid ${C.border}`, background: C.elevated }}>
+                      <Globe2 className="size-4" style={{ color: C.blue }} />
+                    </div>
                     <div className="min-w-0">
                       <div className="font-mono text-sm truncate">{s.target_url}</div>
-                      <div className="text-[11px] text-muted-foreground mt-0.5 capitalize">
+                      <div className="text-[11px] mt-0.5 capitalize" style={{ color: C.sub }}>
                         {s.plan} plan{mounted ? ` · submitted ${new Date(s.created_at).toLocaleString()}` : ""}
                       </div>
                     </div>
@@ -600,7 +757,8 @@ function ReportsSection({ scans, activeId, onUpload, mounted }: {
                   <div className="flex items-center gap-2">
                     <StatusPill status={s.status} />
                     {active && (
-                      <span className="text-[10px] uppercase tracking-widest px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 inline-flex items-center gap-1">
+                      <span className="text-[9.5px] uppercase tracking-[0.16em] px-2 py-1 rounded inline-flex items-center gap-1"
+                        style={{ color: OK, border: `1px solid ${OK}44`, background: `${OK}12` }}>
                         <BadgeCheck className="size-3" /> On dashboard
                       </span>
                     )}
@@ -614,27 +772,28 @@ function ReportsSection({ scans, activeId, onUpload, mounted }: {
                   <Detail icon={Shield} label="Verification" value={`${r.requester.verification} · ${r.requester.verified}`} />
                 </div>
 
-                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-white/[0.06]">
-                  <div className="flex items-center gap-5">
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 pt-4" style={{ borderTop: `1px solid ${C.border}` }}>
+                  <div className="flex items-center gap-6">
                     <div>
-                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Score</div>
-                      <div className="text-xl font-semibold" style={{ color: scoreColor(r.score) }}>{r.score}<span className="text-xs text-muted-foreground">/100</span></div>
+                      <div className="text-[9.5px] uppercase tracking-[0.18em]" style={{ color: C.muted }}>Score</div>
+                      <div className="text-xl font-semibold tabular-nums" style={{ color: scoreColor(r.score) }}>{r.score}<span className="text-xs" style={{ color: C.muted }}>/100</span></div>
                     </div>
                     <div>
-                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Findings</div>
-                      <div className="text-xl font-semibold text-white">{r.findings}</div>
+                      <div className="text-[9.5px] uppercase tracking-[0.18em]" style={{ color: C.muted }}>Findings</div>
+                      <div className="text-xl font-semibold tabular-nums">{r.findings}</div>
                     </div>
                     <div>
-                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Role</div>
-                      <div className="text-sm mt-1 text-white/90">{r.requester.role}</div>
+                      <div className="text-[9.5px] uppercase tracking-[0.18em]" style={{ color: C.muted }}>Role</div>
+                      <div className="text-sm mt-1">{r.requester.role}</div>
                     </div>
                   </div>
                   <button
                     onClick={() => onUpload(s.id)}
                     disabled={active}
-                    className={`rounded-lg px-4 py-2 text-xs font-medium inline-flex items-center gap-2 transition ${
-                      active ? "bg-white/[0.05] text-muted-foreground cursor-default" : "bg-[#1b3a5c] hover:bg-[#234a75] text-white"
-                    }`}
+                    className="rounded-lg px-4 py-2 text-xs font-medium inline-flex items-center gap-2 transition hover:-translate-y-px disabled:translate-y-0"
+                    style={active
+                      ? { background: "rgba(255,255,255,0.04)", color: C.muted, cursor: "default" }
+                      : { background: `linear-gradient(180deg, #4C8DF8, ${C.blue})`, color: "#fff", boxShadow: "0 1px 0 0 rgba(255,255,255,0.2) inset" }}
                   >
                     <UploadCloud className="size-3.5" /> {active ? "Uploaded to dashboard" : "Upload Report to Dashboard"}
                   </button>
@@ -650,18 +809,18 @@ function ReportsSection({ scans, activeId, onUpload, mounted }: {
 
 function Detail({ icon: Icon, label, value }: { icon: typeof UserIcon; label: string; value: string }) {
   return (
-    <div className="rounded-xl bg-white/[0.02] border border-white/[0.06] px-3 py-2.5">
-      <div className="text-[10px] uppercase tracking-widest text-muted-foreground inline-flex items-center gap-1.5"><Icon className="size-3" />{label}</div>
-      <div className="text-xs mt-1 truncate text-white/90 capitalize">{value}</div>
+    <div className="rounded-xl px-3 py-2.5" style={{ border: `1px solid ${C.border}`, background: "rgba(255,255,255,0.015)" }}>
+      <div className="text-[9.5px] uppercase tracking-[0.18em] inline-flex items-center gap-1.5" style={{ color: C.muted }}><Icon className="size-3" />{label}</div>
+      <div className="text-xs mt-1 truncate capitalize">{value}</div>
     </div>
   );
 }
 
 function StatusPill({ status }: { status: string }) {
+  const col = status === "completed" ? OK : status === "running" ? C.blue : C.muted;
   return (
-    <span className={`text-[10px] uppercase tracking-widest px-2 py-1 rounded-full glass inline-flex items-center gap-1.5 ${
-      status === "completed" ? "text-emerald-400" : status === "running" ? "text-[#5aa0d6]" : "text-muted-foreground"
-    }`}>
+    <span className="text-[9.5px] uppercase tracking-[0.16em] px-2 py-1 rounded inline-flex items-center gap-1.5"
+      style={{ color: col, border: `1px solid ${col}3d`, background: `${col}0f` }}>
       {status === "completed" ? <CheckCircle2 className="size-3" /> : status === "running" ? <Clock className="size-3 animate-spin" /> : <Clock className="size-3" />}
       {status}
     </span>
@@ -671,7 +830,9 @@ function StatusPill({ status }: { status: string }) {
 /* -------------------------------- widgets -------------------------------- */
 function SidebarLink({ to, icon: Icon, label, onClick, search }: { to: string; icon: typeof LayoutDashboard; label: string; onClick?: () => void; search?: Record<string, string> }) {
   return (
-    <Link to={to} search={search as never} onClick={onClick} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition text-muted-foreground hover:bg-white/[0.03] hover:text-white">
+    <Link to={to} search={search as never} onClick={onClick}
+      className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition hover:bg-white/[0.04] hover:text-white"
+      style={{ color: C.sub }}>
       <Icon className="size-4" />
       <span className="flex-1">{label}</span>
     </Link>
@@ -680,15 +841,20 @@ function SidebarLink({ to, icon: Icon, label, onClick, search }: { to: string; i
 
 function SidebarButton({ icon: Icon, label, active, badge, onClick }: { icon: typeof LayoutDashboard; label: string; active?: boolean; badge?: string; onClick: () => void }) {
   return (
-    <button onClick={onClick} className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition ${active ? "bg-white/[0.06] text-white" : "text-muted-foreground hover:bg-white/[0.03] hover:text-white"}`}>
-      <Icon className="size-4" />
+    <button onClick={onClick}
+      className="relative w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition hover:bg-white/[0.04]"
+      style={active
+        ? { background: "rgba(59,130,246,0.12)", color: C.text, boxShadow: `inset 0 0 0 1px ${C.blue}2e` }
+        : { color: C.sub }}>
+      {active && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-[2px] rounded-r" style={{ background: C.blue }} />}
+      <Icon className="size-4" style={active ? { color: C.blue } : undefined} />
       <span className="flex-1 text-left">{label}</span>
-      {badge && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/10 text-white/80">{badge}</span>}
+      {badge && <span className="text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.07)", color: C.sub }}>{badge}</span>}
     </button>
   );
 }
 
-function ScoreRing({ value, size = 132 }: { value: number; size?: number }) {
+function ScoreRing({ value, size = 132, stroke = 9, compact = false }: { value: number; size?: number; stroke?: number; compact?: boolean }) {
   const r = 70;
   const c = 2 * Math.PI * r;
   const offset = c - (value / 100) * c;
@@ -696,18 +862,25 @@ function ScoreRing({ value, size = 132 }: { value: number; size?: number }) {
   return (
     <div className="relative" style={{ width: size, height: size }}>
       <svg viewBox="0 0 180 180" className="size-full -rotate-90">
-        <circle cx="90" cy="90" r={r} stroke="oklch(1 0 0 / 0.07)" strokeWidth="9" fill="none" />
+        <circle cx="90" cy="90" r={r} stroke="rgba(255,255,255,0.06)" strokeWidth={stroke} fill="none" />
         <motion.circle
-          cx="90" cy="90" r={r} stroke={col} strokeWidth="9" fill="none" strokeLinecap="round"
-          strokeDasharray={c} initial={{ strokeDashoffset: c }} animate={{ strokeDashoffset: offset }} transition={{ duration: 1.2, ease: "easeOut" }}
+          cx="90" cy="90" r={r} stroke={col} strokeWidth={stroke} fill="none" strokeLinecap="round"
+          strokeDasharray={c} initial={{ strokeDashoffset: c }} animate={{ strokeDashoffset: offset }} transition={{ duration: 1.3, ease: "easeOut" }}
         />
       </svg>
-      <div className="absolute inset-0 grid place-items-center">
-        <div className="text-center">
-          <div className="text-[28px] leading-none font-semibold tabular-nums" style={{ color: col }}>{value}</div>
-          <div className="text-[9px] uppercase tracking-[0.18em] text-muted-foreground mt-1.5">Secure</div>
+      {!compact && (
+        <div className="absolute inset-0 grid place-items-center">
+          <div className="text-center">
+            <div className="text-[30px] leading-none font-semibold tabular-nums" style={{ color: col }}>{value}</div>
+            <div className="text-[9px] uppercase tracking-[0.2em] mt-1.5" style={{ color: C.muted }}>Secure</div>
+          </div>
         </div>
-      </div>
+      )}
+      {compact && (
+        <div className="absolute inset-0 grid place-items-center">
+          <Shield className="size-4" style={{ color: col }} />
+        </div>
+      )}
     </div>
   );
 }
@@ -722,17 +895,20 @@ function Chart({ data, height = 120 }: { data: number[]; height?: number }) {
     <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" className="w-full" style={{ height }}>
       <defs>
         <linearGradient id="ca" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#2f6fed" stopOpacity="0.28" />
-          <stop offset="100%" stopColor="#2f6fed" stopOpacity="0" />
+          <stop offset="0%" stopColor={C.blue} stopOpacity="0.30" />
+          <stop offset="100%" stopColor={C.blue} stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id="cl" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor={C.blue} />
+          <stop offset="100%" stopColor={C.cyan} />
         </linearGradient>
       </defs>
       {[0.25, 0.5, 0.75].map((y) => (
-        <line key={y} x1="0" y1={h * y} x2={w} y2={h * y} stroke="oklch(1 0 0 / 0.04)" />
+        <line key={y} x1="0" y1={h * y} x2={w} y2={h * y} stroke="rgba(255,255,255,0.04)" />
       ))}
-      <motion.polygon points={area} fill="url(#ca)" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }} />
-      <motion.polyline points={points} fill="none" stroke="#5a8fe8" strokeWidth="1.75" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round"
-        initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.1, ease: "easeOut" }} />
+      <motion.polygon points={area} fill="url(#ca)" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.9 }} />
+      <motion.polyline points={points} fill="none" stroke="url(#cl)" strokeWidth="1.75" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round"
+        initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.2, ease: "easeOut" }} />
     </svg>
   );
 }
-
