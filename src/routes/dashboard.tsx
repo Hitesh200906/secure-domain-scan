@@ -35,14 +35,14 @@ import {
 
 /* ------------------------------ design tokens ----------------------------- */
 const C = {
-  base: "#07090D",
-  surface: "#0B0F16",
-  elevated: "#101620",
-  border: "#1B2430",
+  base: "#000000",
+  surface: "#000000",
+  elevated: "#050607",
+  border: "#232629",
   text: "#F5F7FA",
   sub: "#8B98A8",
   muted: "#596575",
-  blue: "#3B82F6",
+  blue: "#2563EB",
   cyan: "#22D3EE",
 };
 
@@ -120,7 +120,7 @@ function Dashboard() {
       </div>
 
       {/* Static sidebar */}
-      <aside className="hidden lg:flex w-[248px] shrink-0 h-screen flex-col" style={{ borderRight: `1px solid ${C.border}`, background: "rgba(11,15,22,0.6)", backdropFilter: "blur(14px)" }}>
+      <aside className="hidden lg:flex w-[248px] shrink-0 h-screen flex-col" style={{ borderRight: `1px solid ${C.border}`, background: "#000000", backdropFilter: "blur(14px)" }}>
         <div className="px-5 py-5" style={{ borderBottom: `1px solid ${C.border}` }}>
           <Link to="/" className="flex items-center gap-2.5">
             <img src={nexusLogo} alt="Nexefy" className="size-6 object-contain" />
@@ -152,7 +152,7 @@ function Dashboard() {
 
       {/* Scrollable content */}
       <div className="flex-1 min-w-0 h-screen overflow-y-auto relative">
-        <header className="sticky top-0 z-20" style={{ background: "rgba(7,9,13,0.82)", backdropFilter: "blur(16px)", borderBottom: `1px solid ${C.border}` }}>
+        <header className="sticky top-0 z-20" style={{ background: "rgba(0,0,0,0.88)", backdropFilter: "blur(16px)", borderBottom: `1px solid ${C.border}` }}>
           <div className="flex items-center justify-between px-4 sm:px-7 py-3.5 gap-3">
             <div className="flex items-center gap-3 min-w-0">
               <button onClick={() => setMobileNav(true)} className="lg:hidden size-9 shrink-0 rounded-lg grid place-items-center transition hover:bg-white/[0.05]" style={{ border: `1px solid ${C.border}` }} aria-label="Open menu">
@@ -174,7 +174,7 @@ function Dashboard() {
                 All systems operational
                 <span className="font-mono tabular-nums" style={{ color: C.muted }}>{mounted && time ? time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : ""}</span>
               </div>
-              <div className="hidden md:flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs w-52 lg:w-64" style={{ border: `1px solid ${C.border}`, background: "rgba(255,255,255,0.02)", color: C.sub }}>
+              <div className="hidden md:flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs w-52 lg:w-64" style={{ border: `1px solid ${C.border}`, background: "#000000", color: C.sub }}>
                 <Search className="size-3.5" />
                 <input placeholder="Search assets, findings…" className="bg-transparent outline-none flex-1 min-w-0 text-white placeholder:text-[#596575]" />
                 <kbd className="text-[10px] rounded px-1 py-0.5" style={{ border: `1px solid ${C.border}`, color: C.muted }}>⌘K</kbd>
@@ -236,7 +236,7 @@ function Panel({ className = "", children, glow = false }: { className?: string;
       className={`group relative rounded-2xl transition-all duration-200 hover:-translate-y-px ${className}`}
       style={{
         border: `1px solid ${C.border}`,
-        background: `linear-gradient(180deg, ${C.elevated} 0%, ${C.surface} 62%, #090C12 100%)`,
+        background: "#000000",
         boxShadow: "0 1px 0 0 rgba(255,255,255,0.03) inset, 0 18px 40px -28px rgba(0,0,0,0.9)",
       }}
     >
@@ -327,7 +327,7 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
         <div className="min-w-0">
           <div className="flex items-center gap-2.5 flex-wrap">
             <h2 className="text-[22px] sm:text-[26px] font-semibold tracking-[-0.02em]">
-              {greeting()}{name ? `, ${name.split(" ")[0]}` : ""}
+              {(mounted ? greeting() : "Welcome back")}{name ? `, ${name.split(" ")[0]}` : ""}
             </h2>
             <RoleBadge role={role as never} size="md" />
           </div>
@@ -340,7 +340,7 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
         <Link
           to="/scan/new" search={{ plan: "professional" as const }}
           className="group shrink-0 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-medium text-white transition-all hover:-translate-y-px"
-          style={{ background: `linear-gradient(180deg, #4C8DF8, ${C.blue})`, boxShadow: `0 1px 0 0 rgba(255,255,255,0.22) inset, 0 10px 24px -14px ${C.blue}` }}
+          style={{ background: C.blue, boxShadow: `0 1px 0 0 rgba(255,255,255,0.22) inset, 0 10px 24px -14px ${C.blue}` }}
         >
           <Plus className="size-4" /> New Scan
         </Link>
@@ -349,7 +349,7 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
       {/* Demo banner */}
       {report.demo && (
         <div className="rounded-xl px-4 sm:px-5 py-3.5 flex flex-col sm:flex-row sm:items-center gap-3"
-          style={{ border: `1px solid ${C.border}`, background: "linear-gradient(90deg, rgba(59,130,246,0.06), transparent 70%)" }}>
+          style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
           <div className="flex items-start gap-3 min-w-0 flex-1">
             <div className="size-8 shrink-0 rounded-lg grid place-items-center" style={{ border: `1px solid ${C.border}`, background: C.elevated }}>
               <FileText className="size-3.5" style={{ color: C.blue }} />
@@ -535,7 +535,7 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
               </p>
               <Link to="/scan/new" search={{ plan: "professional" as const }}
                 className="mt-4 inline-flex rounded-lg px-4 py-2 text-[11.5px] font-medium text-white transition hover:-translate-y-px"
-                style={{ background: `linear-gradient(180deg, #4C8DF8, ${C.blue})`, boxShadow: `0 1px 0 0 rgba(255,255,255,0.2) inset` }}>
+                style={{ background: C.blue, boxShadow: `0 1px 0 0 rgba(255,255,255,0.2) inset` }}>
                 Start New Scan
               </Link>
             </div>
@@ -628,7 +628,7 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
       )}
 
       {/* Security intelligence CTA */}
-      <div className="relative overflow-hidden rounded-2xl" style={{ border: `1px solid ${C.border}`, background: `linear-gradient(120deg, ${C.elevated}, ${C.surface} 55%, #080B10)` }}>
+      <div className="relative overflow-hidden rounded-2xl" style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
         <div className="pointer-events-none absolute inset-0 opacity-[0.06]"
           style={{ backgroundImage: "linear-gradient(to right,#9dc0ff 1px,transparent 1px),linear-gradient(to bottom,#9dc0ff 1px,transparent 1px)", backgroundSize: "34px 34px", maskImage: "linear-gradient(90deg, transparent, black 40%, transparent)" }} />
         <div className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full" style={{ background: `radial-gradient(circle, ${C.blue}22, transparent 65%)` }} />
@@ -644,7 +644,7 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
           </div>
           <Link to="/report/$id" params={{ id: report.id }}
             className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-white transition-all hover:-translate-y-px"
-            style={{ background: `linear-gradient(180deg, #4C8DF8, ${C.blue})`, boxShadow: `0 1px 0 0 rgba(255,255,255,0.22) inset, 0 12px 28px -16px ${C.blue}` }}>
+            style={{ background: C.blue, boxShadow: `0 1px 0 0 rgba(255,255,255,0.22) inset, 0 12px 28px -16px ${C.blue}` }}>
             View Full Technical Report <ArrowUpRight className="size-4" />
           </Link>
         </div>
@@ -661,7 +661,7 @@ function KpiCard({ label, icon: Icon, accent, children, glow }: {
       className="relative rounded-2xl p-4 sm:p-5 transition-all duration-200 hover:-translate-y-px"
       style={{
         border: `1px solid ${C.border}`,
-        background: `linear-gradient(180deg, ${C.elevated}, ${C.surface} 70%, #090C12)`,
+        background: "#000000",
         boxShadow: "0 1px 0 0 rgba(255,255,255,0.035) inset, 0 18px 40px -30px rgba(0,0,0,0.9)",
       }}>
       {glow && <div className="pointer-events-none absolute inset-x-5 -top-px h-px" style={{ background: `linear-gradient(90deg, transparent, ${accent}77, transparent)` }} />}
@@ -728,7 +728,7 @@ function ReportsSection({ scans, activeId, onUpload, mounted }: {
             <p className="mt-1 text-[11.5px]" style={{ color: C.sub }}>Once you submit a scan, its report will appear here.</p>
             <Link to="/scan/new" search={{ plan: "professional" as const }}
               className="mt-5 inline-flex rounded-lg px-4 py-2 text-xs font-medium text-white transition hover:-translate-y-px"
-              style={{ background: `linear-gradient(180deg, #4C8DF8, ${C.blue})` }}>Submit a scan</Link>
+              style={{ background: C.blue }}>Submit a scan</Link>
           </div>
         </Panel>
       ) : (
@@ -740,7 +740,7 @@ function ReportsSection({ scans, activeId, onUpload, mounted }: {
               <div key={s.id} className="rounded-2xl p-5 transition-all hover:-translate-y-px"
                 style={{
                   border: `1px solid ${active ? `${OK}55` : C.border}`,
-                  background: `linear-gradient(180deg, ${C.elevated}, ${C.surface} 70%, #090C12)`,
+                  background: "#000000",
                 }}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="flex items-start gap-3 min-w-0">
@@ -793,7 +793,7 @@ function ReportsSection({ scans, activeId, onUpload, mounted }: {
                     className="rounded-lg px-4 py-2 text-xs font-medium inline-flex items-center gap-2 transition hover:-translate-y-px disabled:translate-y-0"
                     style={active
                       ? { background: "rgba(255,255,255,0.04)", color: C.muted, cursor: "default" }
-                      : { background: `linear-gradient(180deg, #4C8DF8, ${C.blue})`, color: "#fff", boxShadow: "0 1px 0 0 rgba(255,255,255,0.2) inset" }}
+                      : { background: C.blue, color: "#fff", boxShadow: "0 1px 0 0 rgba(255,255,255,0.2) inset" }}
                   >
                     <UploadCloud className="size-3.5" /> {active ? "Uploaded to dashboard" : "Upload Report to Dashboard"}
                   </button>
@@ -809,7 +809,7 @@ function ReportsSection({ scans, activeId, onUpload, mounted }: {
 
 function Detail({ icon: Icon, label, value }: { icon: typeof UserIcon; label: string; value: string }) {
   return (
-    <div className="rounded-xl px-3 py-2.5" style={{ border: `1px solid ${C.border}`, background: "rgba(255,255,255,0.015)" }}>
+    <div className="rounded-xl px-3 py-2.5" style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
       <div className="text-[9.5px] uppercase tracking-[0.18em] inline-flex items-center gap-1.5" style={{ color: C.muted }}><Icon className="size-3" />{label}</div>
       <div className="text-xs mt-1 truncate capitalize">{value}</div>
     </div>
@@ -844,7 +844,7 @@ function SidebarButton({ icon: Icon, label, active, badge, onClick }: { icon: ty
     <button onClick={onClick}
       className="relative w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition hover:bg-white/[0.04]"
       style={active
-        ? { background: "rgba(59,130,246,0.12)", color: C.text, boxShadow: `inset 0 0 0 1px ${C.blue}2e` }
+        ? { background: "rgba(37,99,235,0.14)", color: C.text, boxShadow: `inset 0 0 0 1px ${C.blue}2e` }
         : { color: C.sub }}>
       {active && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-[2px] rounded-r" style={{ background: C.blue }} />}
       <Icon className="size-4" style={active ? { color: C.blue } : undefined} />
