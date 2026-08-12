@@ -592,57 +592,51 @@ function SidebarButton({ icon: Icon, label, active, badge, onClick }: { icon: ty
   );
 }
 
-function ScoreRing({ value }: { value: number }) {
+function ScoreRing({ value, size = 132 }: { value: number; size?: number }) {
   const r = 70;
   const c = 2 * Math.PI * r;
   const offset = c - (value / 100) * c;
   const col = scoreColor(value);
   return (
-    <div className="relative size-44">
+    <div className="relative" style={{ width: size, height: size }}>
       <svg viewBox="0 0 180 180" className="size-full -rotate-90">
-        <circle cx="90" cy="90" r={r} stroke="oklch(1 0 0 / 0.06)" strokeWidth="10" fill="none" />
+        <circle cx="90" cy="90" r={r} stroke="oklch(1 0 0 / 0.07)" strokeWidth="9" fill="none" />
         <motion.circle
-          cx="90" cy="90" r={r} stroke={col} strokeWidth="10" fill="none" strokeLinecap="round"
-          strokeDasharray={c} initial={{ strokeDashoffset: c }} animate={{ strokeDashoffset: offset }} transition={{ duration: 1.6, ease: "easeOut" }}
+          cx="90" cy="90" r={r} stroke={col} strokeWidth="9" fill="none" strokeLinecap="round"
+          strokeDasharray={c} initial={{ strokeDashoffset: c }} animate={{ strokeDashoffset: offset }} transition={{ duration: 1.2, ease: "easeOut" }}
         />
       </svg>
       <div className="absolute inset-0 grid place-items-center">
         <div className="text-center">
-          <div className="text-4xl font-semibold" style={{ color: col }}>{value}</div>
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Secure</div>
+          <div className="text-[28px] leading-none font-semibold tabular-nums" style={{ color: col }}>{value}</div>
+          <div className="text-[9px] uppercase tracking-[0.18em] text-muted-foreground mt-1.5">Secure</div>
         </div>
       </div>
     </div>
   );
 }
 
-function Chart({ data }: { data: number[] }) {
+function Chart({ data, height = 120 }: { data: number[]; height?: number }) {
   const max = Math.max(...data);
   const w = 600, h = 160;
   const step = w / (data.length - 1);
   const points = data.map((v, i) => `${i * step},${h - (v / max) * h * 0.85 - 8}`).join(" ");
   const area = `0,${h} ${points} ${w},${h}`;
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-40">
+    <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" className="w-full" style={{ height }}>
       <defs>
         <linearGradient id="ca" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.45" />
-          <stop offset="100%" stopColor="#06b6d4" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient id="cl" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#06b6d4" />
-          <stop offset="100%" stopColor="#14b8a6" />
+          <stop offset="0%" stopColor="#2f6fed" stopOpacity="0.28" />
+          <stop offset="100%" stopColor="#2f6fed" stopOpacity="0" />
         </linearGradient>
       </defs>
       {[0.25, 0.5, 0.75].map((y) => (
         <line key={y} x1="0" y1={h * y} x2={w} y2={h * y} stroke="oklch(1 0 0 / 0.04)" />
       ))}
-      <motion.polygon points={area} fill="url(#ca)" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }} />
-      <motion.polyline points={points} fill="none" stroke="url(#cl)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-        initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4, ease: "easeOut" }} />
-      {data.map((v, i) => i % 4 === 0 && (
-        <circle key={i} cx={i * step} cy={h - (v / max) * h * 0.85 - 8} r="2.5" fill="#06b6d4" />
-      ))}
+      <motion.polygon points={area} fill="url(#ca)" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }} />
+      <motion.polyline points={points} fill="none" stroke="#5a8fe8" strokeWidth="1.75" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round"
+        initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.1, ease: "easeOut" }} />
     </svg>
   );
 }
+
