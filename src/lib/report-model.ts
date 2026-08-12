@@ -33,7 +33,7 @@ export type ReportModel = {
   threats: { ip: string; country: string; type: string; ago: string }[];
 };
 
-export const POSTURE_COLORS = ["#4d7cff", "#3f8f7a", "#7c6cc4"];
+export const POSTURE_COLORS = ["#3B82F6", "#4F7FE8", "#22D3EE"];
 
 export function buildReport(scan: Scan): ReportModel {
   const seed = scan.id;
@@ -84,9 +84,9 @@ export const DEMO_REPORT: ReportModel = {
 };
 
 export function scoreColor(v: number) {
-  if (v >= 80) return "#1f8a52"; // dark green
-  if (v >= 40) return "#1b6ef3"; // neon-ish blue
-  return "#b52a20"; // dark red
+  if (v >= 80) return "#22C55E";
+  if (v >= 40) return "#3B82F6";
+  return "#EF4444";
 }
 
 /* ------------------------- deep vulnerability model ------------------------ */
