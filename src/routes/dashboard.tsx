@@ -400,19 +400,19 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
         <div className="glass rounded-2xl p-6">
           <div className="flex items-center justify-between">
             <div className="text-sm font-medium">Live Threat Activity</div>
-            <Wifi className="size-4 text-[#5aa0d6] animate-pulse" />
+            <Wifi className="size-4 text-[#06b6d4] animate-pulse" />
           </div>
           <ul className="mt-4 space-y-3">
             {report.threats.map((t) => (
               <li key={t.ip} className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2.5">
-                  <div className="size-7 rounded-lg glass grid place-items-center text-[10px] font-mono text-[#5aa0d6]">{t.country}</div>
+                  <div className="size-7 rounded-lg glass grid place-items-center text-[10px] font-mono text-[#06b6d4] border border-[#06b6d4]/30 shadow-[0_0_12px_-3px_rgba(6,182,212,0.35)]">{t.country}</div>
                   <div>
-                    <div className="font-mono">{t.ip}</div>
-                    <div className="text-muted-foreground text-[10px] mt-0.5">{t.type}</div>
+                    <div className="font-mono text-white">{t.ip}</div>
+                    <div className="text-[#06b6d4] text-[10px] mt-0.5">{t.type}</div>
                   </div>
                 </div>
-                <span className="text-muted-foreground/70 text-[10px]">{t.ago}</span>
+                <span className="text-[#06b6d4]/80 text-[10px]">{t.ago}</span>
               </li>
             ))}
           </ul>
