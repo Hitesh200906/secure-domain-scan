@@ -131,17 +131,8 @@ function Dashboard() {
           <NavLinks />
         </nav>
         <div className="p-3 space-y-2" style={{ borderTop: `1px solid ${C.border}` }}>
-          <div className="rounded-xl p-4" style={{ background: C.elevated, border: `1px solid ${C.border}` }}>
-            <div className="flex items-center justify-between">
-              <div className="text-[10px] uppercase tracking-[0.18em]" style={{ color: C.sub }}>{profile?.plan ?? "starter"} plan</div>
-              <Zap className="size-3.5" style={{ color: C.blue }} />
-            </div>
-            <div className="text-[15px] mt-1.5 font-semibold tabular-nums">{(profile?.credits ?? 0).toLocaleString()}<span className="text-[11px] font-normal ml-1" style={{ color: C.sub }}>credits</span></div>
-            <div className="mt-2.5 h-1 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.07)" }}>
-              <div className="h-full rounded-full" style={{ width: `${Math.min(100, ((profile?.credits ?? 0) / 15) * 100)}%`, background: `linear-gradient(90deg, ${C.blue}, ${C.cyan})` }} />
-            </div>
-            <Link to="/pricing" className="mt-3 inline-flex items-center gap-1 text-[11px] hover:underline" style={{ color: C.blue }}>Upgrade plan <ArrowRight className="size-3" /></Link>
-          </div>
+          <PlanCard plan={profile?.plan ?? "starter"} credits={profile?.credits ?? 0} />
+
           {user && (
             <button onClick={signOut} className="w-full text-left px-3 py-2 rounded-lg text-xs inline-flex items-center gap-2 transition hover:bg-white/[0.04]" style={{ color: C.sub }}>
               <LogOut className="size-3.5" /> Sign out
