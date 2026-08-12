@@ -212,10 +212,10 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
   report: ReportModel; profile: { plan: string; credits: number } | null; scans: Scan[]; mounted: boolean; onOpenReports: () => void;
 }) {
   const risk = [
-    { label: "Critical", val: Math.max(1, Math.floor(report.findings * 0.08)), color: "#a83232", icon: ShieldAlert },
-    { label: "High", val: Math.max(1, Math.floor(report.findings * 0.22)), color: "#b5702a", icon: AlertTriangle },
-    { label: "Medium", val: Math.max(1, Math.floor(report.findings * 0.38)), color: "#9a8a2c", icon: Eye },
-    { label: "Low", val: Math.max(1, Math.floor(report.findings * 0.32)), color: "#2f7361", icon: CheckCircle2 },
+    { label: "Critical", val: Math.max(1, Math.floor(report.findings * 0.08)), color: "#ef4444", icon: ShieldAlert },
+    { label: "High", val: Math.max(1, Math.floor(report.findings * 0.22)), color: "#f97316", icon: AlertTriangle },
+    { label: "Medium", val: Math.max(1, Math.floor(report.findings * 0.38)), color: "#eab308", icon: Eye },
+    { label: "Low", val: Math.max(1, Math.floor(report.findings * 0.32)), color: "#22c55e", icon: CheckCircle2 },
   ];
 
   return (
@@ -400,19 +400,19 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
         <div className="glass rounded-2xl p-6">
           <div className="flex items-center justify-between">
             <div className="text-sm font-medium">Live Threat Activity</div>
-            <Wifi className="size-4 text-[#5aa0d6] animate-pulse" />
+            <Wifi className="size-4 text-[#06b6d4] animate-pulse" />
           </div>
           <ul className="mt-4 space-y-3">
             {report.threats.map((t) => (
               <li key={t.ip} className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2.5">
-                  <div className="size-7 rounded-lg glass grid place-items-center text-[10px] font-mono text-[#5aa0d6]">{t.country}</div>
+                  <div className="size-7 rounded-lg glass grid place-items-center text-[10px] font-mono text-[#06b6d4] border border-[#06b6d4]/30 shadow-[0_0_12px_-3px_rgba(6,182,212,0.35)]">{t.country}</div>
                   <div>
-                    <div className="font-mono">{t.ip}</div>
-                    <div className="text-muted-foreground text-[10px] mt-0.5">{t.type}</div>
+                    <div className="font-mono text-white">{t.ip}</div>
+                    <div className="text-[#06b6d4] text-[10px] mt-0.5">{t.type}</div>
                   </div>
                 </div>
-                <span className="text-muted-foreground/70 text-[10px]">{t.ago}</span>
+                <span className="text-[#06b6d4]/80 text-[10px]">{t.ago}</span>
               </li>
             ))}
           </ul>
@@ -626,12 +626,12 @@ function Chart({ data }: { data: number[] }) {
     <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-40">
       <defs>
         <linearGradient id="ca" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#2b5f8a" stopOpacity="0.45" />
-          <stop offset="100%" stopColor="#2b5f8a" stopOpacity="0" />
+          <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.45" />
+          <stop offset="100%" stopColor="#06b6d4" stopOpacity="0" />
         </linearGradient>
         <linearGradient id="cl" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#3c7fb1" />
-          <stop offset="100%" stopColor="#2f7361" />
+          <stop offset="0%" stopColor="#06b6d4" />
+          <stop offset="100%" stopColor="#14b8a6" />
         </linearGradient>
       </defs>
       {[0.25, 0.5, 0.75].map((y) => (
@@ -641,7 +641,7 @@ function Chart({ data }: { data: number[] }) {
       <motion.polyline points={points} fill="none" stroke="url(#cl)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
         initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4, ease: "easeOut" }} />
       {data.map((v, i) => i % 4 === 0 && (
-        <circle key={i} cx={i * step} cy={h - (v / max) * h * 0.85 - 8} r="2.5" fill="#3c7fb1" />
+        <circle key={i} cx={i * step} cy={h - (v / max) * h * 0.85 - 8} r="2.5" fill="#06b6d4" />
       ))}
     </svg>
   );
