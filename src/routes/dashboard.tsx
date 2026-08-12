@@ -161,7 +161,7 @@ function Dashboard() {
               <button className="size-9 rounded-lg border border-white/[0.08] grid place-items-center hover:bg-white/[0.05] transition" aria-label="Notifications">
                 <Bell className="size-4" />
               </button>
-              <Link to="/profile" className="hidden sm:grid size-9 rounded-lg border border-white/[0.08] place-items-center hover:bg-white/[0.05] transition" aria-label="Profile">
+              <Link to="/profile" search={{ tab: "overview" }} className="hidden sm:grid size-9 rounded-lg border border-white/[0.08] place-items-center hover:bg-white/[0.05] transition" aria-label="Profile">
                 <UserIcon className="size-4" />
               </Link>
               <Link to="/scan/new" search={{ plan: "professional" as const }} className="rounded-lg bg-white text-black px-3 sm:px-4 py-2 text-xs font-medium inline-flex items-center gap-1.5 hover:bg-white/90 transition">
@@ -214,6 +214,11 @@ function Dashboard() {
       </aside>
     </div>
   );
+}
+
+function greeting() {
+  const h = new Date().getHours();
+  return h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
 }
 
 /* -------------------------------- overview -------------------------------- */
