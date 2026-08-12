@@ -828,28 +828,29 @@ function StatusPill({ status }: { status: string }) {
 }
 
 /* -------------------------------- widgets -------------------------------- */
+const navItemBase =
+  "group relative w-full flex items-center gap-2.5 overflow-hidden rounded-xl border px-3 py-1.5 text-left transition hover:border-white/25 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]";
+const navItemActive = "border-white/25 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))]";
+
 function SidebarLink({ to, icon: Icon, label, onClick, search }: { to: string; icon: typeof LayoutDashboard; label: string; onClick?: () => void; search?: Record<string, string> }) {
   return (
-    <Link to={to} search={search as never} onClick={onClick}
-      className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition hover:bg-white/[0.04] hover:text-white"
-      style={{ color: C.sub }}>
-      <Icon className="size-4" />
-      <span className="flex-1">{label}</span>
+    <Link to={to} search={search as never} onClick={onClick} className={`${navItemBase} border-transparent`}>
+      <span className="relative size-7 rounded-lg grid place-items-center shrink-0">
+        <Icon className="size-4 text-neutral-300 opacity-60 transition group-hover:opacity-100" />
+      </span>
+      <span className="relative min-w-0 flex-1 block text-sm whitespace-nowrap text-neutral-200">{label}</span>
     </Link>
   );
 }
 
 function SidebarButton({ icon: Icon, label, active, badge, onClick }: { icon: typeof LayoutDashboard; label: string; active?: boolean; badge?: string; onClick: () => void }) {
   return (
-    <button onClick={onClick}
-      className="relative w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition hover:bg-white/[0.04]"
-      style={active
-        ? { background: "rgba(37,99,235,0.14)", color: C.text, boxShadow: `inset 0 0 0 1px ${C.blue}2e` }
-        : { color: C.sub }}>
-      {active && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-[2px] rounded-r" style={{ background: C.blue }} />}
-      <Icon className="size-4" style={active ? { color: C.blue } : undefined} />
-      <span className="flex-1 text-left">{label}</span>
-      {badge && <span className="text-[10px] px-1.5 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.07)", color: C.sub }}>{badge}</span>}
+    <button onClick={onClick} className={`${navItemBase} ${active ? navItemActive : "border-transparent"}`}>
+      <span className="relative size-7 rounded-lg grid place-items-center shrink-0">
+        <Icon className={`size-4 transition ${active ? "text-white" : "text-neutral-300 opacity-60 group-hover:opacity-100"}`} />
+      </span>
+      <span className={`relative min-w-0 flex-1 block text-sm whitespace-nowrap ${active ? "text-white" : "text-neutral-200"}`}>{label}</span>
+      {badge && <span className="relative inline text-[10px] rounded-full bg-white/[0.06] px-1.5 py-0.5 text-neutral-300 tabular-nums">{badge}</span>}
     </button>
   );
 }
