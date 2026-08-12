@@ -212,10 +212,10 @@ function Overview({ report, profile, scans, mounted, onOpenReports }: {
   report: ReportModel; profile: { plan: string; credits: number } | null; scans: Scan[]; mounted: boolean; onOpenReports: () => void;
 }) {
   const risk = [
-    { label: "Critical", val: Math.max(1, Math.floor(report.findings * 0.08)), color: "#a83232", icon: ShieldAlert },
-    { label: "High", val: Math.max(1, Math.floor(report.findings * 0.22)), color: "#b5702a", icon: AlertTriangle },
-    { label: "Medium", val: Math.max(1, Math.floor(report.findings * 0.38)), color: "#9a8a2c", icon: Eye },
-    { label: "Low", val: Math.max(1, Math.floor(report.findings * 0.32)), color: "#2f7361", icon: CheckCircle2 },
+    { label: "Critical", val: Math.max(1, Math.floor(report.findings * 0.08)), color: "#ef4444", icon: ShieldAlert },
+    { label: "High", val: Math.max(1, Math.floor(report.findings * 0.22)), color: "#f97316", icon: AlertTriangle },
+    { label: "Medium", val: Math.max(1, Math.floor(report.findings * 0.38)), color: "#eab308", icon: Eye },
+    { label: "Low", val: Math.max(1, Math.floor(report.findings * 0.32)), color: "#22c55e", icon: CheckCircle2 },
   ];
 
   return (
