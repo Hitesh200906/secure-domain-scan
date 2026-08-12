@@ -134,43 +134,52 @@ function Dashboard() {
 
       {/* Scrollable content */}
       <div className="flex-1 min-w-0 h-screen overflow-y-auto relative">
-        <header className="sticky top-0 z-20 backdrop-blur-xl bg-background/70 border-b border-white/[0.06]">
-          <div className="flex items-center justify-between px-4 sm:px-6 py-4 gap-3">
-            <div className="flex items-start gap-3 min-w-0">
-              <button onClick={() => setMobileNav(true)} className="lg:hidden size-9 shrink-0 rounded-full glass grid place-items-center hover:border-white/20 transition mt-1" aria-label="Open menu">
+        <header className="sticky top-0 z-20 backdrop-blur-xl bg-background/80 border-b border-white/[0.07]">
+          <div className="flex items-center justify-between px-4 sm:px-6 py-3 gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <button onClick={() => setMobileNav(true)} className="lg:hidden size-9 shrink-0 rounded-lg border border-white/10 grid place-items-center hover:bg-white/[0.05] transition" aria-label="Open menu">
                 <Menu className="size-4" />
               </button>
               <div className="min-w-0">
-                <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
-                  <span className="relative flex size-1.5">
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
-                    <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
-                  </span>
-                  All systems operational{mounted && time ? ` · ${time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}` : ""}
-                </div>
-                <div className="flex items-center gap-3 mt-1 flex-wrap">
-                  <h1 className="text-2xl font-medium tracking-tight">
-                    {view === "reports" ? "Scan Reports" : user ? `Welcome back${profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}` : "Security Dashboard"}
-                  </h1>
-                  <RoleBadge role={role} size="md" />
-                </div>
+                <h1 className="text-[15px] font-semibold tracking-tight truncate">{view === "reports" ? "Scan Reports" : "Overview"}</h1>
+                <p className="text-[11px] text-muted-foreground truncate">
+                  {view === "reports" ? "Submitted scans and their reports" : "Security posture across your monitored assets"}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="hidden md:flex items-center gap-2 rounded-full glass px-3.5 py-2 text-xs text-muted-foreground w-72">
-                <Search className="size-3.5" />
-                <input placeholder="Search scans, findings, assets…" className="bg-transparent outline-none flex-1 text-white placeholder:text-muted-foreground" />
-                <kbd className="text-[10px] text-muted-foreground/60 border border-white/10 rounded px-1.5 py-0.5">⌘K</kbd>
+              <div className="hidden xl:flex items-center gap-1.5 text-[11px] text-muted-foreground border border-white/[0.08] rounded-lg px-2.5 py-1.5">
+                <span className="size-1.5 rounded-full bg-emerald-500" />
+                All systems operational
+                <span className="text-muted-foreground/60 font-mono">{mounted && time ? time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : ""}</span>
               </div>
-              <button className="size-9 rounded-full glass grid place-items-center hover:border-white/20 transition">
+              <div className="hidden md:flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-1.5 text-xs text-muted-foreground w-56 lg:w-64">
+                <Search className="size-3.5" />
+                <input placeholder="Search…" className="bg-transparent outline-none flex-1 min-w-0 text-white placeholder:text-muted-foreground" />
+                <kbd className="text-[10px] text-muted-foreground/60 border border-white/10 rounded px-1 py-0.5">⌘K</kbd>
+              </div>
+              <button className="size-9 rounded-lg border border-white/[0.08] grid place-items-center hover:bg-white/[0.05] transition" aria-label="Notifications">
                 <Bell className="size-4" />
               </button>
-              <Link to="/scan/new" search={{ plan: "professional" as const }} className="rounded-full bg-white text-black px-4 py-2 text-xs font-medium inline-flex items-center gap-1.5 hover:bg-white/90 transition">
-                <ScanSearch className="size-3.5" /> New Scan
+              <Link to="/profile" className="hidden sm:grid size-9 rounded-lg border border-white/[0.08] place-items-center hover:bg-white/[0.05] transition" aria-label="Profile">
+                <UserIcon className="size-4" />
+              </Link>
+              <Link to="/scan/new" search={{ plan: "professional" as const }} className="rounded-lg bg-white text-black px-3 sm:px-4 py-2 text-xs font-medium inline-flex items-center gap-1.5 hover:bg-white/90 transition">
+                <ScanSearch className="size-3.5" /> <span className="hidden xs:inline">New Scan</span>
               </Link>
             </div>
           </div>
+          {view === "overview" && (
+            <div className="px-4 sm:px-6 pb-3 flex flex-wrap items-center gap-2.5">
+              <span className="text-[13px] text-white/90">
+                {greeting()}{profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : user ? "" : ""}
+              </span>
+              <span className="text-[11px] text-muted-foreground">Security overview for your workspace.</span>
+              <RoleBadge role={role} size="md" />
+            </div>
+          )}
         </header>
+
 
         {view === "reports" ? (
           <ReportsSection scans={scans} activeId={activeId} onUpload={uploadReport} mounted={mounted} />
