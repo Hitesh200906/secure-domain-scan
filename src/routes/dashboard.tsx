@@ -208,261 +208,343 @@ function Dashboard() {
 }
 
 /* -------------------------------- overview -------------------------------- */
+const SEV = {
+  Critical: "#d64545",
+  High: "#d18b2c",
+  Medium: "#c2ae3a",
+  Low: "#6b8cae",
+};
+
+function Panel({ className = "", children }: { className?: string; children: React.ReactNode }) {
+  return (
+    <section className={`rounded-xl border border-white/[0.07] bg-[oklch(0.055_0.006_240)] transition-colors hover:border-white/[0.12] ${className}`}>
+      {children}
+    </section>
+  );
+}
+
+function PanelHead({ title, sub, right }: { title: string; sub?: string; right?: React.ReactNode }) {
+  return (
+    <div className="flex items-start justify-between gap-3 px-5 py-4 border-b border-white/[0.06]">
+      <div className="min-w-0">
+        <h2 className="text-[13px] font-semibold tracking-tight text-white">{title}</h2>
+        {sub && <p className="text-[11px] text-muted-foreground mt-0.5 truncate">{sub}</p>}
+      </div>
+      {right && <div className="shrink-0">{right}</div>}
+    </div>
+  );
+}
+
 function Overview({ report, profile, scans, mounted, onOpenReports }: {
   report: ReportModel; profile: { plan: string; credits: number } | null; scans: Scan[]; mounted: boolean; onOpenReports: () => void;
 }) {
   const risk = [
-    { label: "Critical", val: Math.max(1, Math.floor(report.findings * 0.08)), color: "#ef4444", icon: ShieldAlert },
-    { label: "High", val: Math.max(1, Math.floor(report.findings * 0.22)), color: "#f97316", icon: AlertTriangle },
-    { label: "Medium", val: Math.max(1, Math.floor(report.findings * 0.38)), color: "#eab308", icon: Eye },
-    { label: "Low", val: Math.max(1, Math.floor(report.findings * 0.32)), color: "#22c55e", icon: CheckCircle2 },
+    { label: "Critical", val: Math.max(1, Math.floor(report.findings * 0.08)), color: SEV.Critical },
+    { label: "High", val: Math.max(1, Math.floor(report.findings * 0.22)), color: SEV.High },
+    { label: "Medium", val: Math.max(1, Math.floor(report.findings * 0.38)), color: SEV.Medium },
+    { label: "Low", val: Math.max(1, Math.floor(report.findings * 0.32)), color: SEV.Low },
+  ];
+  const riskTotal = risk.reduce((a, b) => a + b.val, 0) || 1;
+  const sevOrder = ["Critical", "High", "Medium", "Low"] as const;
+
+  const blocked = report.findings * 52;
+  const investigating = Math.max(1, Math.floor(report.findings * 0.4));
+  const critical = Math.max(1, Math.floor(report.findings * 0.08));
+
+  const kpis = [
+    {
+      label: "Security Score", value: `${report.score}`, suffix: "/100", icon: Shield,
+      note: "Risk-weighted across monitored assets", color: scoreColor(report.score),
+      tag: report.score >= 80 ? "Strong" : report.score >= 40 ? "Good" : "At risk",
+    },
+    { label: "Open Findings", value: `${report.findings}`, icon: AlertTriangle, note: "Across monitored assets", color: "#ffffff", tag: report.status },
+    { label: "Assets Monitored", value: `${scans.length || 1}`, icon: Globe2, note: `${scans.length} scans this month`, color: "#ffffff", tag: null },
+    { label: "Credits Left", value: (profile?.credits ?? 0).toLocaleString(), icon: Zap, note: `${profile?.plan ?? "starter"} plan`, color: "#ffffff", tag: null },
   ];
 
   return (
-    <div className="p-4 sm:p-6 space-y-6">
-      <div className="glass rounded-2xl px-5 py-3.5 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="size-9 rounded-xl grid place-items-center" style={{ background: "#132a3d" }}>
-            <FileText className="size-4" style={{ color: "#5aa0d6" }} />
-
+    <div className="p-4 sm:p-6 space-y-5 max-w-[1600px]">
+      {/* Welcome / demo banner */}
+      {report.demo ? (
+        <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 sm:px-5 py-3.5 flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="flex items-start gap-3 min-w-0 flex-1">
+            <div className="size-8 shrink-0 rounded-lg grid place-items-center border border-white/[0.08] bg-white/[0.03]">
+              <FileText className="size-3.5 text-muted-foreground" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-[12px] font-medium text-white">Demo environment</div>
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                You're currently viewing sample security data. Run your first scan to populate the dashboard with real findings.
+              </p>
+            </div>
           </div>
-          <div className="min-w-0">
-            <div className="text-sm font-medium truncate">
-              {report.demo ? "Demo report" : `Report · ${report.target}`}
-            </div>
-            <div className="text-[11px] text-muted-foreground truncate">
-              {report.demo
-                ? "This is a demo report — submit a scan and upload its report to see your own data here."
-                : `${report.requester.company} · ${report.plan} plan${mounted ? ` · ${new Date(report.createdAt).toLocaleDateString()}` : ""}`}
-            </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button onClick={onOpenReports} className="rounded-lg border border-white/10 hover:bg-white/[0.05] px-3 py-1.5 text-[11px] font-medium transition">Manage reports</button>
+            <Link to="/scan/new" search={{ plan: "professional" as const }} className="rounded-lg bg-white text-black hover:bg-white/90 px-3 py-1.5 text-[11px] font-medium transition">Run First Scan</Link>
           </div>
         </div>
-        <button onClick={onOpenReports} className="rounded-lg border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] px-3.5 py-2 text-xs font-medium transition inline-flex items-center gap-1.5">
-          <FileText className="size-3.5" /> Manage reports
-        </button>
-      </div>
+      ) : (
+        <div className="rounded-xl border border-white/[0.07] bg-white/[0.015] px-4 sm:px-5 py-3.5 flex flex-wrap items-center justify-between gap-3">
+          <div className="min-w-0">
+            <div className="text-[12px] font-medium text-white truncate">Active report · {report.target}</div>
+            <div className="text-[11px] text-muted-foreground truncate">
+              {report.requester.company} · {report.plan} plan{mounted ? ` · ${new Date(report.createdAt).toLocaleDateString()}` : ""}
+            </div>
+          </div>
+          <button onClick={onOpenReports} className="rounded-lg border border-white/10 hover:bg-white/[0.05] px-3 py-1.5 text-[11px] font-medium transition inline-flex items-center gap-1.5">
+            <FileText className="size-3.5" /> Manage reports
+          </button>
+        </div>
+      )}
 
-      {/* KPI cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-          { label: "Security Score", value: report.score, suffix: "/100", icon: Shield, trend: report.demo ? "demo data" : "from report", color: scoreColor(report.score) },
-          { label: "Open Findings", value: report.findings, icon: AlertTriangle, trend: `${report.status}`, color: "#b52a20" },
-          { label: "Assets Monitored", value: scans.length || 1, icon: Globe2, trend: `${scans.length} scans`, color: "#5aa0d6" },
-          { label: "Credits Left", value: profile?.credits ?? 0, icon: Zap, trend: `${profile?.plan ?? "starter"}`, color: "#ffffff" },
-        ].map((k, i) => (
-          <motion.div key={k.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.05 }}
-            className="glass rounded-2xl p-5 relative overflow-hidden group hover:border-white/15 transition">
-            <div className="flex items-start justify-between">
-              <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{k.label}</div>
-              <k.icon className="size-4 text-muted-foreground/60" />
+      {/* KPI row */}
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+        {kpis.map((k, i) => (
+          <motion.div key={k.label} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: i * 0.04 }}
+            className="rounded-xl border border-white/[0.07] bg-[oklch(0.055_0.006_240)] p-4 sm:p-5 transition-colors hover:border-white/[0.13]">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground truncate">{k.label}</span>
+              <k.icon className="size-3.5 text-muted-foreground/50 shrink-0" />
             </div>
-            <div className="mt-3 flex items-baseline gap-1">
-              <div className="text-3xl font-semibold tracking-tight" style={{ color: k.color }}>{k.value}</div>
-              {k.suffix && <div className="text-sm text-muted-foreground">{k.suffix}</div>}
+            <div className="mt-3 flex items-end justify-between gap-3">
+              <div className="flex items-baseline gap-1 min-w-0">
+                <span className="text-2xl sm:text-3xl font-semibold tracking-tight tabular-nums truncate" style={{ color: k.color }}>{k.value}</span>
+                {k.suffix && <span className="text-xs text-muted-foreground">{k.suffix}</span>}
+              </div>
+              {k.label === "Security Score" && (
+                <div className="hidden sm:block shrink-0"><ScoreRing value={report.score} size={52} /></div>
+              )}
             </div>
-            <div className="mt-2 text-[11px] text-muted-foreground inline-flex items-center gap-1">
-              <TrendingUp className="size-3 text-emerald-400/80" /> {k.trend}
+            <div className="mt-2.5 flex items-center gap-2">
+              {k.tag && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded border border-white/10 text-white/70 capitalize shrink-0">{k.tag}</span>
+              )}
+              <span className="text-[10px] text-muted-foreground truncate">{k.note}</span>
             </div>
           </motion.div>
         ))}
       </div>
 
-      {/* Chart + posture */}
+      {/* Posture + risk distribution */}
       <div className="grid lg:grid-cols-3 gap-4">
-        <div className="glass rounded-2xl p-6 lg:col-span-2">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <div className="text-sm font-medium">Threat Activity</div>
-              <div className="text-[11px] text-muted-foreground mt-0.5">Last 24 hours · {report.demo ? "demo feed" : report.target}</div>
-            </div>
-            <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest">
-              <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" /> Realtime
-            </div>
-          </div>
-          <Chart data={report.trend} />
-          <div className="mt-4 grid grid-cols-3 gap-3 pt-4 border-t border-white/[0.06]">
-            {[
-              { l: "Blocked", v: String(report.findings * 52), c: "#2f9e6a" },
-              { l: "Investigating", v: String(Math.max(1, Math.floor(report.findings * 0.4))), c: "#b8912f" },
-              { l: "Critical", v: String(Math.max(1, Math.floor(report.findings * 0.08))), c: "#c0392b" },
-            ].map((s) => (
-              <div key={s.l}>
-                <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{s.l}</div>
-                <div className="mt-1 text-xl font-semibold" style={{ color: s.c }}>{s.v}</div>
+        <Panel className="lg:col-span-2">
+          <PanelHead title="Overall Security Posture" sub="Risk-weighted across monitored assets" />
+          <div className="p-5 grid sm:grid-cols-[auto_1fr] gap-6 items-center">
+            <div className="flex items-center gap-4">
+              <ScoreRing value={report.score} size={124} />
+              <div className="sm:hidden">
+                <div className="text-lg font-semibold" style={{ color: scoreColor(report.score) }}>{report.score}/100</div>
               </div>
-            ))}
+            </div>
+            <div className="space-y-4">
+              {report.posture.map((p, i) => (
+                <div key={p.label}>
+                  <div className="flex items-baseline justify-between text-[11px]">
+                    <span className="text-muted-foreground">{p.label}</span>
+                    <span className="font-mono tabular-nums text-white/90">{p.value}</span>
+                  </div>
+                  <div className="mt-1.5 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+                    <motion.div initial={{ width: 0 }} animate={{ width: `${p.value}%` }} transition={{ duration: 0.8, delay: i * 0.08, ease: "easeOut" }}
+                      className="h-full rounded-full" style={{ background: p.color }} />
+                  </div>
+                </div>
+              ))}
+              <p className="text-[11px] text-muted-foreground pt-1">
+                Weakest area: <span className="text-white/85">{[...report.posture].sort((a, b) => a.value - b.value)[0]?.label}</span>
+              </p>
+            </div>
           </div>
-        </div>
+        </Panel>
 
-        <div className="glass rounded-2xl p-6 flex flex-col">
-          <div className="text-sm font-medium">Overall posture</div>
-          <div className="text-[11px] text-muted-foreground mt-0.5">Risk-weighted across assets</div>
-          <div className="flex-1 grid place-items-center py-4">
-            <ScoreRing value={report.score} />
-          </div>
-          <div className="space-y-2.5">
-            {report.posture.map((p) => (
-              <div key={p.label}>
-                <div className="flex justify-between text-[11px]">
-                  <span className="text-muted-foreground inline-flex items-center gap-1.5">
-                    <span className="size-1.5 rounded-full" style={{ background: p.color }} />{p.label}
+        <Panel>
+          <PanelHead title="Risk Distribution" sub={`${riskTotal} findings by severity`} right={<BarChart3 className="size-4 text-muted-foreground/60" />} />
+          <div className="p-5">
+            <div className="flex h-2 w-full overflow-hidden rounded-full bg-white/[0.05]">
+              {risk.map((r, i) => (
+                <motion.div key={r.label} initial={{ width: 0 }} animate={{ width: `${(r.val / riskTotal) * 100}%` }}
+                  transition={{ duration: 0.7, delay: i * 0.06, ease: "easeOut" }} style={{ background: r.color }} className="h-full" />
+              ))}
+            </div>
+            <ul className="mt-5 space-y-3">
+              {risk.map((r) => (
+                <li key={r.label} className="flex items-center justify-between text-[11px]">
+                  <span className="inline-flex items-center gap-2 text-muted-foreground">
+                    <span className="size-2 rounded-sm" style={{ background: r.color }} />{r.label}
                   </span>
-                  <span className="font-mono">{p.value}</span>
-                </div>
-                <div className="mt-1 h-1.5 rounded-full bg-white/5 overflow-hidden">
-                  <motion.div initial={{ width: 0 }} animate={{ width: `${p.value}%` }} transition={{ duration: 1, ease: "easeOut" }}
-                    className="h-full rounded-full" style={{ background: p.color }} />
-                </div>
-              </div>
-            ))}
+                  <span className="font-mono tabular-nums text-white/90">{r.val}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
+        </Panel>
       </div>
 
-      {/* Recent scans + risk */}
-      <div className="grid lg:grid-cols-3 gap-4">
-        <div className="glass rounded-2xl overflow-hidden lg:col-span-2">
-          <div className="px-6 py-4 flex items-center justify-between border-b border-white/[0.06] gap-3">
-            <div>
-              <div className="text-sm font-medium">Recent Scans</div>
-              <div className="text-[11px] text-muted-foreground mt-0.5">{scans.length} total this month</div>
-            </div>
-            <Link to="/scan/new" search={{ plan: "professional" as const }}
-              className="rounded-lg bg-white hover:bg-white/90 text-black px-3.5 py-2 text-xs font-medium inline-flex items-center gap-1.5 transition">
-              Start new <ArrowUpRight className="size-3.5" />
-            </Link>
+      {/* Threat activity */}
+      <Panel>
+        <PanelHead
+          title="Threat Activity"
+          sub={`Last 24 hours · ${report.demo ? "demo feed" : report.target}`}
+          right={
+            <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] text-muted-foreground border border-white/10 rounded px-2 py-1">
+              <span className="relative flex size-1.5">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400/70 animate-ping" />
+                <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
+              </span>
+              Live
+            </span>
+          }
+        />
+        <div className="p-5">
+          <div className="grid grid-cols-3 gap-3 sm:gap-6">
+            {[
+              { l: "Blocked", v: blocked.toLocaleString(), c: "#2f9e6a" },
+              { l: "Investigating", v: investigating.toLocaleString(), c: "#d18b2c" },
+              { l: "Critical", v: critical.toLocaleString(), c: SEV.Critical },
+            ].map((s) => (
+              <div key={s.l} className="min-w-0">
+                <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground truncate">{s.l}</div>
+                <div className="mt-1 text-xl sm:text-2xl font-semibold tabular-nums" style={{ color: s.c }}>{s.v}</div>
+              </div>
+            ))}
           </div>
+          <div className="mt-4 pt-4 border-t border-white/[0.06]">
+            <Chart data={report.trend} height={110} />
+          </div>
+        </div>
+      </Panel>
 
+      {/* Recent scans + live feed */}
+      <div className="grid lg:grid-cols-3 gap-4">
+        <Panel className="lg:col-span-2 overflow-hidden">
+          <PanelHead
+            title="Recent Scans"
+            sub={`${scans.length} total this month`}
+            right={
+              <button onClick={onOpenReports} className="text-[11px] text-muted-foreground hover:text-white transition">View all</button>
+            }
+          />
           {scans.length === 0 ? (
-            <div className="px-6 py-16 text-center">
-              <div className="size-12 mx-auto rounded-full glass grid place-items-center text-primary"><ScanSearch className="size-5" /></div>
-              <div className="mt-4 text-sm">No scans yet</div>
-              <p className="mt-1 text-xs text-muted-foreground">Run your first security scan in under 60 seconds.</p>
-              <Link to="/scan/new" search={{ plan: "professional" as const }} className="mt-5 inline-flex rounded-lg bg-white hover:bg-white/90 text-black px-4 py-2 text-xs font-medium transition">Start your first scan</Link>
+            <div className="px-5 py-10 text-center">
+              <div className="size-10 mx-auto rounded-lg border border-white/[0.08] bg-white/[0.02] grid place-items-center">
+                <ScanSearch className="size-4 text-muted-foreground" />
+              </div>
+              <div className="mt-3 text-[13px] font-medium text-white">No scans yet</div>
+              <p className="mt-1 text-[11px] text-muted-foreground max-w-sm mx-auto">
+                Run your first security scan to start building your security history.
+              </p>
+              <Link to="/scan/new" search={{ plan: "professional" as const }}
+                className="mt-4 inline-flex rounded-lg bg-white hover:bg-white/90 text-black px-4 py-2 text-[11px] font-medium transition">
+                Start New Scan
+              </Link>
             </div>
-
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full text-sm min-w-[560px]">
                 <thead>
-                  <tr className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                    <th className="text-left font-normal px-6 py-3">Target</th>
+                  <tr className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                    <th className="text-left font-normal px-5 py-3">Target</th>
                     <th className="text-left font-normal py-3">Plan</th>
                     <th className="text-left font-normal py-3">Status</th>
                     <th className="text-left font-normal py-3">Score</th>
-                    <th className="text-right font-normal px-6 py-3">Date</th>
+                    <th className="text-right font-normal px-5 py-3">Date</th>
                   </tr>
                 </thead>
                 <tbody>
                   {scans.map((r) => (
-                    <tr key={r.id} className="border-t border-white/[0.04] hover:bg-white/[0.02] transition">
-                      <td className="px-6 py-3.5">
+                    <tr key={r.id} className="border-t border-white/[0.05] hover:bg-white/[0.02] transition">
+                      <td className="px-5 py-3">
                         <div className="flex items-center gap-2.5">
-                          <div className="size-7 rounded-lg glass grid place-items-center"><Globe2 className="size-3.5 text-[#5aa0d6]" /></div>
-                          <span className="font-mono text-xs truncate max-w-[200px]">{r.target_url}</span>
+                          <div className="size-6 rounded border border-white/[0.08] bg-white/[0.02] grid place-items-center"><Globe2 className="size-3 text-muted-foreground" /></div>
+                          <span className="font-mono text-xs truncate max-w-[220px]">{r.target_url}</span>
                         </div>
                       </td>
-                      <td className="py-3.5 text-xs capitalize text-muted-foreground">{r.plan}</td>
-                      <td className="py-3.5"><StatusPill status={r.status} /></td>
-                      <td className="py-3.5 font-mono text-xs">{r.score != null ? `${r.score}/100` : "—"}</td>
-                      <td className="px-6 py-3.5 text-right text-xs text-muted-foreground">{mounted ? new Date(r.created_at).toLocaleDateString() : ""}</td>
+                      <td className="py-3 text-xs capitalize text-muted-foreground">{r.plan}</td>
+                      <td className="py-3"><StatusPill status={r.status} /></td>
+                      <td className="py-3 font-mono text-xs tabular-nums">{r.score != null ? `${r.score}/100` : "—"}</td>
+                      <td className="px-5 py-3 text-right text-xs text-muted-foreground">{mounted ? new Date(r.created_at).toLocaleDateString() : ""}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           )}
-        </div>
+        </Panel>
 
-        <div className="glass rounded-2xl p-6">
-          <div className="flex items-center justify-between">
-            <div className="text-sm font-medium">Risk Distribution</div>
-            <BarChart3 className="size-4 text-muted-foreground" />
+        <Panel>
+          <PanelHead
+            title="Live Threat Activity"
+            sub="Real-time security events across monitored assets"
+            right={<Wifi className="size-4 text-muted-foreground/60" />}
+          />
+          <ul className="divide-y divide-white/[0.05]">
+            {report.threats.map((t, i) => {
+              const sev = sevOrder[i % 4];
+              return (
+                <motion.li key={t.ip} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, delay: i * 0.06 }}
+                  className="px-5 py-3 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="size-7 shrink-0 rounded border border-white/[0.08] bg-white/[0.02] grid place-items-center text-[10px] font-mono text-muted-foreground">{t.country}</div>
+                    <div className="min-w-0">
+                      <div className="font-mono text-[12px] text-white truncate">{t.ip}</div>
+                      <div className="text-[10px] text-muted-foreground mt-0.5 truncate">{t.type} · {t.ago}</div>
+                    </div>
+                  </div>
+                  <span className="shrink-0 text-[9px] uppercase tracking-[0.14em] px-1.5 py-0.5 rounded border"
+                    style={{ color: SEV[sev], borderColor: `${SEV[sev]}55` }}>{sev}</span>
+                </motion.li>
+              );
+            })}
+          </ul>
+          <div className="px-5 py-3 border-t border-white/[0.06]">
+            <Link to="/report/$id" params={{ id: report.id }} className="text-[11px] text-muted-foreground hover:text-white transition inline-flex items-center gap-1">
+              View all activity <ArrowUpRight className="size-3" />
+            </Link>
           </div>
-          <div className="mt-5 space-y-3.5">
-            {risk.map((r) => (
-              <div key={r.label}>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground inline-flex items-center gap-2"><r.icon className="size-3" style={{ color: r.color }} />{r.label}</span>
-                  <span className="font-mono">{r.val}</span>
-                </div>
-                <div className="mt-1.5 h-1.5 rounded-full bg-white/[0.05] overflow-hidden">
-                  <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(100, r.val * 8)}%` }} transition={{ duration: 1, ease: "easeOut" }} style={{ background: r.color }} className="h-full rounded-full" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        </Panel>
       </div>
 
-      {/* Threat intel + activity */}
-      <div className="grid lg:grid-cols-2 gap-4">
-        <div className="glass rounded-2xl p-6">
-          <div className="flex items-center justify-between">
-            <div className="text-sm font-medium">Live Threat Activity</div>
-            <Wifi className="size-4 text-[#06b6d4] animate-pulse" />
-          </div>
-          <ul className="mt-4 space-y-3">
-            {report.threats.map((t) => (
-              <li key={t.ip} className="flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2.5">
-                  <div className="size-7 rounded-lg glass grid place-items-center text-[10px] font-mono text-[#06b6d4] border border-[#06b6d4]/30 shadow-[0_0_12px_-3px_rgba(6,182,212,0.35)]">{t.country}</div>
-                  <div>
-                    <div className="font-mono text-white">{t.ip}</div>
-                    <div className="text-[#06b6d4] text-[10px] mt-0.5">{t.type}</div>
-                  </div>
-                </div>
-                <span className="text-[#06b6d4]/80 text-[10px]">{t.ago}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="glass rounded-2xl p-6">
-          <div className="flex items-center justify-between">
-            <div className="text-sm font-medium">Activity</div>
-            <Activity className="size-4 text-muted-foreground" />
-          </div>
-          <ul className="mt-4 space-y-4">
-            {(scans.length ? scans.slice(0, 5) : []).map((s) => (
+      {/* Recent workspace activity (preserved) */}
+      {scans.length > 0 && (
+        <Panel>
+          <PanelHead title="Activity" sub="Latest workspace events" right={<Activity className="size-4 text-muted-foreground/60" />} />
+          <ul className="p-5 space-y-3.5">
+            {scans.slice(0, 5).map((s) => (
               <li key={s.id} className="flex gap-3">
-                <span className={`mt-1.5 size-1.5 rounded-full shrink-0 ${s.status === "completed" ? "bg-emerald-500" : s.status === "running" ? "bg-[#5aa0d6] animate-pulse" : "bg-muted-foreground"}`} />
+                <span className={`mt-1.5 size-1.5 rounded-full shrink-0 ${s.status === "completed" ? "bg-emerald-500" : s.status === "running" ? "bg-[#5a8fe8] animate-pulse" : "bg-muted-foreground"}`} />
                 <div className="min-w-0 flex-1">
                   <div className="text-xs text-white/90 truncate">Scan {s.status} for <span className="font-mono">{s.target_url}</span></div>
                   <div className="text-[10px] text-muted-foreground mt-0.5">{mounted ? new Date(s.created_at).toLocaleString() : ""}</div>
                 </div>
               </li>
             ))}
-            {!scans.length && <li className="text-xs text-muted-foreground">No activity yet — this overview is showing a demo report.</li>}
           </ul>
-        </div>
-      </div>
+        </Panel>
+      )}
 
-      {/* Deep report CTA */}
-      <div className="rounded-2xl border border-white/10 bg-black/60 px-6 py-6 sm:px-8 sm:py-7 flex flex-col md:flex-row md:items-center gap-5 md:gap-8">
-        <div className="min-w-0 flex-1">
-          <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
-            <FileText className="size-3" /> Full technical report
+      {/* Security intelligence CTA */}
+      <div className="relative overflow-hidden rounded-xl border border-white/[0.09] bg-[oklch(0.05_0.006_240)]">
+        <div className="pointer-events-none absolute inset-0 opacity-[0.05]"
+          style={{ backgroundImage: "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
+        <div className="relative px-5 sm:px-7 py-6 flex flex-col md:flex-row md:items-center gap-5 md:gap-8">
+          <div className="min-w-0 flex-1">
+            <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+              <FileText className="size-3" /> Security Intelligence
+            </div>
+            <h3 className="mt-2 text-base sm:text-lg font-semibold tracking-tight text-white">Full technical report</h3>
+            <p className="mt-1.5 text-[12px] sm:text-[13px] text-muted-foreground max-w-2xl">
+              Deep-dive into vulnerabilities, findings, affected assets, CVSS scores, reproduction evidence, and remediation guidance for {report.demo ? "the demo target" : report.target}.
+            </p>
           </div>
-          <h3 className="mt-2 text-base sm:text-lg font-medium text-white">
-            View the full details and vulnerabilities and bugs of your website deeply.
-          </h3>
-          <p className="mt-1.5 text-xs sm:text-[13px] text-muted-foreground max-w-2xl">
-            Every finding with severity, CVSS score, affected asset, reproduction evidence and step-by-step remediation guidance — compiled for {report.demo ? "the demo target" : report.target}.
-          </p>
+          <Link to="/report/$id" params={{ id: report.id }}
+            className="shrink-0 inline-flex items-center justify-center gap-2 rounded-lg bg-white text-black hover:bg-white/90 px-5 py-2.5 text-xs sm:text-[13px] font-medium transition">
+            View Full Technical Report <ArrowUpRight className="size-4" />
+          </Link>
         </div>
-        <Link
-          to="/report/$id"
-          params={{ id: report.id }}
-          className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-white text-black hover:bg-white/90 px-5 py-2.5 text-xs sm:text-sm font-medium transition"
-        >
-          View full report <ArrowUpRight className="size-4" />
-        </Link>
       </div>
     </div>
-
   );
 }
+
 
 /* -------------------------------- reports -------------------------------- */
 function ReportsSection({ scans, activeId, onUpload, mounted }: {
