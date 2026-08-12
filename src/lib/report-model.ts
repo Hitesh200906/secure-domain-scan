@@ -33,7 +33,7 @@ export type ReportModel = {
   threats: { ip: string; country: string; type: string; ago: string }[];
 };
 
-export const POSTURE_COLORS = ["#1e6f5c", "#2b4f81", "#6b4a86"];
+export const POSTURE_COLORS = ["#06b6d4", "#14b8a6", "#d946ef"];
 
 export function buildReport(scan: Scan): ReportModel {
   const seed = scan.id;
