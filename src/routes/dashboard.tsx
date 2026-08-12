@@ -626,12 +626,12 @@ function Chart({ data }: { data: number[] }) {
     <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-40">
       <defs>
         <linearGradient id="ca" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#2b5f8a" stopOpacity="0.45" />
-          <stop offset="100%" stopColor="#2b5f8a" stopOpacity="0" />
+          <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.45" />
+          <stop offset="100%" stopColor="#06b6d4" stopOpacity="0" />
         </linearGradient>
         <linearGradient id="cl" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#3c7fb1" />
-          <stop offset="100%" stopColor="#2f7361" />
+          <stop offset="0%" stopColor="#06b6d4" />
+          <stop offset="100%" stopColor="#14b8a6" />
         </linearGradient>
       </defs>
       {[0.25, 0.5, 0.75].map((y) => (
@@ -641,7 +641,7 @@ function Chart({ data }: { data: number[] }) {
       <motion.polyline points={points} fill="none" stroke="url(#cl)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
         initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4, ease: "easeOut" }} />
       {data.map((v, i) => i % 4 === 0 && (
-        <circle key={i} cx={i * step} cy={h - (v / max) * h * 0.85 - 8} r="2.5" fill="#3c7fb1" />
+        <circle key={i} cx={i * step} cy={h - (v / max) * h * 0.85 - 8} r="2.5" fill="#06b6d4" />
       ))}
     </svg>
   );
