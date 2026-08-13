@@ -459,15 +459,15 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
   return (
     <div className="px-4 sm:px-6 py-5 sm:py-6 space-y-4 max-w-[1560px]">
       {/* HERO */}
-      <Card className="relative overflow-hidden aspect-[1672/941] min-h-[380px]">
+      <Card className="relative overflow-hidden aspect-[1672/470] min-h-[280px]">
         <div
-          className="absolute inset-0 bg-contain bg-center bg-no-repeat bg-black"
+          className="absolute inset-0 bg-contain bg-right bg-no-repeat bg-black"
           style={{ backgroundImage: `url(${dashboardHeroBg.url})` }}
         />
         <div
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(90deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.68) 42%, rgba(0,0,0,0.25) 70%, rgba(0,0,0,0.10) 100%)`,
+            background: `linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.78) 48%, rgba(0,0,0,0.35) 70%, rgba(0,0,0,0.12) 100%)`,
           }}
         />
         <div className="relative z-10 grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] h-full">
@@ -477,10 +477,10 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
               <br />
               <span className="font-medium" style={{ color: C.blue }}>{name ? name.split(" ")[0] : "there"}</span>
             </h2>
-            <p className="mt-3.5 sm:mt-5 text-[13px] sm:text-[14px] leading-relaxed max-w-xs drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]" style={{ color: C.sub }}>
+            <p className="mt-3 sm:mt-4 text-[13px] sm:text-[14px] leading-relaxed max-w-xs drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]" style={{ color: C.sub }}>
               Scan any domain for threats, vulnerabilities and security risks in seconds.
             </p>
-            <Link to="/scan/new" search={{ plan: "professional" as const }} className="group mt-5 sm:mt-7 self-start">
+            <Link to="/scan/new" search={{ plan: "professional" as const }} className="group mt-4 sm:mt-5 self-start">
               <GhostButton>Start New Scan</GhostButton>
             </Link>
           </div>
