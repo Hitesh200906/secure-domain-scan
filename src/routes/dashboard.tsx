@@ -473,10 +473,10 @@ function Spark({ seed, color }: { seed: number; color: string }) {
 
 function TelemetryStrip({ report }: { report: ReportModel }) {
   const items = [
-    { label: "Protected Assets", value: `${Math.max(1, Math.round(report.score / 4))}`, sub: "under monitoring", icon: Shield, delta: "+4.2%", up: true, pct: Math.min(100, report.score), tint: C.blue },
-    { label: "Threats Neutralized", value: `${report.findings + 12}`, sub: "last 24 hours", icon: Zap, delta: "+12", up: true, pct: 74, tint: OK },
-    { label: "Active Nodes", value: "14", sub: "global edge network", icon: Server, delta: "stable", up: true, pct: 88, tint: C.cyan },
-    { label: "Avg Response", value: "14ms", sub: "mitigation latency", icon: Activity, delta: "-2.1ms", up: true, pct: 93, tint: C.blue },
+    { label: "Protected Assets", value: `${Math.max(1, Math.round(report.score / 4))}`, sub: "under monitoring", img: icAssets, delta: "+4.2%", pct: Math.min(100, report.score) },
+    { label: "Threats Neutralized", value: `${report.findings + 12}`, sub: "last 24 hours", img: icThreats, delta: "+12", pct: 74 },
+    { label: "Active Nodes", value: "14", sub: "global edge network", img: icNodes, delta: "stable", pct: 88 },
+    { label: "Avg Response", value: "14ms", sub: "mitigation latency", img: icLatency, delta: "-2.1ms", pct: 93 },
   ];
 
   return (
@@ -496,72 +496,77 @@ function TelemetryStrip({ report }: { report: ReportModel }) {
         style={{ borderColor: C.border }}
       >
         <div className="flex items-center gap-2.5 min-w-0">
-          <span className="size-1.5 rounded-full shrink-0" style={{ background: OK }} />
+          <span className="size-1.5 rounded-full shrink-0" style={{ background: C.sub }} />
           <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.22em] truncate" style={{ color: C.muted }}>
             Live Telemetry
           </span>
         </div>
-        <span className="text-[10px] sm:text-[11px] font-mono tabular-nums shrink-0" style={{ color: C.sub }}>
+        <span className="text-[10px] sm:text-[11px] font-mono tabular-nums shrink-0" style={{ color: C.muted }}>
           sync 30s
         </span>
       </div>
 
       <div className="relative z-10 grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4">
-        {items.map((item, i) => {
-          const Icon = item.icon;
-          return (
-            <div
-              key={item.label}
-              className="relative px-4 sm:px-6 py-4 sm:py-5 border-b xs:[&:nth-child(n+3)]:border-b-0 xs:odd:border-r lg:border-b-0 lg:border-r lg:last:border-r-0"
-              style={{ borderColor: C.border }}
-            >
-              <div
-                className="pointer-events-none absolute inset-x-0 top-0 h-px"
-                style={{ background: `linear-gradient(90deg, transparent, ${item.tint}55, transparent)` }}
-              />
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div
-                    className="size-8 sm:size-9 rounded-lg grid place-items-center shrink-0"
-                    style={{ border: `1px solid ${C.border}`, background: "#000000" }}
-                  >
-                    <Icon className="size-4" style={{ color: item.tint }} />
-                  </div>
-                  <div className="text-[9.5px] sm:text-[10.5px] uppercase tracking-[0.14em] truncate" style={{ color: C.muted }}>
-                    {item.label}
-                  </div>
-                </div>
-                <span
-                  className="shrink-0 rounded-full px-2 py-0.5 text-[9.5px] sm:text-[10px] font-mono tabular-nums"
-                  style={{ border: `1px solid ${C.border}`, color: item.up ? OK : SEV.High }}
-                >
-                  {item.delta}
-                </span>
-              </div>
-
-              <div className="mt-3 flex items-end justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="text-[24px] sm:text-[30px] font-light leading-none tracking-tight tabular-nums text-white">
-                    {item.value}
-                  </div>
-                  <div className="mt-1.5 text-[10.5px] sm:text-[11.5px] truncate" style={{ color: C.sub }}>
-                    {item.sub}
-                  </div>
-                </div>
-                <div className="w-[42%] max-w-[130px] shrink-0 opacity-90">
-                  <Spark seed={i * 1.9 + 0.4} color={item.tint} />
-                </div>
-              </div>
-
-              <div className="mt-3 h-[3px] w-full rounded-full overflow-hidden" style={{ background: "#0E1013" }}>
+        {items.map((item, i) => (
+          <div
+            key={item.label}
+            className="group relative px-4 sm:px-6 py-4 sm:py-5 border-b xs:[&:nth-child(n+3)]:border-b-0 xs:odd:border-r lg:border-b-0 lg:border-r lg:last:border-r-0 transition-colors hover:bg-white/[0.015]"
+            style={{ borderColor: C.border }}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-2.5 min-w-0">
                 <div
-                  className="h-full rounded-full transition-all duration-700"
-                  style={{ width: `${item.pct}%`, background: `linear-gradient(90deg, ${item.tint}66, ${item.tint})` }}
-                />
+                  className="size-9 sm:size-10 rounded-lg overflow-hidden shrink-0"
+                  style={{ border: `1px solid ${C.border}`, background: "#000000" }}
+                >
+                  <img
+                    src={item.img}
+                    alt=""
+                    loading="lazy"
+                    width={512}
+                    height={512}
+                    className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+                <div className="text-[9.5px] sm:text-[10.5px] uppercase tracking-[0.14em] truncate" style={{ color: C.muted }}>
+                  {item.label}
+                </div>
+              </div>
+              <span
+                className="shrink-0 rounded-full px-2 py-0.5 text-[9.5px] sm:text-[10px] font-mono tabular-nums"
+                style={{ border: `1px solid ${C.border}`, color: C.sub }}
+              >
+                {item.delta}
+              </span>
+            </div>
+
+            <div className="mt-3 flex items-end justify-between gap-3">
+              <div className="min-w-0">
+                <div className="text-[24px] sm:text-[30px] font-light leading-none tracking-tight tabular-nums text-white">
+                  {item.value}
+                </div>
+                <div className="mt-1.5 text-[10.5px] sm:text-[11.5px] truncate" style={{ color: C.sub }}>
+                  {item.sub}
+                </div>
+              </div>
+              <div className="w-[42%] max-w-[130px] shrink-0 opacity-70">
+                <Spark seed={i * 1.9 + 0.4} color="#FFFFFF" />
               </div>
             </div>
-          );
-        })}
+
+            <div className="mt-3 flex items-center gap-2.5">
+              <div className="h-[3px] flex-1 rounded-full overflow-hidden" style={{ background: "#0E1013" }}>
+                <div
+                  className="h-full rounded-full transition-all duration-700"
+                  style={{ width: `${item.pct}%`, background: "rgba(255,255,255,0.55)" }}
+                />
+              </div>
+              <span className="text-[9.5px] font-mono tabular-nums" style={{ color: C.muted }}>
+                {item.pct}%
+              </span>
+            </div>
+          </div>
+        ))}
       </div>
     </Card>
   );
