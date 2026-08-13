@@ -371,12 +371,6 @@ function Hexagon({ value, color }: { value: number; color: string }) {
 
 /* ------------------------------ telemetry strip ----------------------------- */
 function TelemetryStrip({ report }: { report: ReportModel }) {
-  const [pulse, setPulse] = useState(false);
-  useEffect(() => {
-    const i = setInterval(() => setPulse((p) => !p), 2400);
-    return () => clearInterval(i);
-  }, []);
-
   const items = [
     { label: "Protected Assets", value: `${Math.max(1, Math.round(report.score / 4))}`, sub: "under monitoring", icon: Shield },
     { label: "Threats Neutralized", value: `${report.findings + 12}`, sub: "last 24 hours", icon: Zap },
