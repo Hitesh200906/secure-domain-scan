@@ -539,10 +539,36 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
       <TelemetryStrip report={report} />
 
       {/* SECURITY SCORE */}
-      <Card>
-        <div className="grid lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
+      <Card className="relative">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.5]"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)",
+            backgroundSize: "44px 44px",
+          }}
+        />
+        <div className="relative z-10 grid lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
           <div className="p-7 sm:p-10" style={{ borderRight: `1px solid ${C.border}` }}>
-            <h3 className="text-[18px] font-medium tracking-tight">Security Score</h3>
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <img src={icShield} alt="" loading="lazy" width={40} height={40} className="size-9 object-contain" />
+                <div>
+                  <h3 className="text-[18px] font-medium tracking-tight">Security Score</h3>
+                  <div className="text-[11.5px] uppercase tracking-[0.18em]" style={{ color: C.muted }}>
+                    Posture index
+                  </div>
+                </div>
+              </div>
+              <span
+                className="hidden sm:inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px]"
+                style={{ border: `1px solid ${C.border}`, color: C.sub }}
+              >
+                <span className="size-1.5 rounded-full" style={{ background: OK }} />
+                Live
+              </span>
+            </div>
+
             <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-8 sm:gap-10">
               <Hexagon value={report.score} color={sc} />
               <div className="min-w-0 flex-1">
@@ -558,8 +584,8 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
                 </p>
                 <div className="mt-6 inline-flex items-center gap-4 rounded-xl px-4 py-3.5"
                   style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
-                  <div className="size-12 shrink-0 rounded-lg grid place-items-center" style={{ border: `1px solid ${C.border}` }}>
-                    <Shield className="size-5" style={{ color: C.sub }} />
+                  <div className="size-12 shrink-0 rounded-lg grid place-items-center overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
+                    <img src={icLock} alt="" loading="lazy" width={40} height={40} className="size-8 object-contain" />
                   </div>
                   <div>
                     <div className="text-[14.5px] font-medium" style={{ color: strong ? OK : SEV.High }}>
@@ -576,16 +602,16 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
 
           <div className="p-7 sm:p-10 flex flex-col justify-center gap-0">
             <SideStat
-              icon={Shield}
+              img={icShield}
               title="Vulnerabilities"
               sub="Medium & low severity"
               right={<span className="text-[24px] font-light">{report.findings}</span>}
             />
             <div className="h-px my-6" style={{ background: C.border }} />
-            <SideStat icon={Clock} title="Scan Frequency" sub={"Every 24 hours\nAutomated schedule"} />
+            <SideStat img={icScan} title="Scan Frequency" sub={"Every 24 hours\nAutomated schedule"} />
             <div className="h-px my-6" style={{ background: C.border }} />
             <SideStat
-              icon={Activity}
+              img={icServer}
               title="System Status"
               sub="All systems operational"
               right={<span className="size-3 rounded-full inline-block" style={{ background: OK, boxShadow: `0 0 12px ${OK}` }} />}
@@ -593,6 +619,7 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
           </div>
         </div>
       </Card>
+
 
       {/* LIVE THREAT ACTIVITY */}
       <Card>
