@@ -10,6 +10,7 @@ import {
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import nexusLogo from "@/assets/nexefy-logo.png";
+import planCardBg from "@/assets/plan-card-bg.jpg";
 import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
 import { useAdmin } from "@/hooks/use-admin";
