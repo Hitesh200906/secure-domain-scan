@@ -292,358 +292,265 @@ function CountNumber({ value, className = "", style }: { value: number; classNam
 }
 
 /* -------------------------------- overview -------------------------------- */
-function Overview({ report, profile, scans, mounted, onOpenReports, role, name }: {
-  report: ReportModel; profile: { plan: string; credits: number } | null; scans: Scan[]; mounted: boolean;
-  onOpenReports: () => void; role: string | null | undefined; name: string | null;
-}) {
-  const risk = [
-    { label: "Critical", val: Math.max(1, Math.floor(report.findings * 0.08)), color: SEV.Critical },
-    { label: "High", val: Math.max(1, Math.floor(report.findings * 0.22)), color: SEV.High },
-    { label: "Medium", val: Math.max(1, Math.floor(report.findings * 0.38)), color: SEV.Medium },
-    { label: "Low", val: Math.max(1, Math.floor(report.findings * 0.32)), color: SEV.Low },
-  ];
-  const riskTotal = risk.reduce((a, b) => a + b.val, 0) || 1;
-  const sevOrder = ["Critical", "High", "Medium", "Low"] as const;
+const FLAG: Record<string, string> = {
+  US: "🇺🇸", DE: "🇩🇪", IN: "🇮🇳", SG: "🇸🇬", RU: "🇷🇺", CN: "🇨🇳", BR: "🇧🇷", NL: "🇳🇱",
+};
+const COUNTRY: Record<string, string> = {
+  US: "United States", DE: "Germany", IN: "India", SG: "Singapore",
+  RU: "Russia", CN: "China", BR: "Brazil", NL: "Netherlands",
+};
+const THREAT_KIND: Record<string, string> = {
+  "Brute force": "Authentication",
+  "SQL injection": "Injection",
+  "Port scan": "Reconnaissance",
+  "XSS attempt": "Cross-Site Scripting",
+  "Credential stuffing": "Authentication",
+  "Directory traversal": "Exploitation",
+};
+const SEV_ORDER: { label: keyof typeof SEV; color: string }[] = [
+  { label: "High", color: SEV.High },
+  { label: "High", color: SEV.High },
+  { label: "Medium", color: SEV.Medium },
+  { label: "Medium", color: SEV.Medium },
+  { label: "Low", color: OK },
+];
 
-  const blocked = report.findings * 52;
-  const investigating = Math.max(1, Math.floor(report.findings * 0.4));
-  const critical = Math.max(1, Math.floor(report.findings * 0.08));
-  const weakest = [...report.posture].sort((a, b) => a.value - b.value)[0];
-  const sc = scoreColor(report.score);
-  const scoreLabel = report.score >= 80 ? "Strong" : report.score >= 40 ? "Good" : "At risk";
-
+function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className="px-4 sm:px-7 py-5 sm:py-6 space-y-5 max-w-[1560px]">
-      {/* Hero / welcome */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2.5 flex-wrap">
-            <h2 className="text-[22px] sm:text-[26px] font-semibold tracking-[-0.02em]">
-              {(mounted ? greeting() : "Welcome back")}{name ? `, ${name.split(" ")[0]}` : ""}
-            </h2>
-            <RoleBadge role={role as never} size="md" />
-          </div>
-          <p className="mt-1.5 text-[12.5px]" style={{ color: C.sub }}>
-            {report.score >= 70
-              ? "Your security environment is looking healthy."
-              : "Some areas of your environment need attention."}
-          </p>
-        </div>
-        <Link
-          to="/scan/new" search={{ plan: "professional" as const }}
-          className="group shrink-0 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-medium text-white transition-all hover:-translate-y-px"
-          style={{ background: C.blue, boxShadow: `0 1px 0 0 rgba(255,255,255,0.22) inset, 0 10px 24px -14px ${C.blue}` }}
-        >
-          <Plus className="size-4" /> New Scan
-        </Link>
-      </div>
+    <div className={`rounded-2xl overflow-hidden ${className}`}
+      style={{ background: "#000000", border: `1px solid ${C.border}` }}>
+      {children}
+    </div>
+  );
+}
 
-      {/* Demo banner */}
-      {report.demo && (
-        <div className="rounded-xl px-4 sm:px-5 py-3.5 flex flex-col sm:flex-row sm:items-center gap-3"
-          style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
-          <div className="flex items-start gap-3 min-w-0 flex-1">
-            <div className="size-8 shrink-0 rounded-lg grid place-items-center" style={{ border: `1px solid ${C.border}`, background: C.elevated }}>
-              <FileText className="size-3.5" style={{ color: C.blue }} />
-            </div>
-            <div className="min-w-0">
-              <div className="text-[12px] font-medium">Demo environment</div>
-              <p className="text-[11.5px] mt-0.5" style={{ color: C.sub }}>
-                You're currently viewing sample security data. Run a scan to populate your dashboard with real findings.
-              </p>
-            </div>
-          </div>
-          <Link to="/scan/new" search={{ plan: "professional" as const }}
-            className="shrink-0 inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-[11.5px] font-medium transition hover:bg-white/[0.05]"
-            style={{ border: `1px solid ${C.border}`, color: C.text }}>
-            Run First Scan <ArrowRight className="size-3.5" />
-          </Link>
-        </div>
-      )}
+function GhostButton({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-3 rounded-lg px-5 py-3 text-[14px] font-medium transition-all group-hover:bg-white/[0.05] group-hover:-translate-y-px"
+      style={{ border: `1px solid ${C.border}`, color: C.text }}>
+      {children}
+      <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+    </span>
+  );
+}
 
-      {/* KPI row */}
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3.5">
-        {/* Security score */}
-        <KpiCard label="Security Score" icon={Shield} accent={sc} glow>
-          <div className="flex items-center gap-4">
-            <ScoreRing value={report.score} size={78} stroke={8} compact />
-            <div className="min-w-0">
-              <div className="flex items-baseline gap-1">
-                <CountNumber value={report.score} className="text-[30px] leading-none font-semibold" style={{ color: sc }} />
-                <span className="text-[12px]" style={{ color: C.muted }}>/100</span>
-              </div>
-              <span className="mt-2 inline-flex text-[10px] uppercase tracking-[0.14em] rounded px-1.5 py-0.5"
-                style={{ color: sc, border: `1px solid ${sc}44`, background: `${sc}12` }}>{scoreLabel}</span>
-            </div>
-          </div>
-          <p className="mt-3 text-[10.5px]" style={{ color: C.muted }}>Risk-weighted across monitored assets</p>
-        </KpiCard>
-
-        {/* Open findings */}
-        <KpiCard label="Open Findings" icon={AlertTriangle} accent={SEV.High}>
-          <CountNumber value={report.findings} className="text-[30px] leading-none font-semibold" />
-          <div className="mt-3 flex h-1.5 w-full overflow-hidden rounded-full" style={{ background: "rgba(255,255,255,0.05)" }}>
-            {risk.map((r, i) => (
-              <motion.div key={r.label} initial={{ width: 0 }} animate={{ width: `${(r.val / riskTotal) * 100}%` }}
-                transition={{ duration: 0.7, delay: 0.1 + i * 0.06, ease: "easeOut" }} style={{ background: r.color }} />
-            ))}
-          </div>
-          <p className="mt-2 text-[10.5px]" style={{ color: C.muted }}>Open vulnerabilities across assets</p>
-        </KpiCard>
-
-        {/* Assets */}
-        <KpiCard label="Assets Monitored" icon={Server} accent={C.cyan}>
-          <CountNumber value={scans.length || 1} className="text-[30px] leading-none font-semibold" />
-          <div className="mt-3 flex items-end gap-[3px] h-6">
-            {Array.from({ length: 18 }).map((_, i) => (
-              <motion.span key={i} initial={{ height: 2 }} animate={{ height: 4 + ((i * 7) % 5) * 4 }}
-                transition={{ duration: 0.5, delay: i * 0.02 }}
-                className="w-full rounded-[1px]"
-                style={{ background: i % 3 === 0 ? `${C.cyan}88` : "rgba(255,255,255,0.10)" }} />
-            ))}
-          </div>
-          <p className="mt-2 text-[10.5px]" style={{ color: C.muted }}>Protected assets · {scans.length} scans</p>
-        </KpiCard>
-
-        {/* Credits */}
-        <KpiCard label="Credits" icon={Zap} accent={C.blue}>
-          <CountNumber value={profile?.credits ?? 0} className="text-[30px] leading-none font-semibold" />
-          <div className="mt-3 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.05)" }}>
-            <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(100, ((profile?.credits ?? 0) / 200) * 100)}%` }}
-              transition={{ duration: 0.8, ease: "easeOut" }} className="h-full" style={{ background: `linear-gradient(90deg, ${C.blue}, ${C.cyan})` }} />
-          </div>
-          <p className="mt-2 text-[10.5px] capitalize" style={{ color: C.muted }}>Credits remaining · {profile?.plan ?? "starter"} plan</p>
-        </KpiCard>
-      </div>
-
-      {/* Posture + risk distribution */}
-      <div className="grid lg:grid-cols-5 gap-3.5">
-        <Panel className="lg:col-span-3" glow>
-          <PanelHead
-            title="Overall Security Posture"
-            sub="Risk-weighted across monitored assets"
-            right={<span className="text-[11px] font-mono tabular-nums" style={{ color: sc }}>{report.score} / 100</span>}
+function Hexagon({ value, color }: { value: number; color: string }) {
+  const pts = (r: number) =>
+    Array.from({ length: 6 }, (_, i) => {
+      const a = (Math.PI / 180) * (60 * i - 90);
+      return `${100 + r * Math.cos(a)},${100 + r * Math.sin(a)}`;
+    }).join(" ");
+  return (
+    <div className="relative shrink-0" style={{ width: 200, height: 200 }}>
+      <svg viewBox="0 0 200 200" className="absolute inset-0 size-full">
+        {[96, 82, 68, 54].map((r, i) => (
+          <motion.polygon
+            key={r}
+            points={pts(r)}
+            fill="none"
+            stroke={i === 0 ? `${color}66` : "rgba(255,255,255,0.10)"}
+            strokeWidth={1}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: i * 0.08, ease: "easeOut" }}
+            style={{ transformOrigin: "100px 100px" }}
           />
-          <div className="p-5 grid sm:grid-cols-[auto_1fr] gap-6 items-center">
-            <div className="mx-auto sm:mx-0"><ScoreRing value={report.score} size={132} stroke={9} /></div>
-            <div className="space-y-4">
-              {report.posture.map((p, i) => {
-                const isWeak = weakest && p.label === weakest.label;
-                const col = i === 0 ? C.blue : i === 1 ? "#4F7FE8" : C.cyan;
-                return (
-                  <div key={p.label}>
-                    <div className="flex items-baseline justify-between text-[11.5px]">
-                      <span className="inline-flex items-center gap-2" style={{ color: C.sub }}>
-                        {p.label}
-                        {isWeak && <span className="text-[9px] uppercase tracking-[0.14em] rounded px-1.5 py-0.5" style={{ color: SEV.Medium, border: `1px solid ${SEV.Medium}33` }}>Focus</span>}
-                      </span>
-                      <span className="font-mono tabular-nums">{p.value}</span>
-                    </div>
-                    <div className="mt-1.5 h-[7px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.05)" }}>
-                      <motion.div initial={{ width: 0 }} animate={{ width: `${p.value}%` }} transition={{ duration: 0.9, delay: i * 0.08, ease: "easeOut" }}
-                        className="h-full rounded-full" style={{ background: `linear-gradient(90deg, ${col}, ${col}bb)` }} />
-                    </div>
-                  </div>
-                );
-              })}
-              <p className="text-[11px] pt-1" style={{ color: C.muted }}>
-                Weakest area: <span style={{ color: C.text }}>{weakest?.label}</span> — prioritise remediation here first.
-              </p>
-            </div>
-          </div>
-        </Panel>
-
-        <Panel className="lg:col-span-2">
-          <PanelHead title="Risk Distribution" sub={`${riskTotal} findings by severity`} />
-          <div className="p-5 flex flex-col sm:flex-row items-center gap-5">
-            <Donut segments={risk} total={riskTotal} />
-            <div className="flex-1 w-full min-w-0">
-              <ul className="grid grid-cols-2 sm:grid-cols-1 gap-x-4 gap-y-2.5">
-                {risk.map((r) => (
-                  <li key={r.label} className="flex items-center justify-between text-[11.5px]">
-                    <span className="inline-flex items-center gap-2" style={{ color: C.sub }}>
-                      <span className="size-1.5 rounded-full" style={{ background: r.color }} />{r.label}
-                    </span>
-                    <span className="font-mono tabular-nums">{r.val}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-4 pt-3 text-[10.5px] leading-relaxed" style={{ color: C.muted, borderTop: `1px solid ${C.border}` }}>
-                <span className="block uppercase tracking-[0.16em] text-[9.5px] mb-1" style={{ color: C.sub }}>Risk posture</span>
-                Most findings are concentrated in medium and low severity categories.
-              </p>
-            </div>
-          </div>
-        </Panel>
-      </div>
-
-      {/* Threat activity */}
-      <Panel>
-        <PanelHead
-          title="Threat Activity"
-          sub={`Last 24 hours · ${report.demo ? "demo feed" : report.target}`}
-          right={<LivePill />}
-        />
-        <div className="p-5">
-          <div className="grid grid-cols-3 gap-3 sm:gap-6">
-            {[
-              { l: "Blocked", v: blocked, c: OK },
-              { l: "Investigating", v: investigating, c: SEV.High },
-              { l: "Critical", v: critical, c: SEV.Critical },
-            ].map((s) => (
-              <div key={s.l} className="min-w-0">
-                <div className="text-[10px] uppercase tracking-[0.18em] truncate" style={{ color: C.muted }}>{s.l}</div>
-                <CountNumber value={s.v} className="mt-1 block text-xl sm:text-2xl font-semibold" style={{ color: s.c }} />
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 pt-4" style={{ borderTop: `1px solid ${C.border}` }}>
-            <Chart data={report.trend} height={112} />
-            <div className="mt-2 flex justify-between text-[9.5px] font-mono" style={{ color: C.muted }}>
-              {["24h ago", "18h", "12h", "6h", "now"].map((t) => <span key={t}>{t}</span>)}
-            </div>
-          </div>
-        </div>
-      </Panel>
-
-      {/* Recent scans + live feed */}
-      <div className="grid lg:grid-cols-3 gap-3.5">
-        <Panel className="lg:col-span-2 overflow-hidden">
-          <PanelHead
-            title="Recent Scans"
-            sub={`${scans.length} total this month`}
-            right={<button onClick={onOpenReports} className="text-[11px] inline-flex items-center gap-1 transition hover:text-white" style={{ color: C.sub }}>View all <ArrowRight className="size-3" /></button>}
-          />
-          {scans.length === 0 ? (
-            <div className="px-5 py-12 text-center">
-              <div className="relative mx-auto size-14 grid place-items-center">
-                <span className="absolute inset-0 rounded-full animate-ping" style={{ border: `1px solid ${C.blue}33` }} />
-                <span className="absolute inset-2 rounded-full" style={{ border: `1px solid ${C.border}` }} />
-                <Radar className="size-5" style={{ color: C.blue }} />
-              </div>
-              <div className="mt-4 text-[13.5px] font-medium">No scans yet</div>
-              <p className="mt-1 text-[11.5px] max-w-sm mx-auto" style={{ color: C.sub }}>
-                Start your first security scan to begin building your security history.
-              </p>
-              <Link to="/scan/new" search={{ plan: "professional" as const }}
-                className="mt-4 inline-flex rounded-lg px-4 py-2 text-[11.5px] font-medium text-white transition hover:-translate-y-px"
-                style={{ background: C.blue, boxShadow: `0 1px 0 0 rgba(255,255,255,0.2) inset` }}>
-                Start New Scan
-              </Link>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm min-w-[560px]">
-                <thead>
-                  <tr className="text-[9.5px] uppercase tracking-[0.18em]" style={{ color: C.muted }}>
-                    <th className="text-left font-normal px-5 py-3">Target</th>
-                    <th className="text-left font-normal py-3">Plan</th>
-                    <th className="text-left font-normal py-3">Status</th>
-                    <th className="text-left font-normal py-3">Score</th>
-                    <th className="text-right font-normal px-5 py-3">Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {scans.map((r) => (
-                    <tr key={r.id} className="transition hover:bg-white/[0.02]" style={{ borderTop: `1px solid ${C.border}` }}>
-                      <td className="px-5 py-3">
-                        <div className="flex items-center gap-2.5">
-                          <div className="size-6 rounded-md grid place-items-center" style={{ border: `1px solid ${C.border}`, background: C.elevated }}><Globe2 className="size-3" style={{ color: C.sub }} /></div>
-                          <span className="font-mono text-xs truncate max-w-[220px]">{r.target_url}</span>
-                        </div>
-                      </td>
-                      <td className="py-3 text-xs capitalize" style={{ color: C.sub }}>{r.plan}</td>
-                      <td className="py-3"><StatusPill status={r.status} /></td>
-                      <td className="py-3 font-mono text-xs tabular-nums" style={{ color: r.score != null ? scoreColor(r.score) : C.muted }}>{r.score != null ? `${r.score}/100` : "—"}</td>
-                      <td className="px-5 py-3 text-right text-xs" style={{ color: C.sub }}>{mounted ? new Date(r.created_at).toLocaleDateString() : ""}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </Panel>
-
-        <Panel>
-          <PanelHead title="Live Threat Activity" sub="Real-time events across monitored assets" right={<LivePill />} />
-          <ul>
-            {report.threats.map((t, i) => {
-              const sev = sevOrder[i % 4];
-              return (
-                <motion.li key={t.ip} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.32, delay: i * 0.07 }}
-                  className="px-5 py-3.5 flex items-center justify-between gap-3 transition hover:bg-white/[0.02]"
-                  style={{ borderTop: i === 0 ? "none" : `1px solid ${C.border}` }}>
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="size-7 shrink-0 rounded-md grid place-items-center text-[10px] font-mono"
-                      style={{ border: `1px solid ${C.border}`, background: C.elevated, color: C.sub }}>{t.country}</div>
-                    <div className="min-w-0">
-                      <div className="font-mono text-[12px] truncate">{t.ip}</div>
-                      <div className="text-[10.5px] mt-0.5 truncate" style={{ color: C.sub }}>{t.type}</div>
-                    </div>
-                  </div>
-                  <div className="shrink-0 text-right">
-                    <span className="inline-flex items-center gap-1.5 text-[9px] uppercase tracking-[0.14em] px-1.5 py-0.5 rounded"
-                      style={{ color: SEV[sev], border: `1px solid ${SEV[sev]}40`, background: `${SEV[sev]}0f` }}>
-                      <span className="size-1 rounded-full" style={{ background: SEV[sev] }} />{sev}
-                    </span>
-                    <div className="text-[9.5px] mt-1 font-mono" style={{ color: C.muted }}>{t.ago}</div>
-                  </div>
-                </motion.li>
-              );
-            })}
-          </ul>
-          <div className="px-5 py-3" style={{ borderTop: `1px solid ${C.border}` }}>
-            <Link to="/report/$id" params={{ id: report.id }} className="text-[11px] inline-flex items-center gap-1 transition hover:text-white" style={{ color: C.sub }}>
-              View all activity <ArrowRight className="size-3" />
-            </Link>
-          </div>
-        </Panel>
-      </div>
-
-      {/* Workspace activity */}
-      {scans.length > 0 && (
-        <Panel>
-          <PanelHead title="Activity" sub="Latest workspace events" right={<Activity className="size-4" style={{ color: C.muted }} />} />
-          <ul className="p-5 space-y-3.5">
-            {scans.slice(0, 5).map((s) => (
-              <li key={s.id} className="flex gap-3">
-                <span className="mt-1.5 size-1.5 rounded-full shrink-0"
-                  style={{ background: s.status === "completed" ? OK : s.status === "running" ? C.blue : C.muted }} />
-                <div className="min-w-0 flex-1">
-                  <div className="text-xs truncate">Scan {s.status} for <span className="font-mono" style={{ color: C.sub }}>{s.target_url}</span></div>
-                  <div className="text-[10px] mt-0.5" style={{ color: C.muted }}>{mounted ? new Date(s.created_at).toLocaleString() : ""}</div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </Panel>
-      )}
-
-      {/* Security intelligence CTA */}
-      <div className="relative overflow-hidden rounded-2xl" style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
-        <div className="pointer-events-none absolute inset-0 opacity-[0.06]"
-          style={{ backgroundImage: "linear-gradient(to right,#9dc0ff 1px,transparent 1px),linear-gradient(to bottom,#9dc0ff 1px,transparent 1px)", backgroundSize: "34px 34px", maskImage: "linear-gradient(90deg, transparent, black 40%, transparent)" }} />
-        <div className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full" style={{ background: `radial-gradient(circle, ${C.blue}22, transparent 65%)` }} />
-        <div className="relative px-5 sm:px-7 py-7 flex flex-col md:flex-row md:items-center gap-5 md:gap-8">
-          <div className="min-w-0 flex-1">
-            <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em]" style={{ color: C.cyan }}>
-              <TrendingUp className="size-3" /> Security Intelligence
-            </div>
-            <h3 className="mt-2 text-[17px] sm:text-[20px] font-semibold tracking-[-0.01em]">Full technical report</h3>
-            <p className="mt-1.5 text-[12.5px] max-w-2xl leading-relaxed" style={{ color: C.sub }}>
-              Deep-dive into vulnerabilities, CVSS scores, affected assets, reproduction evidence, and remediation guidance for {report.demo ? "the demo target" : report.target}.
-            </p>
-          </div>
-          <Link to="/report/$id" params={{ id: report.id }}
-            className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-[13px] font-medium text-white transition-all hover:-translate-y-px"
-            style={{ background: C.blue, boxShadow: `0 1px 0 0 rgba(255,255,255,0.22) inset, 0 12px 28px -16px ${C.blue}` }}>
-            View Full Technical Report <ArrowUpRight className="size-4" />
-          </Link>
+        ))}
+      </svg>
+      <div className="absolute inset-0 grid place-items-center">
+        <div className="text-center">
+          <CountNumber value={value} className="text-[52px] leading-none font-light" />
+          <div className="mt-1 text-[13px]" style={{ color: C.muted }}>/100</div>
         </div>
       </div>
     </div>
   );
 }
+
+function Overview({ report, profile, scans, mounted, onOpenReports, role, name }: {
+  report: ReportModel; profile: { plan: string; credits: number } | null; scans: Scan[]; mounted: boolean;
+  onOpenReports: () => void; role: string | null | undefined; name: string | null;
+}) {
+  void profile; void onOpenReports; void role;
+  const sc = scoreColor(report.score);
+  const strong = report.score >= 70;
+  const threats = report.threats.slice(0, 5);
+
+  return (
+    <div className="px-4 sm:px-6 py-5 sm:py-6 space-y-4 max-w-[1560px]">
+      {/* HERO */}
+      <Card>
+        <div className="grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+          <div className="p-7 sm:p-10 flex flex-col justify-center">
+            <h2 className="text-[26px] sm:text-[30px] font-light tracking-[-0.02em] leading-tight">
+              {mounted ? greeting() : "Welcome back"},
+              <br />
+              <span className="font-medium" style={{ color: C.blue }}>{name ? name.split(" ")[0] : "there"}</span>
+            </h2>
+            <p className="mt-5 text-[14px] leading-relaxed max-w-xs" style={{ color: C.sub }}>
+              Scan any domain for threats, vulnerabilities and security risks in seconds.
+            </p>
+            <Link to="/scan/new" search={{ plan: "professional" as const }} className="group mt-7 self-start">
+              <GhostButton>Start New Scan</GhostButton>
+            </Link>
+          </div>
+          {/* image slot — provided separately */}
+          <div className="hidden md:block min-h-[340px]" style={{ background: "#000000" }} />
+        </div>
+      </Card>
+
+      {/* SECURITY SCORE */}
+      <Card>
+        <div className="grid lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+          <div className="p-6 sm:p-8" style={{ borderRight: `1px solid ${C.border}` }}>
+            <h3 className="text-[16px] font-normal">Security Score</h3>
+            <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-8">
+              <Hexagon value={report.score} color={sc} />
+              <div className="min-w-0">
+                <h4 className="text-[19px] sm:text-[22px] font-semibold tracking-[0.01em] leading-snug uppercase">
+                  {strong ? "Strong security" : "Attention required"}
+                  <br />
+                  {strong ? "Your domain is protected" : "Your domain needs review"}
+                </h4>
+                <div className="mt-3 h-px w-14" style={{ background: C.blue }} />
+                <p className="mt-4 text-[13.5px] leading-relaxed" style={{ color: C.sub }}>
+                  Your security posture is {strong ? "strong" : "below target"}.
+                  <br />
+                  Keep monitoring to stay ahead of threats.
+                </p>
+                <div className="mt-5 inline-flex items-center gap-3 rounded-xl px-4 py-3"
+                  style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
+                  <div className="size-9 shrink-0 rounded-lg grid place-items-center" style={{ border: `1px solid ${C.border}` }}>
+                    <Shield className="size-4" style={{ color: C.sub }} />
+                  </div>
+                  <div>
+                    <div className="text-[13px] font-medium" style={{ color: strong ? OK : SEV.High }}>
+                      {strong ? "Low Risk" : "Elevated Risk"}
+                    </div>
+                    <div className="text-[12px]" style={{ color: C.sub }}>
+                      {strong ? "No critical threats detected" : "Critical findings require action"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-6 sm:p-8 flex flex-col justify-center gap-0">
+            <SideStat
+              icon={Shield}
+              title="Vulnerabilities"
+              sub="Medium & low severity"
+              right={<span className="text-[20px] font-light">{report.findings}</span>}
+            />
+            <div className="h-px my-5" style={{ background: C.border }} />
+            <SideStat icon={Clock} title="Scan Frequency" sub={"Every 24 hours\nAutomated schedule"} />
+            <div className="h-px my-5" style={{ background: C.border }} />
+            <SideStat
+              icon={Activity}
+              title="System Status"
+              sub="All systems operational"
+              right={<span className="size-2.5 rounded-full inline-block" style={{ background: OK, boxShadow: `0 0 10px ${OK}` }} />}
+            />
+          </div>
+        </div>
+      </Card>
+
+      {/* LIVE THREAT ACTIVITY */}
+      <Card>
+        <div className="p-6 sm:p-8">
+          <div className="flex items-center justify-between gap-4">
+            <h3 className="text-[17px] font-normal">Live Threat Activity</h3>
+            <button onClick={onOpenReports} className="group inline-flex items-center gap-2 text-[13px]" style={{ color: C.blue }}>
+              View all <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+            </button>
+          </div>
+
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full min-w-[720px] text-left border-collapse">
+              <thead>
+                <tr className="text-[12px]" style={{ color: C.muted }}>
+                  <th className="font-normal pb-3">Threat</th>
+                  <th className="font-normal pb-3">Location</th>
+                  <th className="font-normal pb-3">Type</th>
+                  <th className="font-normal pb-3">Severity</th>
+                  <th className="font-normal pb-3">Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {threats.map((t, i) => {
+                  const sev = SEV_ORDER[i % SEV_ORDER.length];
+                  return (
+                    <motion.tr
+                      key={`${t.ip}-${i}`}
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.35, delay: i * 0.05 }}
+                      style={{ borderTop: `1px solid ${C.border}` }}
+                    >
+                      <td className="py-3.5 pr-4 text-[13.5px]">{t.type}</td>
+                      <td className="py-3.5 pr-4 text-[13.5px]" style={{ color: C.sub }}>
+                        <span className="mr-2">{FLAG[t.country] ?? "🏳️"}</span>
+                        {COUNTRY[t.country] ?? t.country}
+                      </td>
+                      <td className="py-3.5 pr-4 text-[13.5px]" style={{ color: C.sub }}>
+                        {THREAT_KIND[t.type] ?? "Anomaly"}
+                      </td>
+                      <td className="py-3.5 pr-4 text-[13.5px]">
+                        <span className="inline-flex items-center gap-2" style={{ color: sev.color }}>
+                          <span className="size-1.5 rounded-full" style={{ background: sev.color }} />
+                          {sev.label}
+                        </span>
+                      </td>
+                      <td className="py-3.5 text-[13.5px]" style={{ color: C.sub }}>{t.ago.replace("m ago", " min ago")}</td>
+                    </motion.tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </Card>
+
+      {/* DETAILED REPORT */}
+      <Card>
+        <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <div className="p-7 sm:p-9 flex flex-col justify-center">
+            <h3 className="text-[21px] font-normal tracking-[-0.01em]">Detailed Security Report</h3>
+            <p className="mt-3 text-[13.5px] leading-relaxed max-w-sm" style={{ color: C.sub }}>
+              Get complete security analysis with detailed findings and actionable recommendations.
+            </p>
+            <Link to="/report/$id" params={{ id: report.id }} className="group mt-6 self-start">
+              <GhostButton>View Full Report</GhostButton>
+            </Link>
+          </div>
+          {/* image slot — provided separately */}
+          <div className="hidden md:block min-h-[200px]" style={{ background: "#000000" }} />
+        </div>
+      </Card>
+
+      {scans.length === 0 && null}
+    </div>
+  );
+}
+
+function SideStat({ icon: Icon, title, sub, right }: {
+  icon: typeof Shield; title: string; sub: string; right?: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-center gap-4">
+      <div className="size-11 shrink-0 rounded-xl grid place-items-center" style={{ border: `1px solid ${C.border}` }}>
+        <Icon className="size-4" style={{ color: C.text }} />
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="text-[14.5px]">{title}</div>
+        <div className="text-[12.5px] whitespace-pre-line" style={{ color: C.sub }}>{sub}</div>
+      </div>
+      {right}
+    </div>
+  );
+}
+
 
 function KpiCard({ label, icon: Icon, accent, children, glow }: {
   label: string; icon: typeof Shield; accent: string; children: React.ReactNode; glow?: boolean;
