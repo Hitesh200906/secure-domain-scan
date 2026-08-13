@@ -879,16 +879,11 @@ function PlanCard({ plan, credits }: { plan: string; credits: number }) {
 
         <Link
           to="/pricing"
-          className="mt-3 group flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-[11px] font-semibold transition-all hover:-translate-y-px"
-          style={{
-            background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
-            color: "#fff",
-            boxShadow: "0 1px 0 0 rgba(255,255,255,0.2) inset, 0 8px 20px -10px rgba(37,99,235,0.45)",
-          }}
+          className="mt-3 group flex items-center justify-center gap-1.5 text-xs font-semibold transition-all duration-300 ease-out"
+          style={{ color: "#22d3ee" }}
         >
-          <TrendingUp className="size-3.5" />
-          Upgrade plan
-          <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+          <span className="group-hover:opacity-100 transition-opacity duration-300">Upgrade plan</span>
+          <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1" />
         </Link>
       </div>
     </div>
