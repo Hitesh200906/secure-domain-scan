@@ -336,38 +336,120 @@ function GhostButton({ children }: { children: React.ReactNode }) {
   );
 }
 
+function grade(v: number) {
+  if (v >= 90) return "A+";
+  if (v >= 80) return "A";
+  if (v >= 70) return "B";
+  if (v >= 55) return "C";
+  if (v >= 40) return "D";
+  return "F";
+}
+
 function Hexagon({ value, color }: { value: number; color: string }) {
   const pts = (r: number) =>
     Array.from({ length: 6 }, (_, i) => {
       const a = (Math.PI / 180) * (60 * i - 90);
       return `${120 + r * Math.cos(a)},${120 + r * Math.sin(a)}`;
     }).join(" ");
+
+  const R = 108;
+  const circ = 2 * Math.PI * R;
+  const pct = Math.max(0, Math.min(100, value)) / 100;
+
   return (
     <div className="relative shrink-0" style={{ width: 240, height: 240 }}>
+      {/* soft radial base */}
+      <div
+        className="absolute inset-6 rounded-full pointer-events-none"
+        style={{ background: `radial-gradient(circle at 50% 45%, ${color}14 0%, transparent 68%)` }}
+      />
+
       <svg viewBox="0 0 240 240" className="absolute inset-0 size-full">
-        {[116, 100, 84, 68].map((r, i) => (
+        <defs>
+          <linearGradient id="scoreArc" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0%" stopColor={color} stopOpacity="0.35" />
+            <stop offset="100%" stopColor={color} />
+          </linearGradient>
+        </defs>
+
+        {/* tick ring */}
+        <g>
+          {Array.from({ length: 60 }, (_, i) => {
+            const a = (Math.PI / 180) * (i * 6 - 90);
+            const on = i / 60 <= pct;
+            const r1 = 118, r2 = on ? 110 : 113;
+            return (
+              <line
+                key={i}
+                x1={120 + r1 * Math.cos(a)} y1={120 + r1 * Math.sin(a)}
+                x2={120 + r2 * Math.cos(a)} y2={120 + r2 * Math.sin(a)}
+                stroke={on ? color : "rgba(255,255,255,0.10)"}
+                strokeOpacity={on ? 0.85 : 1}
+                strokeWidth={1.2}
+              />
+            );
+          })}
+        </g>
+
+        {/* progress arc */}
+        <motion.circle
+          cx="120" cy="120" r={R}
+          fill="none"
+          stroke="url(#scoreArc)"
+          strokeWidth={3}
+          strokeLinecap="round"
+          transform="rotate(-90 120 120)"
+          strokeDasharray={circ}
+          initial={{ strokeDashoffset: circ }}
+          animate={{ strokeDashoffset: circ * (1 - pct) }}
+          transition={{ duration: 1.6, ease: "easeOut" }}
+        />
+
+        {/* hex frames */}
+        {[92, 76, 60].map((r, i) => (
           <motion.polygon
             key={r}
             points={pts(r)}
-            fill="none"
-            stroke={i === 0 ? `${color}66` : "rgba(255,255,255,0.10)"}
-            strokeWidth={1.25}
-            initial={{ opacity: 0, scale: 0.9 }}
+            fill={i === 2 ? "rgba(255,255,255,0.015)" : "none"}
+            stroke={i === 0 ? `${color}55` : "rgba(255,255,255,0.08)"}
+            strokeWidth={1.1}
+            initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: i * 0.08, ease: "easeOut" }}
             style={{ transformOrigin: "120px 120px" }}
           />
         ))}
+
+        {/* slow rotating accent hex */}
+        <motion.polygon
+          points={pts(100)}
+          fill="none"
+          stroke={`${color}22`}
+          strokeWidth={1}
+          strokeDasharray="8 14"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+          style={{ transformOrigin: "120px 120px" }}
+        />
       </svg>
+
       <div className="absolute inset-0 grid place-items-center">
         <div className="text-center">
-          <CountNumber value={value} className="text-[64px] leading-none font-light" style={{ color }} />
-          <div className="mt-1.5 text-[14px]" style={{ color: C.muted }}>/100</div>
+          <div className="text-[10px] uppercase tracking-[0.28em]" style={{ color: C.muted }}>Score</div>
+          <CountNumber value={value} className="text-[58px] leading-none font-light" style={{ color }} />
+          <div className="mt-1 text-[13px]" style={{ color: C.muted }}>/100</div>
+          <div
+            className="mt-2 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
+            style={{ border: `1px solid ${color}44`, color, background: `${color}0F` }}
+          >
+            Grade {grade(value)}
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
 
 /* ------------------------------ telemetry strip ----------------------------- */
 function TelemetryStrip({ report }: { report: ReportModel }) {
