@@ -4,8 +4,8 @@ import {
   Activity, AlertTriangle, Bell, CheckCircle2, Clock,
   CreditCard, Globe2, LayoutDashboard, LogOut, ScanSearch, Settings,
   Shield, TrendingUp, User as UserIcon,
-  Zap, ArrowUpRight, ArrowRight, Search, Radar, FileText, Menu, X, UploadCloud,
-  Building2, Mail, BadgeCheck, Plus, Server,
+  ArrowUpRight, ArrowRight, Search, Radar, FileText, Menu, X, UploadCloud,
+  Building2, Mail, BadgeCheck, Plus,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
