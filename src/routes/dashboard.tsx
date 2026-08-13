@@ -459,25 +459,25 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
   return (
     <div className="px-4 sm:px-6 py-5 sm:py-6 space-y-4 max-w-[1560px]">
       {/* HERO */}
-      <Card className="relative overflow-hidden aspect-[1672/470] min-h-[280px]">
+      <Card className="relative overflow-hidden w-full min-h-[220px] sm:min-h-[240px] lg:min-h-[260px]">
         <div
-          className="absolute inset-0 bg-contain bg-right bg-no-repeat bg-black"
+          className="absolute inset-0 bg-cover bg-right bg-no-repeat bg-black"
           style={{ backgroundImage: `url(${dashboardHeroBg.url})` }}
         />
         <div
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.78) 48%, rgba(0,0,0,0.35) 70%, rgba(0,0,0,0.12) 100%)`,
+            background: `linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.70) 55%, rgba(0,0,0,0.35) 78%, rgba(0,0,0,0.18) 100%)`,
           }}
         />
-        <div className="relative z-10 grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] h-full">
-          <div className="p-5 sm:p-10 flex flex-col justify-center">
-            <h2 className="text-[21px] sm:text-[30px] font-light tracking-[-0.02em] leading-tight drop-shadow-[0_2px_18px_rgba(0,0,0,0.85)]">
+        <div className="relative z-10 grid md:grid-cols-[minmax(0,0.85fr)_1fr] h-full">
+          <div className="p-5 sm:p-8 flex flex-col justify-center">
+            <h2 className="text-[20px] sm:text-[26px] lg:text-[28px] font-light tracking-[-0.02em] leading-tight drop-shadow-[0_2px_18px_rgba(0,0,0,0.85)]">
               {mounted ? greeting() : "Welcome back"},
               <br />
               <span className="font-medium" style={{ color: C.blue }}>{name ? name.split(" ")[0] : "there"}</span>
             </h2>
-            <p className="mt-3 sm:mt-4 text-[13px] sm:text-[14px] leading-relaxed max-w-xs drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]" style={{ color: C.sub }}>
+            <p className="mt-2.5 sm:mt-3 text-[12px] sm:text-[13.5px] leading-relaxed max-w-[18rem] sm:max-w-xs drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]" style={{ color: C.sub }}>
               Scan any domain for threats, vulnerabilities and security risks in seconds.
             </p>
             <Link to="/scan/new" search={{ plan: "professional" as const }} className="group mt-4 sm:mt-5 self-start">
