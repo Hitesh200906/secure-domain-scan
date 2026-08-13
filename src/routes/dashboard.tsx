@@ -459,9 +459,9 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
   return (
     <div className="px-4 sm:px-6 py-5 sm:py-6 space-y-4 max-w-[1560px]">
       {/* HERO */}
-      <Card className="relative overflow-hidden">
+      <Card className="relative overflow-hidden aspect-[1672/941] min-h-[380px]">
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-contain bg-center bg-no-repeat bg-black"
           style={{ backgroundImage: `url(${dashboardHeroBg.url})` }}
         />
         <div
@@ -470,7 +470,7 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
             background: `linear-gradient(90deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.68) 42%, rgba(0,0,0,0.25) 70%, rgba(0,0,0,0.10) 100%)`,
           }}
         />
-        <div className="relative z-10 grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+        <div className="relative z-10 grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] h-full">
           <div className="p-5 sm:p-10 flex flex-col justify-center">
             <h2 className="text-[21px] sm:text-[30px] font-light tracking-[-0.02em] leading-tight drop-shadow-[0_2px_18px_rgba(0,0,0,0.85)]">
               {mounted ? greeting() : "Welcome back"},
@@ -484,9 +484,8 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
               <GhostButton>Start New Scan</GhostButton>
             </Link>
           </div>
-          <div className="hidden md:block min-h-[340px]" />
+          <div className="hidden md:block" />
         </div>
-
       </Card>
 
 
