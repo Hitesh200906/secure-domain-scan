@@ -338,29 +338,29 @@ function Hexagon({ value, color }: { value: number; color: string }) {
   const pts = (r: number) =>
     Array.from({ length: 6 }, (_, i) => {
       const a = (Math.PI / 180) * (60 * i - 90);
-      return `${100 + r * Math.cos(a)},${100 + r * Math.sin(a)}`;
+      return `${120 + r * Math.cos(a)},${120 + r * Math.sin(a)}`;
     }).join(" ");
   return (
-    <div className="relative shrink-0" style={{ width: 200, height: 200 }}>
-      <svg viewBox="0 0 200 200" className="absolute inset-0 size-full">
-        {[96, 82, 68, 54].map((r, i) => (
+    <div className="relative shrink-0" style={{ width: 240, height: 240 }}>
+      <svg viewBox="0 0 240 240" className="absolute inset-0 size-full">
+        {[116, 100, 84, 68].map((r, i) => (
           <motion.polygon
             key={r}
             points={pts(r)}
             fill="none"
             stroke={i === 0 ? `${color}66` : "rgba(255,255,255,0.10)"}
-            strokeWidth={1}
+            strokeWidth={1.25}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: i * 0.08, ease: "easeOut" }}
-            style={{ transformOrigin: "100px 100px" }}
+            style={{ transformOrigin: "120px 120px" }}
           />
         ))}
       </svg>
       <div className="absolute inset-0 grid place-items-center">
         <div className="text-center">
-          <CountNumber value={value} className="text-[52px] leading-none font-light" />
-          <div className="mt-1 text-[13px]" style={{ color: C.muted }}>/100</div>
+          <CountNumber value={value} className="text-[64px] leading-none font-light" style={{ color }} />
+          <div className="mt-1.5 text-[14px]" style={{ color: C.muted }}>/100</div>
         </div>
       </div>
     </div>
@@ -401,33 +401,32 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
 
       {/* SECURITY SCORE */}
       <Card>
-        <div className="grid lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
-          <div className="p-6 sm:p-8" style={{ borderRight: `1px solid ${C.border}` }}>
-            <h3 className="text-[16px] font-normal">Security Score</h3>
-            <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-8">
+        <div className="grid lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
+          <div className="p-7 sm:p-10" style={{ borderRight: `1px solid ${C.border}` }}>
+            <h3 className="text-[18px] font-medium tracking-tight">Security Score</h3>
+            <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-8 sm:gap-10">
               <Hexagon value={report.score} color={sc} />
-              <div className="min-w-0">
-                <h4 className="text-[19px] sm:text-[22px] font-semibold tracking-[0.01em] leading-snug uppercase">
+              <div className="min-w-0 flex-1">
+                <h4 className="text-[24px] sm:text-[28px] font-semibold tracking-tight leading-tight">
                   {strong ? "Strong security" : "Attention required"}
-                  <br />
-                  {strong ? "Your domain is protected" : "Your domain needs review"}
                 </h4>
-                <div className="mt-3 h-px w-14" style={{ background: C.blue }} />
-                <p className="mt-4 text-[13.5px] leading-relaxed" style={{ color: C.sub }}>
-                  Your security posture is {strong ? "strong" : "below target"}.
-                  <br />
-                  Keep monitoring to stay ahead of threats.
+                <div className="mt-2 text-[15px] sm:text-[16px]" style={{ color: C.sub }}>
+                  {strong ? "Your domain is protected and monitored." : "Your domain needs review and remediation."}
+                </div>
+                <div className="mt-4 h-px w-16" style={{ background: C.blue }} />
+                <p className="mt-4 text-[14px] sm:text-[15px] leading-relaxed" style={{ color: C.sub }}>
+                  Your security posture is {strong ? "strong" : "below target"}. Keep monitoring to stay ahead of threats.
                 </p>
-                <div className="mt-5 inline-flex items-center gap-3 rounded-xl px-4 py-3"
+                <div className="mt-6 inline-flex items-center gap-4 rounded-xl px-4 py-3.5"
                   style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
-                  <div className="size-9 shrink-0 rounded-lg grid place-items-center" style={{ border: `1px solid ${C.border}` }}>
-                    <Shield className="size-4" style={{ color: C.sub }} />
+                  <div className="size-12 shrink-0 rounded-lg grid place-items-center" style={{ border: `1px solid ${C.border}` }}>
+                    <Shield className="size-5" style={{ color: C.sub }} />
                   </div>
                   <div>
-                    <div className="text-[13px] font-medium" style={{ color: strong ? OK : SEV.High }}>
+                    <div className="text-[14.5px] font-medium" style={{ color: strong ? OK : SEV.High }}>
                       {strong ? "Low Risk" : "Elevated Risk"}
                     </div>
-                    <div className="text-[12px]" style={{ color: C.sub }}>
+                    <div className="text-[13px]" style={{ color: C.sub }}>
                       {strong ? "No critical threats detected" : "Critical findings require action"}
                     </div>
                   </div>
@@ -436,21 +435,21 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
             </div>
           </div>
 
-          <div className="p-6 sm:p-8 flex flex-col justify-center gap-0">
+          <div className="p-7 sm:p-10 flex flex-col justify-center gap-0">
             <SideStat
               icon={Shield}
               title="Vulnerabilities"
               sub="Medium & low severity"
-              right={<span className="text-[20px] font-light">{report.findings}</span>}
+              right={<span className="text-[24px] font-light">{report.findings}</span>}
             />
-            <div className="h-px my-5" style={{ background: C.border }} />
+            <div className="h-px my-6" style={{ background: C.border }} />
             <SideStat icon={Clock} title="Scan Frequency" sub={"Every 24 hours\nAutomated schedule"} />
-            <div className="h-px my-5" style={{ background: C.border }} />
+            <div className="h-px my-6" style={{ background: C.border }} />
             <SideStat
               icon={Activity}
               title="System Status"
               sub="All systems operational"
-              right={<span className="size-2.5 rounded-full inline-block" style={{ background: OK, boxShadow: `0 0 10px ${OK}` }} />}
+              right={<span className="size-3 rounded-full inline-block" style={{ background: OK, boxShadow: `0 0 12px ${OK}` }} />}
             />
           </div>
         </div>
@@ -460,54 +459,49 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
       <Card>
         <div className="p-6 sm:p-8">
           <div className="flex items-center justify-between gap-4">
-            <h3 className="text-[17px] font-normal">Live Threat Activity</h3>
+            <h3 className="text-[18px] font-medium tracking-tight">Live Threat Activity</h3>
             <button onClick={onOpenReports} className="group inline-flex items-center gap-2 text-[13px]" style={{ color: C.blue }}>
               View all <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
             </button>
           </div>
 
-          <div className="mt-4 overflow-x-auto">
-            <table className="w-full min-w-[720px] text-left border-collapse">
-              <thead>
-                <tr className="text-[12px]" style={{ color: C.muted }}>
-                  <th className="font-normal pb-3">Threat</th>
-                  <th className="font-normal pb-3">Location</th>
-                  <th className="font-normal pb-3">Type</th>
-                  <th className="font-normal pb-3">Severity</th>
-                  <th className="font-normal pb-3">Time</th>
-                </tr>
-              </thead>
-              <tbody>
-                {threats.map((t, i) => {
-                  const sev = SEV_ORDER[i % SEV_ORDER.length];
-                  return (
-                    <motion.tr
-                      key={`${t.ip}-${i}`}
-                      initial={{ opacity: 0, y: 6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.35, delay: i * 0.05 }}
-                      style={{ borderTop: `1px solid ${C.border}` }}
-                    >
-                      <td className="py-3.5 pr-4 text-[13.5px]">{t.type}</td>
-                      <td className="py-3.5 pr-4 text-[13.5px]" style={{ color: C.sub }}>
-                        <span className="mr-2">{FLAG[t.country] ?? "🏳️"}</span>
-                        {COUNTRY[t.country] ?? t.country}
-                      </td>
-                      <td className="py-3.5 pr-4 text-[13.5px]" style={{ color: C.sub }}>
-                        {THREAT_KIND[t.type] ?? "Anomaly"}
-                      </td>
-                      <td className="py-3.5 pr-4 text-[13.5px]">
-                        <span className="inline-flex items-center gap-2" style={{ color: sev.color }}>
-                          <span className="size-1.5 rounded-full" style={{ background: sev.color }} />
-                          {sev.label}
-                        </span>
-                      </td>
-                      <td className="py-3.5 text-[13.5px]" style={{ color: C.sub }}>{t.ago.replace("m ago", " min ago")}</td>
-                    </motion.tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          <div className="mt-5">
+            <div className="hidden sm:grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.7fr)_minmax(0,0.8fr)] gap-3 sm:gap-4 text-[12px] pb-3" style={{ color: C.muted }}>
+              <div className="min-w-0">Threat</div>
+              <div className="min-w-0">Location</div>
+              <div className="min-w-0">Type</div>
+              <div className="min-w-0">Severity</div>
+              <div className="min-w-0">Time</div>
+            </div>
+            {threats.map((t, i) => {
+              const sev = SEV_ORDER[i % SEV_ORDER.length];
+              return (
+                <motion.div
+                  key={`${t.ip}-${i}`}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, delay: i * 0.05 }}
+                  className="grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.7fr)_minmax(0,0.8fr)] gap-3 sm:gap-4 items-center py-3.5"
+                  style={{ borderTop: `1px solid ${C.border}` }}
+                >
+                  <div className="min-w-0 text-[12px] sm:text-[13.5px] truncate">{t.type}</div>
+                  <div className="min-w-0 text-[12px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>
+                    <span className="mr-1.5">{FLAG[t.country] ?? "🏳️"}</span>
+                    {COUNTRY[t.country] ?? t.country}
+                  </div>
+                  <div className="min-w-0 text-[12px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>
+                    {THREAT_KIND[t.type] ?? "Anomaly"}
+                  </div>
+                  <div className="min-w-0 text-[12px] sm:text-[13.5px] truncate">
+                    <span className="inline-flex items-center gap-2" style={{ color: sev.color }}>
+                      <span className="size-1.5 rounded-full" style={{ background: sev.color }} />
+                      {sev.label}
+                    </span>
+                  </div>
+                  <div className="min-w-0 text-[12px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>{t.ago.replace("m ago", " min ago")}</div>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </Card>
@@ -538,13 +532,13 @@ function SideStat({ icon: Icon, title, sub, right }: {
   icon: typeof Shield; title: string; sub: string; right?: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center gap-4">
-      <div className="size-11 shrink-0 rounded-xl grid place-items-center" style={{ border: `1px solid ${C.border}` }}>
-        <Icon className="size-4" style={{ color: C.text }} />
+    <div className="flex items-center gap-5">
+      <div className="size-14 shrink-0 rounded-xl grid place-items-center" style={{ border: `1px solid ${C.border}` }}>
+        <Icon className="size-5" style={{ color: C.text }} />
       </div>
       <div className="min-w-0 flex-1">
-        <div className="text-[14.5px]">{title}</div>
-        <div className="text-[12.5px] whitespace-pre-line" style={{ color: C.sub }}>{sub}</div>
+        <div className="text-[15.5px] font-medium">{title}</div>
+        <div className="text-[13px] whitespace-pre-line leading-snug" style={{ color: C.sub }}>{sub}</div>
       </div>
       {right}
     </div>
