@@ -520,13 +520,19 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
       {/* DETAILED REPORT */}
       <Card className="relative overflow-hidden">
         <div
-          className="absolute inset-0 bg-contain bg-right bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${detailedReportBg.url})` }}
         />
+        {/* Brackish coating: dark, murky overlay across the whole card */}
+        <div
+          className="absolute inset-0"
+          style={{ background: "rgba(2,6,10,0.28)" }}
+        />
+        {/* Left-side fade: left 10% is fully blacked-out; visibility rises toward the right */}
         <div
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.75) 42%, rgba(0,0,0,0.35) 70%, rgba(0,0,0,0.18) 100%)`,
+            background: `linear-gradient(90deg, rgba(0,0,0,1.0) 0%, rgba(0,0,0,0.95) 10%, rgba(0,0,0,0.78) 42%, rgba(0,0,0,0.38) 70%, rgba(0,0,0,0.18) 100%)`,
           }}
         />
         <div className="relative z-10 grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
