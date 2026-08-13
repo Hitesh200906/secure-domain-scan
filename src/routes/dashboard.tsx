@@ -562,7 +562,7 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
             </div>
 
             <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-8 sm:gap-10">
-              <Hexagon value={report.score} color={sc} />
+              <ScoreDial value={report.score} color={sc} />
               <div className="min-w-0 flex-1">
                 <h4 className="text-[24px] sm:text-[28px] font-semibold tracking-tight leading-tight">
                   {strong ? "Strong security" : "Attention required"}
