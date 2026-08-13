@@ -576,8 +576,8 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
                 </p>
                 <div className="mt-6 inline-flex items-center gap-4 rounded-xl px-4 py-3.5"
                   style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
-                  <div className="size-12 shrink-0 rounded-lg grid place-items-center overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
-                    <img src={icLock} alt="" loading="lazy" width={40} height={40} className="size-8 object-contain" />
+                  <div className="size-12 shrink-0 rounded-lg overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
+                    <img src={icLock} alt="" loading="lazy" width={512} height={512} className="size-full object-cover" />
                   </div>
                   <div>
                     <div className="text-[14.5px] font-medium" style={{ color: strong ? OK : SEV.High }}>
