@@ -544,7 +544,9 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
           <div className="p-7 sm:p-10" style={{ borderRight: `1px solid ${C.border}` }}>
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <img src={icShield} alt="" loading="lazy" width={40} height={40} className="size-9 object-contain" />
+                <div className="size-10 shrink-0 rounded-lg overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
+                  <img src={icShield} alt="" loading="lazy" width={512} height={512} className="size-full object-cover" />
+                </div>
                 <div>
                   <h3 className="text-[18px] font-medium tracking-tight">Security Score</h3>
                   <div className="text-[11.5px] uppercase tracking-[0.18em]" style={{ color: C.muted }}>
