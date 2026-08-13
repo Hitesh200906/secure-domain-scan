@@ -450,142 +450,84 @@ function ScoreDial({ value, color }: { value: number; color: string }) {
 
 
 /* ------------------------------ telemetry strip ----------------------------- */
-function Spark({ seed, color }: { seed: number; color: string }) {
-  const pts = Array.from({ length: 18 }, (_, i) => {
-    const v = Math.sin(i * 0.7 + seed) * 0.5 + Math.sin(i * 0.31 + seed * 1.7) * 0.5;
-    return 22 - ((v + 2) / 4) * 18 - 2;
-  });
-  const d = pts.map((y, i) => `${i === 0 ? "M" : "L"}${(i / (pts.length - 1)) * 100},${y.toFixed(2)}`).join(" ");
-  const gid = `sp${Math.round(seed * 1000)}`;
-  return (
-    <svg viewBox="0 0 100 24" preserveAspectRatio="none" className="h-6 w-full">
-      <defs>
-        <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity="0.28" />
-          <stop offset="100%" stopColor={color} stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path d={`${d} L100,24 L0,24 Z`} fill={`url(#${gid})`} />
-      <path d={d} fill="none" stroke={color} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
 function TelemetryStrip({ report }: { report: ReportModel }) {
   const items = [
-    { label: "Protected Assets", value: `${Math.max(1, Math.round(report.score / 4))}`, sub: "under monitoring", img: icAssets, delta: "+4.2%", pct: Math.min(100, report.score), color: "#2563EB" },
-    { label: "Threats Neutralized", value: `${report.findings + 12}`, sub: "last 24 hours", img: icThreats, delta: "+12", pct: 74, color: "#60A5FA" },
-    { label: "Active Nodes", value: "14", sub: "global edge network", img: icNodes, delta: "stable", pct: 88, color: "#22D3EE" },
-    { label: "Avg Response", value: "14ms", sub: "mitigation latency", img: icLatency, delta: "-2.1ms", pct: 93, color: "#93C5FD" },
+    { label: "Protected Assets", value: `${Math.max(1, Math.round(report.score / 4))}`, sub: "Under continuous monitoring", img: icAssets, meta: "+4.2% this week" },
+    { label: "Threats Neutralized", value: `${report.findings + 12}`, sub: "Blocked in last 24 hours", img: icThreats, meta: "+12 today" },
+    { label: "Active Nodes", value: "14", sub: "Global edge network", img: icNodes, meta: "All operational" },
+    { label: "Avg Response", value: "14ms", sub: "Mitigation latency", img: icLatency, meta: "−2.1ms vs. 7d" },
   ];
 
   return (
     <Card className="relative overflow-hidden">
-      {/* Soft blue ambient wash */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-40"
-        style={{
-          background: "radial-gradient(900px 420px at 10% 0%, rgba(37,99,235,0.18), transparent 60%), radial-gradient(700px 360px at 90% 100%, rgba(34,211,238,0.10), transparent 55%)",
-        }}
-      />
-      <div
-        className="pointer-events-none absolute inset-0 opacity-30"
+        className="pointer-events-none absolute inset-0 opacity-[0.35]"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)",
-          backgroundSize: "34px 34px",
+            "linear-gradient(rgba(255,255,255,0.016) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.016) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
         }}
-      />
-      {/* Top blue accent line */}
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-[2px]"
-        style={{ background: "linear-gradient(90deg, transparent, rgba(37,99,235,0.75), rgba(34,211,238,0.55), transparent)" }}
       />
 
       {/* header */}
       <div
-        className="relative z-10 flex items-center justify-between gap-3 px-4 sm:px-6 py-2.5 sm:py-3 border-b"
+        className="relative z-10 flex items-center justify-between gap-3 px-4 sm:px-6 py-3 border-b"
         style={{ borderColor: C.border }}
       >
         <div className="flex items-center gap-2.5 min-w-0">
-          <span className="relative flex size-1.5 shrink-0">
-            <span className="absolute inline-flex h-full w-full rounded-full animate-ping" style={{ background: C.blue, opacity: 0.5 }} />
-            <span className="relative inline-flex size-1.5 rounded-full" style={{ background: C.blue }} />
-          </span>
-          <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.22em] truncate" style={{ color: C.blue }}>
+          <span className="size-1.5 shrink-0 rounded-full" style={{ background: C.sub }} />
+          <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.24em] truncate" style={{ color: C.sub }}>
             Live Telemetry
           </span>
         </div>
-        <span className="text-[10px] sm:text-[11px] font-mono tabular-nums shrink-0" style={{ color: C.sub }}>
-          sync 30s
+        <span className="text-[10px] sm:text-[11px] font-mono tabular-nums shrink-0" style={{ color: C.muted }}>
+          SYNC · 30s
         </span>
       </div>
 
       <div className="relative z-10 grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4">
-        {items.map((item, i) => (
+        {items.map((item) => (
           <div
             key={item.label}
-            className="group relative px-4 sm:px-6 py-4 sm:py-5 border-b xs:[&:nth-child(n+3)]:border-b-0 xs:odd:border-r lg:border-b-0 lg:border-r lg:last:border-r-0 transition-colors hover:bg-white/[0.02]"
+            className="group relative px-4 sm:px-6 py-5 sm:py-6 border-b xs:[&:nth-child(n+3)]:border-b-0 xs:odd:border-r lg:border-b-0 lg:border-r lg:last:border-r-0 transition-colors duration-300 hover:bg-white/[0.018]"
             style={{ borderColor: C.border }}
           >
-            {/* Per-item subtle color wash */}
-            <div
-              className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-              style={{ background: `radial-gradient(420px 220px at 0% 0%, ${item.color}08, transparent 60%)` }}
-            />
-            <div className="relative z-10">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div
-                    className="size-9 sm:size-10 rounded-lg overflow-hidden shrink-0"
-                    style={{ border: `1px solid ${item.color}33`, background: "#000000" }}
-                  >
-                    <img
-                      src={item.img}
-                      alt=""
-                      loading="lazy"
-                      width={512}
-                      height={512}
-                      className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="text-[9.5px] sm:text-[10.5px] uppercase tracking-[0.14em] truncate" style={{ color: C.muted }}>
-                    {item.label}
-                  </div>
+            <div className="flex items-start gap-3.5">
+              <div
+                className="size-11 sm:size-12 rounded-xl overflow-hidden shrink-0"
+                style={{ border: `1px solid ${C.border}`, background: "#000000" }}
+              >
+                <img
+                  src={item.img}
+                  alt=""
+                  loading="lazy"
+                  width={512}
+                  height={512}
+                  className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.06]"
+                />
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <div className="text-[9.5px] sm:text-[10.5px] uppercase tracking-[0.16em] truncate" style={{ color: C.muted }}>
+                  {item.label}
                 </div>
-                <span
-                  className="shrink-0 rounded-full px-2 py-0.5 text-[9.5px] sm:text-[10px] font-mono tabular-nums"
-                  style={{ border: `1px solid ${item.color}33`, color: item.color, background: `${item.color}0A` }}
+                <div
+                  className="mt-2 text-[26px] sm:text-[32px] font-light leading-none tracking-[-0.02em] tabular-nums"
+                  style={{ color: C.text }}
                 >
-                  {item.delta}
-                </span>
+                  {item.value}
+                </div>
+                <div className="mt-2 text-[11px] sm:text-[11.5px] leading-snug truncate" style={{ color: C.sub }}>
+                  {item.sub}
+                </div>
               </div>
+            </div>
 
-              <div className="mt-3 flex items-end justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="text-[24px] sm:text-[30px] font-light leading-none tracking-tight tabular-nums" style={{ color: item.color }}>
-                    {item.value}
-                  </div>
-                  <div className="mt-1.5 text-[10.5px] sm:text-[11.5px] truncate" style={{ color: C.sub }}>
-                    {item.sub}
-                  </div>
-                </div>
-                <div className="w-[42%] max-w-[130px] shrink-0 opacity-80">
-                  <Spark seed={i * 1.9 + 0.4} color={item.color} />
-                </div>
-              </div>
-
-              <div className="mt-3 flex items-center gap-2.5">
-                <div className="h-[3px] flex-1 rounded-full overflow-hidden" style={{ background: "#0E1013" }}>
-                  <div
-                    className="h-full rounded-full transition-all duration-700"
-                    style={{ width: `${item.pct}%`, background: item.color, boxShadow: `0 0 8px ${item.color}44` }}
-                  />
-                </div>
-                <span className="text-[9.5px] font-mono tabular-nums" style={{ color: item.color }}>
-                  {item.pct}%
-                </span>
-              </div>
+            <div
+              className="mt-4 pt-3 border-t text-[10px] sm:text-[10.5px] font-mono tabular-nums truncate"
+              style={{ borderColor: C.border, color: C.muted }}
+            >
+              {item.meta}
             </div>
           </div>
         ))}
