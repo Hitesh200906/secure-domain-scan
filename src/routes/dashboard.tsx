@@ -11,7 +11,7 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import nexusLogo from "@/assets/nexefy-logo.png";
 import dashboardHeroBg from "@/assets/dashboard-hero-bg.png.asset.json";
-import detailedReportBg from "@/assets/detailed-security-report-v2.png.asset.json";
+import detailedReportBg from "@/assets/detailed-security-report-v3.png.asset.json";
 
 import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
@@ -520,13 +520,19 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
       {/* DETAILED REPORT */}
       <Card className="relative overflow-hidden">
         <div
-          className="absolute inset-0 bg-contain bg-right bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${detailedReportBg.url})` }}
         />
+        {/* Brackish coating: dark, murky overlay across the whole card */}
+        <div
+          className="absolute inset-0"
+          style={{ background: "rgba(2,6,10,0.28)" }}
+        />
+        {/* Left-side fade: left part is 10% less visible, rising toward the right */}
         <div
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.75) 42%, rgba(0,0,0,0.35) 70%, rgba(0,0,0,0.18) 100%)`,
+            background: `linear-gradient(90deg, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.82) 10%, rgba(0,0,0,0.78) 42%, rgba(0,0,0,0.38) 70%, rgba(0,0,0,0.18) 100%)`,
           }}
         />
         <div className="relative z-10 grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
