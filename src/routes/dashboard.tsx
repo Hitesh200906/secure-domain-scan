@@ -520,7 +520,7 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
       {/* DETAILED REPORT */}
       <Card className="relative overflow-hidden">
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-contain bg-right bg-no-repeat"
           style={{ backgroundImage: `url(${detailedReportBg.url})` }}
         />
         <div
