@@ -489,8 +489,6 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
 
       </Card>
 
-      {/* SECURITY TELEMETRY STRIP — premium status overview */}
-      <TelemetryStrip report={report} />
 
       {/* SECURITY SCORE */}
       <Card className="relative">
