@@ -369,7 +369,8 @@ function ScoreDial({ value, color }: { value: number; color: string }) {
   const len = (Math.PI * 2 * R) * (SWEEP / 360);
 
   return (
-    <div className="relative shrink-0" style={{ width: S, height: S }}>
+    <div className="relative shrink-0 mx-auto sm:mx-0 w-[190px] h-[190px] sm:w-[240px] sm:h-[240px]">
+
       <div
         className="absolute inset-8 rounded-full pointer-events-none"
         style={{ background: `radial-gradient(circle at 50% 45%, ${color}12 0%, transparent 70%)` }}
@@ -425,19 +426,20 @@ function ScoreDial({ value, color }: { value: number; color: string }) {
 
       <div className="absolute inset-0 grid place-items-center">
         <div className="text-center">
-          <div className="text-[10px] uppercase tracking-[0.28em]" style={{ color: C.muted }}>Score</div>
+          <div className="text-[9px] sm:text-[10px] uppercase tracking-[0.28em]" style={{ color: C.muted }}>Score</div>
           <div className="flex items-end justify-center gap-1">
-            <CountNumber value={value} className="text-[58px] leading-none font-light" style={{ color }} />
-            <span className="pb-1.5 text-[14px]" style={{ color: C.muted }}>/100</span>
+            <CountNumber value={value} className="text-[44px] sm:text-[58px] leading-none font-light" style={{ color }} />
+            <span className="pb-1 sm:pb-1.5 text-[12px] sm:text-[14px]" style={{ color: C.muted }}>/100</span>
           </div>
           <div
-            className="mt-2.5 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
+            className="mt-2 sm:mt-2.5 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] sm:text-[11px] font-medium"
             style={{ border: `1px solid ${color}44`, color, background: `${color}0F` }}
           >
             Grade {grade(value)}
           </div>
         </div>
       </div>
+
     </div>
   );
 }
@@ -461,10 +463,10 @@ function TelemetryStrip({ report }: { report: ReportModel }) {
         {items.map((item, i) => {
           const Icon = item.icon;
           return (
-            <div key={item.label} className="flex items-center gap-4 px-5 sm:px-7 py-5 relative">
-              <div className="relative">
-                <div className="size-10 rounded-xl grid place-items-center" style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
-                  <Icon className="size-4.5" style={{ color: C.blue }} />
+            <div key={item.label} className="flex items-center gap-3 sm:gap-4 px-3.5 sm:px-7 py-4 sm:py-5 relative">
+              <div className="relative shrink-0">
+                <div className="size-9 sm:size-10 rounded-xl grid place-items-center" style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
+                  <Icon className="size-4 sm:size-4.5" style={{ color: C.blue }} />
                 </div>
                 {i === 0 && (
                   <span
@@ -474,11 +476,12 @@ function TelemetryStrip({ report }: { report: ReportModel }) {
                 )}
               </div>
               <div className="min-w-0">
-                <div className="text-[11px] uppercase tracking-[0.12em]" style={{ color: C.muted }}>{item.label}</div>
-                <div className="mt-0.5 text-[18px] sm:text-[20px] font-light tracking-tight text-white">{item.value}</div>
-                <div className="text-[11px]" style={{ color: C.sub }}>{item.sub}</div>
+                <div className="text-[9.5px] sm:text-[11px] uppercase tracking-[0.1em] sm:tracking-[0.12em] truncate" style={{ color: C.muted }}>{item.label}</div>
+                <div className="mt-0.5 text-[16px] sm:text-[20px] font-light tracking-tight text-white">{item.value}</div>
+                <div className="text-[10px] sm:text-[11px] truncate" style={{ color: C.sub }}>{item.sub}</div>
               </div>
             </div>
+
           );
         })}
       </div>
@@ -510,21 +513,22 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
           }}
         />
         <div className="relative z-10 grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-          <div className="p-7 sm:p-10 flex flex-col justify-center">
-            <h2 className="text-[26px] sm:text-[30px] font-light tracking-[-0.02em] leading-tight drop-shadow-[0_2px_18px_rgba(0,0,0,0.85)]">
+          <div className="p-5 sm:p-10 flex flex-col justify-center">
+            <h2 className="text-[21px] sm:text-[30px] font-light tracking-[-0.02em] leading-tight drop-shadow-[0_2px_18px_rgba(0,0,0,0.85)]">
               {mounted ? greeting() : "Welcome back"},
               <br />
               <span className="font-medium" style={{ color: C.blue }}>{name ? name.split(" ")[0] : "there"}</span>
             </h2>
-            <p className="mt-5 text-[14px] leading-relaxed max-w-xs drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]" style={{ color: C.sub }}>
+            <p className="mt-3.5 sm:mt-5 text-[13px] sm:text-[14px] leading-relaxed max-w-xs drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]" style={{ color: C.sub }}>
               Scan any domain for threats, vulnerabilities and security risks in seconds.
             </p>
-            <Link to="/scan/new" search={{ plan: "professional" as const }} className="group mt-7 self-start">
+            <Link to="/scan/new" search={{ plan: "professional" as const }} className="group mt-5 sm:mt-7 self-start">
               <GhostButton>Start New Scan</GhostButton>
             </Link>
           </div>
           <div className="hidden md:block min-h-[340px]" />
         </div>
+
       </Card>
 
       {/* SECURITY TELEMETRY STRIP — premium status overview */}
@@ -541,15 +545,15 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
           }}
         />
         <div className="relative z-10 grid lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
-          <div className="p-7 sm:p-10" style={{ borderRight: `1px solid ${C.border}` }}>
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="size-10 shrink-0 rounded-lg overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
+          <div className="p-5 sm:p-10 lg:border-r" style={{ borderColor: C.border }}>
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-3">
+                <div className="size-9 sm:size-10 shrink-0 rounded-lg overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
                   <img src={icShield} alt="" loading="lazy" width={512} height={512} className="size-full object-cover" />
                 </div>
-                <div>
-                  <h3 className="text-[18px] font-medium tracking-tight">Security Score</h3>
-                  <div className="text-[11.5px] uppercase tracking-[0.18em]" style={{ color: C.muted }}>
+                <div className="min-w-0">
+                  <h3 className="text-[16px] sm:text-[18px] font-medium tracking-tight truncate">Security Score</h3>
+                  <div className="text-[10px] sm:text-[11.5px] uppercase tracking-[0.18em]" style={{ color: C.muted }}>
                     Posture index
                   </div>
                 </div>
@@ -563,29 +567,29 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
               </span>
             </div>
 
-            <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-8 sm:gap-10">
+            <div className="mt-5 sm:mt-6 flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10">
               <ScoreDial value={report.score} color={sc} />
-              <div className="min-w-0 flex-1">
-                <h4 className="text-[24px] sm:text-[28px] font-semibold tracking-tight leading-tight">
+              <div className="min-w-0 flex-1 text-center sm:text-left">
+                <h4 className="text-[20px] sm:text-[28px] font-semibold tracking-tight leading-tight">
                   {strong ? "Strong security" : "Attention required"}
                 </h4>
-                <div className="mt-2 text-[15px] sm:text-[16px]" style={{ color: C.sub }}>
+                <div className="mt-2 text-[13.5px] sm:text-[16px]" style={{ color: C.sub }}>
                   {strong ? "Your domain is protected and monitored." : "Your domain needs review and remediation."}
                 </div>
-                <div className="mt-4 h-px w-16" style={{ background: C.blue }} />
-                <p className="mt-4 text-[14px] sm:text-[15px] leading-relaxed" style={{ color: C.sub }}>
+                <div className="mt-3.5 sm:mt-4 h-px w-16 mx-auto sm:mx-0" style={{ background: C.blue }} />
+                <p className="mt-3.5 sm:mt-4 text-[13px] sm:text-[15px] leading-relaxed" style={{ color: C.sub }}>
                   Your security posture is {strong ? "strong" : "below target"}. Keep monitoring to stay ahead of threats.
                 </p>
-                <div className="mt-6 inline-flex items-center gap-4 rounded-xl px-4 py-3.5"
+                <div className="mt-5 sm:mt-6 flex w-full sm:inline-flex items-center gap-3.5 sm:gap-4 rounded-xl px-3.5 sm:px-4 py-3 sm:py-3.5 text-left"
                   style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
-                  <div className="size-12 shrink-0 rounded-lg overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
+                  <div className="size-11 sm:size-12 shrink-0 rounded-lg overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
                     <img src={icLock} alt="" loading="lazy" width={512} height={512} className="size-full object-cover" />
                   </div>
-                  <div>
-                    <div className="text-[14.5px] font-medium" style={{ color: strong ? OK : SEV.High }}>
+                  <div className="min-w-0">
+                    <div className="text-[13.5px] sm:text-[14.5px] font-medium" style={{ color: strong ? OK : SEV.High }}>
                       {strong ? "Low Risk" : "Elevated Risk"}
                     </div>
-                    <div className="text-[13px]" style={{ color: C.sub }}>
+                    <div className="text-[12px] sm:text-[13px]" style={{ color: C.sub }}>
                       {strong ? "No critical threats detected" : "Critical findings require action"}
                     </div>
                   </div>
@@ -594,38 +598,39 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
             </div>
           </div>
 
-          <div className="p-7 sm:p-10 flex flex-col justify-center gap-0">
+          <div className="p-5 sm:p-10 flex flex-col justify-center gap-0 border-t lg:border-t-0" style={{ borderColor: C.border }}>
             <SideStat
               img={icShield}
               title="Vulnerabilities"
               sub="Medium & low severity"
-              right={<span className="text-[24px] font-light">{report.findings}</span>}
+              right={<span className="text-[20px] sm:text-[24px] font-light">{report.findings}</span>}
             />
-            <div className="h-px my-6" style={{ background: C.border }} />
+            <div className="h-px my-4 sm:my-6" style={{ background: C.border }} />
             <SideStat img={icScan} title="Scan Frequency" sub={"Every 24 hours\nAutomated schedule"} />
-            <div className="h-px my-6" style={{ background: C.border }} />
+            <div className="h-px my-4 sm:my-6" style={{ background: C.border }} />
             <SideStat
               img={icServer}
               title="System Status"
               sub="All systems operational"
-              right={<span className="size-3 rounded-full inline-block" style={{ background: OK, boxShadow: `0 0 12px ${OK}` }} />}
+              right={<span className="size-3 shrink-0 rounded-full inline-block" style={{ background: OK, boxShadow: `0 0 12px ${OK}` }} />}
             />
           </div>
         </div>
+
       </Card>
 
 
       {/* LIVE THREAT ACTIVITY */}
       <Card>
-        <div className="p-6 sm:p-8">
-          <div className="flex items-center justify-between gap-4">
-            <h3 className="text-[18px] font-medium tracking-tight">Live Threat Activity</h3>
-            <button onClick={onOpenReports} className="group inline-flex items-center gap-2 text-[13px]" style={{ color: C.blue }}>
+        <div className="p-4 sm:p-8">
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="text-[16px] sm:text-[18px] font-medium tracking-tight truncate">Live Threat Activity</h3>
+            <button onClick={onOpenReports} className="group inline-flex shrink-0 items-center gap-2 text-[12px] sm:text-[13px]" style={{ color: C.blue }}>
               View all <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
             </button>
           </div>
 
-          <div className="mt-5">
+          <div className="mt-4 sm:mt-5">
             <div className="hidden sm:grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.7fr)_minmax(0,0.8fr)] gap-3 sm:gap-4 text-[12px] pb-3" style={{ color: C.muted }}>
               <div className="min-w-0">Threat</div>
               <div className="min-w-0">Location</div>
@@ -641,29 +646,30 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, delay: i * 0.05 }}
-                  className="grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.7fr)_minmax(0,0.8fr)] gap-3 sm:gap-4 items-center py-3.5"
+                  className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-1 py-3 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.7fr)_minmax(0,0.8fr)] sm:gap-4 sm:items-center sm:py-3.5"
                   style={{ borderTop: `1px solid ${C.border}` }}
                 >
-                  <div className="min-w-0 text-[12px] sm:text-[13.5px] truncate">{t.type}</div>
-                  <div className="min-w-0 text-[12px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>
+                  <div className="min-w-0 text-[13px] sm:text-[13.5px] truncate">{t.type}</div>
+                  <div className="min-w-0 text-right sm:text-left text-[12px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>
                     <span className="mr-1.5">{FLAG[t.country] ?? "🏳️"}</span>
                     {COUNTRY[t.country] ?? t.country}
                   </div>
-                  <div className="min-w-0 text-[12px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>
+                  <div className="min-w-0 text-[11.5px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>
                     {THREAT_KIND[t.type] ?? "Anomaly"}
                   </div>
-                  <div className="min-w-0 text-[12px] sm:text-[13.5px] truncate">
+                  <div className="min-w-0 order-last sm:order-none text-[11.5px] sm:text-[13.5px] truncate">
                     <span className="inline-flex items-center gap-2" style={{ color: sev.color }}>
                       <span className="size-1.5 rounded-full" style={{ background: sev.color }} />
                       {sev.label}
                     </span>
                   </div>
-                  <div className="min-w-0 text-[12px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>{t.ago.replace("m ago", " min ago")}</div>
+                  <div className="min-w-0 order-last sm:order-none text-right sm:text-left text-[11.5px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>{t.ago.replace("m ago", " min ago")}</div>
                 </motion.div>
               );
             })}
           </div>
         </div>
+
       </Card>
 
       {/* DETAILED REPORT */}
@@ -685,14 +691,15 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
           }}
         />
         <div className="relative z-10 grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-          <div className="p-7 sm:p-9 flex flex-col justify-center">
-            <h3 className="text-[21px] font-normal tracking-[-0.01em] drop-shadow-[0_2px_18px_rgba(0,0,0,0.85)]">Detailed Security Report</h3>
-            <p className="mt-3 text-[13.5px] leading-relaxed max-w-sm drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]" style={{ color: C.sub }}>
+          <div className="p-5 sm:p-9 flex flex-col justify-center">
+            <h3 className="text-[18px] sm:text-[21px] font-normal tracking-[-0.01em] drop-shadow-[0_2px_18px_rgba(0,0,0,0.85)]">Detailed Security Report</h3>
+            <p className="mt-2.5 sm:mt-3 text-[12.5px] sm:text-[13.5px] leading-relaxed max-w-sm drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]" style={{ color: C.sub }}>
               Get complete security analysis with detailed findings and actionable recommendations.
             </p>
-            <Link to="/report/$id" params={{ id: report.id }} className="group mt-6 self-start">
+            <Link to="/report/$id" params={{ id: report.id }} className="group mt-5 sm:mt-6 self-start">
               <GhostButton>View Full Report</GhostButton>
             </Link>
+
           </div>
           <div className="hidden md:block min-h-[200px]" />
         </div>
@@ -707,9 +714,9 @@ function SideStat({ icon: Icon, img, title, sub, right }: {
   icon?: typeof Shield; img?: string; title: string; sub: string; right?: React.ReactNode;
 }) {
   return (
-    <div className="group flex items-center gap-5">
+    <div className="group flex items-center gap-4 sm:gap-5">
       <div
-        className="size-14 shrink-0 rounded-xl grid place-items-center overflow-hidden transition-transform duration-300 group-hover:-translate-y-0.5"
+        className="size-12 sm:size-14 shrink-0 rounded-xl grid place-items-center overflow-hidden transition-transform duration-300 group-hover:-translate-y-0.5"
         style={{ border: `1px solid ${C.border}`, background: "radial-gradient(circle at 50% 30%, rgba(37,99,235,0.10), transparent 70%)" }}
       >
         {img ? (
@@ -719,9 +726,10 @@ function SideStat({ icon: Icon, img, title, sub, right }: {
         ) : null}
       </div>
       <div className="min-w-0 flex-1">
-        <div className="text-[15.5px] font-medium">{title}</div>
-        <div className="text-[13px] whitespace-pre-line leading-snug" style={{ color: C.sub }}>{sub}</div>
+        <div className="text-[14px] sm:text-[15.5px] font-medium truncate">{title}</div>
+        <div className="text-[12px] sm:text-[13px] whitespace-pre-line leading-snug" style={{ color: C.sub }}>{sub}</div>
       </div>
+
       {right}
     </div>
   );
