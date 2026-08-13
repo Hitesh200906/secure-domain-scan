@@ -528,11 +528,11 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
           className="absolute inset-0"
           style={{ background: "rgba(2,6,10,0.28)" }}
         />
-        {/* Left-side fade: left part is 10% less visible, rising toward the right */}
+        {/* Left-side fade: left part is 20% visible, rising toward the right */}
         <div
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(90deg, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.82) 10%, rgba(0,0,0,0.78) 42%, rgba(0,0,0,0.38) 70%, rgba(0,0,0,0.18) 100%)`,
+            background: `linear-gradient(90deg, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.72) 10%, rgba(0,0,0,0.68) 42%, rgba(0,0,0,0.30) 70%, rgba(0,0,0,0.10) 100%)`,
           }}
         />
         <div className="relative z-10 grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
