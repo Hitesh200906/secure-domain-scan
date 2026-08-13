@@ -12,6 +12,10 @@ import { supabase } from "@/integrations/supabase/client";
 import nexusLogo from "@/assets/nexefy-logo.png";
 import dashboardHeroBg from "@/assets/dashboard-hero-bg.png.asset.json";
 import detailedReportBg from "@/assets/detailed-security-report-v3.png.asset.json";
+import icShield from "@/assets/icon3d-shield.png";
+import icScan from "@/assets/icon3d-scan.png";
+import icServer from "@/assets/icon3d-server.png";
+import icLock from "@/assets/icon3d-lock.png";
 
 import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
@@ -336,38 +340,120 @@ function GhostButton({ children }: { children: React.ReactNode }) {
   );
 }
 
+function grade(v: number) {
+  if (v >= 90) return "A+";
+  if (v >= 80) return "A";
+  if (v >= 70) return "B";
+  if (v >= 55) return "C";
+  if (v >= 40) return "D";
+  return "F";
+}
+
 function Hexagon({ value, color }: { value: number; color: string }) {
   const pts = (r: number) =>
     Array.from({ length: 6 }, (_, i) => {
       const a = (Math.PI / 180) * (60 * i - 90);
       return `${120 + r * Math.cos(a)},${120 + r * Math.sin(a)}`;
     }).join(" ");
+
+  const R = 108;
+  const circ = 2 * Math.PI * R;
+  const pct = Math.max(0, Math.min(100, value)) / 100;
+
   return (
     <div className="relative shrink-0" style={{ width: 240, height: 240 }}>
+      {/* soft radial base */}
+      <div
+        className="absolute inset-6 rounded-full pointer-events-none"
+        style={{ background: `radial-gradient(circle at 50% 45%, ${color}14 0%, transparent 68%)` }}
+      />
+
       <svg viewBox="0 0 240 240" className="absolute inset-0 size-full">
-        {[116, 100, 84, 68].map((r, i) => (
+        <defs>
+          <linearGradient id="scoreArc" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0%" stopColor={color} stopOpacity="0.35" />
+            <stop offset="100%" stopColor={color} />
+          </linearGradient>
+        </defs>
+
+        {/* tick ring */}
+        <g>
+          {Array.from({ length: 60 }, (_, i) => {
+            const a = (Math.PI / 180) * (i * 6 - 90);
+            const on = i / 60 <= pct;
+            const r1 = 118, r2 = on ? 110 : 113;
+            return (
+              <line
+                key={i}
+                x1={120 + r1 * Math.cos(a)} y1={120 + r1 * Math.sin(a)}
+                x2={120 + r2 * Math.cos(a)} y2={120 + r2 * Math.sin(a)}
+                stroke={on ? color : "rgba(255,255,255,0.10)"}
+                strokeOpacity={on ? 0.85 : 1}
+                strokeWidth={1.2}
+              />
+            );
+          })}
+        </g>
+
+        {/* progress arc */}
+        <motion.circle
+          cx="120" cy="120" r={R}
+          fill="none"
+          stroke="url(#scoreArc)"
+          strokeWidth={3}
+          strokeLinecap="round"
+          transform="rotate(-90 120 120)"
+          strokeDasharray={circ}
+          initial={{ strokeDashoffset: circ }}
+          animate={{ strokeDashoffset: circ * (1 - pct) }}
+          transition={{ duration: 1.6, ease: "easeOut" }}
+        />
+
+        {/* hex frames */}
+        {[92, 76, 60].map((r, i) => (
           <motion.polygon
             key={r}
             points={pts(r)}
-            fill="none"
-            stroke={i === 0 ? `${color}66` : "rgba(255,255,255,0.10)"}
-            strokeWidth={1.25}
-            initial={{ opacity: 0, scale: 0.9 }}
+            fill={i === 2 ? "rgba(255,255,255,0.015)" : "none"}
+            stroke={i === 0 ? `${color}55` : "rgba(255,255,255,0.08)"}
+            strokeWidth={1.1}
+            initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: i * 0.08, ease: "easeOut" }}
             style={{ transformOrigin: "120px 120px" }}
           />
         ))}
+
+        {/* slow rotating accent hex */}
+        <motion.polygon
+          points={pts(100)}
+          fill="none"
+          stroke={`${color}22`}
+          strokeWidth={1}
+          strokeDasharray="8 14"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+          style={{ transformOrigin: "120px 120px" }}
+        />
       </svg>
+
       <div className="absolute inset-0 grid place-items-center">
         <div className="text-center">
-          <CountNumber value={value} className="text-[64px] leading-none font-light" style={{ color }} />
-          <div className="mt-1.5 text-[14px]" style={{ color: C.muted }}>/100</div>
+          <div className="text-[10px] uppercase tracking-[0.28em]" style={{ color: C.muted }}>Score</div>
+          <CountNumber value={value} className="text-[58px] leading-none font-light" style={{ color }} />
+          <div className="mt-1 text-[13px]" style={{ color: C.muted }}>/100</div>
+          <div
+            className="mt-2 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
+            style={{ border: `1px solid ${color}44`, color, background: `${color}0F` }}
+          >
+            Grade {grade(value)}
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
 
 /* ------------------------------ telemetry strip ----------------------------- */
 function TelemetryStrip({ report }: { report: ReportModel }) {
@@ -457,10 +543,36 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
       <TelemetryStrip report={report} />
 
       {/* SECURITY SCORE */}
-      <Card>
-        <div className="grid lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
+      <Card className="relative">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.5]"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)",
+            backgroundSize: "44px 44px",
+          }}
+        />
+        <div className="relative z-10 grid lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
           <div className="p-7 sm:p-10" style={{ borderRight: `1px solid ${C.border}` }}>
-            <h3 className="text-[18px] font-medium tracking-tight">Security Score</h3>
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <img src={icShield} alt="" loading="lazy" width={40} height={40} className="size-9 object-contain" />
+                <div>
+                  <h3 className="text-[18px] font-medium tracking-tight">Security Score</h3>
+                  <div className="text-[11.5px] uppercase tracking-[0.18em]" style={{ color: C.muted }}>
+                    Posture index
+                  </div>
+                </div>
+              </div>
+              <span
+                className="hidden sm:inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px]"
+                style={{ border: `1px solid ${C.border}`, color: C.sub }}
+              >
+                <span className="size-1.5 rounded-full" style={{ background: OK }} />
+                Live
+              </span>
+            </div>
+
             <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-8 sm:gap-10">
               <Hexagon value={report.score} color={sc} />
               <div className="min-w-0 flex-1">
@@ -476,8 +588,8 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
                 </p>
                 <div className="mt-6 inline-flex items-center gap-4 rounded-xl px-4 py-3.5"
                   style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
-                  <div className="size-12 shrink-0 rounded-lg grid place-items-center" style={{ border: `1px solid ${C.border}` }}>
-                    <Shield className="size-5" style={{ color: C.sub }} />
+                  <div className="size-12 shrink-0 rounded-lg grid place-items-center overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
+                    <img src={icLock} alt="" loading="lazy" width={40} height={40} className="size-8 object-contain" />
                   </div>
                   <div>
                     <div className="text-[14.5px] font-medium" style={{ color: strong ? OK : SEV.High }}>
@@ -494,16 +606,16 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
 
           <div className="p-7 sm:p-10 flex flex-col justify-center gap-0">
             <SideStat
-              icon={Shield}
+              img={icShield}
               title="Vulnerabilities"
               sub="Medium & low severity"
               right={<span className="text-[24px] font-light">{report.findings}</span>}
             />
             <div className="h-px my-6" style={{ background: C.border }} />
-            <SideStat icon={Clock} title="Scan Frequency" sub={"Every 24 hours\nAutomated schedule"} />
+            <SideStat img={icScan} title="Scan Frequency" sub={"Every 24 hours\nAutomated schedule"} />
             <div className="h-px my-6" style={{ background: C.border }} />
             <SideStat
-              icon={Activity}
+              img={icServer}
               title="System Status"
               sub="All systems operational"
               right={<span className="size-3 rounded-full inline-block" style={{ background: OK, boxShadow: `0 0 12px ${OK}` }} />}
@@ -511,6 +623,7 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
           </div>
         </div>
       </Card>
+
 
       {/* LIVE THREAT ACTIVITY */}
       <Card>
@@ -600,13 +713,20 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
   );
 }
 
-function SideStat({ icon: Icon, title, sub, right }: {
-  icon: typeof Shield; title: string; sub: string; right?: React.ReactNode;
+function SideStat({ icon: Icon, img, title, sub, right }: {
+  icon?: typeof Shield; img?: string; title: string; sub: string; right?: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center gap-5">
-      <div className="size-14 shrink-0 rounded-xl grid place-items-center" style={{ border: `1px solid ${C.border}` }}>
-        <Icon className="size-5" style={{ color: C.text }} />
+    <div className="group flex items-center gap-5">
+      <div
+        className="size-14 shrink-0 rounded-xl grid place-items-center overflow-hidden transition-transform duration-300 group-hover:-translate-y-0.5"
+        style={{ border: `1px solid ${C.border}`, background: "radial-gradient(circle at 50% 30%, rgba(37,99,235,0.10), transparent 70%)" }}
+      >
+        {img ? (
+          <img src={img} alt="" loading="lazy" width={44} height={44} className="size-9 object-contain" />
+        ) : Icon ? (
+          <Icon className="size-5" style={{ color: C.text }} />
+        ) : null}
       </div>
       <div className="min-w-0 flex-1">
         <div className="text-[15.5px] font-medium">{title}</div>
@@ -616,6 +736,7 @@ function SideStat({ icon: Icon, title, sub, right }: {
     </div>
   );
 }
+
 
 
 function KpiCard({ label, icon: Icon, accent, children, glow }: {
