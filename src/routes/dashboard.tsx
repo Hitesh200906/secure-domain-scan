@@ -349,101 +349,89 @@ function grade(v: number) {
   return "F";
 }
 
-function Hexagon({ value, color }: { value: number; color: string }) {
-  const pts = (r: number) =>
-    Array.from({ length: 6 }, (_, i) => {
-      const a = (Math.PI / 180) * (60 * i - 90);
-      return `${120 + r * Math.cos(a)},${120 + r * Math.sin(a)}`;
-    }).join(" ");
-
-  const R = 108;
-  const circ = 2 * Math.PI * R;
+function ScoreDial({ value, color }: { value: number; color: string }) {
   const pct = Math.max(0, Math.min(100, value)) / 100;
+  const S = 240, cx = 120, cy = 120;
+
+  // 270° sweep gauge (from 135° to 405°)
+  const START = 135, SWEEP = 270;
+  const polar = (r: number, deg: number) => {
+    const a = (Math.PI / 180) * deg;
+    return [cx + r * Math.cos(a), cy + r * Math.sin(a)] as const;
+  };
+  const arc = (r: number, frac: number) => {
+    const [x0, y0] = polar(r, START);
+    const [x1, y1] = polar(r, START + SWEEP * frac);
+    return `M${x0.toFixed(2)},${y0.toFixed(2)} A${r},${r} 0 ${SWEEP * frac > 180 ? 1 : 0} 1 ${x1.toFixed(2)},${y1.toFixed(2)}`;
+  };
+
+  const R = 100;
+  const len = (Math.PI * 2 * R) * (SWEEP / 360);
 
   return (
-    <div className="relative shrink-0" style={{ width: 240, height: 240 }}>
-      {/* soft radial base */}
+    <div className="relative shrink-0" style={{ width: S, height: S }}>
       <div
-        className="absolute inset-6 rounded-full pointer-events-none"
-        style={{ background: `radial-gradient(circle at 50% 45%, ${color}14 0%, transparent 68%)` }}
+        className="absolute inset-8 rounded-full pointer-events-none"
+        style={{ background: `radial-gradient(circle at 50% 45%, ${color}12 0%, transparent 70%)` }}
       />
 
-      <svg viewBox="0 0 240 240" className="absolute inset-0 size-full">
+      <svg viewBox={`0 0 ${S} ${S}`} className="absolute inset-0 size-full">
         <defs>
           <linearGradient id="scoreArc" x1="0" y1="1" x2="1" y2="0">
-            <stop offset="0%" stopColor={color} stopOpacity="0.35" />
+            <stop offset="0%" stopColor={color} stopOpacity="0.3" />
             <stop offset="100%" stopColor={color} />
           </linearGradient>
         </defs>
 
-        {/* tick ring */}
-        <g>
-          {Array.from({ length: 60 }, (_, i) => {
-            const a = (Math.PI / 180) * (i * 6 - 90);
-            const on = i / 60 <= pct;
-            const r1 = 118, r2 = on ? 110 : 113;
-            return (
-              <line
-                key={i}
-                x1={120 + r1 * Math.cos(a)} y1={120 + r1 * Math.sin(a)}
-                x2={120 + r2 * Math.cos(a)} y2={120 + r2 * Math.sin(a)}
-                stroke={on ? color : "rgba(255,255,255,0.10)"}
-                strokeOpacity={on ? 0.85 : 1}
-                strokeWidth={1.2}
-              />
-            );
-          })}
-        </g>
+        {/* fine graduation marks */}
+        {Array.from({ length: 46 }, (_, i) => {
+          const f = i / 45;
+          const deg = START + SWEEP * f;
+          const on = f <= pct;
+          const major = i % 5 === 0;
+          const [x1, y1] = polar(115, deg);
+          const [x2, y2] = polar(major ? 105 : 109, deg);
+          return (
+            <line
+              key={i}
+              x1={x1} y1={y1} x2={x2} y2={y2}
+              stroke={on ? color : "rgba(255,255,255,0.12)"}
+              strokeOpacity={on ? (major ? 0.9 : 0.55) : 1}
+              strokeWidth={major ? 1.6 : 1}
+              strokeLinecap="round"
+            />
+          );
+        })}
 
-        {/* progress arc */}
-        <motion.circle
-          cx="120" cy="120" r={R}
+        {/* track */}
+        <path d={arc(R, 1)} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth={8} strokeLinecap="round" />
+
+        {/* progress */}
+        <motion.path
+          d={arc(R, 1)}
           fill="none"
           stroke="url(#scoreArc)"
-          strokeWidth={3}
+          strokeWidth={8}
           strokeLinecap="round"
-          transform="rotate(-90 120 120)"
-          strokeDasharray={circ}
-          initial={{ strokeDashoffset: circ }}
-          animate={{ strokeDashoffset: circ * (1 - pct) }}
+          strokeDasharray={len}
+          initial={{ strokeDashoffset: len }}
+          animate={{ strokeDashoffset: len * (1 - pct) }}
           transition={{ duration: 1.6, ease: "easeOut" }}
         />
 
-        {/* hex frames */}
-        {[92, 76, 60].map((r, i) => (
-          <motion.polygon
-            key={r}
-            points={pts(r)}
-            fill={i === 2 ? "rgba(255,255,255,0.015)" : "none"}
-            stroke={i === 0 ? `${color}55` : "rgba(255,255,255,0.08)"}
-            strokeWidth={1.1}
-            initial={{ opacity: 0, scale: 0.92 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: i * 0.08, ease: "easeOut" }}
-            style={{ transformOrigin: "120px 120px" }}
-          />
-        ))}
-
-        {/* slow rotating accent hex */}
-        <motion.polygon
-          points={pts(100)}
-          fill="none"
-          stroke={`${color}22`}
-          strokeWidth={1}
-          strokeDasharray="8 14"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-          style={{ transformOrigin: "120px 120px" }}
-        />
+        {/* inner hairline ring */}
+        <circle cx={cx} cy={cy} r={84} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={1} />
       </svg>
 
       <div className="absolute inset-0 grid place-items-center">
         <div className="text-center">
           <div className="text-[10px] uppercase tracking-[0.28em]" style={{ color: C.muted }}>Score</div>
-          <CountNumber value={value} className="text-[58px] leading-none font-light" style={{ color }} />
-          <div className="mt-1 text-[13px]" style={{ color: C.muted }}>/100</div>
+          <div className="flex items-end justify-center gap-1">
+            <CountNumber value={value} className="text-[58px] leading-none font-light" style={{ color }} />
+            <span className="pb-1.5 text-[14px]" style={{ color: C.muted }}>/100</span>
+          </div>
           <div
-            className="mt-2 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
+            className="mt-2.5 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
             style={{ border: `1px solid ${color}44`, color, background: `${color}0F` }}
           >
             Grade {grade(value)}
