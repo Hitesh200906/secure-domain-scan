@@ -872,9 +872,9 @@ function PlanCard({ plan, credits }: { plan: string; credits: number }) {
             style={{ background: "linear-gradient(90deg, #22d3ee, #2563eb)" }}
           />
         </div>
-        <div className="mt-1 flex items-center justify-between text-[9px]">
-          <span style={{ color: C.cyan }}>{Math.round(pct)}% remaining</span>
-          <span style={{ color: C.muted }}>{total.toLocaleString()}</span>
+        <div className="mt-1 flex items-center justify-between text-[9px]" style={{ color: C.muted }}>
+          <span>Total credits</span>
+          <span>{total.toLocaleString()}</span>
         </div>
 
         <Link
