@@ -823,55 +823,42 @@ function StatusPill({ status }: { status: string }) {
 
 function PlanCard({ plan, credits }: { plan: string; credits: number }) {
   const total = 150000;
-  const pct = Math.max(0, Math.min(100, (credits / total) * 100));
   return (
-    <div className="relative overflow-hidden rounded-2xl p-3.5" style={{ background: "#000", border: "1px solid rgba(255,255,255,0.10)" }}>
-      {/* diagonal sheen shapes */}
-      <div className="pointer-events-none absolute inset-0 opacity-70">
-        <div className="absolute -right-6 -top-10 h-40 w-16 rotate-[35deg] bg-white/[0.045]" />
-        <div className="absolute right-6 -top-14 h-44 w-8 rotate-[35deg] bg-white/[0.03]" />
-        <div className="absolute right-0 top-0 h-full w-[1px] rotate-[35deg] origin-top" style={{ background: "linear-gradient(180deg,transparent,rgba(34,211,238,0.5),transparent)" }} />
-      </div>
+    <div className="relative overflow-hidden rounded-xl" style={{ border: "1px solid rgba(255,255,255,0.10)" }}>
+      {/* Background image */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage: `url(${planCardBg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          filter: "brightness(0.55)",
+        }}
+      />
+      {/* Dark overlay */}
+      <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.65))" }} />
 
-      <div className="relative flex items-center justify-between gap-2">
-        <div className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1" style={{ border: "1px solid rgba(255,255,255,0.14)" }}>
-          <Zap className="size-3" style={{ color: C.cyan }} />
-          <span className="text-[8.5px] uppercase tracking-[0.22em] font-medium">{plan} plan</span>
-        </div>
-        <div className="inline-flex items-center gap-1.5 rounded-full px-2 py-1" style={{ border: "1px solid rgba(255,255,255,0.14)" }}>
+      <div className="relative p-3">
+        <div className="flex items-center justify-between gap-2">
+          <div className="inline-flex items-center gap-1 rounded-full px-2 py-0.5" style={{ border: "1px solid rgba(255,255,255,0.12)", background: "rgba(0,0,0,0.35)" }}>
+            <Zap className="size-2.5" style={{ color: C.cyan }} />
+            <span className="text-[8px] uppercase tracking-[0.18em] font-medium">{plan}</span>
+          </div>
           <span className="relative flex size-1.5">
-            <span className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping" style={{ background: C.cyan }} />
+            <span className="absolute inline-flex h-full w-full rounded-full opacity-70 animate-ping" style={{ background: C.cyan }} />
             <span className="relative inline-flex size-1.5 rounded-full" style={{ background: C.cyan }} />
           </span>
-          <span className="text-[9px]">Active</span>
         </div>
-      </div>
 
-      <div className="relative mt-3">
-        <div className="text-[9px] uppercase tracking-[0.2em]" style={{ color: C.sub }}>Credits left</div>
-        <div className="mt-0.5 text-[26px] leading-none font-bold tabular-nums tracking-tight">{credits.toLocaleString()}</div>
-        <div className="mt-1 text-[10px]" style={{ color: C.sub }}>out of <span className="text-white font-medium">{total.toLocaleString()}</span> total</div>
-      </div>
+        <div className="mt-2">
+          <div className="text-[9px] uppercase tracking-[0.18em]" style={{ color: C.sub }}>Credits</div>
+          <div className="mt-0.5 text-lg leading-none font-bold tabular-nums tracking-tight">{credits.toLocaleString()}<span className="text-[9px] font-medium ml-1" style={{ color: C.sub }}>/ {total.toLocaleString()}</span></div>
+        </div>
 
-      <div className="relative mt-3 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.12)" }}>
-        <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1.1, ease: "easeOut" }}
-          className="h-full rounded-full" style={{ background: C.cyan }} />
+        <Link to="/pricing" className="mt-2 flex items-center justify-center gap-1.5 rounded-lg px-2 py-1.5 text-[10px] font-medium transition hover:opacity-90" style={{ background: C.blue, color: "#fff" }}>
+          Upgrade <ArrowRight className="size-3" />
+        </Link>
       </div>
-      <div className="relative mt-1.5 flex items-center justify-between text-[9.5px]">
-        <span style={{ color: C.cyan }}>{Math.round(pct)}% remaining</span>
-        <span style={{ color: C.sub }}>{total.toLocaleString()} total</span>
-      </div>
-
-      <Link to="/pricing" className="relative mt-3 flex items-center gap-2.5 rounded-xl px-2.5 py-2.5 transition hover:bg-white/[0.03]" style={{ border: "1px solid rgba(255,255,255,0.10)" }}>
-        <span className="grid place-items-center size-8 shrink-0 rounded-full" style={{ border: "1px solid rgba(255,255,255,0.14)" }}>
-          <TrendingUp className="size-3.5" style={{ color: C.cyan }} />
-        </span>
-        <span className="min-w-0">
-          <span className="block text-[11px] font-semibold leading-tight">Upgrade plan</span>
-          <span className="block text-[9.5px] leading-tight" style={{ color: C.sub }}>Unlock more credits</span>
-        </span>
-        <ArrowRight className="ml-auto size-3.5 shrink-0" style={{ color: C.cyan }} />
-      </Link>
     </div>
   );
 }
