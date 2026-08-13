@@ -48,105 +48,71 @@ export function NexusCinematicHero() {
       <div className="relative mx-auto max-w-[1360px] px-3 sm:px-8 pt-20 sm:pt-28 pb-10 sm:pb-20">
 
         {/* ---------- Two-column top ---------- */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-8 lg:gap-14 items-center">
-          <div className="min-w-0 text-center sm:text-left">
-            {/* mobile-only hero copy */}
-            <div className="sm:hidden">
-              <motion.h1
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.08 }}
-                className="mt-2 leading-[1.05] text-[28px]"
-                style={{
-                  fontFamily: "ui-sans-serif, system-ui, sans-serif",
-                  fontWeight: 700,
-                  letterSpacing: "0.02em",
-                  background: `linear-gradient(180deg, #FFFFFF 0%, #C9D2FF 45%, ${T.blue} 105%)`,
-                  WebkitBackgroundClip: "text",
-                  backgroundClip: "text",
-                  color: "transparent",
-                  filter: "drop-shadow(0 8px 40px rgba(79,107,255,0.35))",
-                }}
-              >
-                Nexefy Security
-              </motion.h1>
+        <div className="grid grid-cols-2 gap-3 sm:gap-8 lg:gap-14 items-center">
+          <div className="text-left min-w-0">
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-1.5 sm:gap-2.5 rounded-full px-2 py-1 sm:px-3.5 sm:py-1.5 text-[8px] sm:text-[11px] uppercase tracking-[0.14em] sm:tracking-[0.2em] backdrop-blur-md"
+              style={{ background: "rgba(0,0,0,0.55)", border: `1px solid ${T.border}`, color: T.text2 }}
+            >
+              <span className="relative flex size-1.5">
+                <motion.span
+                  className="absolute inline-flex h-full w-full rounded-full"
+                  style={{ background: T.blue }}
+                  animate={{ scale: [1, 3.2, 1], opacity: [0.7, 0, 0.7] }}
+                  transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut" }}
+                />
+                <motion.span
+                  className="relative inline-flex size-1.5 rounded-full"
+                  style={{ background: T.blue }}
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+                />
+              </span>
+              All-in-One Business Platform
+            </motion.div>
 
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.2 }}
-                className="mt-3 text-[15px] leading-relaxed"
-                style={{ color: T.text2 }}
-              >
-                Detect Vulnerabilities
-              </motion.p>
-            </div>
 
-            {/* desktop hero copy */}
-            <div className="hidden sm:block">
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="inline-flex items-center gap-2.5 rounded-full px-3.5 py-1.5 text-[11px] uppercase tracking-[0.2em] backdrop-blur-md"
-                style={{ background: "rgba(0,0,0,0.55)", border: `1px solid ${T.border}`, color: T.text2 }}
-              >
-                <span className="relative flex size-1.5">
-                  <motion.span
-                    className="absolute inline-flex h-full w-full rounded-full"
-                    style={{ background: T.blue }}
-                    animate={{ scale: [1, 3.2, 1], opacity: [0.7, 0, 0.7] }}
-                    transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut" }}
-                  />
-                  <motion.span
-                    className="relative inline-flex size-1.5 rounded-full"
-                    style={{ background: T.blue }}
-                    animate={{ opacity: [0.5, 1, 0.5] }}
-                    transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-                  />
-                </span>
-                All-in-One Business Platform
-              </motion.div>
+            <motion.h1
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.08 }}
+              className="mt-3 sm:mt-7 leading-[0.95] whitespace-nowrap text-[15px] sm:text-[32px] lg:text-[40px]"
+              style={{
+                fontFamily: "ui-sans-serif, system-ui, sans-serif",
+                fontWeight: 700,
+                letterSpacing: "0.02em",
+                background: `linear-gradient(180deg, #FFFFFF 0%, #C9D2FF 45%, ${T.blue} 105%)`,
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+                filter: "drop-shadow(0 8px 40px rgba(79,107,255,0.35))",
+              }}
+            >
+              NEXEFY
+            </motion.h1>
 
-              <motion.h1
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.08 }}
-                className="mt-7 leading-[0.95] text-[32px] lg:text-[40px]"
-                style={{
-                  fontFamily: "ui-sans-serif, system-ui, sans-serif",
-                  fontWeight: 700,
-                  letterSpacing: "0.02em",
-                  background: `linear-gradient(180deg, #FFFFFF 0%, #C9D2FF 45%, ${T.blue} 105%)`,
-                  WebkitBackgroundClip: "text",
-                  backgroundClip: "text",
-                  color: "transparent",
-                  filter: "drop-shadow(0 8px 40px rgba(79,107,255,0.35))",
-                }}
-              >
-                NEXEFY
-              </motion.h1>
-
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.2 }}
-                className="mt-5 max-w-xl text-[17px] leading-relaxed"
-                style={{ color: T.text2 }}
-              >
-                The all-in-one business platform where creators, founders, developers, and teams launch and grow without limits.
-              </motion.p>
-            </div>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="mt-2 sm:mt-5 max-w-xl text-[10px] sm:text-[17px] leading-snug sm:leading-relaxed"
+              style={{ color: T.text2 }}
+            >
+              The all-in-one business platform where creators, founders, developers, and teams launch and grow without limits.
+            </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.32 }}
-              className="mt-5 sm:mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3"
+              className="mt-4 sm:mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3"
             >
               <button
                 onClick={() => setComingSoon(COMING_SOON.nexefy)}
-                className="group relative inline-flex items-center justify-center gap-1.5 sm:gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-4 py-3 sm:px-6 sm:py-3.5 text-[13px] sm:text-[14px] font-medium backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-white/25"
+                className="group relative inline-flex items-center justify-center gap-1.5 sm:gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-3 py-2 sm:px-6 sm:py-3.5 text-[10px] sm:text-[14px] font-medium backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-white/25"
                 style={{
                   background: "linear-gradient(180deg,rgba(22,24,32,0.85) 0%,rgba(0,0,0,0.85) 100%)",
                   border: `1px solid ${T.border}`,
@@ -155,14 +121,14 @@ export function NexusCinematicHero() {
                 }}
               >
                 <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                <Sparkles className="size-4 sm:size-4 shrink-0" />
+                <Sparkles className="size-3 sm:size-4 shrink-0" />
                 Switch to Nexefy
-                <ArrowUpRight className="size-4 sm:size-4 shrink-0 opacity-80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight className="size-3 sm:size-4 shrink-0 opacity-80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
 
               <button
                 onClick={() => setMode("security")}
-                className="group relative inline-flex items-center justify-center gap-1.5 sm:gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-4 py-3 sm:px-6 sm:py-3.5 text-[13px] sm:text-[14px] font-medium text-white transition-all duration-300 hover:-translate-y-0.5"
+                className="group relative inline-flex items-center justify-center gap-1.5 sm:gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-3 py-2 sm:px-6 sm:py-3.5 text-[10px] sm:text-[14px] font-medium text-white transition-all duration-300 hover:-translate-y-0.5"
                 style={{
                   background: `linear-gradient(180deg, color-mix(in oklab, ${T.navy} 82%, white) 0%, ${T.navy} 55%, color-mix(in oklab, ${T.navy} 78%, black) 100%)`,
                   border: "none",
@@ -170,16 +136,15 @@ export function NexusCinematicHero() {
                 }}
               >
                 <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                <ShieldCheck className="size-4 sm:size-4 shrink-0" />
+                <ShieldCheck className="size-3 sm:size-4 shrink-0" />
                 Switch to Nexefy Security
-                <ArrowUpRight className="size-4 sm:size-4 shrink-0 opacity-90 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight className="size-3 sm:size-4 shrink-0 opacity-90 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
+
             </motion.div>
           </div>
 
-          <div className="hidden sm:block">
-            <RevenueCard />
-          </div>
+          <RevenueCard />
         </div>
 
 
