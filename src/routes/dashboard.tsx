@@ -369,7 +369,8 @@ function ScoreDial({ value, color }: { value: number; color: string }) {
   const len = (Math.PI * 2 * R) * (SWEEP / 360);
 
   return (
-    <div className="relative shrink-0" style={{ width: S, height: S }}>
+    <div className="relative shrink-0 mx-auto sm:mx-0 w-[190px] h-[190px] sm:w-[240px] sm:h-[240px]">
+
       <div
         className="absolute inset-8 rounded-full pointer-events-none"
         style={{ background: `radial-gradient(circle at 50% 45%, ${color}12 0%, transparent 70%)` }}
@@ -425,19 +426,20 @@ function ScoreDial({ value, color }: { value: number; color: string }) {
 
       <div className="absolute inset-0 grid place-items-center">
         <div className="text-center">
-          <div className="text-[10px] uppercase tracking-[0.28em]" style={{ color: C.muted }}>Score</div>
+          <div className="text-[9px] sm:text-[10px] uppercase tracking-[0.28em]" style={{ color: C.muted }}>Score</div>
           <div className="flex items-end justify-center gap-1">
-            <CountNumber value={value} className="text-[58px] leading-none font-light" style={{ color }} />
-            <span className="pb-1.5 text-[14px]" style={{ color: C.muted }}>/100</span>
+            <CountNumber value={value} className="text-[44px] sm:text-[58px] leading-none font-light" style={{ color }} />
+            <span className="pb-1 sm:pb-1.5 text-[12px] sm:text-[14px]" style={{ color: C.muted }}>/100</span>
           </div>
           <div
-            className="mt-2.5 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
+            className="mt-2 sm:mt-2.5 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] sm:text-[11px] font-medium"
             style={{ border: `1px solid ${color}44`, color, background: `${color}0F` }}
           >
             Grade {grade(value)}
           </div>
         </div>
       </div>
+
     </div>
   );
 }
