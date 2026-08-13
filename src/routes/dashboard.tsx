@@ -446,48 +446,123 @@ function ScoreDial({ value, color }: { value: number; color: string }) {
 
 
 /* ------------------------------ telemetry strip ----------------------------- */
+function Spark({ seed, color }: { seed: number; color: string }) {
+  const pts = Array.from({ length: 18 }, (_, i) => {
+    const v = Math.sin(i * 0.7 + seed) * 0.5 + Math.sin(i * 0.31 + seed * 1.7) * 0.5;
+    return 22 - ((v + 2) / 4) * 18 - 2;
+  });
+  const d = pts.map((y, i) => `${i === 0 ? "M" : "L"}${(i / (pts.length - 1)) * 100},${y.toFixed(2)}`).join(" ");
+  const gid = `sp${Math.round(seed * 1000)}`;
+  return (
+    <svg viewBox="0 0 100 24" preserveAspectRatio="none" className="h-6 w-full">
+      <defs>
+        <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.28" />
+          <stop offset="100%" stopColor={color} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={`${d} L100,24 L0,24 Z`} fill={`url(#${gid})`} />
+      <path d={d} fill="none" stroke={color} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function TelemetryStrip({ report }: { report: ReportModel }) {
   const items = [
-    { label: "Protected Assets", value: `${Math.max(1, Math.round(report.score / 4))}`, sub: "under monitoring", icon: Shield },
-    { label: "Threats Neutralized", value: `${report.findings + 12}`, sub: "last 24 hours", icon: Zap },
-    { label: "Active Nodes", value: "14", sub: "global edge network", icon: Server },
-    { label: "Avg Response", value: "14ms", sub: "mitigation latency", icon: Activity },
+    { label: "Protected Assets", value: `${Math.max(1, Math.round(report.score / 4))}`, sub: "under monitoring", icon: Shield, delta: "+4.2%", up: true, pct: Math.min(100, report.score), tint: C.blue },
+    { label: "Threats Neutralized", value: `${report.findings + 12}`, sub: "last 24 hours", icon: Zap, delta: "+12", up: true, pct: 74, tint: OK },
+    { label: "Active Nodes", value: "14", sub: "global edge network", icon: Server, delta: "stable", up: true, pct: 88, tint: C.cyan },
+    { label: "Avg Response", value: "14ms", sub: "mitigation latency", icon: Activity, delta: "-2.1ms", up: true, pct: 93, tint: C.blue },
   ];
 
   return (
     <Card className="relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none opacity-30">
-        <div className="absolute inset-0" style={{ background: `linear-gradient(90deg, transparent 0%, rgba(37,99,235,0.04) 50%, transparent 100%)` }} />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.45]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)",
+          backgroundSize: "34px 34px",
+        }}
+      />
+
+      {/* header */}
+      <div
+        className="relative z-10 flex items-center justify-between gap-3 px-4 sm:px-6 py-2.5 sm:py-3 border-b"
+        style={{ borderColor: C.border }}
+      >
+        <div className="flex items-center gap-2.5 min-w-0">
+          <span className="size-1.5 rounded-full shrink-0" style={{ background: OK }} />
+          <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.22em] truncate" style={{ color: C.muted }}>
+            Live Telemetry
+          </span>
+        </div>
+        <span className="text-[10px] sm:text-[11px] font-mono tabular-nums shrink-0" style={{ color: C.sub }}>
+          sync 30s
+        </span>
       </div>
-      <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 divide-x-0 lg:divide-x" style={{ borderColor: C.border }}>
+
+      <div className="relative z-10 grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4">
         {items.map((item, i) => {
           const Icon = item.icon;
           return (
-            <div key={item.label} className="flex items-center gap-3 sm:gap-4 px-3.5 sm:px-7 py-4 sm:py-5 relative">
-              <div className="relative shrink-0">
-                <div className="size-9 sm:size-10 rounded-xl grid place-items-center" style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
-                  <Icon className="size-4 sm:size-4.5" style={{ color: C.blue }} />
+            <div
+              key={item.label}
+              className="relative px-4 sm:px-6 py-4 sm:py-5 border-b xs:[&:nth-child(n+3)]:border-b-0 xs:odd:border-r lg:border-b-0 lg:border-r lg:last:border-r-0"
+              style={{ borderColor: C.border }}
+            >
+              <div
+                className="pointer-events-none absolute inset-x-0 top-0 h-px"
+                style={{ background: `linear-gradient(90deg, transparent, ${item.tint}55, transparent)` }}
+              />
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div
+                    className="size-8 sm:size-9 rounded-lg grid place-items-center shrink-0"
+                    style={{ border: `1px solid ${C.border}`, background: "#000000" }}
+                  >
+                    <Icon className="size-4" style={{ color: item.tint }} />
+                  </div>
+                  <div className="text-[9.5px] sm:text-[10.5px] uppercase tracking-[0.14em] truncate" style={{ color: C.muted }}>
+                    {item.label}
+                  </div>
                 </div>
-                {i === 0 && (
-                  <span
-                    className="absolute -top-0.5 -right-0.5 size-2.5 rounded-full border border-black"
-                    style={{ background: OK }}
-                  />
-                )}
+                <span
+                  className="shrink-0 rounded-full px-2 py-0.5 text-[9.5px] sm:text-[10px] font-mono tabular-nums"
+                  style={{ border: `1px solid ${C.border}`, color: item.up ? OK : SEV.High }}
+                >
+                  {item.delta}
+                </span>
               </div>
-              <div className="min-w-0">
-                <div className="text-[9.5px] sm:text-[11px] uppercase tracking-[0.1em] sm:tracking-[0.12em] truncate" style={{ color: C.muted }}>{item.label}</div>
-                <div className="mt-0.5 text-[16px] sm:text-[20px] font-light tracking-tight text-white">{item.value}</div>
-                <div className="text-[10px] sm:text-[11px] truncate" style={{ color: C.sub }}>{item.sub}</div>
+
+              <div className="mt-3 flex items-end justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="text-[24px] sm:text-[30px] font-light leading-none tracking-tight tabular-nums text-white">
+                    {item.value}
+                  </div>
+                  <div className="mt-1.5 text-[10.5px] sm:text-[11.5px] truncate" style={{ color: C.sub }}>
+                    {item.sub}
+                  </div>
+                </div>
+                <div className="w-[42%] max-w-[130px] shrink-0 opacity-90">
+                  <Spark seed={i * 1.9 + 0.4} color={item.tint} />
+                </div>
+              </div>
+
+              <div className="mt-3 h-[3px] w-full rounded-full overflow-hidden" style={{ background: "#0E1013" }}>
+                <div
+                  className="h-full rounded-full transition-all duration-700"
+                  style={{ width: `${item.pct}%`, background: `linear-gradient(90deg, ${item.tint}66, ${item.tint})` }}
+                />
               </div>
             </div>
-
           );
         })}
       </div>
     </Card>
   );
 }
+
 
 function Overview({ report, profile, scans, mounted, onOpenReports, role, name }: {
   report: ReportModel; profile: { plan: string; credits: number } | null; scans: Scan[]; mounted: boolean;
