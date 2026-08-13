@@ -463,10 +463,10 @@ function TelemetryStrip({ report }: { report: ReportModel }) {
         {items.map((item, i) => {
           const Icon = item.icon;
           return (
-            <div key={item.label} className="flex items-center gap-4 px-5 sm:px-7 py-5 relative">
-              <div className="relative">
-                <div className="size-10 rounded-xl grid place-items-center" style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
-                  <Icon className="size-4.5" style={{ color: C.blue }} />
+            <div key={item.label} className="flex items-center gap-3 sm:gap-4 px-3.5 sm:px-7 py-4 sm:py-5 relative">
+              <div className="relative shrink-0">
+                <div className="size-9 sm:size-10 rounded-xl grid place-items-center" style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
+                  <Icon className="size-4 sm:size-4.5" style={{ color: C.blue }} />
                 </div>
                 {i === 0 && (
                   <span
@@ -476,11 +476,12 @@ function TelemetryStrip({ report }: { report: ReportModel }) {
                 )}
               </div>
               <div className="min-w-0">
-                <div className="text-[11px] uppercase tracking-[0.12em]" style={{ color: C.muted }}>{item.label}</div>
-                <div className="mt-0.5 text-[18px] sm:text-[20px] font-light tracking-tight text-white">{item.value}</div>
-                <div className="text-[11px]" style={{ color: C.sub }}>{item.sub}</div>
+                <div className="text-[9.5px] sm:text-[11px] uppercase tracking-[0.1em] sm:tracking-[0.12em] truncate" style={{ color: C.muted }}>{item.label}</div>
+                <div className="mt-0.5 text-[16px] sm:text-[20px] font-light tracking-tight text-white">{item.value}</div>
+                <div className="text-[10px] sm:text-[11px] truncate" style={{ color: C.sub }}>{item.sub}</div>
               </div>
             </div>
+
           );
         })}
       </div>
