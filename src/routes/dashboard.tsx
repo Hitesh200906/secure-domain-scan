@@ -518,19 +518,28 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
       </Card>
 
       {/* DETAILED REPORT */}
-      <Card>
-        <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <Card className="relative overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${detailedReportBg.url})` }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.75) 42%, rgba(0,0,0,0.35) 70%, rgba(0,0,0,0.18) 100%)`,
+          }}
+        />
+        <div className="relative z-10 grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
           <div className="p-7 sm:p-9 flex flex-col justify-center">
-            <h3 className="text-[21px] font-normal tracking-[-0.01em]">Detailed Security Report</h3>
-            <p className="mt-3 text-[13.5px] leading-relaxed max-w-sm" style={{ color: C.sub }}>
+            <h3 className="text-[21px] font-normal tracking-[-0.01em] drop-shadow-[0_2px_18px_rgba(0,0,0,0.85)]">Detailed Security Report</h3>
+            <p className="mt-3 text-[13.5px] leading-relaxed max-w-sm drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]" style={{ color: C.sub }}>
               Get complete security analysis with detailed findings and actionable recommendations.
             </p>
             <Link to="/report/$id" params={{ id: report.id }} className="group mt-6 self-start">
               <GhostButton>View Full Report</GhostButton>
             </Link>
           </div>
-          {/* image slot — provided separately */}
-          <div className="hidden md:block min-h-[200px]" style={{ background: "#000000" }} />
+          <div className="hidden md:block min-h-[200px]" />
         </div>
       </Card>
 
