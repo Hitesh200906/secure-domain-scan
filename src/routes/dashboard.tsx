@@ -711,7 +711,7 @@ function SideStat({ icon: Icon, img, title, sub, right }: {
         style={{ border: `1px solid ${C.border}`, background: "radial-gradient(circle at 50% 30%, rgba(37,99,235,0.10), transparent 70%)" }}
       >
         {img ? (
-          <img src={img} alt="" loading="lazy" width={44} height={44} className="size-9 object-contain" />
+          <img src={img} alt="" loading="lazy" width={512} height={512} className="size-full object-cover" />
         ) : Icon ? (
           <Icon className="size-5" style={{ color: C.text }} />
         ) : null}
