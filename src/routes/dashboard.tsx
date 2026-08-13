@@ -714,9 +714,9 @@ function SideStat({ icon: Icon, img, title, sub, right }: {
   icon?: typeof Shield; img?: string; title: string; sub: string; right?: React.ReactNode;
 }) {
   return (
-    <div className="group flex items-center gap-5">
+    <div className="group flex items-center gap-4 sm:gap-5">
       <div
-        className="size-14 shrink-0 rounded-xl grid place-items-center overflow-hidden transition-transform duration-300 group-hover:-translate-y-0.5"
+        className="size-12 sm:size-14 shrink-0 rounded-xl grid place-items-center overflow-hidden transition-transform duration-300 group-hover:-translate-y-0.5"
         style={{ border: `1px solid ${C.border}`, background: "radial-gradient(circle at 50% 30%, rgba(37,99,235,0.10), transparent 70%)" }}
       >
         {img ? (
@@ -726,9 +726,10 @@ function SideStat({ icon: Icon, img, title, sub, right }: {
         ) : null}
       </div>
       <div className="min-w-0 flex-1">
-        <div className="text-[15.5px] font-medium">{title}</div>
-        <div className="text-[13px] whitespace-pre-line leading-snug" style={{ color: C.sub }}>{sub}</div>
+        <div className="text-[14px] sm:text-[15.5px] font-medium truncate">{title}</div>
+        <div className="text-[12px] sm:text-[13px] whitespace-pre-line leading-snug" style={{ color: C.sub }}>{sub}</div>
       </div>
+
       {right}
     </div>
   );
