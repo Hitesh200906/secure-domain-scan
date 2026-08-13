@@ -713,13 +713,20 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
   );
 }
 
-function SideStat({ icon: Icon, title, sub, right }: {
-  icon: typeof Shield; title: string; sub: string; right?: React.ReactNode;
+function SideStat({ icon: Icon, img, title, sub, right }: {
+  icon?: typeof Shield; img?: string; title: string; sub: string; right?: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center gap-5">
-      <div className="size-14 shrink-0 rounded-xl grid place-items-center" style={{ border: `1px solid ${C.border}` }}>
-        <Icon className="size-5" style={{ color: C.text }} />
+    <div className="group flex items-center gap-5">
+      <div
+        className="size-14 shrink-0 rounded-xl grid place-items-center overflow-hidden transition-transform duration-300 group-hover:-translate-y-0.5"
+        style={{ border: `1px solid ${C.border}`, background: "radial-gradient(circle at 50% 30%, rgba(37,99,235,0.10), transparent 70%)" }}
+      >
+        {img ? (
+          <img src={img} alt="" loading="lazy" width={44} height={44} className="size-9 object-contain" />
+        ) : Icon ? (
+          <Icon className="size-5" style={{ color: C.text }} />
+        ) : null}
       </div>
       <div className="min-w-0 flex-1">
         <div className="text-[15.5px] font-medium">{title}</div>
@@ -729,6 +736,7 @@ function SideStat({ icon: Icon, title, sub, right }: {
     </div>
   );
 }
+
 
 
 function KpiCard({ label, icon: Icon, accent, children, glow }: {
