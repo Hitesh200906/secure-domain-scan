@@ -10,7 +10,7 @@ import {
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import nexusLogo from "@/assets/nexefy-logo.png";
-import planCardBg from "@/assets/plan-card-bg.jpg";
+
 import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
 import { useAdmin } from "@/hooks/use-admin";
@@ -825,66 +825,45 @@ function PlanCard({ plan, credits }: { plan: string; credits: number }) {
   const total = 150000;
   const pct = Math.max(0, Math.min(100, (credits / total) * 100));
   return (
-    <div className="relative overflow-hidden rounded-xl" style={{ border: "1px solid rgba(255,255,255,0.10)" }}>
-      {/* Background image */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `url(${planCardBg})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          filter: "brightness(0.65) saturate(1.1)",
-        }}
-      />
-      {/* Dark overlay */}
-      <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.78) 100%)" }} />
-      {/* Top edge sheen */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(34,211,238,0.35), transparent)" }} />
-
-      <div className="relative p-3.5">
-        <div className="flex items-center justify-between gap-2">
-          <div className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1" style={{ border: "1px solid rgba(255,255,255,0.14)", background: "rgba(0,0,0,0.42)" }}>
-            <Zap className="size-3" style={{ color: C.cyan }} />
-            <span className="text-[8.5px] uppercase tracking-[0.18em] font-medium">{plan}</span>
-          </div>
-          <div className="inline-flex items-center gap-1 rounded-full px-2 py-0.5" style={{ border: "1px solid rgba(255,255,255,0.10)", background: "rgba(0,0,0,0.35)" }}>
-            <span className="relative flex size-1.5">
-              <span className="absolute inline-flex h-full w-full rounded-full opacity-70 animate-ping" style={{ background: C.cyan }} />
-              <span className="relative inline-flex size-1.5 rounded-full" style={{ background: C.cyan }} />
-            </span>
-            <span className="text-[8.5px]" style={{ color: C.sub }}>Active</span>
-          </div>
+    <div className="rounded-xl p-4" style={{ background: "#000000", border: `1px solid ${C.border}` }}>
+      <div className="flex items-center justify-between gap-2">
+        <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider" style={{ background: "rgba(255,255,255,0.06)", border: `1px solid rgba(255,255,255,0.10)`, color: C.text }}>
+          {plan}
+        </span>
+        <div className="flex items-center gap-1.5">
+          <span className="relative flex size-1.5">
+            <span className="absolute inline-flex h-full w-full rounded-full opacity-60 animate-ping" style={{ background: "#22c55e" }} />
+            <span className="relative inline-flex size-1.5 rounded-full" style={{ background: "#22c55e" }} />
+          </span>
+          <span className="text-[10px] font-medium" style={{ color: C.muted }}>Active</span>
         </div>
-
-        <div className="mt-3">
-          <div className="text-[9px] uppercase tracking-[0.18em]" style={{ color: C.sub }}>Credits left</div>
-          <div className="mt-1 text-[22px] leading-none font-bold tabular-nums tracking-tight">{credits.toLocaleString()}</div>
-          <div className="mt-1 text-[10px]" style={{ color: C.sub }}>of <span className="text-white/80 font-medium">{total.toLocaleString()}</span> total</div>
-        </div>
-
-        {/* Mini progress bar */}
-        <div className="mt-3 h-1 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.10)" }}>
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: `${pct}%` }}
-            transition={{ duration: 0.9, ease: "easeOut" }}
-            className="h-full rounded-full"
-            style={{ background: "linear-gradient(90deg, #22d3ee, #2563eb)" }}
-          />
-        </div>
-        <div className="mt-1 flex items-center justify-between text-[9px]" style={{ color: C.muted }}>
-          <span>Total credits</span>
-          <span>{total.toLocaleString()}</span>
-        </div>
-
-        <Link
-          to="/pricing"
-          className="mt-2 flex items-center justify-end gap-1 text-[11px] font-medium"
-          style={{ color: "#22d3ee" }}
-        >
-          Upgrade plan <ArrowRight className="size-3" />
-        </Link>
       </div>
+
+      <div className="mt-4">
+        <div className="text-[10px] uppercase tracking-wider font-medium" style={{ color: C.sub }}>Credits used</div>
+        <div className="mt-1 text-sm font-semibold tabular-nums tracking-tight" style={{ color: C.text }}>
+          {credits.toLocaleString()} <span style={{ color: C.muted }}>/ {total.toLocaleString()}</span>
+        </div>
+      </div>
+
+      <div className="mt-3 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="h-full rounded-full"
+          style={{ background: "linear-gradient(90deg, #22d3ee, #2563eb)" }}
+        />
+      </div>
+
+      <Link
+        to="/pricing"
+        className="mt-3 group flex items-center justify-between text-[11px] font-medium transition-colors"
+        style={{ color: C.cyan }}
+      >
+        <span>Upgrade plan</span>
+        <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+      </Link>
     </div>
   );
 }
