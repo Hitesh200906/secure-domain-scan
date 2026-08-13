@@ -380,23 +380,32 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
   return (
     <div className="px-4 sm:px-6 py-5 sm:py-6 space-y-4 max-w-[1560px]">
       {/* HERO */}
-      <Card>
-        <div className="grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+      <Card className="relative overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${dashboardHeroBg.url})` }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `linear-gradient(90deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.68) 42%, rgba(0,0,0,0.25) 70%, rgba(0,0,0,0.10) 100%)`,
+          }}
+        />
+        <div className="relative z-10 grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
           <div className="p-7 sm:p-10 flex flex-col justify-center">
-            <h2 className="text-[26px] sm:text-[30px] font-light tracking-[-0.02em] leading-tight">
+            <h2 className="text-[26px] sm:text-[30px] font-light tracking-[-0.02em] leading-tight drop-shadow-[0_2px_18px_rgba(0,0,0,0.85)]">
               {mounted ? greeting() : "Welcome back"},
               <br />
               <span className="font-medium" style={{ color: C.blue }}>{name ? name.split(" ")[0] : "there"}</span>
             </h2>
-            <p className="mt-5 text-[14px] leading-relaxed max-w-xs" style={{ color: C.sub }}>
+            <p className="mt-5 text-[14px] leading-relaxed max-w-xs drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]" style={{ color: C.sub }}>
               Scan any domain for threats, vulnerabilities and security risks in seconds.
             </p>
             <Link to="/scan/new" search={{ plan: "professional" as const }} className="group mt-7 self-start">
               <GhostButton>Start New Scan</GhostButton>
             </Link>
           </div>
-          {/* image slot — provided separately */}
-          <div className="hidden md:block min-h-[340px]" style={{ background: "#000000" }} />
+          <div className="hidden md:block min-h-[340px]" />
         </div>
       </Card>
 
