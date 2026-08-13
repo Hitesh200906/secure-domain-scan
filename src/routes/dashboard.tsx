@@ -852,7 +852,7 @@ function PlanCard({ plan, credits }: { plan: string; credits: number }) {
           animate={{ width: `${pct}%` }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="h-full rounded-full"
-          style={{ background: "linear-gradient(90deg, #22d3ee, #2563eb)" }}
+          style={{ background: "#22d3ee" }}
         />
       </div>
 
