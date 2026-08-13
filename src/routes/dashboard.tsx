@@ -410,6 +410,9 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
         </div>
       </Card>
 
+      {/* SECURITY TELEMETRY STRIP — premium status overview */}
+      <TelemetryStrip report={report} />
+
       {/* SECURITY SCORE */}
       <Card>
         <div className="grid lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
