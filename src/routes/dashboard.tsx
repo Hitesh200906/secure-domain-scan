@@ -846,14 +846,8 @@ function PlanCard({ plan, credits }: { plan: string; credits: number }) {
         </div>
       </div>
 
-      <div className="mt-3 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="h-full rounded-full"
-          style={{ background: "#22d3ee" }}
-        />
+      <div className="mt-3 h-1 bg-[#232629]">
+        <div className="h-full bg-[#22d3ee]" style={{ width: `${pct}%` }} />
       </div>
 
       <Link
