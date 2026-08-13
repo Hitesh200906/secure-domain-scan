@@ -16,6 +16,10 @@ import icShield from "@/assets/tile-shield.jpg";
 import icScan from "@/assets/tile-scan.jpg";
 import icServer from "@/assets/tile-server.jpg";
 import icLock from "@/assets/tile-lock.jpg";
+import icAssets from "@/assets/tile-assets.jpg";
+import icThreats from "@/assets/tile-threats.jpg";
+import icNodes from "@/assets/tile-nodes.jpg";
+import icLatency from "@/assets/tile-latency.jpg";
 
 import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
