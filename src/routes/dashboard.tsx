@@ -12,10 +12,10 @@ import { supabase } from "@/integrations/supabase/client";
 import nexusLogo from "@/assets/nexefy-logo.png";
 import dashboardHeroBg from "@/assets/dashboard-hero-bg.png.asset.json";
 import detailedReportBg from "@/assets/detailed-security-report-v3.png.asset.json";
-import icShield from "@/assets/icon3d-shield.png";
-import icScan from "@/assets/icon3d-scan.png";
-import icServer from "@/assets/icon3d-server.png";
-import icLock from "@/assets/icon3d-lock.png";
+import icShield from "@/assets/tile-shield.jpg";
+import icScan from "@/assets/tile-scan.jpg";
+import icServer from "@/assets/tile-server.jpg";
+import icLock from "@/assets/tile-lock.jpg";
 
 import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
