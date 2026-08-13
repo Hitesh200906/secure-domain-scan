@@ -513,21 +513,22 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
           }}
         />
         <div className="relative z-10 grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-          <div className="p-7 sm:p-10 flex flex-col justify-center">
-            <h2 className="text-[26px] sm:text-[30px] font-light tracking-[-0.02em] leading-tight drop-shadow-[0_2px_18px_rgba(0,0,0,0.85)]">
+          <div className="p-5 sm:p-10 flex flex-col justify-center">
+            <h2 className="text-[21px] sm:text-[30px] font-light tracking-[-0.02em] leading-tight drop-shadow-[0_2px_18px_rgba(0,0,0,0.85)]">
               {mounted ? greeting() : "Welcome back"},
               <br />
               <span className="font-medium" style={{ color: C.blue }}>{name ? name.split(" ")[0] : "there"}</span>
             </h2>
-            <p className="mt-5 text-[14px] leading-relaxed max-w-xs drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]" style={{ color: C.sub }}>
+            <p className="mt-3.5 sm:mt-5 text-[13px] sm:text-[14px] leading-relaxed max-w-xs drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]" style={{ color: C.sub }}>
               Scan any domain for threats, vulnerabilities and security risks in seconds.
             </p>
-            <Link to="/scan/new" search={{ plan: "professional" as const }} className="group mt-7 self-start">
+            <Link to="/scan/new" search={{ plan: "professional" as const }} className="group mt-5 sm:mt-7 self-start">
               <GhostButton>Start New Scan</GhostButton>
             </Link>
           </div>
           <div className="hidden md:block min-h-[340px]" />
         </div>
+
       </Card>
 
       {/* SECURITY TELEMETRY STRIP — premium status overview */}
@@ -544,15 +545,15 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
           }}
         />
         <div className="relative z-10 grid lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
-          <div className="p-7 sm:p-10" style={{ borderRight: `1px solid ${C.border}` }}>
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="size-10 shrink-0 rounded-lg overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
+          <div className="p-5 sm:p-10 lg:border-r" style={{ borderColor: C.border }}>
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-3">
+                <div className="size-9 sm:size-10 shrink-0 rounded-lg overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
                   <img src={icShield} alt="" loading="lazy" width={512} height={512} className="size-full object-cover" />
                 </div>
-                <div>
-                  <h3 className="text-[18px] font-medium tracking-tight">Security Score</h3>
-                  <div className="text-[11.5px] uppercase tracking-[0.18em]" style={{ color: C.muted }}>
+                <div className="min-w-0">
+                  <h3 className="text-[16px] sm:text-[18px] font-medium tracking-tight truncate">Security Score</h3>
+                  <div className="text-[10px] sm:text-[11.5px] uppercase tracking-[0.18em]" style={{ color: C.muted }}>
                     Posture index
                   </div>
                 </div>
@@ -566,29 +567,29 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
               </span>
             </div>
 
-            <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-8 sm:gap-10">
+            <div className="mt-5 sm:mt-6 flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10">
               <ScoreDial value={report.score} color={sc} />
-              <div className="min-w-0 flex-1">
-                <h4 className="text-[24px] sm:text-[28px] font-semibold tracking-tight leading-tight">
+              <div className="min-w-0 flex-1 text-center sm:text-left">
+                <h4 className="text-[20px] sm:text-[28px] font-semibold tracking-tight leading-tight">
                   {strong ? "Strong security" : "Attention required"}
                 </h4>
-                <div className="mt-2 text-[15px] sm:text-[16px]" style={{ color: C.sub }}>
+                <div className="mt-2 text-[13.5px] sm:text-[16px]" style={{ color: C.sub }}>
                   {strong ? "Your domain is protected and monitored." : "Your domain needs review and remediation."}
                 </div>
-                <div className="mt-4 h-px w-16" style={{ background: C.blue }} />
-                <p className="mt-4 text-[14px] sm:text-[15px] leading-relaxed" style={{ color: C.sub }}>
+                <div className="mt-3.5 sm:mt-4 h-px w-16 mx-auto sm:mx-0" style={{ background: C.blue }} />
+                <p className="mt-3.5 sm:mt-4 text-[13px] sm:text-[15px] leading-relaxed" style={{ color: C.sub }}>
                   Your security posture is {strong ? "strong" : "below target"}. Keep monitoring to stay ahead of threats.
                 </p>
-                <div className="mt-6 inline-flex items-center gap-4 rounded-xl px-4 py-3.5"
+                <div className="mt-5 sm:mt-6 flex w-full sm:inline-flex items-center gap-3.5 sm:gap-4 rounded-xl px-3.5 sm:px-4 py-3 sm:py-3.5 text-left"
                   style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
-                  <div className="size-12 shrink-0 rounded-lg overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
+                  <div className="size-11 sm:size-12 shrink-0 rounded-lg overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
                     <img src={icLock} alt="" loading="lazy" width={512} height={512} className="size-full object-cover" />
                   </div>
-                  <div>
-                    <div className="text-[14.5px] font-medium" style={{ color: strong ? OK : SEV.High }}>
+                  <div className="min-w-0">
+                    <div className="text-[13.5px] sm:text-[14.5px] font-medium" style={{ color: strong ? OK : SEV.High }}>
                       {strong ? "Low Risk" : "Elevated Risk"}
                     </div>
-                    <div className="text-[13px]" style={{ color: C.sub }}>
+                    <div className="text-[12px] sm:text-[13px]" style={{ color: C.sub }}>
                       {strong ? "No critical threats detected" : "Critical findings require action"}
                     </div>
                   </div>
@@ -597,24 +598,25 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
             </div>
           </div>
 
-          <div className="p-7 sm:p-10 flex flex-col justify-center gap-0">
+          <div className="p-5 sm:p-10 flex flex-col justify-center gap-0 border-t lg:border-t-0" style={{ borderColor: C.border }}>
             <SideStat
               img={icShield}
               title="Vulnerabilities"
               sub="Medium & low severity"
-              right={<span className="text-[24px] font-light">{report.findings}</span>}
+              right={<span className="text-[20px] sm:text-[24px] font-light">{report.findings}</span>}
             />
-            <div className="h-px my-6" style={{ background: C.border }} />
+            <div className="h-px my-4 sm:my-6" style={{ background: C.border }} />
             <SideStat img={icScan} title="Scan Frequency" sub={"Every 24 hours\nAutomated schedule"} />
-            <div className="h-px my-6" style={{ background: C.border }} />
+            <div className="h-px my-4 sm:my-6" style={{ background: C.border }} />
             <SideStat
               img={icServer}
               title="System Status"
               sub="All systems operational"
-              right={<span className="size-3 rounded-full inline-block" style={{ background: OK, boxShadow: `0 0 12px ${OK}` }} />}
+              right={<span className="size-3 shrink-0 rounded-full inline-block" style={{ background: OK, boxShadow: `0 0 12px ${OK}` }} />}
             />
           </div>
         </div>
+
       </Card>
 
 
