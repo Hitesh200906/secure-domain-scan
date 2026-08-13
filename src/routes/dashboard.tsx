@@ -481,7 +481,7 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
               <div className="min-w-0">Threat</div>
               <div className="min-w-0">Location</div>
               <div className="min-w-0">Type</div>
-              <div className="min-w-0">Severity</div>
+              <div className="min-w-0">Security Affected</div>
               <div className="min-w-0">Time</div>
             </div>
             {threats.map((t, i) => {
