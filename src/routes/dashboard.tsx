@@ -622,15 +622,15 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
 
       {/* LIVE THREAT ACTIVITY */}
       <Card>
-        <div className="p-6 sm:p-8">
-          <div className="flex items-center justify-between gap-4">
-            <h3 className="text-[18px] font-medium tracking-tight">Live Threat Activity</h3>
-            <button onClick={onOpenReports} className="group inline-flex items-center gap-2 text-[13px]" style={{ color: C.blue }}>
+        <div className="p-4 sm:p-8">
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="text-[16px] sm:text-[18px] font-medium tracking-tight truncate">Live Threat Activity</h3>
+            <button onClick={onOpenReports} className="group inline-flex shrink-0 items-center gap-2 text-[12px] sm:text-[13px]" style={{ color: C.blue }}>
               View all <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
             </button>
           </div>
 
-          <div className="mt-5">
+          <div className="mt-4 sm:mt-5">
             <div className="hidden sm:grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.7fr)_minmax(0,0.8fr)] gap-3 sm:gap-4 text-[12px] pb-3" style={{ color: C.muted }}>
               <div className="min-w-0">Threat</div>
               <div className="min-w-0">Location</div>
@@ -646,29 +646,30 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, delay: i * 0.05 }}
-                  className="grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.7fr)_minmax(0,0.8fr)] gap-3 sm:gap-4 items-center py-3.5"
+                  className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-1 py-3 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.7fr)_minmax(0,0.8fr)] sm:gap-4 sm:items-center sm:py-3.5"
                   style={{ borderTop: `1px solid ${C.border}` }}
                 >
-                  <div className="min-w-0 text-[12px] sm:text-[13.5px] truncate">{t.type}</div>
-                  <div className="min-w-0 text-[12px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>
+                  <div className="min-w-0 text-[13px] sm:text-[13.5px] truncate">{t.type}</div>
+                  <div className="min-w-0 text-right sm:text-left text-[12px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>
                     <span className="mr-1.5">{FLAG[t.country] ?? "🏳️"}</span>
                     {COUNTRY[t.country] ?? t.country}
                   </div>
-                  <div className="min-w-0 text-[12px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>
+                  <div className="min-w-0 text-[11.5px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>
                     {THREAT_KIND[t.type] ?? "Anomaly"}
                   </div>
-                  <div className="min-w-0 text-[12px] sm:text-[13.5px] truncate">
+                  <div className="min-w-0 order-last sm:order-none text-[11.5px] sm:text-[13.5px] truncate">
                     <span className="inline-flex items-center gap-2" style={{ color: sev.color }}>
                       <span className="size-1.5 rounded-full" style={{ background: sev.color }} />
                       {sev.label}
                     </span>
                   </div>
-                  <div className="min-w-0 text-[12px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>{t.ago.replace("m ago", " min ago")}</div>
+                  <div className="min-w-0 order-last sm:order-none text-right sm:text-left text-[11.5px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>{t.ago.replace("m ago", " min ago")}</div>
                 </motion.div>
               );
             })}
           </div>
         </div>
+
       </Card>
 
       {/* DETAILED REPORT */}
@@ -690,14 +691,15 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
           }}
         />
         <div className="relative z-10 grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-          <div className="p-7 sm:p-9 flex flex-col justify-center">
-            <h3 className="text-[21px] font-normal tracking-[-0.01em] drop-shadow-[0_2px_18px_rgba(0,0,0,0.85)]">Detailed Security Report</h3>
-            <p className="mt-3 text-[13.5px] leading-relaxed max-w-sm drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]" style={{ color: C.sub }}>
+          <div className="p-5 sm:p-9 flex flex-col justify-center">
+            <h3 className="text-[18px] sm:text-[21px] font-normal tracking-[-0.01em] drop-shadow-[0_2px_18px_rgba(0,0,0,0.85)]">Detailed Security Report</h3>
+            <p className="mt-2.5 sm:mt-3 text-[12.5px] sm:text-[13.5px] leading-relaxed max-w-sm drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]" style={{ color: C.sub }}>
               Get complete security analysis with detailed findings and actionable recommendations.
             </p>
-            <Link to="/report/$id" params={{ id: report.id }} className="group mt-6 self-start">
+            <Link to="/report/$id" params={{ id: report.id }} className="group mt-5 sm:mt-6 self-start">
               <GhostButton>View Full Report</GhostButton>
             </Link>
+
           </div>
           <div className="hidden md:block min-h-[200px]" />
         </div>
