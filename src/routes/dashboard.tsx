@@ -400,8 +400,8 @@ function TelemetryStrip({ report }: { report: ReportModel }) {
                 </div>
                 {i === 0 && (
                   <span
-                    className="absolute -top-0.5 -right-0.5 size-2.5 rounded-full border border-black transition-all duration-700"
-                    style={{ background: OK, boxShadow: pulse ? `0 0 10px ${OK}` : "none" }}
+                    className="absolute -top-0.5 -right-0.5 size-2.5 rounded-full border border-black"
+                    style={{ background: OK }}
                   />
                 )}
               </div>
