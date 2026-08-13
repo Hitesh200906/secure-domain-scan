@@ -445,101 +445,6 @@ function ScoreDial({ value, color }: { value: number; color: string }) {
 }
 
 
-/* ------------------------------ telemetry strip ----------------------------- */
-function TelemetryStrip({ report }: { report: ReportModel }) {
-  const items = [
-    { id: "01", label: "Protected Assets", value: `${Math.max(1, Math.round(report.score / 4))}`, unit: "", sub: "Under continuous monitoring", meta: "+4.2%", metaNote: "7d" },
-    { id: "02", label: "Threats Neutralized", value: `${report.findings + 12}`, unit: "", sub: "Blocked in last 24 hours", meta: "+12", metaNote: "24h" },
-    { id: "03", label: "Active Nodes", value: "14", unit: "", sub: "Global edge network", meta: "100%", metaNote: "uptime" },
-    { id: "04", label: "Avg Response", value: "14", unit: "ms", sub: "Mitigation latency", meta: "−2.1", metaNote: "vs 7d" },
-  ];
-
-  return (
-    <Card className="relative overflow-hidden">
-      {/* subtle vertical sheen */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.028) 0%, transparent 30%, transparent 100%)" }}
-      />
-
-      {/* header */}
-      <div
-        className="relative z-10 flex items-center justify-between gap-3 px-4 sm:px-7 py-3.5 border-b"
-        style={{ borderColor: C.border }}
-      >
-        <div className="flex items-baseline gap-3 min-w-0">
-          <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.3em] truncate" style={{ color: C.sub }}>
-            Live Telemetry
-          </span>
-          <span className="hidden sm:inline h-3 w-px" style={{ background: C.border }} />
-          <span className="hidden sm:inline text-[10.5px] tracking-wide" style={{ color: C.muted }}>
-            Real-time infrastructure signals
-          </span>
-        </div>
-        <span className="text-[10px] sm:text-[11px] font-mono tabular-nums shrink-0" style={{ color: C.muted }}>
-          SYNC · 30s
-        </span>
-      </div>
-
-      <div className="relative z-10 grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4">
-        {items.map((item) => (
-          <div
-            key={item.label}
-            className="group relative px-4 sm:px-7 py-6 sm:py-8 border-b xs:[&:nth-child(n+3)]:border-b-0 xs:odd:border-r lg:border-b-0 lg:border-r lg:last:border-r-0 transition-colors duration-300 hover:bg-white/[0.015]"
-            style={{ borderColor: C.border }}
-          >
-            {/* top hairline accent on hover */}
-            <div
-              className="pointer-events-none absolute inset-x-0 top-0 h-px origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100"
-              style={{ background: `linear-gradient(90deg, ${C.sub}, transparent)` }}
-            />
-
-            <div className="flex items-center justify-between gap-3">
-              <span className="text-[9.5px] font-mono tracking-[0.2em]" style={{ color: C.border }}>
-                {item.id}
-              </span>
-              <span className="text-[9.5px] sm:text-[10.5px] uppercase tracking-[0.18em] truncate" style={{ color: C.muted }}>
-                {item.label}
-              </span>
-            </div>
-
-            <div className="mt-6 flex items-baseline gap-1.5">
-              <span
-                className="text-[38px] sm:text-[46px] font-extralight leading-[0.9] tracking-[-0.035em] tabular-nums"
-                style={{ color: C.text }}
-              >
-                {item.value}
-              </span>
-              {item.unit && (
-                <span className="text-[13px] sm:text-[15px] font-light" style={{ color: C.sub }}>
-                  {item.unit}
-                </span>
-              )}
-            </div>
-
-            <div className="mt-3 text-[11px] sm:text-[11.5px] leading-snug" style={{ color: C.sub }}>
-              {item.sub}
-            </div>
-
-            <div className="mt-5 flex items-center gap-2.5">
-              <span
-                className="rounded-md px-1.5 py-0.5 text-[10px] font-mono tabular-nums"
-                style={{ border: `1px solid ${C.border}`, color: C.sub }}
-              >
-                {item.meta}
-              </span>
-              <span className="h-px flex-1" style={{ background: C.border }} />
-              <span className="text-[9.5px] font-mono uppercase tracking-[0.14em]" style={{ color: C.muted }}>
-                {item.metaNote}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </Card>
-  );
-}
-
 
 
 function Overview({ report, profile, scans, mounted, onOpenReports, role, name }: {
@@ -584,8 +489,6 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
 
       </Card>
 
-      {/* SECURITY TELEMETRY STRIP — premium status overview */}
-      <TelemetryStrip report={report} />
 
       {/* SECURITY SCORE */}
       <Card className="relative">
