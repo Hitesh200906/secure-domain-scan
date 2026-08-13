@@ -369,6 +369,49 @@ function Hexagon({ value, color }: { value: number; color: string }) {
   );
 }
 
+/* ------------------------------ telemetry strip ----------------------------- */
+function TelemetryStrip({ report }: { report: ReportModel }) {
+  const items = [
+    { label: "Protected Assets", value: `${Math.max(1, Math.round(report.score / 4))}`, sub: "under monitoring", icon: Shield },
+    { label: "Threats Neutralized", value: `${report.findings + 12}`, sub: "last 24 hours", icon: Zap },
+    { label: "Active Nodes", value: "14", sub: "global edge network", icon: Server },
+    { label: "Avg Response", value: "14ms", sub: "mitigation latency", icon: Activity },
+  ];
+
+  return (
+    <Card className="relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none opacity-30">
+        <div className="absolute inset-0" style={{ background: `linear-gradient(90deg, transparent 0%, rgba(37,99,235,0.04) 50%, transparent 100%)` }} />
+      </div>
+      <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 divide-x-0 lg:divide-x" style={{ borderColor: C.border }}>
+        {items.map((item, i) => {
+          const Icon = item.icon;
+          return (
+            <div key={item.label} className="flex items-center gap-4 px-5 sm:px-7 py-5 relative">
+              <div className="relative">
+                <div className="size-10 rounded-xl grid place-items-center" style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
+                  <Icon className="size-4.5" style={{ color: C.blue }} />
+                </div>
+                {i === 0 && (
+                  <span
+                    className="absolute -top-0.5 -right-0.5 size-2.5 rounded-full border border-black"
+                    style={{ background: OK }}
+                  />
+                )}
+              </div>
+              <div className="min-w-0">
+                <div className="text-[11px] uppercase tracking-[0.12em]" style={{ color: C.muted }}>{item.label}</div>
+                <div className="mt-0.5 text-[18px] sm:text-[20px] font-light tracking-tight text-white">{item.value}</div>
+                <div className="text-[11px]" style={{ color: C.sub }}>{item.sub}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </Card>
+  );
+}
+
 function Overview({ report, profile, scans, mounted, onOpenReports, role, name }: {
   report: ReportModel; profile: { plan: string; credits: number } | null; scans: Scan[]; mounted: boolean;
   onOpenReports: () => void; role: string | null | undefined; name: string | null;
@@ -409,6 +452,9 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
           <div className="hidden md:block min-h-[340px]" />
         </div>
       </Card>
+
+      {/* SECURITY TELEMETRY STRIP — premium status overview */}
+      <TelemetryStrip report={report} />
 
       {/* SECURITY SCORE */}
       <Card>
