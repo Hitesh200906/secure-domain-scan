@@ -44,7 +44,7 @@ export function Hero() {
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.08 }}
-                className="mt-2 leading-[1.05] text-[28px]"
+                className="mt-2 leading-[1.05] text-[26px]"
                 style={{
                   fontFamily: "ui-sans-serif, system-ui, sans-serif",
                   fontWeight: 700,
@@ -63,10 +63,20 @@ export function Hero() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.2 }}
-                className="mt-3 text-[15px] leading-relaxed"
+                className="mt-3 text-[13px] leading-relaxed"
                 style={{ color: T.text2 }}
               >
                 Detect Vulnerabilities
+              </motion.p>
+
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.28 }}
+                className="mt-2 text-[11px] leading-relaxed px-4"
+                style={{ color: T.text3 }}
+              >
+                AI-powered scans, continuous monitoring, and actionable reports to keep your stack secure.
               </motion.p>
             </div>
 
@@ -133,7 +143,7 @@ export function Hero() {
             >
               <button
                 onClick={() => setMode("security")}
-                className="group relative inline-flex items-center justify-center gap-1.5 sm:gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-4 py-3 sm:px-6 sm:py-3.5 text-[13px] sm:text-[14px] font-medium backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-white/25"
+                className="group relative inline-flex items-center justify-center gap-1.5 sm:gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-3 py-2 sm:px-6 sm:py-3.5 text-[12px] sm:text-[14px] font-medium backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-white/25"
                 style={{
                   background: "linear-gradient(180deg,rgba(22,24,32,0.85) 0%,rgba(0,0,0,0.85) 100%)",
                   border: `1px solid ${T.border}`,
@@ -142,14 +152,14 @@ export function Hero() {
                 }}
               >
                 <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                <ShieldCheck className="size-4 sm:size-4 shrink-0" />
+                <ShieldCheck className="size-3.5 sm:size-4 shrink-0" />
                 Switch to Nexefy Security
-                <ArrowUpRight className="size-4 sm:size-4 shrink-0 opacity-80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight className="size-3.5 sm:size-4 shrink-0 opacity-80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
 
               <button
                 onClick={() => setComingSoon(COMING_SOON.nexefy)}
-                className="group relative inline-flex items-center justify-center gap-1.5 sm:gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-4 py-3 sm:px-6 sm:py-3.5 text-[13px] sm:text-[14px] font-medium text-white transition-all duration-300 hover:-translate-y-0.5"
+                className="group relative inline-flex items-center justify-center gap-1.5 sm:gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-3 py-2 sm:px-6 sm:py-3.5 text-[12px] sm:text-[14px] font-medium text-white transition-all duration-300 hover:-translate-y-0.5"
                 style={{
                   background: `linear-gradient(180deg, color-mix(in oklab, ${T.navy} 82%, white) 0%, ${T.navy} 55%, color-mix(in oklab, ${T.navy} 78%, black) 100%)`,
                   border: "none",
@@ -157,9 +167,9 @@ export function Hero() {
                 }}
               >
                 <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                <Sparkles className="size-4 sm:size-4 shrink-0" />
+                <Sparkles className="size-3.5 sm:size-4 shrink-0" />
                 Switch to Nexefy
-                <ArrowUpRight className="size-4 sm:size-4 shrink-0 opacity-90 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight className="size-3.5 sm:size-4 shrink-0 opacity-90 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
             </motion.div>
           </div>
