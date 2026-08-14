@@ -44,7 +44,7 @@ export function Hero() {
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.08 }}
-                className="mt-2 leading-[1.05] text-[28px]"
+                className="mt-2 leading-[1.05] text-[26px]"
                 style={{
                   fontFamily: "ui-sans-serif, system-ui, sans-serif",
                   fontWeight: 700,
@@ -63,10 +63,20 @@ export function Hero() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.2 }}
-                className="mt-3 text-[15px] leading-relaxed"
+                className="mt-3 text-[13px] leading-relaxed"
                 style={{ color: T.text2 }}
               >
                 Detect Vulnerabilities
+              </motion.p>
+
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.28 }}
+                className="mt-2 text-[11px] leading-relaxed px-4"
+                style={{ color: T.text3 }}
+              >
+                AI-powered scans, continuous monitoring, and actionable reports to keep your stack secure.
               </motion.p>
             </div>
 
