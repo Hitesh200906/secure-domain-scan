@@ -75,7 +75,7 @@ export function Stats() {
   const opacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
 
   return (
-    <section ref={ref} className="relative w-full overflow-hidden bg-black">
+    <section ref={ref} className="relative hidden sm:block w-full overflow-hidden bg-black">
       <FloatingOrb className="left-[10%] top-[15%] h-40 w-40 sm:h-64 sm:w-64" />
       <FloatingOrb className="right-[15%] bottom-[10%] h-32 w-32 sm:h-48 sm:w-48" />
 
