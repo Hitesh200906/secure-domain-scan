@@ -369,24 +369,24 @@ function VerifCard({
       aria-pressed={selected}
       className={`rounded-2xl p-5 text-left transition ${
         selected
-          ? "bg-gradient-to-br from-[#2563EB]/25 via-[#3B82F6]/15 to-white/10 ring-1 ring-[#3B82F6]/40"
-          : "bg-transparent ring-1 ring-white/[0.10] hover:bg-white/[0.03]"
+          ? "bg-white text-black ring-1 ring-white"
+          : "bg-transparent text-white ring-1 ring-white/[0.10] hover:bg-white/[0.03]"
       }`}
     >
       <div className="flex items-center gap-4">
         <span
           className={`flex size-16 shrink-0 items-center justify-center rounded-2xl transition ${
-            selected ? "bg-white/90 shadow-[0_0_20px_rgba(59,130,246,0.35)]" : "bg-white/[0.04]"
+            selected ? "bg-black/10" : "bg-white/[0.04]"
           }`}
         >
           <img src={img} alt={alt} loading="lazy" className="size-10 shrink-0 object-contain" />
         </span>
         <div className="flex-1">
-          <div className="text-[15px] text-white">{title}</div>
-          <p className="mt-1 text-[12.5px] leading-relaxed text-muted-foreground">{desc}</p>
+          <div className={`text-[15px] ${selected ? "text-black" : "text-white"}`}>{title}</div>
+          <p className={`mt-1 text-[12.5px] leading-relaxed ${selected ? "text-black/70" : "text-muted-foreground"}`}>{desc}</p>
         </div>
         {selected ? (
-          <span className="grid size-5 shrink-0 place-items-center rounded-full bg-[#0000DD] text-white">
+          <span className="grid size-5 shrink-0 place-items-center rounded-full bg-black text-white">
             <Check className="size-3" />
           </span>
         ) : (
