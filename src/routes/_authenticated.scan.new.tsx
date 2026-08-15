@@ -177,33 +177,35 @@ function ScanNewPage() {
           </motion.section>
 
           {/* Scan Configuration */}
-          <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }} className="relative">
+          <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }} className="relative isolate">
             {/* Background artwork — scoped to this section only */}
-            <div aria-hidden className="pointer-events-none absolute -inset-x-6 -inset-y-8 -z-10 overflow-hidden rounded-3xl">
+            <div aria-hidden className="pointer-events-none absolute -inset-x-6 -inset-y-10 z-0 overflow-hidden rounded-3xl">
               <img
                 src={scanConfigBg.url}
                 alt=""
-                loading="lazy"
-                className="absolute inset-0 h-full w-full object-cover object-right opacity-[0.55]"
+                className="absolute inset-0 h-full w-full object-cover object-right"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-black/25" />
-              <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-transparent to-black/90" />
             </div>
-            <SectionHead
-              img={icGlobe}
-              alt="Globe icon"
-              title="Scan Configuration"
-              desc="Configure the website you want us to analyze."
-            />
-            <div className="mt-8">
-              <div className="text-[15px] text-white">Target Website URL</div>
-              <p className="mt-1 text-[13px] text-muted-foreground">Please provide the website you want us to scan.</p>
-              <div className="mt-4 max-w-md">
-                <Field label="" type="url" icon={<Link2 className="size-[18px]" />} value={form.target_url}
-                  onChange={update("target_url")} placeholder="https://example.com" required />
+            <div className="relative z-10">
+              <SectionHead
+                img={icGlobe}
+                alt="Globe icon"
+                title="Scan Configuration"
+                desc="Configure the website you want us to analyze."
+              />
+              <div className="mt-8">
+                <div className="text-[15px] text-white">Target Website URL</div>
+                <p className="mt-1 text-[13px] text-muted-foreground">Please provide the website you want us to scan.</p>
+                <div className="mt-4 max-w-md">
+                  <Field label="" type="url" icon={<Link2 className="size-[18px]" />} value={form.target_url}
+                    onChange={update("target_url")} placeholder="https://example.com" required />
+                </div>
               </div>
             </div>
           </motion.section>
+
 
 
           {/* Domain Ownership Verification */}
