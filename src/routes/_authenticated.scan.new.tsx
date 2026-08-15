@@ -292,7 +292,7 @@ function SectionHead({ img, alt, title, desc }: { img: string; alt: string; titl
 }
 
 const inputShell =
-  "group flex items-center gap-3 rounded-xl bg-transparent border border-white/[0.10] px-4 py-3.5 transition focus-within:border-white focus-within:bg-white/[0.02]";
+  "group flex items-center gap-3 rounded-xl bg-transparent border border-white/[0.10] px-4 py-3.5 transition focus-within:bg-white/[0.02]";
 
 function Field({
   label, icon, value, onChange, type = "text", placeholder, required,
