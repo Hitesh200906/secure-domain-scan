@@ -292,7 +292,7 @@ function SectionHead({ img, alt, title, desc }: { img: string; alt: string; titl
 }
 
 const inputShell =
-  "flex items-center gap-3 rounded-xl bg-transparent border border-white/[0.10] px-4 py-3.5 transition focus-within:border-white/25";
+  "group flex items-center gap-3 rounded-xl bg-transparent border border-white/[0.10] px-4 py-3.5 transition focus-within:border-[#3b82f6]/60 focus-within:bg-white/[0.02]";
 
 function Field({
   label, icon, value, onChange, type = "text", placeholder, required,
@@ -309,7 +309,7 @@ function Field({
     <label className="block">
       {label ? <span className="mb-2 block text-[14px] text-white/90">{label}</span> : null}
       <div className={inputShell}>
-        <span className="text-white/45">{icon}</span>
+        <span className="text-white/45 transition group-focus-within:text-white">{icon}</span>
         <input
           type={type}
           value={value}
@@ -336,7 +336,7 @@ function SelectField({
     <label className="block">
       <span className="mb-2 block text-[14px] text-white/90">{label}</span>
       <div className={`${inputShell} relative`}>
-        <span className="text-white/45">{icon}</span>
+        <span className="text-white/45 transition group-focus-within:text-white">{icon}</span>
         <select
           value={value}
           onChange={onChange}
@@ -368,11 +368,19 @@ function VerifCard({
       onClick={onClick}
       aria-pressed={selected}
       className={`rounded-2xl p-5 text-left transition ${
-        selected ? "bg-white/[0.06] ring-1 ring-white/25" : "bg-transparent ring-1 ring-white/[0.10] hover:bg-white/[0.03]"
+        selected
+          ? "bg-gradient-to-br from-[#2563EB]/25 via-[#3B82F6]/15 to-white/10 ring-1 ring-[#3B82F6]/40"
+          : "bg-transparent ring-1 ring-white/[0.10] hover:bg-white/[0.03]"
       }`}
     >
       <div className="flex items-center gap-4">
-        <img src={img} alt={alt} loading="lazy" className="size-16 shrink-0 object-contain" />
+        <span
+          className={`flex size-16 shrink-0 items-center justify-center rounded-2xl transition ${
+            selected ? "bg-white/90 shadow-[0_0_20px_rgba(59,130,246,0.35)]" : "bg-white/[0.04]"
+          }`}
+        >
+          <img src={img} alt={alt} loading="lazy" className="size-10 shrink-0 object-contain" />
+        </span>
         <div className="flex-1">
           <div className="text-[15px] text-white">{title}</div>
           <p className="mt-1 text-[12.5px] leading-relaxed text-muted-foreground">{desc}</p>
