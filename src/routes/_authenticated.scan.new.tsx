@@ -292,7 +292,7 @@ function SectionHead({ img, alt, title, desc }: { img: string; alt: string; titl
 }
 
 const inputShell =
-  "flex items-center gap-3 rounded-xl bg-transparent border border-white/[0.10] px-4 py-3.5 transition focus-within:border-white/25";
+  "group flex items-center gap-3 rounded-xl bg-transparent border border-white/[0.10] px-4 py-3.5 transition focus-within:border-[#3b82f6]/60 focus-within:bg-white/[0.02]";
 
 function Field({
   label, icon, value, onChange, type = "text", placeholder, required,
@@ -309,7 +309,7 @@ function Field({
     <label className="block">
       {label ? <span className="mb-2 block text-[14px] text-white/90">{label}</span> : null}
       <div className={inputShell}>
-        <span className="text-white/45">{icon}</span>
+        <span className="text-white/45 transition group-focus-within:text-white">{icon}</span>
         <input
           type={type}
           value={value}
@@ -336,7 +336,7 @@ function SelectField({
     <label className="block">
       <span className="mb-2 block text-[14px] text-white/90">{label}</span>
       <div className={`${inputShell} relative`}>
-        <span className="text-white/45">{icon}</span>
+        <span className="text-white/45 transition group-focus-within:text-white">{icon}</span>
         <select
           value={value}
           onChange={onChange}
