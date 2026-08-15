@@ -14,6 +14,7 @@ import icGlobe from "@/assets/scanform-icon-globe.png";
 import icShield from "@/assets/scanform-icon-shield.png";
 import icEnvelope from "@/assets/scanform-icon-envelope.png";
 import icCode from "@/assets/scanform-icon-code.png";
+import scanConfigBg from "@/assets/scan-config-bg.png.asset.json";
 import {
   startEmailVerification,
   confirmEmailVerification,
