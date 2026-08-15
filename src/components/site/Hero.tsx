@@ -179,9 +179,11 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="mt-14 sm:mt-16 grid grid-cols-3 gap-3 sm:gap-6 items-stretch">
+        <div className="mt-14 sm:mt-16 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-6 items-stretch">
           <FeatureCard index={0} image={imgMarketplace.url} fit="contain" title="Marketplace" desc="Launch branded storefronts." onClick={() => setComingSoon(COMING_SOON.marketplace)} />
-          <FeatureCard index={1} image={imgSecurity.url} title="Security" desc="AI-powered protection." />
+          <div className="hidden sm:block">
+            <FeatureCard index={1} image={imgSecurity.url} title="Security" desc="AI-powered protection." />
+          </div>
           <FeatureCard index={2} image={imgRewards.url} title="Nexefy Rewards" desc="Earn from the clips you create." onClick={() => setComingSoon(COMING_SOON.rewards)} />
         </div>
 
