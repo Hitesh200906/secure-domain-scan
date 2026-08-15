@@ -376,7 +376,7 @@ function VerifCard({
       <div className="flex items-center gap-4">
         <span
           className={`flex size-16 shrink-0 items-center justify-center rounded-2xl transition ${
-            selected ? "bg-black/10" : "bg-white/[0.04]"
+            selected ? "bg-white" : "bg-transparent"
           }`}
         >
           <img src={img} alt={alt} loading="lazy" className="size-10 shrink-0 object-contain" />
