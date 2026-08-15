@@ -368,11 +368,19 @@ function VerifCard({
       onClick={onClick}
       aria-pressed={selected}
       className={`rounded-2xl p-5 text-left transition ${
-        selected ? "bg-white/[0.06] ring-1 ring-white/25" : "bg-transparent ring-1 ring-white/[0.10] hover:bg-white/[0.03]"
+        selected
+          ? "bg-gradient-to-br from-[#2563EB]/25 via-[#3B82F6]/15 to-white/10 ring-1 ring-[#3B82F6]/40"
+          : "bg-transparent ring-1 ring-white/[0.10] hover:bg-white/[0.03]"
       }`}
     >
       <div className="flex items-center gap-4">
-        <img src={img} alt={alt} loading="lazy" className="size-16 shrink-0 object-contain" />
+        <span
+          className={`flex size-16 shrink-0 items-center justify-center rounded-2xl transition ${
+            selected ? "bg-white/90 shadow-[0_0_20px_rgba(59,130,246,0.35)]" : "bg-white/[0.04]"
+          }`}
+        >
+          <img src={img} alt={alt} loading="lazy" className="size-10 shrink-0 object-contain" />
+        </span>
         <div className="flex-1">
           <div className="text-[15px] text-white">{title}</div>
           <p className="mt-1 text-[12.5px] leading-relaxed text-muted-foreground">{desc}</p>
