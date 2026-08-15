@@ -176,7 +176,18 @@ function ScanNewPage() {
           </motion.section>
 
           {/* Scan Configuration */}
-          <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }}>
+          <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }} className="relative">
+            {/* Background artwork — scoped to this section only */}
+            <div aria-hidden className="pointer-events-none absolute -inset-x-6 -inset-y-8 -z-10 overflow-hidden rounded-3xl">
+              <img
+                src={scanConfigBg.url}
+                alt=""
+                loading="lazy"
+                className="absolute inset-0 h-full w-full object-cover object-right opacity-[0.55]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-black/25" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
+            </div>
             <SectionHead
               img={icGlobe}
               alt="Globe icon"
@@ -192,6 +203,7 @@ function ScanNewPage() {
               </div>
             </div>
           </motion.section>
+
 
           {/* Domain Ownership Verification */}
           <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
