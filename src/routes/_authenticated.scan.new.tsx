@@ -292,7 +292,7 @@ function SectionHead({ img, alt, title, desc }: { img: string; alt: string; titl
 }
 
 const inputShell =
-  "group flex items-center gap-3 rounded-xl bg-transparent border border-white/[0.10] px-4 py-3.5 transition focus-within:border-white focus-within:bg-white/[0.02]";
+  "group flex items-center gap-3 rounded-xl bg-transparent border border-white/[0.10] px-4 py-3.5 transition focus-within:bg-white/[0.02]";
 
 function Field({
   label, icon, value, onChange, type = "text", placeholder, required,
@@ -376,7 +376,7 @@ function VerifCard({
       <div className="flex items-center gap-4">
         <span
           className={`flex size-16 shrink-0 items-center justify-center rounded-2xl transition ${
-            selected ? "bg-black/10" : "bg-white/[0.04]"
+            selected ? "bg-white" : "bg-transparent"
           }`}
         >
           <img src={img} alt={alt} loading="lazy" className="size-10 shrink-0 object-contain" />
