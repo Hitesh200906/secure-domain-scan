@@ -301,8 +301,8 @@ function ScanNewPage() {
           onSubmit={async (code) => {
             await confirmEmail({ data: { scan_id: flow.scanId, code } });
             setFlow(null);
-            toast.success("Verified — your scan request was sent to our security console");
-            navigate({ to: "/dashboard" });
+            toast.success("Verification completed — continue to scan configuration");
+            navigate({ to: "/scan/configure", search: { id: flow.scanId } });
           }}
         />
       )}
@@ -319,8 +319,8 @@ function ScanNewPage() {
               return false;
             }
             setFlow(null);
-            toast.success("Verified — your scan request was sent to our security console");
-            navigate({ to: "/dashboard" });
+            toast.success("Verification completed — continue to scan configuration");
+            navigate({ to: "/scan/configure", search: { id: flow.scanId } });
             return true;
           }}
         />
