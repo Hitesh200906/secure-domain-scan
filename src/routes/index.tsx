@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import { Hero } from "@/components/site/Hero";
-import { Stats } from "@/components/site/Stats";
 import { Features } from "@/components/site/Features";
 import { HowItWorks } from "@/components/site/HowItWorks";
 import { ReportShowcase } from "@/components/site/ReportShowcase";
@@ -65,7 +64,6 @@ function SecurityHome() {
   return (
     <>
       <Hero />
-      <Stats />
       <Features />
       <HowItWorks />
       <ReportShowcase />

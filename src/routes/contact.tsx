@@ -99,7 +99,7 @@ function ContactPage() {
                   <Link
                     to="/profile"
                     search={{ tab: "tickets" }}
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white text-black px-5 py-2.5 text-sm font-medium hover:shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.7)] transition"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white text-black px-5 py-2.5 text-sm font-medium transition-transform duration-300 hover:scale-[1.03]"
                   >
                     <LifeBuoy className="size-4" /> View ticket in profile
                   </Link>
@@ -129,9 +129,9 @@ function ContactPage() {
                 />
                 <button
                   type="submit"
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-white text-black px-6 py-3 text-sm font-medium hover:shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.7)] transition"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-white text-black px-6 py-3 text-sm font-medium transition-transform duration-300 hover:scale-[1.03]"
                 >
-                  Request Security Audit →
+                  Contact Nexefy team
                 </button>
                 <p className="text-[11px] text-muted-foreground text-center">
                   By submitting, you agree to our Privacy Policy and Terms.
@@ -161,11 +161,11 @@ function Field({
   placeholder?: string;
 }) {
   const cls =
-    "w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition";
+    "w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-muted-foreground/60 focus:outline-none focus:border-white/25 transition";
   return (
     <label className="block">
       <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-        {label} {required && <span className="text-primary">*</span>}
+        {label} {required && <span className="text-white/60">*</span>}
       </span>
       {textarea ? (
         <textarea

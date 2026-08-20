@@ -23,9 +23,9 @@ const FALLBACK_PLANS: Plan[] = [
     features: ["10 domains", "Daily scans", "OWASP Top 10 + CVE feeds", "Slack & PagerDuty alerts", "Priority email support", "PDF & JSON exports"],
   },
   {
-    id: "fallback-enterprise", slug: "enterprise", name: "Enterprise", headline: "Custom programs at scale",
+    id: "fallback-enterprise", slug: "enterprise", name: "Enterprise", headline: "Deep coverage at scale",
     description: "Dedicated infrastructure, SAML SSO, custom integrations, and a named security engineer.",
-    price_monthly: 0, price_label: "Custom", popular: false, cta_label: "Talk to sales", sort_order: 3,
+    price_monthly: 899, price_label: "/month", popular: false, cta_label: "Enterprise scan", sort_order: 3,
     features: ["Unlimited domains", "Real-time monitoring", "SAML SSO + audit log export", "Dedicated security engineer", "99.99% SLA", "Custom integrations"],
   },
 ];

@@ -1,10 +1,11 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
-  LayoutDashboard, Users, ShieldCheck, LifeBuoy, ScanLine, FileText,
-  Tags, ScrollText, ChevronLeft, Menu, Loader2,
+  LayoutDashboard, Users, ShieldCheck, LifeBuoy,
+  ScrollText, ChevronLeft, Menu, Loader2, Radar, ArrowUpRight,
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { useAdmin } from "@/hooks/use-admin";
+import { useSecurityConsole } from "@/lib/security-console";
 
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean; superOnly?: boolean };
 const nav: NavItem[] = [
@@ -12,9 +13,6 @@ const nav: NavItem[] = [
   { to: "/admin/users", label: "Users", icon: Users },
   { to: "/admin/admins", label: "Admins", icon: ShieldCheck, superOnly: true },
   { to: "/admin/tickets", label: "Support", icon: LifeBuoy },
-  { to: "/admin/scans", label: "Scans", icon: ScanLine },
-  { to: "/admin/reports", label: "Reports", icon: FileText },
-  { to: "/admin/pricing", label: "Pricing", icon: Tags, superOnly: true },
   { to: "/admin/logs", label: "Audit Logs", icon: ScrollText, superOnly: true },
 ];
 
@@ -41,7 +39,24 @@ export function AdminShell({ title, description, actions, children }: { title: s
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
   const { isSuperAdmin } = useAdmin();
+  const { inConsole, openConsole } = useSecurityConsole();
   const visibleNav = nav.filter((item) => !item.superOnly || isSuperAdmin);
+
+  // Inside the Nexefy Security overlay the console supplies its own chrome.
+  if (inConsole) {
+    return (
+      <div>
+        <div className="mb-6 flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-medium tracking-tight sm:text-3xl">{title}</h1>
+            {description && <p className="mt-1.5 max-w-2xl text-sm text-muted-foreground">{description}</p>}
+          </div>
+          {actions}
+        </div>
+        {children}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-24 pb-16">
@@ -71,6 +86,21 @@ export function AdminShell({ title, description, actions, children }: { title: s
                 );
               })}
             </nav>
+
+            <button
+              onClick={() => { setOpen(false); openConsole(); }}
+              className="group mt-3 flex w-full items-center gap-3 rounded-xl border border-primary/30 bg-gradient-to-br from-primary/20 via-primary/5 to-transparent px-3 py-3 text-left transition hover:border-primary/50"
+            >
+              <span className="grid size-8 shrink-0 place-items-center rounded-lg border border-primary/30 bg-black/40">
+                <Radar className="size-4 text-primary" />
+              </span>
+              <span className="flex-1">
+                <span className="block text-[13px] font-medium text-white">Nexefy Security</span>
+                <span className="block text-[10px] text-muted-foreground">Scan · Report · Pricing</span>
+              </span>
+              <ArrowUpRight className="size-3.5 text-primary/70 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </button>
+
             <div className="mt-3 px-3 py-3 rounded-xl bg-gradient-to-br from-primary/10 to-secondary/10 border border-white/5">
               <div className="text-[10px] uppercase tracking-[0.2em] text-primary/80">Restricted</div>
               <p className="text-[11px] mt-1 text-muted-foreground leading-relaxed">

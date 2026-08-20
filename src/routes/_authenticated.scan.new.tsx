@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight, Check, Loader2, Lock, Crosshair, ChevronDown, ChevronRight, Copy, ShieldCheck, X,
-  User, Briefcase, Building2, Mail, AtSign, Link2,
+  User, Briefcase, Building2, Mail, AtSign, Link2, Info,
 } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "@/lib/api-client";
@@ -172,6 +172,9 @@ function ScanNewPage() {
               <div className="sm:col-span-2">
                 <Field label="Business Email" type="email" icon={<AtSign className="size-[18px]" />}
                   value={form.business_email} onChange={update("business_email")} placeholder="Enter your business email" />
+                <p className="mt-2 text-[11.5px] text-white/45">
+                  This address must be published on your website — on the contact page or in the footer — so our AI can confirm it before sending your code.
+                </p>
               </div>
             </div>
           </motion.section>
@@ -222,16 +225,30 @@ function ScanNewPage() {
                 onClick={() => setVerification("email")}
                 img={icEnvelope}
                 alt="Envelope with verified badge"
+                badge="Recommended"
                 title="Email Verification"
-                desc="We will send a six-digit code to your business email that is present on your website."
+                desc="Our AI scans your website for your business email. If it is published there, we send a six-digit code to it."
+                steps={[
+                  "AI reads your site for the business email",
+                  "Six-digit code sent to that address",
+                  "Enter the code to launch the scan",
+                ]}
+                note="Your business email must be present on your website's contact page or in the footer."
               />
               <VerifCard
                 selected={verification === "manual"}
                 onClick={() => setVerification("manual")}
                 img={icCode}
                 alt="Code window icon"
+                badge="No email needed"
                 title="Manual Verification"
-                desc="We generate a six-character code pasted anywhere on your site."
+                desc="We issue a unique verification code that you place anywhere on your website."
+                steps={[
+                  "Copy your unique verification code",
+                  "Paste it in your site's HTML or footer",
+                  "Our AI confirms it is live",
+                ]}
+                note="A meta tag, comment or hidden element all work — visible placement is not required."
               />
             </div>
           </motion.section>
@@ -368,7 +385,7 @@ function SelectField({
 }
 
 function VerifCard({
-  selected, onClick, img, alt, title, desc,
+  selected, onClick, img, alt, title, desc, steps, note, badge,
 }: {
   selected: boolean;
   onClick: () => void;
@@ -376,19 +393,22 @@ function VerifCard({
   alt: string;
   title: string;
   desc: string;
+  steps: string[];
+  note: string;
+  badge: string;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      className={`rounded-2xl p-5 text-left transition ${
+      className={`flex h-full flex-col rounded-2xl p-5 text-left transition ${
         selected
           ? "bg-white text-black ring-1 ring-white"
           : "bg-transparent text-white ring-1 ring-white/[0.10] hover:bg-white/[0.03]"
       }`}
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-start gap-4">
         <span
           className={`flex size-16 shrink-0 items-center justify-center rounded-2xl transition ${
             selected ? "bg-white" : "bg-transparent"
@@ -397,16 +417,49 @@ function VerifCard({
           <img src={img} alt={alt} loading="lazy" className="size-10 shrink-0 object-contain" />
         </span>
         <div className="flex-1">
-          <div className={`text-[15px] ${selected ? "text-black" : "text-white"}`}>{title}</div>
-          <p className={`mt-1 text-[12.5px] leading-relaxed ${selected ? "text-black/70" : "text-muted-foreground"}`}>{desc}</p>
+          <div className="flex items-center gap-2">
+            <span className={`text-[15px] ${selected ? "text-black" : "text-white"}`}>{title}</span>
+            <span
+              className={`rounded-full px-2 py-0.5 text-[9px] uppercase tracking-[0.14em] ${
+                selected ? "bg-black/10 text-black/70" : "bg-white/[0.06] text-white/55"
+              }`}
+            >
+              {badge}
+            </span>
+          </div>
+          <p className={`mt-1.5 text-[12.5px] leading-relaxed ${selected ? "text-black/70" : "text-muted-foreground"}`}>{desc}</p>
         </div>
         {selected ? (
-          <span className="grid size-5 shrink-0 place-items-center rounded-full bg-black text-white">
+          <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-black text-white">
             <Check className="size-3" />
           </span>
         ) : (
-          <ChevronRight className="size-5 shrink-0 text-white/45" />
+          <ChevronRight className="mt-0.5 size-5 shrink-0 text-white/45" />
         )}
+      </div>
+
+      <ol className="mt-4 space-y-2">
+        {steps.map((step, i) => (
+          <li key={step} className="flex items-start gap-2.5">
+            <span
+              className={`mt-[1px] grid size-[18px] shrink-0 place-items-center rounded-full text-[10px] font-medium ${
+                selected ? "bg-black/[0.07] text-black/70" : "bg-white/[0.06] text-white/60"
+              }`}
+            >
+              {i + 1}
+            </span>
+            <span className={`text-[12px] leading-snug ${selected ? "text-black/75" : "text-white/70"}`}>{step}</span>
+          </li>
+        ))}
+      </ol>
+
+      <div
+        className={`mt-4 flex items-start gap-2 rounded-xl px-3 py-2.5 text-[11.5px] leading-relaxed ${
+          selected ? "bg-black/[0.05] text-black/70" : "bg-white/[0.035] text-white/55"
+        }`}
+      >
+        <Info className={`mt-[1px] size-3.5 shrink-0 ${selected ? "text-black/50" : "text-white/40"}`} />
+        <span>{note}</span>
       </div>
     </button>
   );

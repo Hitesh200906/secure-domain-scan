@@ -81,6 +81,8 @@ function ProfilePage() {
   const [tab, setTab] = useState<Tab>(initialTab === "api" ? "general" : initialTab);
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [delEmail, setDelEmail] = useState("");
+  const [delPassword, setDelPassword] = useState("");
   const [navOpen, setNavOpen] = useState(false);
 
   const apiKeysNotice = () =>
@@ -141,6 +143,7 @@ function ProfilePage() {
   };
 
   const closeTicket = async (t: Ticket) => {
+    if (t.status === "closed") { toast.message("This ticket is closed and cannot be reopened."); return; }
     try {
       const { ok } = await api.closeTicket(t.id);
       if (!ok) { toast.error("This ticket is already closed"); return; }
@@ -182,8 +185,19 @@ function ProfilePage() {
   const signOut = async () => { await supabase.auth.signOut(); navigate({ to: "/" }); };
 
   const removeAccount = async () => {
+    if (!user?.email) return;
+    if (delEmail.trim().toLowerCase() !== user.email.toLowerCase()) {
+      toast.error("The username (email) does not match this account");
+      return;
+    }
+    if (!delPassword) { toast.error("Enter your password to confirm"); return; }
     setDeleting(true);
     try {
+      const { error: authError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: delPassword,
+      });
+      if (authError) throw new Error("Incorrect password. Account was not deleted.");
       await deleteMyAccount();
       await supabase.auth.signOut();
       toast.success("Your account has been permanently deleted");
@@ -192,7 +206,7 @@ function ProfilePage() {
       toast.error(err instanceof Error ? err.message : "Could not delete account");
     } finally {
       setDeleting(false);
-      setConfirmDelete(false);
+      setDelPassword("");
     }
   };
 
@@ -490,16 +504,29 @@ function ProfilePage() {
                           ))}
                           <div ref={msgEndRef} />
                         </div>
-                        <div className="flex gap-2 pt-3 mt-3 border-t border-white/8">
-                          <textarea value={ticketReply} onChange={(e) => setTicketReply(e.target.value)}
-                            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendTicketReply(); } }}
-                            placeholder="Reply to our team…" rows={2}
-                            className="flex-1 bg-black border border-white/12 rounded-xl px-3 py-2 text-sm resize-none focus:outline-none focus:border-[#2563EB]" />
-                          <button onClick={sendTicketReply} disabled={!ticketReply.trim()}
-                            className="self-end rounded-xl bg-[#2563EB] px-4 py-2 text-sm font-medium text-white inline-flex items-center gap-1.5 transition hover:bg-[#1D4ED8] disabled:opacity-50">
-                            <Send className="size-3.5" /> Send
-                          </button>
-                        </div>
+                        {activeTicket.status === "closed" ? (
+                          <div className="mt-3 flex items-center gap-2.5 rounded-xl border border-white/10 bg-[#07070a] px-4 py-3">
+                            <CheckCircle2 className="size-4 shrink-0 text-emerald-400" />
+                            <div>
+                              <div className="text-[12.5px] text-white">This ticket is closed</div>
+                              <div className="text-[11px] text-[#9CA3AF]">Closed conversations are read-only and cannot be reopened. Open a new ticket from Contact if you need more help.</div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="mt-3 rounded-2xl border border-white/10 bg-[#07070a] p-2.5 transition focus-within:border-white/25">
+                            <textarea value={ticketReply} onChange={(e) => setTicketReply(e.target.value)}
+                              onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendTicketReply(); } }}
+                              placeholder="Write a reply to the Nexefy team…" rows={2}
+                              className="w-full bg-transparent px-2 py-1 text-sm text-white placeholder:text-white/30 resize-none focus:outline-none" />
+                            <div className="mt-1.5 flex items-center justify-between gap-2 px-1">
+                              <span className="text-[10px] text-white/35">Enter to send · Shift + Enter for a new line</span>
+                              <button onClick={sendTicketReply} disabled={!ticketReply.trim()}
+                                className="rounded-full bg-white px-4 py-1.5 text-[12px] font-semibold text-black inline-flex items-center gap-1.5 transition-transform duration-300 hover:scale-[1.04] disabled:opacity-40 disabled:hover:scale-100">
+                                <Send className="size-3.5" /> Send
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -538,7 +565,7 @@ function ProfilePage() {
                     toast.success("Signed out on all devices");
                     navigate({ to: "/" });
                   }}
-                  className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#2563EB] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#1D4ED8]">
+                  className="mt-4 inline-flex items-center gap-2 rounded-xl border border-white/15 bg-black px-5 py-2.5 text-sm font-medium text-white transition hover:border-white/35 hover:bg-[#0a0a0c]">
                   <LogOut className="size-4" /> Sign out of all devices
                 </button>
               </SectionShell>
@@ -549,20 +576,48 @@ function ProfilePage() {
 
       {/* Delete account confirmation */}
       {confirmDelete && (
-        <div className="fixed inset-0 z-[90] grid place-items-center bg-black/80 p-4" onClick={() => setConfirmDelete(false)}>
+        <div className="fixed inset-0 z-[90] grid place-items-center bg-black/85 p-4" onClick={() => setConfirmDelete(false)}>
           <div className="w-full max-w-md rounded-2xl border border-white/10 bg-black p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-3">
-              <span className="size-9 rounded-lg border border-white/10 bg-black grid place-items-center"><AlertTriangle className="size-4 text-red-500" /></span>
-              <div className="text-lg font-semibold text-white">Delete account</div>
+              <span className="size-9 rounded-lg border border-red-500/25 bg-red-500/10 grid place-items-center"><AlertTriangle className="size-4 text-red-500" /></span>
+              <div>
+                <div className="text-lg font-semibold text-white">Confirm account deletion</div>
+                <div className="text-[11px] text-[#9CA3AF]">Verify your identity to continue</div>
+              </div>
             </div>
-            <p className="mt-3 text-sm text-[#9CA3AF]">
+            <p className="mt-4 text-sm text-[#9CA3AF]">
               This permanently removes your profile, credits, scans, reports and support history. This action cannot be undone.
             </p>
-            <div className="mt-5 flex justify-end gap-2">
+
+            <div className="mt-5 space-y-3">
+              <label className="block">
+                <span className="text-[10px] uppercase tracking-[0.18em] text-[#9CA3AF]">Username (email)</span>
+                <input
+                  value={delEmail}
+                  onChange={(e) => setDelEmail(e.target.value)}
+                  autoComplete="username"
+                  placeholder={user?.email ?? "you@company.com"}
+                  className="mt-1.5 w-full rounded-xl border border-white/12 bg-[#07070a] px-3.5 py-2.5 text-sm text-white placeholder:text-white/25 outline-none transition focus:border-white/30"
+                />
+              </label>
+              <label className="block">
+                <span className="text-[10px] uppercase tracking-[0.18em] text-[#9CA3AF]">Password</span>
+                <input
+                  type="password"
+                  value={delPassword}
+                  onChange={(e) => setDelPassword(e.target.value)}
+                  autoComplete="current-password"
+                  placeholder="••••••••"
+                  className="mt-1.5 w-full rounded-xl border border-white/12 bg-[#07070a] px-3.5 py-2.5 text-sm text-white placeholder:text-white/25 outline-none transition focus:border-white/30"
+                />
+              </label>
+            </div>
+
+            <div className="mt-6 flex justify-end gap-2">
               <button onClick={() => setConfirmDelete(false)} className="rounded-xl border border-white/12 px-4 py-2 text-sm text-neutral-200 transition hover:border-white/30">Cancel</button>
-              <button onClick={removeAccount} disabled={deleting}
-                className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-500 disabled:opacity-60">
-                {deleting ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />} Delete permanently
+              <button onClick={removeAccount} disabled={deleting || !delEmail.trim() || !delPassword}
+                className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-500 disabled:opacity-50">
+                {deleting ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />} Confirm delete account
               </button>
             </div>
           </div>
@@ -634,7 +689,7 @@ function TwoFactorBlock() {
           <button onClick={() => disable(active.id)} className="rounded-lg border border-white/12 px-3 py-1.5 text-xs text-neutral-200 transition hover:border-white/30">Disable</button>
         ) : (
           <button onClick={start} disabled={busy}
-            className="rounded-lg bg-[#2563EB] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[#1D4ED8] disabled:opacity-60">
+            className="rounded-lg bg-white px-4 py-1.5 text-xs font-semibold text-black transition hover:bg-white/90 disabled:opacity-60">
             {busy ? "Working…" : "Enable"}
           </button>
         )}
