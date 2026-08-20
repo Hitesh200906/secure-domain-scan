@@ -219,7 +219,7 @@ function CredentialScreen({
 
 function GoogleMark() {
   return (
-    <svg viewBox="0 0 48 48" className="size-4" aria-hidden="true">
+    <svg viewBox="0 0 48 48" className="size-5" aria-hidden="true">
       <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.6 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.3 13.2 17.7 9.5 24 9.5z" />
       <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.9 7.2l7.6 5.9c4.4-4.1 7.1-10.2 7.1-17.6z" />
       <path fill="#FBBC05" d="M10.4 28.7A14.5 14.5 0 019.6 24c0-1.6.3-3.2.8-4.7l-7.8-6.1A24 24 0 000 24c0 3.9.9 7.5 2.6 10.8l7.8-6.1z" />
