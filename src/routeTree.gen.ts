@@ -51,6 +51,7 @@ import { Route as BusinessStoreRouteImport } from './routes/business.store'
 import { Route as BusinessSupportRouteImport } from './routes/business.support'
 import { Route as BusinessTeamRouteImport } from './routes/business.team'
 import { Route as ReportIdRouteImport } from './routes/report.$id'
+import { Route as AuthenticatedScanIndexRouteImport } from './routes/_authenticated.scan.index'
 import { Route as AuthenticatedScanNewRouteImport } from './routes/_authenticated.scan.new'
 import { Route as BusinessStoreEditRouteImport } from './routes/business.store.edit'
 
@@ -263,6 +264,11 @@ const ReportIdRoute = ReportIdRouteImport.update({
   path: '/report/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedScanIndexRoute = AuthenticatedScanIndexRouteImport.update({
+  id: '/scan/',
+  path: '/scan/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedScanNewRoute = AuthenticatedScanNewRouteImport.update({
   id: '/scan/new',
   path: '/scan/new',
@@ -318,6 +324,7 @@ export interface FileRoutesByFullPath {
   '/business/': typeof BusinessIndexRoute
   '/scan/new': typeof AuthenticatedScanNewRoute
   '/business/store/edit': typeof BusinessStoreEditRoute
+  '/scan/': typeof AuthenticatedScanIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -361,6 +368,7 @@ export interface FileRoutesByTo {
   '/business': typeof BusinessIndexRoute
   '/scan/new': typeof AuthenticatedScanNewRoute
   '/business/store/edit': typeof BusinessStoreEditRoute
+  '/scan': typeof AuthenticatedScanIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -408,6 +416,7 @@ export interface FileRoutesById {
   '/business/': typeof BusinessIndexRoute
   '/_authenticated/scan/new': typeof AuthenticatedScanNewRoute
   '/business/store/edit': typeof BusinessStoreEditRoute
+  '/_authenticated/scan/': typeof AuthenticatedScanIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -455,6 +464,7 @@ export interface FileRouteTypes {
     | '/business/'
     | '/scan/new'
     | '/business/store/edit'
+    | '/scan/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -498,6 +508,7 @@ export interface FileRouteTypes {
     | '/business'
     | '/scan/new'
     | '/business/store/edit'
+    | '/scan'
   id:
     | '__root__'
     | '/'
@@ -544,6 +555,7 @@ export interface FileRouteTypes {
     | '/business/'
     | '/_authenticated/scan/new'
     | '/business/store/edit'
+    | '/_authenticated/scan/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -860,6 +872,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReportIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/scan/': {
+      id: '/_authenticated/scan/'
+      path: '/scan'
+      fullPath: '/scan/'
+      preLoaderRoute: typeof AuthenticatedScanIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/scan/new': {
       id: '/_authenticated/scan/new'
       path: '/scan/new'
@@ -879,10 +898,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedScanNewRoute: typeof AuthenticatedScanNewRoute
+  AuthenticatedScanIndexRoute: typeof AuthenticatedScanIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedScanNewRoute: AuthenticatedScanNewRoute,
+  AuthenticatedScanIndexRoute: AuthenticatedScanIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

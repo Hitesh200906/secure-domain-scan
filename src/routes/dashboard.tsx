@@ -38,7 +38,9 @@ export const Route = createFileRoute("/dashboard")({
 
 import {
   type Scan, type ReportModel, ACTIVE_KEY, buildReport, DEMO_REPORT, scoreColor,
+  buildVulnerabilities, severityBreakdown, SEVERITY_COLOR,
 } from "@/lib/report-model";
+
 
 /* ------------------------------ design tokens ----------------------------- */
 const C = {
@@ -110,7 +112,7 @@ function Dashboard() {
       <div className="px-3 py-2 text-[10px] uppercase tracking-[0.2em]" style={{ color: C.muted }}>Workspace</div>
       <SidebarButton icon={LayoutDashboard} label="Overview" active={view === "overview"} onClick={() => { setView("overview"); onNav?.(); }} />
       <SidebarButton icon={FileText} label="Scan Reports" active={view === "reports"} badge={scans.length ? String(scans.length) : undefined} onClick={() => { setView("reports"); onNav?.(); }} />
-      <SidebarLink to="/scan/new" icon={ScanSearch} label="New Scan" onClick={onNav} />
+      <SidebarLink to="/scan" icon={ScanSearch} label="New Scan" onClick={onNav} />
       <div className="px-3 pt-5 pb-2 text-[10px] uppercase tracking-[0.2em]" style={{ color: C.muted }}>Account</div>
       <SidebarLink to="/profile" icon={UserIcon} label="Profile" onClick={onNav} />
       <SidebarLink to="/profile" search={{ tab: "credits" }} icon={CreditCard} label="Billing" onClick={onNav} />
@@ -298,28 +300,7 @@ function CountNumber({ value, className = "", style }: { value: number; classNam
 }
 
 /* -------------------------------- overview -------------------------------- */
-const FLAG: Record<string, string> = {
-  US: "🇺🇸", DE: "🇩🇪", IN: "🇮🇳", SG: "🇸🇬", RU: "🇷🇺", CN: "🇨🇳", BR: "🇧🇷", NL: "🇳🇱",
-};
-const COUNTRY: Record<string, string> = {
-  US: "United States", DE: "Germany", IN: "India", SG: "Singapore",
-  RU: "Russia", CN: "China", BR: "Brazil", NL: "Netherlands",
-};
-const THREAT_KIND: Record<string, string> = {
-  "Brute force": "Authentication",
-  "SQL injection": "Injection",
-  "Port scan": "Reconnaissance",
-  "XSS attempt": "Cross-Site Scripting",
-  "Credential stuffing": "Authentication",
-  "Directory traversal": "Exploitation",
-};
-const SEV_ORDER: { label: keyof typeof SEV; color: string }[] = [
-  { label: "High", color: SEV.High },
-  { label: "High", color: SEV.High },
-  { label: "Medium", color: SEV.Medium },
-  { label: "Medium", color: SEV.Medium },
-  { label: "Low", color: OK },
-];
+
 
 function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
@@ -454,7 +435,10 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
   void profile; void onOpenReports; void role;
   const sc = scoreColor(report.score);
   const strong = report.score >= 70;
-  const threats = report.threats.slice(0, 5);
+  const vulns = useMemo(() => buildVulnerabilities(report), [report]);
+  const breakdown = useMemo(() => severityBreakdown(vulns), [vulns]);
+  const threats = vulns.slice(0, 6);
+
 
   return (
     <div className="px-4 sm:px-6 py-5 sm:py-6 space-y-4 max-w-[1560px]">
@@ -478,11 +462,12 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
               <span className="font-medium" style={{ color: C.blue }}>{name ? name.split(" ")[0] : "there"}</span>
             </h2>
             <p className="mt-2.5 sm:mt-3 text-[12px] sm:text-[13.5px] leading-relaxed max-w-[18rem] sm:max-w-xs drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]" style={{ color: C.sub }}>
-              Scan any domain for threats, vulnerabilities and security risks in seconds.
+              Last assessment of <span className="font-mono text-white/90">{report.target}</span> finished in {report.duration} with {report.findings} findings across {report.endpointsTested} endpoints.
             </p>
-            <Link to="/scan/new" search={{ plan: "professional" as const }} className="group mt-4 sm:mt-5 self-start">
+            <Link to="/scan" className="group mt-4 sm:mt-5 self-start">
               <GhostButton>Start New Scan</GhostButton>
             </Link>
+
           </div>
           <div className="hidden md:block" />
         </div>
@@ -528,12 +513,14 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
                 <h4 className="text-[20px] sm:text-[28px] font-semibold tracking-tight leading-tight">
                   {strong ? "Strong security" : "Attention required"}
                 </h4>
-                <div className="mt-2 text-[13.5px] sm:text-[16px]" style={{ color: C.sub }}>
-                  {strong ? "Your domain is protected and monitored." : "Your domain needs review and remediation."}
+                <div className="mt-2 text-[13.5px] sm:text-[16px] font-mono" style={{ color: C.sub }}>
+                  {report.target}
                 </div>
                 <div className="mt-3.5 sm:mt-4 h-px w-16 mx-auto sm:mx-0" style={{ background: C.blue }} />
                 <p className="mt-3.5 sm:mt-4 text-[13px] sm:text-[15px] leading-relaxed" style={{ color: C.sub }}>
-                  Your security posture is {strong ? "strong" : "below target"}. Keep monitoring to stay ahead of threats.
+                  {breakdown[0].count > 0
+                    ? `${breakdown[0].count} critical and ${breakdown[1].count} high severity issues were confirmed — including ${vulns[0]?.title.toLowerCase()} — and need immediate remediation.`
+                    : `No critical issues were confirmed. Remaining ${report.findings} findings are hardening opportunities.`}
                 </p>
                 <div className="mt-5 sm:mt-6 flex w-full sm:inline-flex items-center gap-3.5 sm:gap-4 rounded-xl px-3.5 sm:px-4 py-3 sm:py-3.5 text-left"
                   style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
@@ -541,13 +528,14 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
                     <img src={icLock} alt="" loading="lazy" width={512} height={512} className="size-full object-cover" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[13.5px] sm:text-[14.5px] font-medium" style={{ color: strong ? OK : SEV.High }}>
-                      {strong ? "Low Risk" : "Elevated Risk"}
+                    <div className="text-[13.5px] sm:text-[14.5px] font-medium" style={{ color: breakdown[0].count ? SEV.Critical : strong ? OK : SEV.High }}>
+                      {breakdown[0].count ? "Critical Risk" : strong ? "Low Risk" : "Elevated Risk"}
                     </div>
                     <div className="text-[12px] sm:text-[13px]" style={{ color: C.sub }}>
-                      {strong ? "No critical threats detected" : "Critical findings require action"}
+                      {breakdown[0].count ? `${breakdown[0].count} exploitable issue(s) confirmed` : "No critical threats detected"}
                     </div>
                   </div>
+
                 </div>
               </div>
             </div>
@@ -557,68 +545,76 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
             <SideStat
               img={icShield}
               title="Vulnerabilities"
-              sub="Medium & low severity"
+              sub={`${breakdown[0].count} critical · ${breakdown[1].count} high · ${breakdown[2].count} medium`}
               right={<span className="text-[20px] sm:text-[24px] font-light">{report.findings}</span>}
             />
             <div className="h-px my-4 sm:my-6" style={{ background: C.border }} />
-            <SideStat img={icScan} title="Scan Frequency" sub={"Every 24 hours\nAutomated schedule"} />
+            <SideStat
+              img={icScan}
+              title="Scan Coverage"
+              sub={`${report.pagesCrawled} pages crawled\n${report.endpointsTested} endpoints tested`}
+              right={<span className="text-[13px] font-mono" style={{ color: C.sub }}>{report.duration}</span>}
+            />
             <div className="h-px my-4 sm:my-6" style={{ background: C.border }} />
             <SideStat
               img={icServer}
-              title="System Status"
-              sub="All systems operational"
+              title="Scan Engine"
+              sub={`${report.scanner}\nStatus: ${report.status}`}
               right={<span className="size-3 shrink-0 rounded-full inline-block" style={{ background: OK, boxShadow: `0 0 12px ${OK}` }} />}
             />
           </div>
+
         </div>
 
       </Card>
 
 
-      {/* LIVE THREAT ACTIVITY */}
+      {/* THREAT ACTIVITY */}
       <Card>
         <div className="p-4 sm:p-8">
           <div className="flex items-center justify-between gap-3">
-            <h3 className="text-[16px] sm:text-[18px] font-medium tracking-tight truncate">Live Threat Activity</h3>
-            <button onClick={onOpenReports} className="group inline-flex shrink-0 items-center gap-2 text-[12px] sm:text-[13px]" style={{ color: C.blue }}>
-              View all <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-            </button>
+            <div className="min-w-0">
+              <h3 className="text-[16px] sm:text-[18px] font-medium tracking-tight truncate">Threat Activity</h3>
+              <div className="text-[11px] sm:text-[12px] truncate" style={{ color: C.muted }}>
+                {report.scanner} · {report.endpointsTested} endpoints tested · {report.pagesCrawled} pages crawled
+              </div>
+            </div>
+            <Link to="/scan" className="group inline-flex shrink-0 items-center gap-2 text-[12px] sm:text-[13px]" style={{ color: C.blue }}>
+              Scan Again <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+            </Link>
           </div>
 
           <div className="mt-4 sm:mt-5">
-            <div className="hidden sm:grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.7fr)_minmax(0,0.8fr)] gap-3 sm:gap-4 text-[12px] pb-3" style={{ color: C.muted }}>
-              <div className="min-w-0">Threat</div>
-              <div className="min-w-0">Location</div>
-              <div className="min-w-0">Type</div>
-              <div className="min-w-0">Security Affected</div>
-              <div className="min-w-0">Time</div>
+            <div className="hidden sm:grid grid-cols-[minmax(0,1.5fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,0.7fr)_minmax(0,0.9fr)] gap-3 sm:gap-4 text-[12px] pb-3" style={{ color: C.muted }}>
+              <div className="min-w-0">Finding</div>
+              <div className="min-w-0">Endpoint</div>
+              <div className="min-w-0">Classification</div>
+              <div className="min-w-0">Severity</div>
+              <div className="min-w-0">Parameter</div>
             </div>
             {threats.map((t, i) => {
-              const sev = SEV_ORDER[i % SEV_ORDER.length];
+              const color = SEVERITY_COLOR[t.severity];
+              let path = t.url;
+              try { path = new URL(t.url).pathname; } catch { /* relative url */ }
               return (
                 <motion.div
-                  key={`${t.ip}-${i}`}
+                  key={t.id}
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, delay: i * 0.05 }}
-                  className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-1 py-3 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.7fr)_minmax(0,0.8fr)] sm:gap-4 sm:items-center sm:py-3.5"
+                  className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-1 py-3 sm:grid-cols-[minmax(0,1.5fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,0.7fr)_minmax(0,0.9fr)] sm:gap-4 sm:items-center sm:py-3.5"
                   style={{ borderTop: `1px solid ${C.border}` }}
                 >
-                  <div className="min-w-0 text-[13px] sm:text-[13.5px] truncate">{t.type}</div>
-                  <div className="min-w-0 text-right sm:text-left text-[12px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>
-                    <span className="mr-1.5">{FLAG[t.country] ?? "🏳️"}</span>
-                    {COUNTRY[t.country] ?? t.country}
-                  </div>
-                  <div className="min-w-0 text-[11.5px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>
-                    {THREAT_KIND[t.type] ?? "Anomaly"}
-                  </div>
+                  <div className="min-w-0 text-[13px] sm:text-[13.5px] truncate">{t.title}</div>
+                  <div className="min-w-0 text-right sm:text-left text-[12px] sm:text-[13px] font-mono truncate" style={{ color: C.sub }}>{path}</div>
+                  <div className="min-w-0 text-[11.5px] sm:text-[13px] truncate" style={{ color: C.sub }}>{t.cwe} · {t.owasp.split(" - ")[1] ?? t.owasp}</div>
                   <div className="min-w-0 order-last sm:order-none text-[11.5px] sm:text-[13.5px] truncate">
-                    <span className="inline-flex items-center gap-2" style={{ color: sev.color }}>
-                      <span className="size-1.5 rounded-full" style={{ background: sev.color }} />
-                      {sev.label}
+                    <span className="inline-flex items-center gap-2" style={{ color }}>
+                      <span className="size-1.5 rounded-full" style={{ background: color }} />
+                      {t.severity}
                     </span>
                   </div>
-                  <div className="min-w-0 order-last sm:order-none text-right sm:text-left text-[11.5px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>{t.ago.replace("m ago", " min ago")}</div>
+                  <div className="min-w-0 order-last sm:order-none text-right sm:text-left text-[11.5px] sm:text-[13px] font-mono truncate" style={{ color: C.sub }}>{t.parameter}</div>
                 </motion.div>
               );
             })}
@@ -626,6 +622,7 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
         </div>
 
       </Card>
+
 
       {/* DETAILED REPORT */}
       <Card className="relative overflow-hidden">
@@ -765,7 +762,7 @@ function ReportsSection({ scans, activeId, onUpload, mounted }: {
             </div>
             <div className="mt-4 text-[13.5px] font-medium">No reports submitted yet</div>
             <p className="mt-1 text-[11.5px]" style={{ color: C.sub }}>Once you submit a scan, its report will appear here.</p>
-            <Link to="/scan/new" search={{ plan: "professional" as const }}
+            <Link to="/scan"
               className="mt-5 inline-flex rounded-lg px-4 py-2 text-xs font-medium text-white transition hover:-translate-y-px"
               style={{ background: C.blue }}>Submit a scan</Link>
           </div>
