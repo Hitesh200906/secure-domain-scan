@@ -69,6 +69,7 @@ function Dashboard() {
   const { role } = useAdmin();
 
   const [scans, setScans] = useState<Scan[]>([]);
+  const [loadingScans, setLoadingScans] = useState(true);
   const [profile, setProfile] = useState<{ plan: string; credits: number; full_name: string | null } | null>(null);
   const [time, setTime] = useState<Date | null>(null);
   const [mobileNav, setMobileNav] = useState(false);
@@ -82,8 +83,12 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    if (!user) return;
-    api.listScans().then(({ scans }) => setScans((scans as Scan[]) ?? [])).catch(() => setScans([]));
+    if (!user) { setLoadingScans(false); return; }
+    setLoadingScans(true);
+    api.listScans()
+      .then(({ scans }) => setScans((scans as Scan[]) ?? []))
+      .catch(() => setScans([]))
+      .finally(() => setLoadingScans(false));
     api.profile().then(({ profile }) => profile && setProfile(profile)).catch(() => undefined);
   }, [user]);
 
@@ -93,6 +98,8 @@ function Dashboard() {
     return () => clearInterval(i);
   }, []);
 
+  // Real report when the user has scans (the uploaded one, else the most recent).
+  // Falls back to the demo report, clearly labelled, when there is nothing yet.
   const report = useMemo<ReportModel>(() => {
     if (!scans.length) return DEMO_REPORT;
     const picked = (activeId && scans.find((s) => s.id === activeId)) || scans[0];
@@ -104,6 +111,7 @@ function Dashboard() {
     localStorage.setItem(ACTIVE_KEY, id);
     setView("overview");
   };
+
 
   const signOut = async () => { await supabase.auth.signOut(); window.location.href = "/"; };
 
