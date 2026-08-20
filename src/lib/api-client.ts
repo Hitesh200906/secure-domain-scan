@@ -410,7 +410,7 @@ export const api = {
     /** Validates an admin API key against the signed-in account (security definer). */
     verifyAdminApiKey: async (key: string) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data, error } = await (supabase as any).rpc("verify_admin_api_key", { _api_key: key });
+      const { data, error } = await (supabase as any).rpc("verify_admin_api_key", { _key: key });
       if (error) throw new Error(error.message);
       return Boolean(data);
     },
