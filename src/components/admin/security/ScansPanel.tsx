@@ -3,6 +3,7 @@ import { AdminShell, Section, Badge } from "@/components/admin/AdminShell";
 import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 import { logAudit } from "@/lib/audit";
+import { TECH_LABELS } from "@/lib/scan-config.schemas";
 import { ArrowLeft, CheckCircle2, Loader2, Search, Trash2, XCircle } from "lucide-react";
 
 type Scan = {
@@ -22,6 +23,7 @@ type Scan = {
   verification_status?: string | null;
   verification_notes?: string | null;
   verified_at?: string | null;
+  scan_config?: Record<string, unknown> | null;
   created_at: string;
 };
 
@@ -258,4 +260,23 @@ function Detail({ label, value, mono }: { label: string; value: string; mono?: b
       <div className={`mt-1 break-words text-sm text-white ${mono ? "font-mono text-[12px]" : ""}`}>{value}</div>
     </div>
   );
+}
+
+function configEntries(cfg: Record<string, unknown>): [string, string][] {
+  const adv = (cfg.advanced ?? {}) as Record<string, unknown>;
+  return [
+    ["Authentication", cfg.authentication === "login_required" ? "Login Required" : "Public"],
+    ["Secure test session", cfg.secure_session_requested ? "Requested" : "Not requested"],
+    ["WAF", cfg.waf === "waf" ? "Cloudflare / Other WAF" : "None"],
+    ["Technology", TECH_LABELS[(cfg.technology as keyof typeof TECH_LABELS) ?? "not_sure"] ?? "Not Sure"],
+    ["Scan rate", String(cfg.scan_rate ?? "—")],
+    ["Scan depth", String(cfg.scan_depth ?? "—")],
+    ["AI validation", cfg.ai_validation ? "Enabled" : "Disabled"],
+    ["Respect robots.txt", adv.respect_robots ? "Yes" : "No"],
+    ["Include subdomains", adv.include_subdomains ? "Yes" : "No"],
+    ["Include API endpoints", adv.include_api_endpoints ? "Yes" : "No"],
+    ["Max crawl depth", String(adv.max_crawl_depth ?? "—")],
+    ["Request timeout", `${adv.request_timeout ?? "—"}s`],
+    ["Custom URL exclusions", String(adv.excluded_urls || "—")],
+  ];
 }
