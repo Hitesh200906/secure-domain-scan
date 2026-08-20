@@ -76,13 +76,12 @@ function Shell({ children }: { children: React.ReactNode }) {
   );
 }
 
-function IdentityScreen({ email, onContinue }: { email: string | null; onContinue: () => void }) {
+function IdentityScreen() {
   const [busy, setBusy] = useState(false);
 
   const google = async () => {
-    if (email) return onContinue();
     setBusy(true);
-    const { error } = await signInWithGoogle("/admin");
+    const { error } = await signInWithGoogle("/admin", { forceAccountChooser: true });
     if (error) {
       toast.error(error.message);
       setBusy(false);
@@ -109,22 +108,61 @@ function IdentityScreen({ email, onContinue }: { email: string | null; onContinu
           {busy ? <Loader2 className="size-5 animate-spin" /> : <GoogleMark />}
           Continue with Google
         </button>
-
-        {email && <p className="mt-4 truncate text-xs text-white/40">{email}</p>}
       </div>
     </div>
   );
 }
 
+function UnauthorizedScreen({ email }: { email: string }) {
+  const [busy, setBusy] = useState(false);
+
+  const switchAccount = async () => {
+    setBusy(true);
+    await supabase.auth.signOut();
+    const { error } = await signInWithGoogle("/admin", { forceAccountChooser: true });
+    if (error) {
+      toast.error(error.message);
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-black flex items-center justify-center px-4">
+      <div className="w-full max-w-md rounded-[28px] border border-white/10 bg-[#0a0a0a] px-8 py-12 text-center">
+        <div className="mx-auto grid size-12 place-items-center rounded-2xl border border-rose-500/25 bg-rose-500/10">
+          <ShieldAlert className="size-6 text-rose-400" />
+        </div>
+        <h1 className="mt-5 text-xl font-semibold tracking-tight text-white">Access denied</h1>
+        <p className="mt-2 text-sm text-white/50">
+          You do not have authorized access to the Admin Console.
+        </p>
+        <div className="mt-4 truncate rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] text-white/60">
+          {email}
+        </div>
+        <button
+          onClick={switchAccount}
+          disabled={busy}
+          className="mt-7 inline-flex w-full items-center justify-center gap-3 rounded-full border border-white/12 bg-[#141414] py-3.5 text-sm font-medium text-white transition-colors duration-300 hover:bg-[#1c1c1c] disabled:opacity-60"
+        >
+          {busy ? <Loader2 className="size-4 animate-spin" /> : <GoogleMark />}
+          Use a different Google account
+        </button>
+        <a href="/" className="mt-3 inline-block text-[12px] text-white/45 transition hover:text-white">
+          Back to Nexefy
+        </a>
+      </div>
+    </div>
+  );
+}
 
 function CredentialScreen({
-  isOwner, email, onBack, onUnlock,
+  isOwner, email, onUnlock,
 }: {
   isOwner: boolean;
   email: string;
-  onBack: () => void;
   onUnlock: () => void;
 }) {
+
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
