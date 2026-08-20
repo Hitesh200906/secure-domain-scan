@@ -28,10 +28,11 @@ type Flow =
 type Plan = "starter" | "professional" | "enterprise";
 
 const PLAN_INFO: Record<Plan, { name: string; credits: number }> = {
-  starter: { name: "Starter", credits: 1 },
-  professional: { name: "Professional", credits: 15 },
-  enterprise: { name: "Enterprise", credits: 999 },
+  starter: { name: "Starter", credits: 49 },
+  professional: { name: "Professional", credits: 199 },
+  enterprise: { name: "Enterprise", credits: 899 },
 };
+
 
 const ROLES = [
   "Security Engineer",
