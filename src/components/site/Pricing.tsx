@@ -61,12 +61,13 @@ export function Pricing({ compact = false }: { compact?: boolean }) {
                 )}
                 <div>
                   <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{t.name}</div>
-                  <div className="mt-4 sm:mt-5 flex items-baseline gap-1">
+                  <div className="mt-4 sm:mt-5 flex items-baseline gap-2">
                     <span className="text-4xl sm:text-5xl font-semibold tracking-tight">
-                      {t.price_monthly > 0 ? `$${t.price_monthly}` : (t.price_label || "Custom")}
+                      {t.price_monthly > 0 ? t.price_monthly.toLocaleString() : (t.price_label || "Custom")}
                     </span>
-                    {t.price_monthly > 0 && <span className="text-sm text-muted-foreground">{t.price_label || "/month"}</span>}
+                    {t.price_monthly > 0 && <span className="text-sm text-muted-foreground">credits</span>}
                   </div>
+
                   <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{t.description || t.headline}</p>
                 </div>
 
