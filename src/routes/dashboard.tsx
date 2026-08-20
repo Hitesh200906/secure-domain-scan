@@ -112,7 +112,7 @@ function Dashboard() {
       <div className="px-3 py-2 text-[10px] uppercase tracking-[0.2em]" style={{ color: C.muted }}>Workspace</div>
       <SidebarButton icon={LayoutDashboard} label="Overview" active={view === "overview"} onClick={() => { setView("overview"); onNav?.(); }} />
       <SidebarButton icon={FileText} label="Scan Reports" active={view === "reports"} badge={scans.length ? String(scans.length) : undefined} onClick={() => { setView("reports"); onNav?.(); }} />
-      <SidebarLink to="/scan/new" icon={ScanSearch} label="New Scan" onClick={onNav} />
+      <SidebarLink to="/scan" icon={ScanSearch} label="New Scan" onClick={onNav} />
       <div className="px-3 pt-5 pb-2 text-[10px] uppercase tracking-[0.2em]" style={{ color: C.muted }}>Account</div>
       <SidebarLink to="/profile" icon={UserIcon} label="Profile" onClick={onNav} />
       <SidebarLink to="/profile" search={{ tab: "credits" }} icon={CreditCard} label="Billing" onClick={onNav} />
@@ -762,7 +762,7 @@ function ReportsSection({ scans, activeId, onUpload, mounted }: {
             </div>
             <div className="mt-4 text-[13.5px] font-medium">No reports submitted yet</div>
             <p className="mt-1 text-[11.5px]" style={{ color: C.sub }}>Once you submit a scan, its report will appear here.</p>
-            <Link to="/scan/new" search={{ plan: "professional" as const }}
+            <Link to="/scan"
               className="mt-5 inline-flex rounded-lg px-4 py-2 text-xs font-medium text-white transition hover:-translate-y-px"
               style={{ background: C.blue }}>Submit a scan</Link>
           </div>
