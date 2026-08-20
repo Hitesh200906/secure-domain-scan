@@ -300,28 +300,7 @@ function CountNumber({ value, className = "", style }: { value: number; classNam
 }
 
 /* -------------------------------- overview -------------------------------- */
-const FLAG: Record<string, string> = {
-  US: "🇺🇸", DE: "🇩🇪", IN: "🇮🇳", SG: "🇸🇬", RU: "🇷🇺", CN: "🇨🇳", BR: "🇧🇷", NL: "🇳🇱",
-};
-const COUNTRY: Record<string, string> = {
-  US: "United States", DE: "Germany", IN: "India", SG: "Singapore",
-  RU: "Russia", CN: "China", BR: "Brazil", NL: "Netherlands",
-};
-const THREAT_KIND: Record<string, string> = {
-  "Brute force": "Authentication",
-  "SQL injection": "Injection",
-  "Port scan": "Reconnaissance",
-  "XSS attempt": "Cross-Site Scripting",
-  "Credential stuffing": "Authentication",
-  "Directory traversal": "Exploitation",
-};
-const SEV_ORDER: { label: keyof typeof SEV; color: string }[] = [
-  { label: "High", color: SEV.High },
-  { label: "High", color: SEV.High },
-  { label: "Medium", color: SEV.Medium },
-  { label: "Medium", color: SEV.Medium },
-  { label: "Low", color: OK },
-];
+
 
 function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
