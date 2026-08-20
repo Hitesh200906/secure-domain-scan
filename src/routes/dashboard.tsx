@@ -38,7 +38,9 @@ export const Route = createFileRoute("/dashboard")({
 
 import {
   type Scan, type ReportModel, ACTIVE_KEY, buildReport, DEMO_REPORT, scoreColor,
+  buildVulnerabilities, severityBreakdown, SEVERITY_COLOR,
 } from "@/lib/report-model";
+
 
 /* ------------------------------ design tokens ----------------------------- */
 const C = {
