@@ -523,6 +523,7 @@ export type Database = {
         Row: {
           business_email: string | null
           company: string | null
+          config_submitted_at: string | null
           created_at: string
           email: string
           findings_count: number | null
@@ -533,6 +534,7 @@ export type Database = {
           otp_code: string | null
           plan: string
           role_title: string | null
+          scan_config: Json | null
           score: number | null
           status: string
           target_url: string
@@ -546,6 +548,7 @@ export type Database = {
         Insert: {
           business_email?: string | null
           company?: string | null
+          config_submitted_at?: string | null
           created_at?: string
           email: string
           findings_count?: number | null
@@ -556,6 +559,7 @@ export type Database = {
           otp_code?: string | null
           plan?: string
           role_title?: string | null
+          scan_config?: Json | null
           score?: number | null
           status?: string
           target_url: string
@@ -569,6 +573,7 @@ export type Database = {
         Update: {
           business_email?: string | null
           company?: string | null
+          config_submitted_at?: string | null
           created_at?: string
           email?: string
           findings_count?: number | null
@@ -579,6 +584,7 @@ export type Database = {
           otp_code?: string | null
           plan?: string
           role_title?: string | null
+          scan_config?: Json | null
           score?: number | null
           status?: string
           target_url?: string
