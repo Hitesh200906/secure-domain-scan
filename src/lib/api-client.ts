@@ -202,15 +202,20 @@ export const api = {
   },
   sendTicketMessage: async (ticketId: Id, body: string, author_name?: string) => {
     const user = await currentUser();
-    const { error } = await supabase.from("ticket_messages").insert({
-      ticket_id: ticketId,
-      body,
-      author_name: author_name ?? user?.email ?? null,
-      author_type: "user",
-    });
+    const { data, error } = await supabase
+      .from("ticket_messages")
+      .insert({
+        ticket_id: ticketId,
+        body,
+        author_name: author_name ?? user?.email ?? null,
+        author_type: "user",
+      })
+      .select()
+      .single();
     if (error) throw new Error(error.message);
-    return { ok: true as const };
+    return { ok: true as const, message: data };
   },
+
   closeTicket: async (ticketId: Id) => {
     const { data, error } = await supabase.rpc("close_my_ticket", { _ticket_id: ticketId });
     if (error) throw new Error(error.message);
@@ -335,17 +340,34 @@ export const api = {
       if (error) throw new Error(error.message);
       return { messages: data ?? [] };
     },
+    /** Staff replies are always published under the verified "Nexefy Team" identity. */
     replyTicket: async (id: Id, body: string) => {
-      const user = await currentUser();
-      const { error } = await supabase.from("ticket_messages").insert({
-        ticket_id: id,
-        body,
-        author_name: user?.email ?? "Admin",
-        author_type: "admin",
+      await currentUser();
+      const { data, error } = await supabase
+        .from("ticket_messages")
+        .insert({
+          ticket_id: id,
+          body,
+          author_name: "Nexefy Team",
+          author_type: "admin",
+        })
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      return { ok: true as const, message: data };
+    },
+    /** Notify a customer in-app (used for scan status changes). */
+    notifyUser: async (user_id: Id, title: string, body?: string, link?: string) => {
+      const { error } = await supabase.from("notifications").insert({
+        user_id,
+        title,
+        body: body ?? null,
+        link: link ?? null,
       });
       if (error) throw new Error(error.message);
       return { ok: true as const };
     },
+
 
     listPricing: async () => {
       const { data, error } = await supabase

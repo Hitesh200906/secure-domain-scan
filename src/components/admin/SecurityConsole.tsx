@@ -1,13 +1,11 @@
-import { ArrowLeft, FileText, ScanLine, Tags, X } from "lucide-react";
+import { ArrowLeft, ScanLine, Tags, X } from "lucide-react";
 import { InSecurityConsole, useSecurityConsole, type SecuritySection } from "@/lib/security-console";
 import { useAdmin } from "@/hooks/use-admin";
 import { ScansPanel } from "@/components/admin/security/ScansPanel";
-import { ReportsPanel } from "@/components/admin/security/ReportsPanel";
 import { PricingPanel } from "@/components/admin/security/PricingPanel";
 
 const items: { id: SecuritySection; label: string; icon: typeof ScanLine; superOnly?: boolean }[] = [
   { id: "scan", label: "Scan", icon: ScanLine },
-  { id: "report", label: "Report", icon: FileText },
   { id: "pricing", label: "Pricing", icon: Tags, superOnly: true },
 ];
 
@@ -80,7 +78,6 @@ export function SecurityConsoleOverlay() {
 
           <InSecurityConsole>
             {active === "scan" && <ScansPanel />}
-            {active === "report" && <ReportsPanel />}
             {active === "pricing" && <PricingPanel />}
           </InSecurityConsole>
         </main>

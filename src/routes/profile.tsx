@@ -100,6 +100,7 @@ function ProfilePage() {
   const [ticketMsgs, setTicketMsgs] = useState<TMsg[]>([]);
   const [ticketReply, setTicketReply] = useState("");
   const msgEndRef = useRef<HTMLDivElement>(null);
+  const [needsPassword, setNeedsPassword] = useState(false);
 
   useEffect(() => {
     if (!user) { setLoading(false); return; }
@@ -112,10 +113,16 @@ function ProfilePage() {
         credits: data.credits ?? 0,
         avatar_url: data.avatar_url ?? "",
       });
+      const pwSet = (data as { password_set?: boolean } | null)?.password_set;
+      if (data && pwSet === false) {
+        setNeedsPassword(true);
+        setTab("security");
+      }
       setLoading(false);
     }).catch(() => setLoading(false));
     api.listTickets().then(({ tickets }) => setTickets((tickets ?? []) as Ticket[])).catch(() => setTickets([]));
   }, [user]);
+
 
   useEffect(() => {
     if (!activeTicket) return;
@@ -133,14 +140,27 @@ function ProfilePage() {
 
   const sendTicketReply = async () => {
     if (!activeTicket || !ticketReply.trim()) return;
+    if (activeTicket.status === "closed") { toast.message("This ticket is closed and cannot be reopened."); return; }
     const body = ticketReply.trim();
     setTicketReply("");
+    const tempId = `temp-${Date.now()}`;
+    const who = profile.full_name || user?.email || activeTicket.name;
+    // Optimistic: the message shows instantly, no refresh needed.
+    setTicketMsgs((list) => [
+      ...list,
+      { id: tempId, author_type: "user", author_name: who, body, created_at: new Date().toISOString() } as TMsg,
+    ]);
+    setTimeout(() => msgEndRef.current?.scrollIntoView({ behavior: "smooth" }), 30);
     try {
-      await api.sendTicketMessage(activeTicket.id, body, profile.full_name || user?.email || activeTicket.name);
+      const { message } = await api.sendTicketMessage(activeTicket.id, body, who);
+      if (message) setTicketMsgs((list) => list.map((m) => (m.id === tempId ? (message as TMsg) : m)));
     } catch (err) {
+      setTicketMsgs((list) => list.filter((m) => m.id !== tempId));
+      setTicketReply(body);
       toast.error(err instanceof Error ? err.message : "Failed to send reply");
     }
   };
+
 
   const closeTicket = async (t: Ticket) => {
     if (t.status === "closed") { toast.message("This ticket is closed and cannot be reopened."); return; }
@@ -536,7 +556,7 @@ function ProfilePage() {
 
             {tab === "security" && (
               <SectionShell title="Security" desc="Credentials, two-factor and active sessions for this account.">
-                <PasswordBlock />
+                <PasswordBlock mustSetup={needsPassword} onDone={() => setNeedsPassword(false)} />
 
                 <div className="my-5 h-px bg-white/10" />
 
@@ -759,7 +779,7 @@ function SectionShell({ title, desc, children }: { title: string; desc: string; 
   );
 }
 
-function PasswordBlock() {
+function PasswordBlock({ mustSetup, onDone }: { mustSetup?: boolean; onDone?: () => void }) {
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [busy, setBusy] = useState(false);
@@ -768,29 +788,48 @@ function PasswordBlock() {
     if (next.length < 8) { toast.error("New password must be at least 8 characters"); return; }
     setBusy(true);
     const { error } = await supabase.auth.updateUser({ password: next });
+    if (!error) {
+      const { data } = await supabase.auth.getUser();
+      if (data.user) await supabase.from("profiles").update({ password_set: true }).eq("id", data.user.id);
+    }
     setBusy(false);
     if (error) { toast.error(error.message); return; }
     setCurrent(""); setNext("");
-    toast.success("Password updated");
+    toast.success(mustSetup ? "Password set — your account is ready" : "Password updated");
+    onDone?.();
   };
 
   return (
     <>
-      <div className="text-base font-semibold text-white">Password</div>
+      {mustSetup && (
+        <div className="mb-4 flex items-start gap-3 rounded-xl border border-[#2563EB]/40 bg-[#2563EB]/10 px-4 py-3">
+          <ShieldHalf className="mt-0.5 size-4 shrink-0 text-[#60A5FA]" />
+          <div>
+            <div className="text-[13px] font-medium text-white">Finish setting up your account</div>
+            <div className="text-[11.5px] text-[#9CA3AF]">
+              You signed up with Google. Create an account password to secure your profile before you continue.
+            </div>
+          </div>
+        </div>
+      )}
+      <div className="text-base font-semibold text-white">{mustSetup ? "Set your password" : "Password"}</div>
       <p className="mt-1 text-xs text-[#9CA3AF]">Change your password regularly to keep your account secure.</p>
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
-        <IconField label="Current password" icon={<KeyRound className="size-4 text-[#9CA3AF]" />} type="password"
-          placeholder="••••••••" value={current} onChange={setCurrent} />
+        {!mustSetup && (
+          <IconField label="Current password" icon={<KeyRound className="size-4 text-[#9CA3AF]" />} type="password"
+            placeholder="••••••••" value={current} onChange={setCurrent} />
+        )}
         <IconField label="New password" icon={<KeyRound className="size-4 text-[#9CA3AF]" />} type="password"
           placeholder="At least 8 characters" value={next} onChange={setNext} />
       </div>
       <button onClick={update} disabled={busy || !next}
         className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#2563EB] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#1D4ED8] disabled:opacity-60">
-        {busy ? <Loader2 className="size-4 animate-spin" /> : <ShieldHalf className="size-4" />} Update password
+        {busy ? <Loader2 className="size-4 animate-spin" /> : <ShieldHalf className="size-4" />} {mustSetup ? "Set password" : "Update password"}
       </button>
     </>
   );
 }
+
 
 function IconField({ label, icon, value, onChange, readOnly, placeholder, type }: {
   label: string; icon: React.ReactNode; value: string;
@@ -892,11 +931,22 @@ function ChatBubble({ side, who, when, body }: { side: "user" | "admin"; who: st
   return (
     <div className={`flex ${isAdmin ? "justify-start" : "justify-end"}`}>
       <div className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm border ${isAdmin ? "border-white/15 bg-white/[0.08]" : "border-white/10 bg-white/[0.04]"}`}>
-        <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">{who} · {new Date(when).toLocaleString()}</div>
-        <div className="whitespace-pre-wrap">{body}</div>
+        <div className="mb-1 flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">
+          {isAdmin ? (
+            <>
+              <span className="text-white/85 normal-case tracking-normal text-[11px] font-medium">Nexefy Team</span>
+              <BadgeCheck className="size-3.5 text-[#2563EB]" aria-label="Verified" />
+              <span>· {new Date(when).toLocaleString()}</span>
+            </>
+          ) : (
+            <span>{who} · {new Date(when).toLocaleString()}</span>
+          )}
+        </div>
+        <div className="whitespace-pre-wrap normal-case">{body}</div>
       </div>
     </div>
   );
+
 }
 
 /* ---------------- Credits ---------------- */
@@ -922,7 +972,7 @@ const PRESETS = [500, 1000, 2000, 5000] as const;
 function CreditsSection({ balance }: { balance: number }) {
   const [bal, setBal] = useState(balance);
   const [txs, setTxs] = useState<CreditTx[]>([]);
-  const [showAll, setShowAll] = useState(false);
+  const [page, setPage] = useState(0);
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
   const [currency, setCurrency] = useState("USD");
@@ -1025,7 +1075,10 @@ function CreditsSection({ balance }: { balance: number }) {
   const buy = () => void pay(amount);
 
 
-  const visible = showAll ? txs : txs.slice(0, 5);
+  const PER_PAGE = 5;
+  const maxPage = Math.max(0, Math.ceil(txs.length / PER_PAGE) - 1);
+  const visible = txs.slice(page * PER_PAGE, page * PER_PAGE + PER_PAGE);
+
 
   return (
     <div className="w-full min-w-0 space-y-3 sm:space-y-4">
@@ -1087,14 +1140,26 @@ function CreditsSection({ balance }: { balance: number }) {
       <div className="min-w-0 rounded-2xl border border-white/10 bg-black p-3.5 sm:p-5">
         <div className="flex items-center justify-between gap-2">
           <h3 className="text-[15px] font-semibold text-white sm:text-lg">Recent Transactions</h3>
-          {txs.length > 5 && (
-            <button
-              onClick={() => setShowAll((v) => !v)}
-              className="inline-flex shrink-0 items-center gap-1.5 text-xs text-[#3B82F6] hover:text-[#60A5FA] sm:gap-2 sm:text-sm"
-            >
-              {showAll ? "Show less" : "View All"} <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-            </button>
+          {txs.length > PER_PAGE && (
+            <div className="flex shrink-0 items-center gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                disabled={page === 0}
+                className="rounded-full border border-white/10 px-3 py-1 text-xs text-[#D1D5DB] transition hover:border-white/25 disabled:opacity-30"
+              >
+                Previous
+              </button>
+              <span className="text-[11px] text-[#6B7280]">{page + 1}/{maxPage + 1}</span>
+              <button
+                onClick={() => setPage((p) => Math.min(maxPage, p + 1))}
+                disabled={page >= maxPage}
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1 text-xs text-[#3B82F6] transition hover:border-white/25 disabled:opacity-30"
+              >
+                Next page <ArrowRight className="h-3.5 w-3.5" />
+              </button>
+            </div>
           )}
+
         </div>
 
         <div className="mt-3 min-w-0 sm:mt-4">

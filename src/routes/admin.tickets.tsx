@@ -2,9 +2,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AdminShell, Section, Badge } from "@/components/admin/AdminShell";
 import { api } from "@/lib/api-client";
+import { supabase } from "@/integrations/supabase/client";
+
 import { toast } from "sonner";
 import { logAudit } from "@/lib/audit";
-import { Send } from "lucide-react";
+import { Send, CheckCircle2, BadgeCheck } from "lucide-react";
 
 export const Route = createFileRoute("/admin/tickets")({ component: TicketsPage });
 
@@ -31,33 +33,55 @@ function TicketsPage() {
   };
   useEffect(() => { load(); }, []);
 
+  const activeId = active?.id;
   useEffect(() => {
-    if (!active) return;
-    api.admin.ticketMessages(active.id)
-      .then(({ messages }) => setMsgs((messages ?? []) as Msg[]))
-      .catch(() => setMsgs([]));
-  }, [active]);
+    if (!activeId) return;
+    const fetchMsgs = () =>
+      api.admin.ticketMessages(activeId)
+        .then(({ messages }) => setMsgs((messages ?? []) as Msg[]))
+        .catch(() => setMsgs([]));
+    void fetchMsgs();
+    const ch = supabase
+      .channel(`admin-tk-${activeId}`)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "ticket_messages", filter: `ticket_id=eq.${activeId}` }, () => { void fetchMsgs(); })
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [activeId]);
+
 
   const send = async () => {
     if (!active || !reply.trim()) return;
     const body = reply.trim();
     setReply("");
+    const tempId = `temp-${Date.now()}`;
+    setMsgs((list) => [
+      ...list,
+      { id: tempId, author_type: "admin", author_name: "Nexefy Team", body, created_at: new Date().toISOString() },
+    ]);
     try {
-      await api.admin.replyTicket(active.id, body);
+      const { message } = await api.admin.replyTicket(active.id, body);
+      if (message) setMsgs((list) => list.map((m) => (m.id === tempId ? (message as Msg) : m)));
       await logAudit("ticket.reply", { type: "ticket", id: active.id });
-      const { messages } = await api.admin.ticketMessages(active.id);
-      setMsgs((messages ?? []) as Msg[]);
-      load();
     } catch (e) {
+      setMsgs((list) => list.filter((m) => m.id !== tempId));
+      setReply(body);
       toast.error(e instanceof Error ? e.message : "Failed");
     }
   };
 
-  const updateTicket = async (_patch: Partial<Ticket>, _action: string) => {
-    // Note: ticket status/priority updates would go through a PATCH /api/admin/tickets/:id
-    // endpoint. The backend doesn't expose that yet — flag in migration report.
-    toast.info("Ticket status/priority editing requires PATCH /api/admin/tickets/:id");
+  const updateTicket = async (patch: { status?: string; priority?: string }, action: string) => {
+    if (!active) return;
+    try {
+      await api.admin.updateTicket(active.id, patch);
+      await logAudit(action, { type: "ticket", id: active.id }, patch);
+      setActive((cur) => (cur ? { ...cur, ...patch } as Ticket : cur));
+      setTickets((list) => list.map((t) => (t.id === active.id ? { ...t, ...patch } as Ticket : t)));
+      toast.success(patch.status === "closed" ? "Ticket closed" : "Ticket updated");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to update ticket");
+    }
   };
+
 
   const filtered = tickets.filter((t) => filter === "all" || t.status === filter);
 
@@ -106,6 +130,14 @@ function TicketsPage() {
                 <select value={active.priority} onChange={(e) => updateTicket({ priority: e.target.value }, "ticket.priority")} className="text-xs glass rounded-lg px-2 py-1.5">
                   {PRIORITIES.map((p) => <option key={p} value={p}>Priority: {p}</option>)}
                 </select>
+                {active.status !== "closed" && (
+                  <button
+                    onClick={() => updateTicket({ status: "closed" }, "ticket.close")}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-white/12 px-3 py-1.5 text-[11px] text-neutral-200 transition hover:border-white/30 hover:text-white"
+                  >
+                    <CheckCircle2 className="size-3.5 text-[#2563EB]" /> Close ticket
+                  </button>
+                )}
                 <span className="text-[11px] text-muted-foreground ml-auto">{active.name} · {active.email}</span>
               </div>
 
@@ -117,7 +149,7 @@ function TicketsPage() {
               </div>
 
               <div className="flex gap-2 pt-3 border-t border-white/5">
-                <textarea value={reply} onChange={(e) => setReply(e.target.value)} placeholder="Type a reply…" rows={2}
+                <textarea value={reply} onChange={(e) => setReply(e.target.value)} placeholder="Reply as Nexefy Team…" rows={2}
                   className="flex-1 bg-white/[0.04] border border-white/10 rounded-xl px-3 py-2 text-sm resize-none" />
                 <button onClick={send} className="self-end bg-primary text-primary-foreground rounded-xl px-4 py-2 text-sm font-medium inline-flex items-center gap-1.5">
                   <Send className="size-3.5" /> Send
@@ -132,12 +164,24 @@ function TicketsPage() {
 }
 
 function Message({ who, side, body, when }: { who: string; side: "user" | "admin"; body: string; when: string }) {
+  const isAdmin = side === "admin";
   return (
-    <div className={`flex ${side === "admin" ? "justify-end" : ""}`}>
-      <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${side === "admin" ? "bg-primary/10 border border-primary/20" : "glass"}`}>
-        <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-1">{who} · {new Date(when).toLocaleString()}</div>
+    <div className={`flex ${isAdmin ? "justify-end" : ""}`}>
+      <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${isAdmin ? "bg-primary/10 border border-primary/20" : "glass"}`}>
+        <div className="mb-1 flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+          {isAdmin ? (
+            <>
+              <span className="text-[11px] font-medium normal-case tracking-normal text-white/85">Nexefy Team</span>
+              <BadgeCheck className="size-3.5 text-[#2563EB]" aria-label="Verified" />
+              <span>· {new Date(when).toLocaleString()}</span>
+            </>
+          ) : (
+            <span>{who} · {new Date(when).toLocaleString()}</span>
+          )}
+        </div>
         <div className="text-sm whitespace-pre-wrap">{body}</div>
       </div>
     </div>
   );
+
 }

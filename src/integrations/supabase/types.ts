@@ -435,6 +435,7 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          password_set: boolean
           plan: string
           role_title: string | null
           status: string
@@ -450,6 +451,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          password_set?: boolean
           plan?: string
           role_title?: string | null
           status?: string
@@ -465,6 +467,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          password_set?: boolean
           plan?: string
           role_title?: string | null
           status?: string

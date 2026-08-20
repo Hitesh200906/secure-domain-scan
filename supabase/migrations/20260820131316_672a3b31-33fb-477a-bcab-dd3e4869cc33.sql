@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.block_user_msg_on_closed_ticket() FROM PUBLIC, anon, authenticated;
