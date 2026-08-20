@@ -534,12 +534,14 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
                 <h4 className="text-[20px] sm:text-[28px] font-semibold tracking-tight leading-tight">
                   {strong ? "Strong security" : "Attention required"}
                 </h4>
-                <div className="mt-2 text-[13.5px] sm:text-[16px]" style={{ color: C.sub }}>
-                  {strong ? "Your domain is protected and monitored." : "Your domain needs review and remediation."}
+                <div className="mt-2 text-[13.5px] sm:text-[16px] font-mono" style={{ color: C.sub }}>
+                  {report.target}
                 </div>
                 <div className="mt-3.5 sm:mt-4 h-px w-16 mx-auto sm:mx-0" style={{ background: C.blue }} />
                 <p className="mt-3.5 sm:mt-4 text-[13px] sm:text-[15px] leading-relaxed" style={{ color: C.sub }}>
-                  Your security posture is {strong ? "strong" : "below target"}. Keep monitoring to stay ahead of threats.
+                  {breakdown[0].count > 0
+                    ? `${breakdown[0].count} critical and ${breakdown[1].count} high severity issues were confirmed — including ${vulns[0]?.title.toLowerCase()} — and need immediate remediation.`
+                    : `No critical issues were confirmed. Remaining ${report.findings} findings are hardening opportunities.`}
                 </p>
                 <div className="mt-5 sm:mt-6 flex w-full sm:inline-flex items-center gap-3.5 sm:gap-4 rounded-xl px-3.5 sm:px-4 py-3 sm:py-3.5 text-left"
                   style={{ border: `1px solid ${C.border}`, background: "#000000" }}>
@@ -547,13 +549,14 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
                     <img src={icLock} alt="" loading="lazy" width={512} height={512} className="size-full object-cover" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[13.5px] sm:text-[14.5px] font-medium" style={{ color: strong ? OK : SEV.High }}>
-                      {strong ? "Low Risk" : "Elevated Risk"}
+                    <div className="text-[13.5px] sm:text-[14.5px] font-medium" style={{ color: breakdown[0].count ? SEV.Critical : strong ? OK : SEV.High }}>
+                      {breakdown[0].count ? "Critical Risk" : strong ? "Low Risk" : "Elevated Risk"}
                     </div>
                     <div className="text-[12px] sm:text-[13px]" style={{ color: C.sub }}>
-                      {strong ? "No critical threats detected" : "Critical findings require action"}
+                      {breakdown[0].count ? `${breakdown[0].count} exploitable issue(s) confirmed` : "No critical threats detected"}
                     </div>
                   </div>
+
                 </div>
               </div>
             </div>
