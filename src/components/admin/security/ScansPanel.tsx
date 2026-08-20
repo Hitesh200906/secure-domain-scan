@@ -128,10 +128,19 @@ export function ScansPanel() {
           </Section>
 
           <Section title="AI requirement details">
-            <div className="rounded-xl border border-dashed border-white/10 bg-black/40 py-10 text-center text-sm text-muted-foreground">
-              Reserved for AI requirement details.
-            </div>
+            {openScan.scan_config ? (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {configEntries(openScan.scan_config).map(([label, value]) => (
+                  <Detail key={label} label={label} value={value} />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-xl border border-dashed border-white/10 bg-black/40 py-10 text-center text-sm text-muted-foreground">
+                Customer has not submitted the scan configuration form yet.
+              </div>
+            )}
           </Section>
+
 
           <Section title="Status">
             <div className="flex flex-wrap items-center gap-3">
