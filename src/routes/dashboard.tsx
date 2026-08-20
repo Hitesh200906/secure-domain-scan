@@ -436,20 +436,56 @@ function ScoreDial({ value, color }: { value: number; color: string }) {
 
 
 
-function Overview({ report, profile, scans, mounted, onOpenReports, role, name }: {
+function Overview({ report, profile, scans, mounted, loading, onOpenReports, role, name }: {
   report: ReportModel; profile: { plan: string; credits: number } | null; scans: Scan[]; mounted: boolean;
-  onOpenReports: () => void; role: string | null | undefined; name: string | null;
+  loading?: boolean; onOpenReports: () => void; role: string | null | undefined; name: string | null;
 }) {
-  void profile; void onOpenReports; void role;
+  void profile; void role;
   const sc = scoreColor(report.score);
   const strong = report.score >= 70;
   const vulns = useMemo(() => buildVulnerabilities(report), [report]);
   const breakdown = useMemo(() => severityBreakdown(vulns), [vulns]);
   const threats = vulns.slice(0, 6);
+  const isDemo = !scans.length;
 
+  if (loading) {
+    return (
+      <div className="px-4 sm:px-6 py-5 sm:py-6 space-y-4 max-w-[1560px]">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="rounded-2xl animate-pulse" style={{ height: i === 0 ? 240 : 180, background: "#07080A", border: `1px solid ${C.border}` }} />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="px-4 sm:px-6 py-5 sm:py-6 space-y-4 max-w-[1560px]">
+      {isDemo && (
+        <div
+          className="rounded-2xl px-4 sm:px-5 py-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4"
+          style={{ border: `1px solid ${C.blue}55`, background: "linear-gradient(90deg, rgba(37,99,235,0.14), rgba(0,0,0,0))" }}
+        >
+          <div className="size-9 shrink-0 rounded-xl grid place-items-center" style={{ border: `1px solid ${C.blue}55`, background: "rgba(37,99,235,0.12)" }}>
+            <ScanSearch className="size-4" style={{ color: C.blue }} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="text-[12.5px] sm:text-[13.5px] font-semibold">This is a demo report — your actual report will look like this</div>
+            <p className="mt-0.5 text-[11.5px] leading-relaxed" style={{ color: C.sub }}>
+              You have no scan reports yet. Choose a plan and start a new scan; once your report is ready, upload it from
+              Scan Reports and this overview will show your real data.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <Link to="/pricing" className="rounded-lg px-3.5 py-2 text-[11.5px] font-medium text-white transition hover:-translate-y-px" style={{ background: C.blue }}>
+              Choose a plan
+            </Link>
+            <button onClick={onOpenReports} className="rounded-lg px-3.5 py-2 text-[11.5px] font-medium transition hover:-translate-y-px" style={{ border: `1px solid ${C.border}`, color: C.sub }}>
+              Scan Reports
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* HERO */}
       <Card className="relative overflow-hidden w-full min-h-[220px] sm:min-h-[240px] lg:min-h-[260px]">
         <div
