@@ -100,6 +100,7 @@ function IdentityScreen({ email, onContinue }: { email: string | null; onContinu
   const [busy, setBusy] = useState(false);
 
   const google = async () => {
+    if (email) return onContinue();
     setBusy(true);
     const { error } = await signInWithGoogle("/admin");
     if (error) {
@@ -109,45 +110,32 @@ function IdentityScreen({ email, onContinue }: { email: string | null; onContinu
   };
 
   return (
-    <Shell>
-      <h1 className="text-lg font-medium tracking-tight">Admin Console</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        {email ? "Confirm the account you want to use." : "Continue with the Gmail address registered in the console."}
-      </p>
+    <div className="min-h-screen bg-black flex items-center justify-center px-4">
+      <div className="w-full max-w-md rounded-[28px] border border-white/10 bg-[#0a0a0a] px-8 py-12 text-center">
+        <img
+          src={nexefyLogo}
+          alt="Nexefy"
+          className="mx-auto size-12 object-contain"
+          style={{ filter: "drop-shadow(0 0 14px rgba(37,99,235,.35))" }}
+        />
+        <h1 className="mt-5 text-2xl font-semibold tracking-tight text-white">Nexefy</h1>
+        <p className="mt-2 text-sm text-white/50">Sign in to continue to the Admin Console.</p>
 
-      {email ? (
-        <>
-          <div className="mt-5 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left">
-            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Signed in as</div>
-            <div className="mt-0.5 truncate text-sm text-white">{email}</div>
-          </div>
-          <button
-            onClick={onContinue}
-            className="mt-4 w-full rounded-full bg-white py-2.5 text-sm font-medium text-black transition-transform duration-300 hover:scale-[1.02]"
-          >
-            Continue as this admin
-          </button>
-          <button onClick={google} className="mt-2 w-full rounded-full border border-white/12 py-2.5 text-sm text-white/70 transition hover:text-white">
-            Use a different Google account
-          </button>
-        </>
-      ) : (
         <button
           onClick={google}
           disabled={busy}
-          className="mt-6 inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-white py-3 text-sm font-medium text-black transition-transform duration-300 hover:scale-[1.02] disabled:opacity-60"
+          className="mt-9 inline-flex w-full items-center justify-center gap-3 rounded-full border border-white/12 bg-[#141414] py-4 text-base font-medium text-white transition-colors duration-300 hover:bg-[#1c1c1c] disabled:opacity-60"
         >
-          {busy ? <Loader2 className="size-4 animate-spin" /> : <GoogleMark />}
-          Continue with Gmail
+          {busy ? <Loader2 className="size-5 animate-spin" /> : <GoogleMark />}
+          Continue with Google
         </button>
-      )}
 
-      <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
-        Access is limited to accounts added in the console. All actions are audited.
-      </p>
-    </Shell>
+        {email && <p className="mt-4 truncate text-xs text-white/40">{email}</p>}
+      </div>
+    </div>
   );
 }
+
 
 function CredentialScreen({
   isOwner, email, onBack, onUnlock,
