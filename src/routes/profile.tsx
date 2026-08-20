@@ -14,6 +14,7 @@ import { deleteMyAccount } from "@/lib/account.functions";
 
 import { uploadStoreAsset } from "@/lib/uploads";
 import { useAuth } from "@/hooks/use-auth";
+import { RequireAuth } from "@/components/site/RequireAuth";
 import creditsWallet from "@/assets/credits-wallet.png.asset.json";
 import creditsGift from "@/assets/credits-gift.png.asset.json";
 import CreditsCheckout from "@/components/credits/CreditsCheckout";
@@ -52,7 +53,11 @@ export const Route = createFileRoute("/profile")({
     ],
   }),
   validateSearch: (s: Record<string, unknown>) => ({ tab: (s.tab as string) || undefined }),
-  component: ProfilePage,
+  component: () => (
+    <RequireAuth title="Sign in to view your profile">
+      <ProfilePage />
+    </RequireAuth>
+  ),
 });
 
 type Tab = "general" | "credits" | "tickets" | "security" | "api";

@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
 
-export type SecuritySection = "scan" | "pricing";
+export type SecuritySection = "forms" | "scan" | "pricing";
 
 type Ctx = {
   /** True when the Nexefy Security console overlay is open. */

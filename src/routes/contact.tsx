@@ -65,7 +65,8 @@ function ContactPage() {
               e.preventDefault();
               const fd = new FormData(e.currentTarget);
               if (!user) {
-                toast.error("Please sign in to open a ticket");
+                toast.error("Please log in or sign up to open a ticket");
+                navigate({ to: "/login" });
                 return;
               }
               try {

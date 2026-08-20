@@ -49,7 +49,7 @@ export function Navbar() {
   return (
     <header className={`fixed inset-x-0 top-0 z-50 py-2 sm:py-4 transition-colors duration-300 ${scrolled ? "bg-transparent" : "bg-black/30"}`}>
       <div className="mx-auto max-w-7xl px-3 sm:px-6">
-        <div className={`flex items-center justify-between rounded-xl sm:rounded-2xl px-2.5 sm:px-6 bg-black/30 backdrop-blur-xl transition-all duration-300 ${scrolled ? "py-1 sm:py-2 border border-white/10 shadow-lg" : "py-1.5 sm:py-3 border border-transparent"}`}>
+        <div className={`flex items-center justify-between rounded-xl sm:rounded-2xl px-2.5 sm:px-6 bg-black/30 backdrop-blur-xl transition-all duration-300 ${scrolled ? "py-1 sm:py-2 shadow-lg" : "py-1.5 sm:py-3"}`}>
           <Link to="/" className="flex items-center gap-2 group">
             <img
               src={nexusLogo}
