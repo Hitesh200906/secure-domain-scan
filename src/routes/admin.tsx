@@ -21,54 +21,34 @@ const UNLOCK_KEY = "nexus_admin_unlocked";
 
 function AdminGate() {
   const { user, isAdmin, loading } = useAdmin();
-  const navigate = useNavigate();
   const [unlocked, setUnlocked] = useState(false);
   const [ready, setReady] = useState(false);
-  const [identityConfirmed, setIdentityConfirmed] = useState(false);
 
   useEffect(() => {
     setUnlocked(hasAdminPasscode());
     setReady(true);
   }, []);
 
-  useEffect(() => {
-    if (loading) return;
-    if (user && !isAdmin) navigate({ to: "/", replace: true });
-  }, [loading, user, isAdmin, navigate]);
-
   if (loading || !ready) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-black flex items-center justify-center">
         <Loader2 className="size-6 animate-spin text-primary" />
       </div>
     );
   }
 
-  // Step 1 — identity. Nothing is asked for until the admin continues with Google.
-  if (!user || !identityConfirmed) {
-    return <IdentityScreen email={user?.email ?? null} onContinue={() => setIdentityConfirmed(true)} />;
-  }
+  // Step 1 — identity. Google account chooser, nothing else on the page.
+  if (!user) return <IdentityScreen />;
 
-  if (!isAdmin) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="size-6 animate-spin text-primary" />
-      </div>
-    );
-  }
+  // Step 2 — authorization. Accounts not registered in the console are rejected.
+  if (!isAdmin) return <UnauthorizedScreen email={user.email ?? ""} />;
 
-  // Step 2 — credential. Owner enters the master passcode, other admins their API key.
+  // Step 3 — credential. Owner enters the master passcode, other admins their API key.
   if (!unlocked) {
     const isOwner = (user.email ?? "").toLowerCase() === OWNER_EMAIL;
-    return (
-      <CredentialScreen
-        isOwner={isOwner}
-        email={user.email ?? ""}
-        onBack={() => setIdentityConfirmed(false)}
-        onUnlock={() => setUnlocked(true)}
-      />
-    );
+    return <CredentialScreen isOwner={isOwner} email={user.email ?? ""} onUnlock={() => setUnlocked(true)} />;
   }
+
 
   return (
     <SecurityConsoleProvider>
