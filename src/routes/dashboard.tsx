@@ -562,19 +562,25 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
             <SideStat
               img={icShield}
               title="Vulnerabilities"
-              sub="Medium & low severity"
+              sub={`${breakdown[0].count} critical · ${breakdown[1].count} high · ${breakdown[2].count} medium`}
               right={<span className="text-[20px] sm:text-[24px] font-light">{report.findings}</span>}
             />
             <div className="h-px my-4 sm:my-6" style={{ background: C.border }} />
-            <SideStat img={icScan} title="Scan Frequency" sub={"Every 24 hours\nAutomated schedule"} />
+            <SideStat
+              img={icScan}
+              title="Scan Coverage"
+              sub={`${report.pagesCrawled} pages crawled\n${report.endpointsTested} endpoints tested`}
+              right={<span className="text-[13px] font-mono" style={{ color: C.sub }}>{report.duration}</span>}
+            />
             <div className="h-px my-4 sm:my-6" style={{ background: C.border }} />
             <SideStat
               img={icServer}
-              title="System Status"
-              sub="All systems operational"
+              title="Scan Engine"
+              sub={`${report.scanner}\nStatus: ${report.status}`}
               right={<span className="size-3 shrink-0 rounded-full inline-block" style={{ background: OK, boxShadow: `0 0 12px ${OK}` }} />}
             />
           </div>
+
         </div>
 
       </Card>
