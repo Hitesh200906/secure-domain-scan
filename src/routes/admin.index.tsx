@@ -90,7 +90,6 @@ function AdminOverview() {
                 <QA to="/admin/users" label="Manage users" />
                 <QA to="/admin/pricing" label="Edit pricing" />
                 <QA to="/admin/tickets" label="Reply to tickets" />
-                <QA to="/admin/reports" label="Upload report" />
               </div>
             </Section>
             <div className="lg:col-span-2">
