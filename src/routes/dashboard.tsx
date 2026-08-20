@@ -112,7 +112,7 @@ function Dashboard() {
       <div className="px-3 py-2 text-[10px] uppercase tracking-[0.2em]" style={{ color: C.muted }}>Workspace</div>
       <SidebarButton icon={LayoutDashboard} label="Overview" active={view === "overview"} onClick={() => { setView("overview"); onNav?.(); }} />
       <SidebarButton icon={FileText} label="Scan Reports" active={view === "reports"} badge={scans.length ? String(scans.length) : undefined} onClick={() => { setView("reports"); onNav?.(); }} />
-      <SidebarLink to="/scan" icon={ScanSearch} label="New Scan" onClick={onNav} />
+      <SidebarLink to="/pricing" icon={ScanSearch} label="Plans" onClick={onNav} />
       <div className="px-3 pt-5 pb-2 text-[10px] uppercase tracking-[0.2em]" style={{ color: C.muted }}>Account</div>
       <SidebarLink to="/profile" icon={UserIcon} label="Profile" onClick={onNav} />
       <SidebarLink to="/profile" search={{ tab: "credits" }} icon={CreditCard} label="Billing" onClick={onNav} />
@@ -464,8 +464,8 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
             <p className="mt-2.5 sm:mt-3 text-[12px] sm:text-[13.5px] leading-relaxed max-w-[18rem] sm:max-w-xs drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]" style={{ color: C.sub }}>
               Last assessment of <span className="font-mono text-white/90">{report.target}</span> finished in {report.duration} with {report.findings} findings across {report.endpointsTested} endpoints.
             </p>
-            <Link to="/scan" className="group mt-4 sm:mt-5 self-start">
-              <GhostButton>Start New Scan</GhostButton>
+            <Link to="/pricing" className="group mt-4 sm:mt-5 self-start">
+              <GhostButton>Choose a Plan</GhostButton>
             </Link>
 
           </div>
@@ -579,8 +579,8 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
                 {report.scanner} · {report.endpointsTested} endpoints tested · {report.pagesCrawled} pages crawled
               </div>
             </div>
-            <Link to="/scan" className="group inline-flex shrink-0 items-center gap-2 text-[12px] sm:text-[13px]" style={{ color: C.blue }}>
-              Scan Again <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+            <Link to="/pricing" className="group inline-flex shrink-0 items-center gap-2 text-[12px] sm:text-[13px]" style={{ color: C.blue }}>
+              View Plans <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
 
@@ -762,9 +762,9 @@ function ReportsSection({ scans, activeId, onUpload, mounted }: {
             </div>
             <div className="mt-4 text-[13.5px] font-medium">No reports submitted yet</div>
             <p className="mt-1 text-[11.5px]" style={{ color: C.sub }}>Once you submit a scan, its report will appear here.</p>
-            <Link to="/scan"
+            <Link to="/pricing"
               className="mt-5 inline-flex rounded-lg px-4 py-2 text-xs font-medium text-white transition hover:-translate-y-px"
-              style={{ background: C.blue }}>Submit a scan</Link>
+              style={{ background: C.blue }}>View Plans</Link>
           </div>
         </Panel>
       ) : (
