@@ -17,7 +17,7 @@ const baseLinks = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const { user, isAdmin: admin } = useAdmin();
+  const { user } = useAdmin();
   const { mode } = useAppMode();
   const navigate = useNavigate();
   const links = [
