@@ -147,6 +147,25 @@ function ReportPage() {
           </button>
         </div>
 
+        {report.demo && (
+          <div
+            className="mt-5 rounded-2xl border px-4 sm:px-5 py-4 flex flex-col sm:flex-row sm:items-center gap-3"
+            style={{ borderColor: "rgba(37,99,235,0.4)", background: "linear-gradient(90deg, rgba(37,99,235,0.14), rgba(0,0,0,0))" }}
+          >
+            <div className="min-w-0 flex-1">
+              <div className="text-[13px] font-semibold">This is a demo report — your actual report will look like this</div>
+              <p className="mt-0.5 text-[11.5px] text-muted-foreground">
+                No scan report is linked to your account yet. Choose a plan and run a scan to generate your own report.
+              </p>
+            </div>
+            <Link to="/pricing" className="shrink-0 rounded-lg px-3.5 py-2 text-[11.5px] font-medium text-white" style={{ background: "#2563EB" }}>
+              Choose a plan
+            </Link>
+          </div>
+        )}
+
+
+
         {/* ============================== HEADER ============================== */}
         <motion.header
           initial={{ opacity: 0, y: 26 }}
