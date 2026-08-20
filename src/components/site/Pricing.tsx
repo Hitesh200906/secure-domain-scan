@@ -3,6 +3,7 @@ import { Check } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api-client";
+import { useAuth } from "@/hooks/use-auth";
 
 type Plan = {
   id: string; slug: string; name: string; headline: string | null; description: string | null;
@@ -31,6 +32,7 @@ const FALLBACK_PLANS: Plan[] = [
 ];
 
 export function Pricing({ compact = false }: { compact?: boolean }) {
+  const { user } = useAuth();
   const [plans, setPlans] = useState<Plan[]>(FALLBACK_PLANS);
   useEffect(() => {
     api.publicPricing()
@@ -81,8 +83,9 @@ export function Pricing({ compact = false }: { compact?: boolean }) {
                 </ul>
 
                 <Link
-                  to="/scan/new"
-                  search={{ plan: t.slug as "starter" | "professional" | "enterprise" }}
+                  {...(user
+                    ? { to: "/scan/new" as const, search: { plan: t.slug as "starter" | "professional" | "enterprise" } }
+                    : { to: "/login" as const })}
                   className={`group relative mt-8 inline-flex items-center justify-center overflow-hidden rounded-full px-5 py-3 text-sm font-medium transition-transform duration-300 hover:scale-[1.03] ${t.popular ? "bg-white text-black" : "glass text-white hover:border-white/20"}`}
                 >
                   <span className="relative">{t.cta_label || "Get started"}</span>
