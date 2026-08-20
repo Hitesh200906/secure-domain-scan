@@ -1,16 +1,38 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AdminShell, Section, Badge } from "@/components/admin/AdminShell";
 import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 import { logAudit } from "@/lib/audit";
-import { CheckCircle2, XCircle, Trash2, Upload } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Loader2, Search, Trash2, XCircle } from "lucide-react";
 
+type Scan = {
+  id: string;
+  user_id: string;
+  full_name: string;
+  role_title?: string | null;
+  company?: string | null;
+  email: string;
+  business_email?: string | null;
+  target_url: string;
+  plan: string;
+  status: string;
+  score?: number | null;
+  findings_count?: number | null;
+  verification_method?: string | null;
+  verification_status?: string | null;
+  verification_notes?: string | null;
+  verified_at?: string | null;
+  created_at: string;
+};
 
-type Scan = { id: string; user_id: string; full_name: string; email: string; business_email?: string | null; target_url: string; plan: string; status: string; verification_method?: string | null; verification_status?: string | null; verified_at?: string | null; created_at: string };
+const FILTERS = ["all", "awaiting_verification", "pending", "in_progress", "completed", "failed"];
 
 export function ScansPanel() {
   const [rows, setRows] = useState<Scan[]>([]);
   const [filter, setFilter] = useState("all");
+  const [query, setQuery] = useState("");
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
   const load = async () => {
     try {
@@ -22,132 +44,209 @@ export function ScansPanel() {
   };
   useEffect(() => { load(); }, []);
 
-  const act = async (s: Scan, patch: { status?: string }, action: string) => {
+  const setStatus = async (s: Scan, status: "completed" | "failed" | "in_progress") => {
+    setBusy(true);
     try {
-      await api.admin.updateScan(s.id, patch);
-      await logAudit(action, { type: "scan", id: s.id }, patch);
-      toast.success(action);
-      load();
+      await api.admin.updateScan(s.id, { status });
+      await logAudit(`scan.${status}`, { type: "scan", id: s.id }, { status });
+      if (status === "completed" || status === "failed") {
+        try {
+          await api.admin.notifyUser(
+            s.user_id,
+            status === "completed" ? "Your security report is ready" : "Your scan could not be completed",
+            status === "completed"
+              ? `The scan for ${s.target_url} is complete. Open your dashboard to read the full report.`
+              : `We could not complete the scan for ${s.target_url}. Our team will reach out with the details.`,
+            "/dashboard",
+          );
+        } catch { /* notification is best-effort */ }
+      }
+      toast.success(status === "completed" ? "Report marked completed" : status === "failed" ? "Report marked failed" : "Scan started");
+      await load();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed");
+    } finally {
+      setBusy(false);
     }
   };
+
   const remove = async (s: Scan) => {
+    setBusy(true);
     try {
       await api.admin.deleteScan(s.id);
       await logAudit("scan.delete", { type: "scan", id: s.id });
-      toast.success("Deleted");
-      load();
+      toast.success("Report deleted");
+      setOpenId(null);
+      await load();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed");
-    }
-  };
-  const uploadReport = async (s: Scan) => {
-    const url = prompt("Report URL (PDF link):");
-    if (!url) return;
-    try {
-      await api.admin.createReport({
-        scan_id: s.id,
-        user_id: s.user_id,
-        title: `Report for ${s.target_url}`,
-        file_url: url,
-        severity: "medium",
-      });
-      await act(s, { status: "completed" }, "scan.report.upload");
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Failed");
+    } finally {
+      setBusy(false);
     }
   };
 
-  const filtered = rows.filter((r) => filter === "all" || r.status === filter);
-  const incoming = rows.filter((r) => r.status === "pending" && r.verification_status === "verified");
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return rows.filter((r) => {
+      if (filter !== "all" && r.status !== filter) return false;
+      if (!q) return true;
+      return (
+        (r.email ?? "").toLowerCase().includes(q) ||
+        (r.business_email ?? "").toLowerCase().includes(q) ||
+        (r.full_name ?? "").toLowerCase().includes(q) ||
+        (r.target_url ?? "").toLowerCase().includes(q)
+      );
+    });
+  }, [rows, filter, query]);
+
+  const openScan = rows.find((r) => r.id === openId) ?? null;
+
+  if (openScan) {
+    return (
+      <AdminShell title="Report details" description={`Submitted for ${openScan.target_url}`}>
+        <button
+          onClick={() => setOpenId(null)}
+          className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 px-3.5 py-2 text-[12px] text-white/65 transition hover:text-white"
+        >
+          <ArrowLeft className="size-3.5" /> Back to scans
+        </button>
+
+        <div className="space-y-4">
+          <Section title="Submitted details">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Detail label="Full name" value={openScan.full_name} />
+              <Detail label="Role" value={openScan.role_title || "—"} />
+              <Detail label="Company" value={openScan.company || "—"} />
+              <Detail label="Account email" value={openScan.email} />
+              <Detail label="Business email" value={openScan.business_email || "—"} />
+              <Detail label="Target website" value={openScan.target_url} />
+              <Detail label="Plan" value={openScan.plan} />
+              <Detail label="Verification" value={`${openScan.verification_method ?? "—"} · ${openScan.verification_status ?? "unverified"}`} />
+              <Detail label="Submitted" value={new Date(openScan.created_at).toLocaleString()} />
+              <Detail label="Request ID" value={openScan.id} mono />
+            </div>
+          </Section>
+
+          <Section title="AI requirement details">
+            <div className="rounded-xl border border-dashed border-white/10 bg-black/40 py-10 text-center text-sm text-muted-foreground">
+              Reserved for AI requirement details.
+            </div>
+          </Section>
+
+          <Section title="Status">
+            <div className="flex flex-wrap items-center gap-3">
+              <Badge tone={openScan.status === "completed" ? "ok" : openScan.status === "failed" ? "danger" : "warn"}>
+                {openScan.status.replace(/_/g, " ")}
+              </Badge>
+              {openScan.score != null && <span className="text-xs text-muted-foreground">Score {openScan.score}/100</span>}
+              {openScan.findings_count != null && <span className="text-xs text-muted-foreground">{openScan.findings_count} findings</span>}
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                disabled={busy}
+                onClick={() => setStatus(openScan, "completed")}
+                className="inline-flex items-center gap-2 rounded-lg bg-[#2563EB] px-4 py-2 text-[12px] font-medium text-white transition hover:bg-[#1D4ED8] disabled:opacity-50"
+              >
+                {busy ? <Loader2 className="size-3.5 animate-spin" /> : <CheckCircle2 className="size-3.5" />} Completed
+              </button>
+              <button
+                disabled={busy}
+                onClick={() => setStatus(openScan, "failed")}
+                className="inline-flex items-center gap-2 rounded-lg border border-white/12 px-4 py-2 text-[12px] text-neutral-200 transition hover:border-rose-400/40 hover:text-rose-300 disabled:opacity-50"
+              >
+                <XCircle className="size-3.5" /> Failed
+              </button>
+              <button
+                disabled={busy}
+                onClick={() => remove(openScan)}
+                className="inline-flex items-center gap-2 rounded-lg border border-white/12 px-4 py-2 text-[12px] text-neutral-200 transition hover:border-rose-400/40 hover:text-rose-300 disabled:opacity-50"
+              >
+                <Trash2 className="size-3.5" /> Delete report
+              </button>
+            </div>
+          </Section>
+        </div>
+      </AdminShell>
+    );
+  }
 
   return (
     <AdminShell title="Scan Management" description={`${rows.length} scan requests across all customers.`}>
-      <Section title={`Incoming scan requests (${incoming.length})`}>
-        {incoming.length === 0 ? (
-          <div className="py-8 text-center text-sm text-muted-foreground">No verified requests waiting.</div>
-        ) : (
-          <div className="grid gap-3 sm:grid-cols-2">
-            {incoming.map((s) => (
-              <div key={s.id} className="rounded-xl border border-white/5 bg-black/40 p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="truncate text-sm text-white">{s.target_url}</div>
-                    <div className="text-[11px] text-muted-foreground">
-                      {s.full_name} · {s.business_email || s.email}
-                    </div>
-                  </div>
-                  <Badge tone="ok">verified</Badge>
-                </div>
-                <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
-                  <Badge tone="info">{s.plan}</Badge>
-                  <span>via {s.verification_method === "manual" ? "site code (AI checked)" : "email code"}</span>
-                  <span>· {new Date(s.created_at).toLocaleString()}</span>
-                </div>
-                <div className="mt-3 flex gap-2">
-                  <button onClick={() => act(s, { status: "in_progress" }, "scan.start")} className="rounded-lg bg-[#2563EB] px-3 py-1.5 text-[11px] font-medium text-white hover:bg-[#1D4ED8]">
-                    Start scan
-                  </button>
-                  <button onClick={() => act(s, { status: "failed" }, "scan.reject")} className="rounded-lg glass px-3 py-1.5 text-[11px] hover:text-rose-300">
-                    Reject
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </Section>
-
-      <div className="flex flex-wrap gap-2 my-4">
-        {["all", "awaiting_verification", "pending", "in_progress", "completed", "failed"].map((s) => (
-          <button key={s} onClick={() => setFilter(s)} className={`text-xs px-3 py-1.5 rounded-full border transition ${filter === s ? "bg-primary text-primary-foreground border-primary" : "glass"}`}>
-            {s.replace(/_/g, " ")}
-          </button>
-        ))}
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative w-full sm:max-w-sm">
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search by customer email…"
+            className="w-full rounded-xl border border-white/10 bg-white/[0.04] py-2.5 pl-9 pr-3 text-sm outline-none transition focus:border-white/25"
+          />
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {FILTERS.map((s) => (
+            <button key={s} onClick={() => setFilter(s)} className={`rounded-full border px-3 py-1.5 text-xs transition ${filter === s ? "border-primary bg-primary text-primary-foreground" : "glass"}`}>
+              {s.replace(/_/g, " ")}
+            </button>
+          ))}
+        </div>
       </div>
-      <Section title="All scans">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm min-w-[900px]">
-            <thead><tr className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              <th className="text-left px-2 py-2">Scan</th><th className="text-left px-2">User</th><th className="text-left px-2">Plan</th>
-              <th className="text-left px-2">Verification</th>
-              <th className="text-left px-2">Status</th><th className="text-left px-2">Date</th><th className="text-right px-2">Actions</th>
-            </tr></thead>
 
+      <Section title={`Reports · ${filtered.length}`}>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[860px] text-sm">
+            <thead>
+              <tr className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                <th className="px-2 py-2 text-left">Scan</th>
+                <th className="px-2 text-left">User</th>
+                <th className="px-2 text-left">Plan</th>
+                <th className="px-2 text-left">Verification</th>
+                <th className="px-2 text-left">Status</th>
+                <th className="px-2 text-left">Date</th>
+                <th className="px-2 text-right">Report</th>
+              </tr>
+            </thead>
             <tbody>
               {filtered.map((s) => (
                 <tr key={s.id} className="border-t border-white/5">
                   <td className="px-2 py-3">
-                    <div className="text-sm truncate max-w-[260px]">{s.target_url}</div>
-                    <div className="text-[10px] text-muted-foreground font-mono">{s.id.slice(0, 8)}</div>
+                    <div className="max-w-[260px] truncate text-sm">{s.target_url}</div>
+                    <div className="font-mono text-[10px] text-muted-foreground">{s.id.slice(0, 8)}</div>
                   </td>
                   <td className="px-2"><div className="text-sm">{s.full_name}</div><div className="text-[11px] text-muted-foreground">{s.email}</div></td>
                   <td className="px-2"><Badge tone="info">{s.plan}</Badge></td>
                   <td className="px-2">
-                    <Badge tone={s.verification_status === "verified" ? "ok" : "warn"}>
-                      {s.verification_status ?? "unverified"}
-                    </Badge>
-                    <div className="text-[10px] text-muted-foreground mt-1">{s.verification_method ?? "—"}</div>
+                    <Badge tone={s.verification_status === "verified" ? "ok" : "warn"}>{s.verification_status ?? "unverified"}</Badge>
+                    <div className="mt-1 text-[10px] text-muted-foreground">{s.verification_method ?? "—"}</div>
                   </td>
-                  <td className="px-2"><Badge tone={s.status === "completed" ? "ok" : s.status === "failed" ? "danger" : "warn"}>{s.status}</Badge></td>
-
-                  <td className="px-2 text-muted-foreground text-xs">{new Date(s.created_at).toLocaleString()}</td>
+                  <td className="px-2"><Badge tone={s.status === "completed" ? "ok" : s.status === "failed" ? "danger" : "warn"}>{s.status.replace(/_/g, " ")}</Badge></td>
+                  <td className="px-2 text-xs text-muted-foreground">{new Date(s.created_at).toLocaleString()}</td>
                   <td className="px-2 py-3 text-right">
-                    <div className="inline-flex gap-1">
-                      <button title="Mark complete" onClick={() => act(s, { status: "completed" }, "scan.complete")} className="size-7 grid place-items-center rounded-lg glass hover:text-emerald-300"><CheckCircle2 className="size-3.5" /></button>
-                      <button title="Mark failed" onClick={() => act(s, { status: "failed" }, "scan.fail")} className="size-7 grid place-items-center rounded-lg glass hover:text-rose-300"><XCircle className="size-3.5" /></button>
-                      <button title="Upload report" onClick={() => uploadReport(s)} className="size-7 grid place-items-center rounded-lg glass hover:text-primary"><Upload className="size-3.5" /></button>
-                      <button title="Delete" onClick={() => remove(s)} className="size-7 grid place-items-center rounded-lg glass hover:text-rose-300"><Trash2 className="size-3.5" /></button>
-                    </div>
+                    <button
+                      onClick={() => setOpenId(s.id)}
+                      className="rounded-lg bg-[#2563EB] px-3.5 py-1.5 text-[11px] font-medium text-white transition hover:bg-[#1D4ED8]"
+                    >
+                      View
+                    </button>
                   </td>
                 </tr>
               ))}
-              {filtered.length === 0 && <tr><td colSpan={7} className="py-12 text-center text-sm text-muted-foreground">No scans.</td></tr>}
+              {filtered.length === 0 && (
+                <tr><td colSpan={7} className="py-12 text-center text-sm text-muted-foreground">No scans match this view.</td></tr>
+              )}
             </tbody>
           </table>
         </div>
       </Section>
     </AdminShell>
+  );
+}
+
+function Detail({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
+  return (
+    <div className="rounded-xl border border-white/8 bg-black/40 px-4 py-3">
+      <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{label}</div>
+      <div className={`mt-1 break-words text-sm text-white ${mono ? "font-mono text-[12px]" : ""}`}>{value}</div>
+    </div>
   );
 }
