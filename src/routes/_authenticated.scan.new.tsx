@@ -28,10 +28,11 @@ type Flow =
 type Plan = "starter" | "professional" | "enterprise";
 
 const PLAN_INFO: Record<Plan, { name: string; credits: number }> = {
-  starter: { name: "Starter", credits: 1 },
-  professional: { name: "Professional", credits: 15 },
-  enterprise: { name: "Enterprise", credits: 999 },
+  starter: { name: "Starter", credits: 49 },
+  professional: { name: "Professional", credits: 199 },
+  enterprise: { name: "Enterprise", credits: 899 },
 };
+
 
 const ROLES = [
   "Security Engineer",
@@ -66,7 +67,19 @@ function ScanNewPage() {
   const { plan } = useSearch({ from: "/_authenticated/scan/new" }) as { plan: Plan };
   const { user } = useAuth();
   const navigate = useNavigate();
-  const info = PLAN_INFO[plan];
+  const [livePlan, setLivePlan] = useState<{ name: string; credits: number } | null>(null);
+  const info = livePlan ?? PLAN_INFO[plan];
+
+  useEffect(() => {
+    api.publicPricing()
+      .then(({ plans }) => {
+        const p = (plans as Array<{ slug: string; name: string; price_monthly: number }> | undefined)
+          ?.find((x) => x.slug === plan);
+        if (p) setLivePlan({ name: p.name, credits: p.price_monthly });
+      })
+      .catch(() => { /* keep fallback */ });
+  }, [plan]);
+
 
   const [form, setForm] = useState({
     full_name: "",
@@ -148,9 +161,12 @@ function ScanNewPage() {
           >
             ← Back
           </button>
-          <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            {info.name} · {info.credits} credits
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-white/80">
+            <span>{info.name}</span>
+            <span className="text-white/25">·</span>
+            <span className="text-white">{info.credits.toLocaleString()} credits</span>
           </div>
+
         </div>
 
         <form onSubmit={submit} className="mt-8 space-y-14">

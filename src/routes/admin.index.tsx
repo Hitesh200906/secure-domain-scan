@@ -69,7 +69,7 @@ function AdminOverview() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard label="Total Users" value={s.users} hint={`${s.activeUsers} active`} accent="primary" />
             <StatCard label="Total Scans" value={s.scans} hint={`${s.completed} completed · ${s.pending} pending`} accent="secondary" />
-            <StatCard label="Revenue (MRR)" value={`$${s.revenue.toLocaleString()}`} hint="From active plans" accent="ok" />
+          <StatCard label="Plan Credits" value={`${s.revenue.toLocaleString()}`} hint="From active plans" accent="ok" />
             <StatCard label="Open Tickets" value={s.ticketsOpen} hint={`${s.ticketsClosed} resolved`} accent="warn" />
           </div>
 
