@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  ArrowLeft, Shield, AlertTriangle, FileText, Globe2, Building2, Mail, BadgeCheck,
+  ArrowLeft, Shield, AlertTriangle, ShieldAlert, FileText, Globe2, Building2, Mail, BadgeCheck,
   Clock, ChevronDown, ScanSearch, Bug, Wrench, Link2, Terminal, Crosshair, Gauge,
   Layers, Activity, Sparkles, Printer, ShieldCheck, Flame, TrendingUp, ListChecks,
   Scale, Fingerprint, Zap, CircleDot,
