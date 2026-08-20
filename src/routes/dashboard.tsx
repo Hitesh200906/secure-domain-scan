@@ -506,8 +506,13 @@ function Overview({ report, profile, scans, mounted, loading, onOpenReports, rol
               <span className="font-medium" style={{ color: C.blue }}>{name ? name.split(" ")[0] : "there"}</span>
             </h2>
             <p className="mt-2.5 sm:mt-3 text-[12px] sm:text-[13.5px] leading-relaxed max-w-[18rem] sm:max-w-xs drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]" style={{ color: C.sub }}>
-              Last assessment of <span className="font-mono text-white/90">{report.target}</span> finished in {report.duration} with {report.findings} findings across {report.endpointsTested} endpoints.
+              {isDemo ? (
+                <>Sample assessment of <span className="font-mono text-white/90">{report.target}</span> — {report.findings} findings across {report.endpointsTested} endpoints. Start a scan to see your own data here.</>
+              ) : (
+                <>Last assessment of <span className="font-mono text-white/90">{report.target}</span> finished in {report.duration} with {report.findings} findings across {report.endpointsTested} endpoints.</>
+              )}
             </p>
+
             <Link to="/pricing" className="group mt-4 sm:mt-5 self-start">
               <GhostButton>Choose a Plan</GhostButton>
             </Link>
