@@ -12,8 +12,6 @@ import { useAuth } from "@/hooks/use-auth";
 import icIdCard from "@/assets/scanform-icon-idcard.png";
 import icGlobe from "@/assets/scanform-icon-globe.png";
 import icShield from "@/assets/scanform-icon-shield.png";
-import icEnvelope from "@/assets/scanform-icon-envelope.png";
-import icCode from "@/assets/scanform-icon-code.png";
 import scanConfigBg from "@/assets/scan-config-bg.png.asset.json";
 import {
   startEmailVerification,
@@ -227,8 +225,6 @@ function ScanNewPage() {
               <VerifCard
                 selected={verification === "email"}
                 onClick={() => setVerification("email")}
-                img={icEnvelope}
-                alt="Envelope with verified badge"
                 badge="Recommended"
                 title="Email Verification"
                 desc="Our AI scans your website for your business email. If it is published there, we send a six-digit code to it."
@@ -242,8 +238,6 @@ function ScanNewPage() {
               <VerifCard
                 selected={verification === "manual"}
                 onClick={() => setVerification("manual")}
-                img={icCode}
-                alt="Code window icon"
                 badge="No email needed"
                 title="Manual Verification"
                 desc="We issue a unique verification code that you place anywhere on your website."
@@ -393,12 +387,10 @@ function SelectField({
 }
 
 function VerifCard({
-  selected, onClick, img, alt, title, desc, steps, note, badge,
+  selected, onClick, title, desc, steps, note, badge,
 }: {
   selected: boolean;
   onClick: () => void;
-  img: string;
-  alt: string;
   title: string;
   desc: string;
   steps: string[];
@@ -416,14 +408,7 @@ function VerifCard({
           : "bg-transparent text-white ring-1 ring-white/[0.10] hover:bg-white/[0.03]"
       }`}
     >
-      <div className="flex items-start gap-4">
-        <span
-          className={`flex size-16 shrink-0 items-center justify-center rounded-2xl transition ${
-            selected ? "bg-white" : "bg-transparent"
-          }`}
-        >
-          <img src={img} alt={alt} loading="lazy" className="size-10 shrink-0 object-contain" />
-        </span>
+      <div className="flex items-start gap-3">
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <span className={`text-[15px] ${selected ? "text-black" : "text-white"}`}>{title}</span>
