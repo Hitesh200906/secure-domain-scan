@@ -1,20 +1,30 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Loader2, Lock } from "lucide-react";
+import { ArrowLeft, KeyRound, Loader2, Lock, ShieldCheck } from "lucide-react";
+import { toast } from "sonner";
 import nexefyLogo from "@/assets/nexefy-logo.png";
 import { useAdmin } from "@/hooks/use-admin";
-import { hasAdminPasscode, verifyAdminPasscode } from "@/lib/auth-helpers";
+import { hasAdminPasscode, verifyAdminPasscode, signInWithGoogle } from "@/lib/auth-helpers";
+import { api } from "@/lib/api-client";
+import { SecurityConsoleProvider } from "@/lib/security-console";
+import { SecurityConsoleOverlay } from "@/components/admin/SecurityConsole";
+
+/** The console owner signs in with the master passcode; every other admin uses an issued API key. */
+export const OWNER_EMAIL = "hitesh.tanwar8318@gmail.com";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin Console — Nexefy Security" }, { name: "robots", content: "noindex" }] }),
   component: AdminGate,
 });
 
+const UNLOCK_KEY = "nexus_admin_unlocked";
+
 function AdminGate() {
   const { user, isAdmin, loading } = useAdmin();
   const navigate = useNavigate();
   const [unlocked, setUnlocked] = useState(false);
   const [ready, setReady] = useState(false);
+  const [identityConfirmed, setIdentityConfirmed] = useState(false);
 
   useEffect(() => {
     setUnlocked(hasAdminPasscode());
@@ -23,14 +33,10 @@ function AdminGate() {
 
   useEffect(() => {
     if (loading) return;
-    if (!user) {
-      navigate({ to: "/login", replace: true });
-    } else if (!isAdmin) {
-      navigate({ to: "/", replace: true });
-    }
+    if (user && !isAdmin) navigate({ to: "/", replace: true });
   }, [loading, user, isAdmin, navigate]);
 
-  if (loading || !ready || !isAdmin) {
+  if (loading || !ready) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="size-6 animate-spin text-primary" />
@@ -38,53 +44,198 @@ function AdminGate() {
     );
   }
 
-  if (!unlocked) {
-    return <PasscodeScreen onUnlock={() => setUnlocked(true)} />;
+  // Step 1 — identity. Nothing is asked for until the admin continues with Google.
+  if (!user || !identityConfirmed) {
+    return <IdentityScreen email={user?.email ?? null} onContinue={() => setIdentityConfirmed(true)} />;
   }
 
-  return <Outlet />;
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="size-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // Step 2 — credential. Owner enters the master passcode, other admins their API key.
+  if (!unlocked) {
+    const isOwner = (user.email ?? "").toLowerCase() === OWNER_EMAIL;
+    return (
+      <CredentialScreen
+        isOwner={isOwner}
+        email={user.email ?? ""}
+        onBack={() => setIdentityConfirmed(false)}
+        onUnlock={() => setUnlocked(true)}
+      />
+    );
+  }
+
+  return (
+    <SecurityConsoleProvider>
+      <Outlet />
+      <SecurityConsoleOverlay />
+    </SecurityConsoleProvider>
+  );
 }
 
-function PasscodeScreen({ onUnlock }: { onUnlock: () => void }) {
-  const [code, setCode] = useState("");
-  const [error, setError] = useState("");
-
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (verifyAdminPasscode(code)) {
-      onUnlock();
-    } else {
-      setError("Incorrect passcode. Try again.");
-      setCode("");
-    }
-  };
-
+function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-sm glass-strong rounded-3xl p-8 text-center">
         <div className="mx-auto size-12 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 grid place-items-center mb-4">
-          <img src={nexefyLogo} alt="Nexefy" className="size-5 sm:size-6 object-contain" style={{ filter: "drop-shadow(0 0 8px rgba(37,99,235,.45))" }} />
+          <img
+            src={nexefyLogo}
+            alt="Nexefy"
+            className="size-5 sm:size-6 object-contain"
+            style={{ filter: "drop-shadow(0 0 8px rgba(37,99,235,.45))" }}
+          />
         </div>
-        <h1 className="text-lg font-medium tracking-tight">Admin Console</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Enter the admin passcode to continue.</p>
-        <form onSubmit={submit} className="mt-6 space-y-3">
-          <div className="relative">
-            <Lock className="size-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="password"
-              autoFocus
-              value={code}
-              onChange={(e) => { setCode(e.target.value); setError(""); }}
-              placeholder="Passcode"
-              className="w-full pl-10 pr-4 py-3 text-sm bg-white/[0.04] border border-white/10 rounded-xl focus:outline-none focus:border-primary/50"
-            />
-          </div>
-          {error && <p className="text-xs text-rose-300">{error}</p>}
-          <button type="submit" className="w-full rounded-full bg-white text-black py-2.5 text-sm font-medium hover:bg-primary transition">
-            Unlock
-          </button>
-        </form>
+        {children}
       </div>
     </div>
+  );
+}
+
+function IdentityScreen({ email, onContinue }: { email: string | null; onContinue: () => void }) {
+  const [busy, setBusy] = useState(false);
+
+  const google = async () => {
+    setBusy(true);
+    const { error } = await signInWithGoogle("/admin");
+    if (error) {
+      toast.error(error.message);
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Shell>
+      <h1 className="text-lg font-medium tracking-tight">Admin Console</h1>
+      <p className="mt-1 text-sm text-muted-foreground">
+        {email ? "Confirm the account you want to use." : "Continue with the Gmail address registered in the console."}
+      </p>
+
+      {email ? (
+        <>
+          <div className="mt-5 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left">
+            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Signed in as</div>
+            <div className="mt-0.5 truncate text-sm text-white">{email}</div>
+          </div>
+          <button
+            onClick={onContinue}
+            className="mt-4 w-full rounded-full bg-white py-2.5 text-sm font-medium text-black transition-transform duration-300 hover:scale-[1.02]"
+          >
+            Continue as this admin
+          </button>
+          <button onClick={google} className="mt-2 w-full rounded-full border border-white/12 py-2.5 text-sm text-white/70 transition hover:text-white">
+            Use a different Google account
+          </button>
+        </>
+      ) : (
+        <button
+          onClick={google}
+          disabled={busy}
+          className="mt-6 inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-white py-3 text-sm font-medium text-black transition-transform duration-300 hover:scale-[1.02] disabled:opacity-60"
+        >
+          {busy ? <Loader2 className="size-4 animate-spin" /> : <GoogleMark />}
+          Continue with Gmail
+        </button>
+      )}
+
+      <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
+        Access is limited to accounts added in the console. All actions are audited.
+      </p>
+    </Shell>
+  );
+}
+
+function CredentialScreen({
+  isOwner, email, onBack, onUnlock,
+}: {
+  isOwner: boolean;
+  email: string;
+  onBack: () => void;
+  onUnlock: () => void;
+}) {
+  const [value, setValue] = useState("");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    if (isOwner) {
+      if (verifyAdminPasscode(value)) return onUnlock();
+      setError("Incorrect passcode. Try again.");
+      setValue("");
+      return;
+    }
+    setBusy(true);
+    try {
+      const ok = await api.admin.verifyAdminApiKey(value.trim());
+      if (!ok) {
+        setError("That API key is not valid for this account.");
+        setValue("");
+        return;
+      }
+      try { sessionStorage.setItem(UNLOCK_KEY, "1"); } catch { /* ignore */ }
+      onUnlock();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Verification failed");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Shell>
+      <h1 className="text-lg font-medium tracking-tight">{isOwner ? "Owner passcode" : "Admin API key"}</h1>
+      <p className="mt-1 text-sm text-muted-foreground">
+        {isOwner
+          ? "Enter the master passcode to open the console."
+          : "Enter the API key issued to you by the console owner."}
+      </p>
+      <div className="mt-4 truncate rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] text-white/60">{email}</div>
+
+      <form onSubmit={submit} className="mt-5 space-y-3">
+        <div className="relative">
+          {isOwner ? (
+            <Lock className="size-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          ) : (
+            <KeyRound className="size-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          )}
+          <input
+            type="password"
+            autoFocus
+            value={value}
+            onChange={(e) => { setValue(e.target.value); setError(""); }}
+            placeholder={isOwner ? "Passcode" : "nxf_…"}
+            className="w-full pl-10 pr-4 py-3 text-sm bg-white/[0.04] border border-white/10 rounded-xl focus:outline-none focus:border-primary/50"
+          />
+        </div>
+        {error && <p className="text-xs text-rose-300">{error}</p>}
+        <button
+          type="submit"
+          disabled={busy || !value}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-white py-2.5 text-sm font-medium text-black transition hover:bg-primary hover:text-white disabled:opacity-50"
+        >
+          {busy ? <Loader2 className="size-4 animate-spin" /> : <ShieldCheck className="size-4" />} Unlock console
+        </button>
+        <button type="button" onClick={onBack} className="inline-flex w-full items-center justify-center gap-2 py-1 text-[12px] text-white/50 transition hover:text-white">
+          <ArrowLeft className="size-3.5" /> Back
+        </button>
+      </form>
+    </Shell>
+  );
+}
+
+function GoogleMark() {
+  return (
+    <svg viewBox="0 0 48 48" className="size-4" aria-hidden="true">
+      <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.6 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.3 13.2 17.7 9.5 24 9.5z" />
+      <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.9 7.2l7.6 5.9c4.4-4.1 7.1-10.2 7.1-17.6z" />
+      <path fill="#FBBC05" d="M10.4 28.7A14.5 14.5 0 019.6 24c0-1.6.3-3.2.8-4.7l-7.8-6.1A24 24 0 000 24c0 3.9.9 7.5 2.6 10.8l7.8-6.1z" />
+      <path fill="#34A853" d="M24 48c6.2 0 11.5-2 15.4-5.5l-7.6-5.9c-2.1 1.4-4.8 2.3-7.8 2.3-6.3 0-11.7-3.7-13.6-9l-7.8 6.1C6.5 42.6 14.6 48 24 48z" />
+    </svg>
   );
 }
