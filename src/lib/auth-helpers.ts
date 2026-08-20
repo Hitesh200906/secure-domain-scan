@@ -51,15 +51,9 @@ export function verifyAdminPasscode(code: string): boolean {
   return false;
 }
 
-function isLovableHost(): boolean {
-  const h = window.location.hostname;
-  return h.endsWith(".lovable.app") || h.endsWith(".lovableproject.com") || h === "localhost";
-}
-
 /**
- * Google sign-in. Uses the Lovable managed broker on Lovable hosts (works in
- * the editor preview iframe via popup) and the standard Supabase OAuth redirect
- * on external hosts (e.g. Vercel).
+ * Google sign-in through the managed OAuth broker. It supports the editor
+ * preview popup as well as full-page redirects on deployed domains.
  *
  * `redirect_uri` must be a public same-origin URL — we always send the user
  * back to the origin and remember the intended path separately.
@@ -87,37 +81,24 @@ export async function signInWithGoogle(
   }
   const prompt = opts.forceAccountChooser ? "select_account" : undefined;
 
-  if (isLovableHost()) {
-    try {
-      const res = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
-        ...(prompt ? { extraParams: { prompt } } : {}),
-      });
-      if (res.error) {
-        const err = res.error instanceof Error ? res.error : new Error(String(res.error));
-        console.error("[auth] Google sign-in failed", err);
-        return { error: err };
-      }
-      if (!res.redirected) {
-        // Tokens received and session set in this tab — go to the intended page.
-        window.location.assign(redirectPath);
-      }
-      return {};
-    } catch (e) {
-      const err = e instanceof Error ? e : new Error(String(e));
-      console.error("[auth] Google sign-in threw", err);
+  try {
+    const res = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: window.location.origin,
+      ...(prompt ? { extraParams: { prompt } } : {}),
+    });
+    if (res.error) {
+      const err = res.error instanceof Error ? res.error : new Error(String(res.error));
+      console.error("[auth] Google sign-in failed", err);
       return { error: err };
     }
+    if (!res.redirected) {
+      window.location.assign(redirectPath);
+    }
+    return {};
+  } catch (e) {
+    const err = e instanceof Error ? e : new Error(String(e));
+    console.error("[auth] Google sign-in threw", err);
+    return { error: err };
   }
-
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: window.location.origin + redirectPath,
-      ...(prompt ? { queryParams: { prompt } } : {}),
-    },
-  });
-  if (error) return { error };
-  return {};
 }
 

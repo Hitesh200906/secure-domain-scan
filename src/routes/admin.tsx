@@ -19,14 +19,21 @@ export const Route = createFileRoute("/admin")({
 });
 
 const UNLOCK_KEY = "nexus_admin_unlocked";
+const GOOGLE_VERIFIED_KEY = "nexefy_admin_google_verified";
 
 function AdminGate() {
   const { user, isAdmin, loading } = useAdmin();
   const [unlocked, setUnlocked] = useState(false);
+  const [googleVerified, setGoogleVerified] = useState(false);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     setUnlocked(hasAdminPasscode());
+    try {
+      setGoogleVerified(sessionStorage.getItem(GOOGLE_VERIFIED_KEY) === "1");
+    } catch {
+      setGoogleVerified(false);
+    }
     setReady(true);
   }, []);
 
@@ -38,8 +45,8 @@ function AdminGate() {
     );
   }
 
-  // Step 1 — identity. Google account chooser, nothing else on the page.
-  if (!user) return <IdentityScreen />;
+  // Step 1 — always require an explicit Google account choice for this console visit.
+  if (!googleVerified || !user) return <IdentityScreen onVerified={() => setGoogleVerified(true)} />;
 
   // Step 2 — authorization. Accounts not registered in the console are rejected.
   if (!isAdmin) return <UnauthorizedScreen email={user.email ?? ""} />;
@@ -77,16 +84,25 @@ function Shell({ children }: { children: React.ReactNode }) {
   );
 }
 
-function IdentityScreen() {
+function IdentityScreen({ onVerified }: { onVerified: () => void }) {
   const [busy, setBusy] = useState(false);
 
   const google = async () => {
     setBusy(true);
+    try {
+      sessionStorage.setItem(GOOGLE_VERIFIED_KEY, "1");
+      sessionStorage.removeItem(UNLOCK_KEY);
+    } catch {
+      /* Continue with OAuth when storage is unavailable. */
+    }
     const { error } = await signInWithGoogle("/admin", { forceAccountChooser: true });
     if (error) {
+      try { sessionStorage.removeItem(GOOGLE_VERIFIED_KEY); } catch { /* ignore */ }
       toast.error(error.message);
       setBusy(false);
+      return;
     }
+    onVerified();
   };
 
   return (
@@ -119,7 +135,14 @@ function UnauthorizedScreen({ email }: { email: string }) {
 
   const switchAccount = async () => {
     setBusy(true);
+    try {
+      sessionStorage.removeItem(GOOGLE_VERIFIED_KEY);
+      sessionStorage.removeItem(UNLOCK_KEY);
+    } catch {
+      /* ignore */
+    }
     await supabase.auth.signOut();
+    try { sessionStorage.setItem(GOOGLE_VERIFIED_KEY, "1"); } catch { /* ignore */ }
     const { error } = await signInWithGoogle("/admin", { forceAccountChooser: true });
     if (error) {
       toast.error(error.message);
@@ -230,7 +253,15 @@ function CredentialScreen({
         </button>
         <button
           type="button"
-          onClick={() => { void supabase.auth.signOut(); }}
+          onClick={() => {
+            try {
+              sessionStorage.removeItem(GOOGLE_VERIFIED_KEY);
+              sessionStorage.removeItem(UNLOCK_KEY);
+            } catch {
+              /* ignore */
+            }
+            void supabase.auth.signOut();
+          }}
           className="inline-flex w-full items-center justify-center gap-2 py-1 text-[12px] text-white/50 transition hover:text-white"
         >
           <ArrowLeft className="size-3.5" /> Sign in with a different account
