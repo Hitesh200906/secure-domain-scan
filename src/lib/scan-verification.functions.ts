@@ -34,7 +34,11 @@ export const startEmailVerification = createServerFn({ method: "POST" })
         verification_status: "failed",
         verification_notes: "Target website could not be reached for email verification",
       });
-      throw new Error("We could not reach your website to verify the business email. Make sure it is publicly accessible.");
+      return {
+        ok: false as const,
+        message:
+          "We could not reach your website to verify the business email. Make sure it is publicly accessible.",
+      };
     }
 
     if (!present) {
@@ -42,9 +46,10 @@ export const startEmailVerification = createServerFn({ method: "POST" })
         verification_status: "failed",
         verification_notes: `Business email ${businessEmail} was not found on ${targetUrl}`,
       });
-      throw new Error(
-        `${businessEmail} is not present on your website. Publish it on your contact page or in the footer — we could not complete your scan.`,
-      );
+      return {
+        ok: false as const,
+        message: `${businessEmail} is not present on your website. Publish it on your contact page or in the footer — we could not complete your scan.`,
+      };
     }
 
     const code = sixDigits();
@@ -58,6 +63,7 @@ export const startEmailVerification = createServerFn({ method: "POST" })
     // Email delivery needs a verified sender domain for this project; until one
     // is configured the code is returned to the signed-in owner of the request.
     return {
+      ok: true as const,
       sent_to: businessEmail,
       delivered: false as const,
       code,

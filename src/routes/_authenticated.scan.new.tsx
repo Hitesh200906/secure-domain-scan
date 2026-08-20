@@ -120,6 +120,10 @@ function ScanNewPage() {
 
       if (verification === "email") {
         const res = await startEmail({ data: { scan_id: scanId } });
+        if (!res.ok) {
+          toast.error(res.message);
+          return;
+        }
         setFlow({ kind: "email", scanId, sentTo: res.sent_to, hint: res.delivered ? null : res.code });
       } else {
         const res = await startManual({ data: { scan_id: scanId } });
@@ -277,6 +281,10 @@ function ScanNewPage() {
           onClose={() => setFlow(null)}
           onResend={async () => {
             const res = await startEmail({ data: { scan_id: flow.scanId } });
+            if (!res.ok) {
+              toast.error(res.message);
+              return;
+            }
             setFlow({ ...flow, hint: res.delivered ? null : res.code });
             toast.success("New code generated");
           }}
