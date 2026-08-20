@@ -90,7 +90,7 @@ export const confirmEmailVerification = createServerFn({ method: "POST" })
       verification_status: "verified",
       verified_at: new Date().toISOString(),
       otp_code: null,
-      status: "pending",
+      status: "awaiting_config",
       verification_notes: "Verified by email one-time code",
     });
     return { ok: true as const };
@@ -140,7 +140,7 @@ export const confirmManualVerification = createServerFn({ method: "POST" })
     await updateScan(data.scan_id, {
       verification_status: "verified",
       verified_at: new Date().toISOString(),
-      status: "pending",
+      status: "awaiting_config",
       verification_notes: "Verified by AI site code check",
     });
     return { verified: true as const, message: "Domain ownership verified." };

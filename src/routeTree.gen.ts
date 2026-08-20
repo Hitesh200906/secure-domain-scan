@@ -51,7 +51,9 @@ import { Route as BusinessSupportRouteImport } from './routes/business.support'
 import { Route as BusinessTeamRouteImport } from './routes/business.team'
 import { Route as ReportIdRouteImport } from './routes/report.$id'
 import { Route as AuthenticatedScanIndexRouteImport } from './routes/_authenticated.scan.index'
+import { Route as AuthenticatedScanConfigureRouteImport } from './routes/_authenticated.scan.configure'
 import { Route as AuthenticatedScanNewRouteImport } from './routes/_authenticated.scan.new'
+import { Route as ApiPublicScannerReportRouteImport } from './routes/api/public/scanner-report'
 import { Route as BusinessStoreEditRouteImport } from './routes/business.store.edit'
 
 const IndexRoute = IndexRouteImport.update({
@@ -263,10 +265,21 @@ const AuthenticatedScanIndexRoute = AuthenticatedScanIndexRouteImport.update({
   path: '/scan/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedScanConfigureRoute =
+  AuthenticatedScanConfigureRouteImport.update({
+    id: '/scan/configure',
+    path: '/scan/configure',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedScanNewRoute = AuthenticatedScanNewRouteImport.update({
   id: '/scan/new',
   path: '/scan/new',
   getParentRoute: () => AuthenticatedRoute,
+} as any)
+const ApiPublicScannerReportRoute = ApiPublicScannerReportRouteImport.update({
+  id: '/api/public/scanner-report',
+  path: '/api/public/scanner-report',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const BusinessStoreEditRoute = BusinessStoreEditRouteImport.update({
   id: '/edit',
@@ -315,7 +328,9 @@ export interface FileRoutesByFullPath {
   '/report/$id': typeof ReportIdRoute
   '/admin/': typeof AdminIndexRoute
   '/business/': typeof BusinessIndexRoute
+  '/scan/configure': typeof AuthenticatedScanConfigureRoute
   '/scan/new': typeof AuthenticatedScanNewRoute
+  '/api/public/scanner-report': typeof ApiPublicScannerReportRoute
   '/business/store/edit': typeof BusinessStoreEditRoute
   '/scan/': typeof AuthenticatedScanIndexRoute
 }
@@ -358,7 +373,9 @@ export interface FileRoutesByTo {
   '/report/$id': typeof ReportIdRoute
   '/admin': typeof AdminIndexRoute
   '/business': typeof BusinessIndexRoute
+  '/scan/configure': typeof AuthenticatedScanConfigureRoute
   '/scan/new': typeof AuthenticatedScanNewRoute
+  '/api/public/scanner-report': typeof ApiPublicScannerReportRoute
   '/business/store/edit': typeof BusinessStoreEditRoute
   '/scan': typeof AuthenticatedScanIndexRoute
 }
@@ -405,7 +422,9 @@ export interface FileRoutesById {
   '/report/$id': typeof ReportIdRoute
   '/admin/': typeof AdminIndexRoute
   '/business/': typeof BusinessIndexRoute
+  '/_authenticated/scan/configure': typeof AuthenticatedScanConfigureRoute
   '/_authenticated/scan/new': typeof AuthenticatedScanNewRoute
+  '/api/public/scanner-report': typeof ApiPublicScannerReportRoute
   '/business/store/edit': typeof BusinessStoreEditRoute
   '/_authenticated/scan/': typeof AuthenticatedScanIndexRoute
 }
@@ -452,7 +471,9 @@ export interface FileRouteTypes {
     | '/report/$id'
     | '/admin/'
     | '/business/'
+    | '/scan/configure'
     | '/scan/new'
+    | '/api/public/scanner-report'
     | '/business/store/edit'
     | '/scan/'
   fileRoutesByTo: FileRoutesByTo
@@ -495,7 +516,9 @@ export interface FileRouteTypes {
     | '/report/$id'
     | '/admin'
     | '/business'
+    | '/scan/configure'
     | '/scan/new'
+    | '/api/public/scanner-report'
     | '/business/store/edit'
     | '/scan'
   id:
@@ -541,7 +564,9 @@ export interface FileRouteTypes {
     | '/report/$id'
     | '/admin/'
     | '/business/'
+    | '/_authenticated/scan/configure'
     | '/_authenticated/scan/new'
+    | '/api/public/scanner-report'
     | '/business/store/edit'
     | '/_authenticated/scan/'
   fileRoutesById: FileRoutesById
@@ -562,6 +587,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
   ReportIdRoute: typeof ReportIdRoute
+  ApiPublicScannerReportRoute: typeof ApiPublicScannerReportRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -860,12 +886,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedScanIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/scan/configure': {
+      id: '/_authenticated/scan/configure'
+      path: '/scan/configure'
+      fullPath: '/scan/configure'
+      preLoaderRoute: typeof AuthenticatedScanConfigureRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/scan/new': {
       id: '/_authenticated/scan/new'
       path: '/scan/new'
       fullPath: '/scan/new'
       preLoaderRoute: typeof AuthenticatedScanNewRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/api/public/scanner-report': {
+      id: '/api/public/scanner-report'
+      path: '/api/public/scanner-report'
+      fullPath: '/api/public/scanner-report'
+      preLoaderRoute: typeof ApiPublicScannerReportRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/business/store/edit': {
       id: '/business/store/edit'
@@ -878,11 +918,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedScanConfigureRoute: typeof AuthenticatedScanConfigureRoute
   AuthenticatedScanNewRoute: typeof AuthenticatedScanNewRoute
   AuthenticatedScanIndexRoute: typeof AuthenticatedScanIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedScanConfigureRoute: AuthenticatedScanConfigureRoute,
   AuthenticatedScanNewRoute: AuthenticatedScanNewRoute,
   AuthenticatedScanIndexRoute: AuthenticatedScanIndexRoute,
 }
@@ -989,6 +1031,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
   ReportIdRoute: ReportIdRoute,
+  ApiPublicScannerReportRoute: ApiPublicScannerReportRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

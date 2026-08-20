@@ -19,6 +19,7 @@ import icLock from "@/assets/tile-lock.jpg";
 
 import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
+import { RequireAuth } from "@/components/site/RequireAuth";
 import { useAdmin } from "@/hooks/use-admin";
 import { RoleBadge } from "@/components/ui/RoleBadge";
 
@@ -33,7 +34,11 @@ export const Route = createFileRoute("/dashboard")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Dashboard,
+  component: () => (
+    <RequireAuth title="Sign in to view your dashboard">
+      <Dashboard />
+    </RequireAuth>
+  ),
 });
 
 import {

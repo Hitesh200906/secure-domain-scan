@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { PageHeader } from "@/components/site/PageHeader";
 import { useState } from "react";
 import { LifeBuoy, Mail, MapPin, Phone } from "lucide-react";
@@ -18,6 +18,7 @@ export const Route = createFileRoute("/contact")({
 
 function ContactPage() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
 
   return (
@@ -65,7 +66,8 @@ function ContactPage() {
               e.preventDefault();
               const fd = new FormData(e.currentTarget);
               if (!user) {
-                toast.error("Please sign in to open a ticket");
+                toast.error("Please log in or sign up to open a ticket");
+                navigate({ to: "/login" });
                 return;
               }
               try {

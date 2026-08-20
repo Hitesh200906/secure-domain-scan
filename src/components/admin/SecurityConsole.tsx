@@ -1,10 +1,12 @@
-import { ArrowLeft, ScanLine, Tags, X } from "lucide-react";
+import { ArrowLeft, ClipboardList, ScanLine, Tags, X } from "lucide-react";
 import { InSecurityConsole, useSecurityConsole, type SecuritySection } from "@/lib/security-console";
 import { useAdmin } from "@/hooks/use-admin";
 import { ScansPanel } from "@/components/admin/security/ScansPanel";
 import { PricingPanel } from "@/components/admin/security/PricingPanel";
+import { FormsPanel } from "@/components/admin/security/FormsPanel";
 
 const items: { id: SecuritySection; label: string; icon: typeof ScanLine; superOnly?: boolean }[] = [
+  { id: "forms", label: "Forms", icon: ClipboardList },
   { id: "scan", label: "Scan", icon: ScanLine },
   { id: "pricing", label: "Pricing", icon: Tags, superOnly: true },
 ];
@@ -77,6 +79,7 @@ export function SecurityConsoleOverlay() {
           </div>
 
           <InSecurityConsole>
+            {active === "forms" && <FormsPanel />}
             {active === "scan" && <ScansPanel />}
             {active === "pricing" && <PricingPanel />}
           </InSecurityConsole>
