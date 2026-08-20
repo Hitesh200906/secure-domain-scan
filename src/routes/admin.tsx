@@ -1,9 +1,10 @@
-import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, KeyRound, Loader2, Lock, ShieldCheck } from "lucide-react";
+import { ArrowLeft, KeyRound, Loader2, Lock, ShieldAlert, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import nexefyLogo from "@/assets/nexefy-logo.png";
 import { useAdmin } from "@/hooks/use-admin";
+import { supabase } from "@/integrations/supabase/client";
 import { hasAdminPasscode, verifyAdminPasscode, signInWithGoogle } from "@/lib/auth-helpers";
 import { api } from "@/lib/api-client";
 import { SecurityConsoleProvider } from "@/lib/security-console";
@@ -227,8 +228,12 @@ function CredentialScreen({
         >
           {busy ? <Loader2 className="size-4 animate-spin" /> : <ShieldCheck className="size-4" />} Unlock console
         </button>
-        <button type="button" onClick={onBack} className="inline-flex w-full items-center justify-center gap-2 py-1 text-[12px] text-white/50 transition hover:text-white">
-          <ArrowLeft className="size-3.5" /> Back
+        <button
+          type="button"
+          onClick={() => { void supabase.auth.signOut(); }}
+          className="inline-flex w-full items-center justify-center gap-2 py-1 text-[12px] text-white/50 transition hover:text-white"
+        >
+          <ArrowLeft className="size-3.5" /> Sign in with a different account
         </button>
       </form>
     </Shell>
