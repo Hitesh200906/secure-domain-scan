@@ -57,31 +57,67 @@ function isLovableHost(): boolean {
 }
 
 /**
- * Google sign-in. Uses the Lovable managed broker on Lovable hosts and the
- * standard Supabase OAuth redirect on external hosts (e.g. Vercel).
- * On Vercel the Supabase project's Google provider must be enabled and the
- * site's URL added to Authentication → URL Configuration → Redirect URLs.
+ * Google sign-in. Uses the Lovable managed broker on Lovable hosts (works in
+ * the editor preview iframe via popup) and the standard Supabase OAuth redirect
+ * on external hosts (e.g. Vercel).
+ *
+ * `redirect_uri` must be a public same-origin URL — we always send the user
+ * back to the origin and remember the intended path separately.
  */
+const POST_LOGIN_KEY = "nexefy_post_login_path";
+
+export function takePostLoginPath(): string | null {
+  try {
+    const p = sessionStorage.getItem(POST_LOGIN_KEY);
+    if (p) sessionStorage.removeItem(POST_LOGIN_KEY);
+    return p;
+  } catch {
+    return null;
+  }
+}
+
 export async function signInWithGoogle(
   redirectPath = "/dashboard",
   opts: { forceAccountChooser?: boolean } = {},
 ): Promise<{ error?: Error }> {
-  const redirectTo = window.location.origin + redirectPath;
+  try {
+    sessionStorage.setItem(POST_LOGIN_KEY, redirectPath);
+  } catch {
+    /* ignore */
+  }
   const prompt = opts.forceAccountChooser ? "select_account" : undefined;
 
   if (isLovableHost()) {
-    const res = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: redirectTo,
-      ...(prompt ? { extraParams: { prompt } } : {}),
-    });
-    if (res.error) return { error: res.error instanceof Error ? res.error : new Error(String(res.error)) };
-    return {};
+    try {
+      const res = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+        ...(prompt ? { extraParams: { prompt } } : {}),
+      });
+      if (res.error) {
+        const err = res.error instanceof Error ? res.error : new Error(String(res.error));
+        console.error("[auth] Google sign-in failed", err);
+        return { error: err };
+      }
+      if (!res.redirected) {
+        // Tokens received and session set in this tab — go to the intended page.
+        window.location.assign(redirectPath);
+      }
+      return {};
+    } catch (e) {
+      const err = e instanceof Error ? e : new Error(String(e));
+      console.error("[auth] Google sign-in threw", err);
+      return { error: err };
+    }
   }
 
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "google",
-    options: { redirectTo, ...(prompt ? { queryParams: { prompt } } : {}) },
+    options: {
+      redirectTo: window.location.origin + redirectPath,
+      ...(prompt ? { queryParams: { prompt } } : {}),
+    },
   });
   if (error) return { error };
   return {};
 }
+
