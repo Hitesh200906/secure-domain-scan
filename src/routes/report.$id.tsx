@@ -219,45 +219,73 @@ function ReportPage() {
           <section className="rounded-2xl border bg-white/[0.02] p-6" style={{ borderColor: BORDER }}>
             <SectionTitle icon={Scale} title="Risk posture" sub="Severity distribution, exposure surface and projected score after remediation" />
 
-            <div className="mt-5 h-2.5 w-full rounded-full overflow-hidden flex bg-white/[0.05]">
-              {breakdown.filter((b) => b.count > 0).map((b, i) => (
-                <motion.div
-                  key={b.severity}
-                  initial={{ width: 0 }}
-                  whileInView={{ width: `${(b.count / Math.max(1, vulns.length)) * 100}%` }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1, ease: EASE, delay: i * 0.12 }}
-                  style={{ background: b.color }}
-                />
-              ))}
-            </div>
-
             <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {breakdown.map((b, i) => (
-                <motion.div
-                  key={b.severity}
-                  whileHover={{ y: -3 }}
-                  className="rounded-xl border bg-black/50 p-4"
-                  style={{ borderColor: BORDER, boxShadow: `inset 0 -2px 0 0 ${b.color}55` }}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">{b.severity}</span>
-                    <span className="text-lg font-semibold" style={{ color: b.color }}>
-                      <Counter to={b.count} />
-                    </span>
-                  </div>
-                  <div className="mt-2.5 h-1 rounded-full bg-white/[0.06] overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${(b.count / Math.max(1, vulns.length)) * 100}%` }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.9, ease: EASE, delay: 0.15 + i * 0.08 }}
-                      className="h-full rounded-full"
-                      style={{ background: b.color }}
+              {breakdown.map((b, i) => {
+                const severityMeta: Record<string, { icon: typeof AlertTriangle; label: string; desc: string }> = {
+                  Critical: { icon: Flame, label: "Critical", desc: "Immediate remediation required" },
+                  High: { icon: AlertTriangle, label: "High", desc: "Address within 72 hours" },
+                  Medium: { icon: ShieldAlert, label: "Medium", desc: "Schedule remediation soon" },
+                  Low: { icon: ShieldCheck, label: "Low", desc: "Hardening opportunity" },
+                };
+                const meta = severityMeta[b.severity] ?? { icon: Shield, label: b.severity, desc: "" };
+                const Icon = meta.icon;
+                return (
+                  <motion.div
+                    key={b.severity}
+                    initial={{ opacity: 0, y: 20, scale: 0.96 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, ease: EASE, delay: i * 0.1 }}
+                    whileHover={{ y: -5, transition: { duration: 0.25 } }}
+                    className="group relative overflow-hidden rounded-2xl border bg-black/60 p-4"
+                    style={{ borderColor: `rgba(255,255,255,0.08)` }}
+                  >
+                    {/* top accent line */}
+                    <div
+                      className="absolute inset-x-0 top-0 h-[2px]"
+                      style={{ background: `linear-gradient(90deg, ${b.color}, transparent)` }}
                     />
-                  </div>
-                </motion.div>
-              ))}
+                    {/* subtle glow on hover */}
+                    <div
+                      className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                      style={{ background: `radial-gradient(circle at 50% 0%, ${b.color}18, transparent 60%)` }}
+                    />
+
+                    <div className="relative flex items-start justify-between">
+                      <div
+                        className="flex size-9 items-center justify-center rounded-xl border bg-black/80"
+                        style={{ borderColor: `${b.color}40` }}
+                      >
+                        <Icon className="size-4" style={{ color: b.color }} />
+                      </div>
+                      <span className="text-2xl font-semibold tracking-tight" style={{ color: b.color }}>
+                        <Counter to={b.count} />
+                      </span>
+                    </div>
+
+                    <div className="relative mt-4">
+                      <div className="text-sm font-medium text-white">{meta.label}</div>
+                      <div className="mt-0.5 text-[11px] leading-snug text-muted-foreground">{meta.desc}</div>
+                    </div>
+
+                    <div className="relative mt-4 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        whileInView={{ width: `${(b.count / Math.max(1, vulns.length)) * 100}%` }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1, ease: EASE, delay: 0.3 + i * 0.1 }}
+                        className="h-full rounded-full"
+                        style={{ background: b.color, boxShadow: `0 0 12px ${b.color}55` }}
+                      />
+                    </div>
+
+                    <div className="relative mt-2 flex items-center justify-between text-[10px] text-muted-foreground">
+                      <span>{((b.count / Math.max(1, vulns.length)) * 100).toFixed(0)}% of total</span>
+                      <span className="font-mono">{b.count}</span>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
 
             <div className="mt-6 grid lg:grid-cols-2 gap-3">
