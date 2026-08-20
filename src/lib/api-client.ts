@@ -393,6 +393,27 @@ export const api = {
       if (error) throw new Error(error.message);
       return { ok: true as const };
     },
+    /** Owner-only: mint a fresh admin API key for a console administrator. */
+    generateAdminApiKey: async (id: Id) => {
+      const bytes = new Uint8Array(24);
+      crypto.getRandomValues(bytes);
+      const key = `nxf_${Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("")}`;
+      const { error } = await supabase.from("admins").update({ api_key: key } as never).eq("id", id);
+      if (error) throw new Error(error.message);
+      return { api_key: key };
+    },
+    revokeAdminApiKey: async (id: Id) => {
+      const { error } = await supabase.from("admins").update({ api_key: null } as never).eq("id", id);
+      if (error) throw new Error(error.message);
+      return { ok: true as const };
+    },
+    /** Validates an admin API key against the signed-in account (security definer). */
+    verifyAdminApiKey: async (key: string) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error } = await (supabase as any).rpc("verify_admin_api_key", { _api_key: key });
+      if (error) throw new Error(error.message);
+      return Boolean(data);
+    },
     deleteAdmin: async (id: Id) => {
       const { error } = await supabase.from("admins").delete().eq("id", id);
       if (error) throw new Error(error.message);

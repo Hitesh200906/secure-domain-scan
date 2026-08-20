@@ -17,6 +17,7 @@ export type Database = {
       admins: {
         Row: {
           active: boolean
+          api_key: string | null
           created_at: string
           email: string
           full_name: string | null
@@ -27,6 +28,7 @@ export type Database = {
         }
         Insert: {
           active?: boolean
+          api_key?: string | null
           created_at?: string
           email: string
           full_name?: string | null
@@ -37,6 +39,7 @@ export type Database = {
         }
         Update: {
           active?: boolean
+          api_key?: string | null
           created_at?: string
           email?: string
           full_name?: string | null
@@ -819,6 +822,7 @@ export type Database = {
         Args: { _order_id: string; _payment_id: string }
         Returns: number
       }
+      verify_admin_api_key: { Args: { _key: string }; Returns: boolean }
     }
     Enums: {
       app_role: "master_admin" | "super_admin" | "admin" | "user"
