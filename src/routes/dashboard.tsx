@@ -454,7 +454,10 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
   void profile; void onOpenReports; void role;
   const sc = scoreColor(report.score);
   const strong = report.score >= 70;
-  const threats = report.threats.slice(0, 5);
+  const vulns = useMemo(() => buildVulnerabilities(report), [report]);
+  const breakdown = useMemo(() => severityBreakdown(vulns), [vulns]);
+  const threats = vulns.slice(0, 6);
+
 
   return (
     <div className="px-4 sm:px-6 py-5 sm:py-6 space-y-4 max-w-[1560px]">
