@@ -62,18 +62,25 @@ function isLovableHost(): boolean {
  * On Vercel the Supabase project's Google provider must be enabled and the
  * site's URL added to Authentication → URL Configuration → Redirect URLs.
  */
-export async function signInWithGoogle(redirectPath = "/dashboard"): Promise<{ error?: Error }> {
+export async function signInWithGoogle(
+  redirectPath = "/dashboard",
+  opts: { forceAccountChooser?: boolean } = {},
+): Promise<{ error?: Error }> {
   const redirectTo = window.location.origin + redirectPath;
+  const prompt = opts.forceAccountChooser ? "select_account" : undefined;
 
   if (isLovableHost()) {
-    const res = await lovable.auth.signInWithOAuth("google", { redirect_uri: redirectTo });
+    const res = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: redirectTo,
+      ...(prompt ? { extraParams: { prompt } } : {}),
+    });
     if (res.error) return { error: res.error instanceof Error ? res.error : new Error(String(res.error)) };
     return {};
   }
 
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "google",
-    options: { redirectTo },
+    options: { redirectTo, ...(prompt ? { queryParams: { prompt } } : {}) },
   });
   if (error) return { error };
   return {};
