@@ -575,50 +575,52 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
       </Card>
 
 
-      {/* LIVE THREAT ACTIVITY */}
+      {/* THREAT ACTIVITY */}
       <Card>
         <div className="p-4 sm:p-8">
           <div className="flex items-center justify-between gap-3">
-            <h3 className="text-[16px] sm:text-[18px] font-medium tracking-tight truncate">Live Threat Activity</h3>
-            <button onClick={onOpenReports} className="group inline-flex shrink-0 items-center gap-2 text-[12px] sm:text-[13px]" style={{ color: C.blue }}>
-              View all <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-            </button>
+            <div className="min-w-0">
+              <h3 className="text-[16px] sm:text-[18px] font-medium tracking-tight truncate">Threat Activity</h3>
+              <div className="text-[11px] sm:text-[12px] truncate" style={{ color: C.muted }}>
+                {report.scanner} · {report.endpointsTested} endpoints tested · {report.pagesCrawled} pages crawled
+              </div>
+            </div>
+            <Link to="/scan" className="group inline-flex shrink-0 items-center gap-2 text-[12px] sm:text-[13px]" style={{ color: C.blue }}>
+              Scan Again <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+            </Link>
           </div>
 
           <div className="mt-4 sm:mt-5">
-            <div className="hidden sm:grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.7fr)_minmax(0,0.8fr)] gap-3 sm:gap-4 text-[12px] pb-3" style={{ color: C.muted }}>
-              <div className="min-w-0">Threat</div>
-              <div className="min-w-0">Location</div>
-              <div className="min-w-0">Type</div>
-              <div className="min-w-0">Security Affected</div>
-              <div className="min-w-0">Time</div>
+            <div className="hidden sm:grid grid-cols-[minmax(0,1.5fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,0.7fr)_minmax(0,0.9fr)] gap-3 sm:gap-4 text-[12px] pb-3" style={{ color: C.muted }}>
+              <div className="min-w-0">Finding</div>
+              <div className="min-w-0">Endpoint</div>
+              <div className="min-w-0">Classification</div>
+              <div className="min-w-0">Severity</div>
+              <div className="min-w-0">Parameter</div>
             </div>
             {threats.map((t, i) => {
-              const sev = SEV_ORDER[i % SEV_ORDER.length];
+              const color = SEVERITY_COLOR[t.severity];
+              let path = t.url;
+              try { path = new URL(t.url).pathname; } catch { /* relative url */ }
               return (
                 <motion.div
-                  key={`${t.ip}-${i}`}
+                  key={t.id}
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, delay: i * 0.05 }}
-                  className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-1 py-3 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.7fr)_minmax(0,0.8fr)] sm:gap-4 sm:items-center sm:py-3.5"
+                  className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-1 py-3 sm:grid-cols-[minmax(0,1.5fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,0.7fr)_minmax(0,0.9fr)] sm:gap-4 sm:items-center sm:py-3.5"
                   style={{ borderTop: `1px solid ${C.border}` }}
                 >
-                  <div className="min-w-0 text-[13px] sm:text-[13.5px] truncate">{t.type}</div>
-                  <div className="min-w-0 text-right sm:text-left text-[12px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>
-                    <span className="mr-1.5">{FLAG[t.country] ?? "🏳️"}</span>
-                    {COUNTRY[t.country] ?? t.country}
-                  </div>
-                  <div className="min-w-0 text-[11.5px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>
-                    {THREAT_KIND[t.type] ?? "Anomaly"}
-                  </div>
+                  <div className="min-w-0 text-[13px] sm:text-[13.5px] truncate">{t.title}</div>
+                  <div className="min-w-0 text-right sm:text-left text-[12px] sm:text-[13px] font-mono truncate" style={{ color: C.sub }}>{path}</div>
+                  <div className="min-w-0 text-[11.5px] sm:text-[13px] truncate" style={{ color: C.sub }}>{t.cwe} · {t.owasp.split(" - ")[1] ?? t.owasp}</div>
                   <div className="min-w-0 order-last sm:order-none text-[11.5px] sm:text-[13.5px] truncate">
-                    <span className="inline-flex items-center gap-2" style={{ color: sev.color }}>
-                      <span className="size-1.5 rounded-full" style={{ background: sev.color }} />
-                      {sev.label}
+                    <span className="inline-flex items-center gap-2" style={{ color }}>
+                      <span className="size-1.5 rounded-full" style={{ background: color }} />
+                      {t.severity}
                     </span>
                   </div>
-                  <div className="min-w-0 order-last sm:order-none text-right sm:text-left text-[11.5px] sm:text-[13.5px] truncate" style={{ color: C.sub }}>{t.ago.replace("m ago", " min ago")}</div>
+                  <div className="min-w-0 order-last sm:order-none text-right sm:text-left text-[11.5px] sm:text-[13px] font-mono truncate" style={{ color: C.sub }}>{t.parameter}</div>
                 </motion.div>
               );
             })}
@@ -626,6 +628,7 @@ function Overview({ report, profile, scans, mounted, onOpenReports, role, name }
         </div>
 
       </Card>
+
 
       {/* DETAILED REPORT */}
       <Card className="relative overflow-hidden">
