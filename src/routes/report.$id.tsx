@@ -240,11 +240,6 @@ function ReportPage() {
                     className="group relative overflow-hidden rounded-2xl border bg-black/60 p-4"
                     style={{ borderColor: `rgba(255,255,255,0.08)` }}
                   >
-                    {/* top accent line */}
-                    <div
-                      className="absolute inset-x-0 top-0 h-[2px]"
-                      style={{ background: `linear-gradient(90deg, ${b.color}, transparent)` }}
-                    />
                     {/* subtle glow on hover */}
                     <div
                       className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
