@@ -193,7 +193,7 @@ function ReportPage() {
                 <Pill color="#fff">{exploitable} confirmed exploitable</Pill>
               </div>
             </div>
-            <ScoreDial score={report.score} color={sc} />
+            <div className="hidden lg:block" />
           </div>
 
           {/* summary cards */}
@@ -530,43 +530,6 @@ function SectionTitle({ icon: Icon, title, sub }: { icon: typeof Globe2; title: 
         <Icon className="size-4 text-muted-foreground" /> {title}
       </h2>
       {sub ? <p className="mt-1 text-[11px] text-muted-foreground">{sub}</p> : null}
-    </div>
-  );
-}
-
-function ScoreDial({ score, color }: { score: number; color: string }) {
-  const r = 62;
-  const c = 2 * Math.PI * r;
-  const arc = 0.75; // 270°
-  const dash = c * arc;
-  const offset = dash - (score / 100) * dash;
-  return (
-    <div className="relative mx-auto size-[168px] shrink-0">
-      <motion.div
-        aria-hidden
-        className="absolute inset-3 rounded-full blur-2xl"
-        style={{ background: `radial-gradient(circle, ${color}33, transparent 70%)` }}
-        animate={{ scale: [1, 1.06, 1] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <svg viewBox="0 0 160 160" className="relative size-full -rotate-[225deg]">
-        <circle cx="80" cy="80" r={r} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="9" strokeLinecap="round" strokeDasharray={`${dash} ${c}`} />
-        <motion.circle
-          cx="80" cy="80" r={r} fill="none" stroke={color} strokeWidth="9" strokeLinecap="round"
-          strokeDasharray={`${dash} ${c}`}
-          initial={{ strokeDashoffset: dash }}
-          whileInView={{ strokeDashoffset: offset }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.8, ease: EASE }}
-        />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <div className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">Security score</div>
-        <div className="mt-1 text-4xl font-light" style={{ color }}>
-          <Counter to={score} />
-        </div>
-        <div className="text-[10px] text-muted-foreground">out of 100</div>
-      </div>
     </div>
   );
 }
