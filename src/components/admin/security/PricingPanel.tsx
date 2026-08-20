@@ -64,7 +64,7 @@ export function PricingPanel() {
                   className="mt-1.5 w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2 text-sm resize-none" />
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <Field label="Price ($)" v={String(p.price_monthly)} on={(v) => setPlans((c) => c.map((x) => x.id === p.id ? { ...x, price_monthly: Number(v) || 0 } : x))} />
+                <Field label="Price (credits)" v={String(p.price_monthly)} on={(v) => setPlans((c) => c.map((x) => x.id === p.id ? { ...x, price_monthly: Number(v) || 0 } : x))} />
                 <Field label="Price label" v={p.price_label || ""} on={(v) => setPlans((c) => c.map((x) => x.id === p.id ? { ...x, price_label: v } : x))} />
               </div>
               <Field label="Credits / month" v={String(p.credits)} on={(v) => setPlans((c) => c.map((x) => x.id === p.id ? { ...x, credits: Number(v) || 0 } : x))} />
