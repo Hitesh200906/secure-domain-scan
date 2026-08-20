@@ -509,7 +509,7 @@ function Overview({ report, profile, scans, mounted, loading, onOpenReports, rol
               {isDemo ? (
                 <>Sample assessment of <span className="font-mono text-white/90">{report.target}</span> — {report.findings} findings across {report.endpointsTested} endpoints. Start a scan to see your own data here.</>
               ) : (
-                <>Last assessment of <span className="font-mono text-white/90">{report.target}</span> finished in {report.duration} with {report.findings} findings across {report.endpointsTested} endpoints.</>
+                <>Latest assessment of <span className="font-mono text-white/90">{report.target}</span> — {report.findings} findings across {report.endpointsTested} endpoints.</>
               )}
             </p>
 
@@ -602,7 +602,7 @@ function Overview({ report, profile, scans, mounted, loading, onOpenReports, rol
               img={icScan}
               title="Scan Coverage"
               sub={`${report.pagesCrawled} pages crawled\n${report.endpointsTested} endpoints tested`}
-              right={<span className="text-[13px] font-mono" style={{ color: C.sub }}>{report.duration}</span>}
+              right={null}
             />
             <div className="h-px my-4 sm:my-6" style={{ background: C.border }} />
             <SideStat
