@@ -67,7 +67,19 @@ function ScanNewPage() {
   const { plan } = useSearch({ from: "/_authenticated/scan/new" }) as { plan: Plan };
   const { user } = useAuth();
   const navigate = useNavigate();
-  const info = PLAN_INFO[plan];
+  const [livePlan, setLivePlan] = useState<{ name: string; credits: number } | null>(null);
+  const info = livePlan ?? PLAN_INFO[plan];
+
+  useEffect(() => {
+    api.publicPricing()
+      .then(({ plans }) => {
+        const p = (plans as Array<{ slug: string; name: string; price_monthly: number }> | undefined)
+          ?.find((x) => x.slug === plan);
+        if (p) setLivePlan({ name: p.name, credits: p.price_monthly });
+      })
+      .catch(() => { /* keep fallback */ });
+  }, [plan]);
+
 
   const [form, setForm] = useState({
     full_name: "",
