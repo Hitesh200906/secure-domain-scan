@@ -161,9 +161,12 @@ function ScanNewPage() {
           >
             ← Back
           </button>
-          <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            {info.name} · {info.credits} credits
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-white/80">
+            <span>{info.name}</span>
+            <span className="text-white/25">·</span>
+            <span className="text-white">{info.credits.toLocaleString()} credits</span>
           </div>
+
         </div>
 
         <form onSubmit={submit} className="mt-8 space-y-14">
