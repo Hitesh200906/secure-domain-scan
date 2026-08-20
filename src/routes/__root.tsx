@@ -17,6 +17,7 @@ import { Footer } from "../components/site/Footer";
 import { Toaster } from "sonner";
 import { AppModeProvider } from "../lib/app-mode";
 import { BanGate } from "../components/site/BanGate";
+import { PostLoginRedirect } from "../components/site/PostLoginRedirect";
 
 function NotFoundComponent() {
   return (
