@@ -17,7 +17,7 @@ const baseLinks = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const { user, isAdmin: admin } = useAdmin();
+  const { user } = useAdmin();
   const { mode } = useAppMode();
   const navigate = useNavigate();
   const links = [
@@ -35,6 +35,15 @@ export function Navbar() {
   const signOut = async () => {
     await supabase.auth.signOut();
     navigate({ to: "/" });
+  };
+
+  const beginAdminLogin = () => {
+    try {
+      sessionStorage.removeItem("nexefy_admin_google_verified");
+      sessionStorage.removeItem("nexus_admin_unlocked");
+    } catch {
+      /* ignore */
+    }
   };
 
   return (
@@ -67,13 +76,15 @@ export function Navbar() {
           </nav>
 
           <div className="hidden md:flex items-center gap-2">
+            <Link
+              to="/admin"
+              onClick={beginAdminLogin}
+              className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[13px] text-muted-foreground hover:text-white border border-white/10 transition"
+            >
+              <Lock className="size-3.5" /> Admin Console
+            </Link>
             {user ? (
               <div className="flex items-center gap-2">
-                {admin && (
-                  <Link to="/admin" className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[13px] text-muted-foreground hover:text-white border border-white/10 transition">
-                    <Lock className="size-3.5" /> Admin Console
-                  </Link>
-                )}
                 <Link to="/profile" search={{ tab: undefined }} aria-label="Profile" className="size-9 rounded-full glass grid place-items-center text-sm font-medium hover:border-white/20 transition">
                   {(user.email || "?")[0].toUpperCase()}
                 </Link>
@@ -118,6 +129,13 @@ export function Navbar() {
 
         {open && (
           <div className="md:hidden mt-2 bg-black/90 backdrop-blur-xl border border-white/10 rounded-2xl p-4 space-y-1">
+            <Link
+              to="/admin"
+              onClick={() => { beginAdminLogin(); setOpen(false); }}
+              className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg"
+            >
+              <Lock className="size-4" /> Admin Console
+            </Link>
             {user && (
               <>
                 {mode === "security" && (
@@ -129,11 +147,6 @@ export function Navbar() {
                 <Link to="/profile" search={{ tab: undefined }} onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">
                   <UserIcon className="size-4" /> Profile
                 </Link>
-                {admin && (
-                  <Link to="/admin" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-white rounded-lg">
-                    <Lock className="size-4" /> Admin Console
-                  </Link>
-                )}
               </>
             )}
             <div className="pt-2 mt-2 border-t border-white/10 flex flex-col gap-2">
