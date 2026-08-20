@@ -200,7 +200,7 @@ function Dashboard() {
         {view === "reports" ? (
           <ReportsSection scans={scans} activeId={activeId} onUpload={uploadReport} mounted={mounted} />
         ) : (
-          <Overview report={report} profile={profile} scans={scans} mounted={mounted} onOpenReports={() => setView("reports")} role={role} name={profile?.full_name ?? null} />
+          <Overview report={report} profile={profile} scans={scans} mounted={mounted} loading={loadingScans} onOpenReports={() => setView("reports")} role={role} name={profile?.full_name ?? null} />
         )}
       </div>
 
