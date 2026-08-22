@@ -356,16 +356,6 @@ function cap(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-function estTime(depth: string, rate: string) {
-  const base = depth === "shallow" ? 10 : depth === "deep" ? 45 : 25;
-  const mult = rate === "slow" ? 1.6 : rate === "fast" ? 0.7 : 1;
-  return `~${Math.round(base * mult)} minutes`;
-}
-
-function estCredits(depth: string, ai: boolean) {
-  const base = depth === "shallow" ? 40 : depth === "deep" ? 180 : 100;
-  return base + (ai ? 20 : 0);
-}
 
 function ProgressBar({ current }: { current: number }) {
   return (
