@@ -227,8 +227,8 @@ export const api = {
     // Writes go through a SECURITY DEFINER RPC: audit_logs has no client INSERT policy.
     const { error } = await supabase.rpc("log_audit_event", {
       _action: body.action,
-      _target_type: body.target_type ?? null,
-      _target_id: body.target_id ?? null,
+      _target_type: body.target_type ?? undefined,
+      _target_id: body.target_id ?? undefined,
       _metadata: (body.metadata ?? {}) as never,
     });
     if (error) throw new Error(error.message);
