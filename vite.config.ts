@@ -13,4 +13,9 @@ export default defineConfig({
   nitro: {
     preset: "vercel",
   },
+  // Route SSR through src/server.ts so real server-side exceptions are logged
+  // (Vercel Runtime Logs) instead of being swallowed into an opaque 500.
+  tanstackStart: {
+    server: { entry: "server" },
+  },
 });
