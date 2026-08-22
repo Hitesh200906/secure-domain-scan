@@ -224,13 +224,12 @@ export const api = {
 
   // ---- Audit ----
   audit: async (body: AuditInput) => {
-    const user = await currentUser();
-    const { error } = await supabase.from("audit_logs").insert({
-      action: body.action,
-      target_type: body.target_type ?? null,
-      target_id: body.target_id ?? null,
-      metadata: (body.metadata ?? {}) as never,
-      actor_email: user?.email ?? null,
+    // Writes go through a SECURITY DEFINER RPC: audit_logs has no client INSERT policy.
+    const { error } = await supabase.rpc("log_audit_event", {
+      _action: body.action,
+      _target_type: body.target_type ?? null,
+      _target_id: body.target_id ?? null,
+      _metadata: (body.metadata ?? {}) as never,
     });
     if (error) throw new Error(error.message);
     return { ok: true as const };
