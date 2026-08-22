@@ -824,6 +824,15 @@ export type Database = {
       }
       is_banned: { Args: { _user_id: string }; Returns: boolean }
       is_master_admin: { Args: { _user_id: string }; Returns: boolean }
+      log_audit_event: {
+        Args: {
+          _action: string
+          _metadata?: Json
+          _target_id?: string
+          _target_type?: string
+        }
+        Returns: string
+      }
       my_store_ids: { Args: never; Returns: string[] }
       owns_store: { Args: { _store_id: string }; Returns: boolean }
       purchase_credits: { Args: { _credits: number }; Returns: number }
