@@ -293,7 +293,7 @@ function ScanConfigurePage() {
 
             <div className="mt-8 rounded-2xl border border-white/10 bg-[#08080a] p-6">
               <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
-                {[...summaryRows, ["Estimated time", estTime(cfg.scan_depth, cfg.scan_rate)] as [string, string], ["Estimated credits", `${estCredits(cfg.scan_depth, cfg.ai_validation)} credits`] as [string, string]].map(([k, v]) => (
+                {[...summaryRows, ["Plan", scan?.plan ? cap(scan.plan) : "—"] as [string, string]].map(([k, v]) => (
                   <div key={k} className="flex items-center justify-between border-b border-white/5 pb-2.5">
                     <dt className="text-[12px] text-muted-foreground">{k}</dt>
                     <dd className="text-[13px] text-white">{v}</dd>
