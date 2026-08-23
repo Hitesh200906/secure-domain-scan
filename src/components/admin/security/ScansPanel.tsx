@@ -222,6 +222,11 @@ export function ScansPanel() {
             )}
           </Section>
 
+          <Section title="Scanner reports">
+            <ScanReports scanId={openScan.id} />
+          </Section>
+
+
 
           <Section title="Status">
             <div className="flex flex-wrap items-center gap-3">
