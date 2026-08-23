@@ -525,6 +525,7 @@ export type Database = {
       scan_requests: {
         Row: {
           business_email: string | null
+          callback_token: string | null
           company: string | null
           config_submitted_at: string | null
           created_at: string
@@ -552,6 +553,7 @@ export type Database = {
         }
         Insert: {
           business_email?: string | null
+          callback_token?: string | null
           company?: string | null
           config_submitted_at?: string | null
           created_at?: string
@@ -579,6 +581,7 @@ export type Database = {
         }
         Update: {
           business_email?: string | null
+          callback_token?: string | null
           company?: string | null
           config_submitted_at?: string | null
           created_at?: string
