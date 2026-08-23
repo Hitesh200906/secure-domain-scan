@@ -23,18 +23,34 @@ type ScanRow = {
   created_at: string;
 };
 
-/** Scan-request forms submitted by customers, queued straight to the AI scanner. */
+/** Scan-request forms submitted by customers, forwarded to the AI scanner by an admin. */
 export function FormsPanel() {
   const [rows, setRows] = useState<ScanRow[]>([]);
   const [query, setQuery] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
+  const [sendingId, setSendingId] = useState<string | null>(null);
+  const dispatchScan = useServerFn(adminDispatchScan);
 
-  useEffect(() => {
+  const load = () =>
     api.admin
       .listScans()
       .then(({ scans }) => setRows(((scans ?? []) as ScanRow[]).filter((s) => !!s.scan_config)))
       .catch((e) => toast.error(e instanceof Error ? e.message : "Failed to load"));
-  }, []);
+
+  useEffect(() => { load(); }, []);
+
+  const send = async (s: ScanRow) => {
+    setSendingId(s.id);
+    try {
+      await dispatchScan({ data: { id: s.id } });
+      toast.success("Form sent to the AI scanner");
+      await load();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not send to the scanner");
+    } finally {
+      setSendingId(null);
+    }
+  };
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
