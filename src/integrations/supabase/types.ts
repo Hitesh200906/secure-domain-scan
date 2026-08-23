@@ -478,6 +478,7 @@ export type Database = {
       reports: {
         Row: {
           created_at: string
+          delivered_at: string | null
           file_url: string | null
           findings: Json
           id: string
@@ -489,6 +490,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          delivered_at?: string | null
           file_url?: string | null
           findings?: Json
           id?: string
@@ -500,6 +502,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          delivered_at?: string | null
           file_url?: string | null
           findings?: Json
           id?: string
@@ -525,6 +528,8 @@ export type Database = {
           company: string | null
           config_submitted_at: string | null
           created_at: string
+          dispatch_error: string | null
+          dispatched_at: string | null
           email: string
           findings_count: number | null
           full_name: string
@@ -550,6 +555,8 @@ export type Database = {
           company?: string | null
           config_submitted_at?: string | null
           created_at?: string
+          dispatch_error?: string | null
+          dispatched_at?: string | null
           email: string
           findings_count?: number | null
           full_name: string
@@ -575,6 +582,8 @@ export type Database = {
           company?: string | null
           config_submitted_at?: string | null
           created_at?: string
+          dispatch_error?: string | null
+          dispatched_at?: string | null
           email?: string
           findings_count?: number | null
           full_name?: string
