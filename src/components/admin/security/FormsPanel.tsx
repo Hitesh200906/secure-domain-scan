@@ -193,6 +193,7 @@ export function FormsPanel() {
                     >
                       View
                     </button>
+                    </div>
                   </td>
                 </tr>
               ))}
