@@ -1,10 +1,89 @@
 import { useEffect, useMemo, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { AdminShell, Section, Badge } from "@/components/admin/AdminShell";
 import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 import { logAudit } from "@/lib/audit";
 import { TECH_LABELS } from "@/lib/scan-config.schemas";
-import { ArrowLeft, CheckCircle2, Loader2, Search, Trash2, XCircle } from "lucide-react";
+import { adminListScanReports, adminReleaseReport } from "@/lib/admin-scans.functions";
+import { ArrowLeft, CheckCircle2, Loader2, Search, Send, Trash2, XCircle } from "lucide-react";
+
+type ScanReport = {
+  id: string;
+  title: string;
+  summary: string | null;
+  severity: string | null;
+  delivered_at: string | null;
+  created_at: string;
+};
+
+/** Reports returned by the AI scanner for one request, with a release action. */
+function ScanReports({ scanId }: { scanId: string }) {
+  const [reports, setReports] = useState<ScanReport[]>([]);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const listReports = useServerFn(adminListScanReports);
+  const release = useServerFn(adminReleaseReport);
+
+  const load = () =>
+    listReports({ data: { id: scanId } })
+      .then((r) => setReports(r.reports))
+      .catch(() => setReports([]));
+
+  useEffect(() => { load(); }, [scanId]);
+
+  const send = async (r: ScanReport) => {
+    setBusyId(r.id);
+    try {
+      await release({ data: { id: r.id } });
+      await logAudit("report.release", { type: "report", id: r.id });
+      toast.success("Report released to the customer");
+      await load();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to release report");
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  if (reports.length === 0) {
+    return (
+      <div className="rounded-xl border border-dashed border-white/10 bg-black/40 py-10 text-center text-sm text-muted-foreground">
+        No report received from the AI scanner yet.
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {reports.map((r) => (
+        <div key={r.id} className="rounded-xl border border-white/8 bg-black/40 px-4 py-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div className="text-sm text-white">{r.title}</div>
+              <div className="text-[11px] text-muted-foreground">
+                Received {new Date(r.created_at).toLocaleString()}
+                {r.severity ? ` · severity ${r.severity}` : ""}
+              </div>
+            </div>
+            {r.delivered_at ? (
+              <Badge tone="ok">Delivered to customer</Badge>
+            ) : (
+              <button
+                disabled={busyId === r.id}
+                onClick={() => send(r)}
+                className="inline-flex items-center gap-2 rounded-lg bg-[#2563EB] px-4 py-2 text-[12px] font-medium text-white transition hover:bg-[#1D4ED8] disabled:opacity-50"
+              >
+                {busyId === r.id ? <Loader2 className="size-3.5 animate-spin" /> : <Send className="size-3.5" />}
+                Send report to customer
+              </button>
+            )}
+          </div>
+          {r.summary && <p className="mt-2 text-xs text-muted-foreground">{r.summary}</p>}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 type Scan = {
   id: string;
