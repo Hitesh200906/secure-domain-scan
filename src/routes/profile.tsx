@@ -15,8 +15,8 @@ import { deleteMyAccount } from "@/lib/account.functions";
 import { uploadStoreAsset } from "@/lib/uploads";
 import { useAuth } from "@/hooks/use-auth";
 import { RequireAuth } from "@/components/site/RequireAuth";
-import creditsWallet from "@/assets/credits-wallet.png.asset.json";
-import creditsGift from "@/assets/credits-gift.png.asset.json";
+const creditsWallet = { url: "/images/credits-wallet.png" };
+const creditsGift = { url: "/images/credits-gift.png" };
 import CreditsCheckout from "@/components/credits/CreditsCheckout";
 import CreditsAmount from "@/components/credits/CreditsAmount";
 import { loadRazorpay, openRazorpay, type RazorpayResult } from "@/lib/razorpay-checkout";
@@ -38,7 +38,7 @@ function providerLogo(provider?: string) {
   return <EmailProviderLogo />;
 }
 import textureImg from "@/assets/profile-texture.jpg";
-import pageBgAsset from "@/assets/profile-bg.png.asset.json";
+const pageBgAsset = { url: "/images/profile-bg.png" };
 
 
 export const Route = createFileRoute("/profile")({

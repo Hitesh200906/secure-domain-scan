@@ -4,10 +4,10 @@ import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe, Store, Gift, Layers, U
 import { useAppMode } from "@/lib/app-mode";
 import { HeroPointsPanel } from "./HeroPointsPanel";
 import { ComingSoonDialog, COMING_SOON, type ComingSoonInfo } from "./ComingSoonDialog";
-import imgMarketplace from "@/assets/card-marketplace-v7.png.asset.json";
-import imgSecurity from "@/assets/card-security-v11.png.asset.json";
-import imgRewards from "@/assets/card-rewards-v10.png.asset.json";
-import heroDesk from "@/assets/hero-bg-v6.png.asset.json";
+const imgMarketplace = { url: "/images/card-marketplace-v7.png" };
+const imgSecurity = { url: "/images/card-security-v11.png" };
+const imgRewards = { url: "/images/card-rewards-v10.png" };
+const heroDesk = { url: "/images/hero-bg-v6.png" };
 
 export const T = {
   bg: "#000000",

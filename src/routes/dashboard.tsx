@@ -10,8 +10,8 @@ import {
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import nexusLogo from "@/assets/nexefy-logo.png";
-import dashboardHeroBg from "@/assets/dashboard-hero-bg-v2.png.asset.json";
-import detailedReportBg from "@/assets/detailed-security-report-v3.png.asset.json";
+const dashboardHeroBg = { url: "/images/dashboard-hero-bg-v2.png" };
+const detailedReportBg = { url: "/images/detailed-security-report-v3.png" };
 import icShield from "@/assets/tile-shield.jpg";
 import icScan from "@/assets/tile-scan.jpg";
 import icServer from "@/assets/tile-server.jpg";

@@ -12,7 +12,7 @@ import { useAuth } from "@/hooks/use-auth";
 import icIdCard from "@/assets/scanform-icon-idcard.png";
 import icGlobe from "@/assets/scanform-icon-globe.png";
 import icShield from "@/assets/scanform-icon-shield.png";
-import scanConfigBg from "@/assets/scan-config-bg.png.asset.json";
+const scanConfigBg = { url: "/images/scan-config-bg.png" };
 import {
   startEmailVerification,
   confirmEmailVerification,

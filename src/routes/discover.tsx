@@ -8,7 +8,7 @@ import {
   ShoppingCart, Brain, TrendingUp, PenTool,
 } from "lucide-react";
 import { Navbar } from "@/components/site/Navbar";
-import heroBg from "@/assets/hero-bg.png.asset.json";
+const heroBg = { url: "/images/hero-bg.png" };
 import { supabase } from "@/integrations/supabase/client";
 import type { Store } from "@/lib/business";
 import { PUBLIC_STORE_COLUMNS } from "@/lib/business";

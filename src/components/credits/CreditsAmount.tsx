@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { ArrowRight, Check, Crown, Gift, Lock, Rocket, ShieldCheck, Star, Zap } from "lucide-react";
-import cardAsset from "@/assets/power-card.png.asset.json";
-import c1 from "@/assets/crystal-1.png.asset.json";
-import c2 from "@/assets/crystal-2.png.asset.json";
-import c3 from "@/assets/crystal-3.png.asset.json";
-import c4 from "@/assets/crystal-4.png.asset.json";
+const cardAsset = { url: "/images/power-card.png" };
+const c1 = { url: "/images/crystal-1.png" };
+const c2 = { url: "/images/crystal-2.png" };
+const c3 = { url: "/images/crystal-3.png" };
+const c4 = { url: "/images/crystal-4.png" };
 
 const PACKS = [
   { amount: 250, tag: "MOST POPULAR", label: "Starter", icon: Zap, img: c1.url },

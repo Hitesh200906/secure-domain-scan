@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { ArrowRight, ChevronDown, Check, Lock, Search, ShieldCheck } from "lucide-react";
-import globeAsset from "@/assets/currency-globe.png.asset.json";
+const globeAsset = { url: "/images/currency-globe.png" };
 
 export type Currency = { code: string; name: string; flag: string };
 
