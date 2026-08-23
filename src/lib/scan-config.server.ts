@@ -1,5 +1,9 @@
 import type { ScanConfig } from "@/lib/scan-config.schemas";
 
+/** External AI scanner endpoint. Override with SCANNER_WEBHOOK_URL if it changes. */
+export const SCANNER_ENDPOINT =
+  process.env["SCANNER_WEBHOOK_URL"] || "https://hood-extend-andrews-tank.trycloudflare.com/scan";
+
 export type ScannerJob = {
   scan_id: string;
   user_id: string;
@@ -10,18 +14,19 @@ export type ScannerJob = {
   email: string;
   business_email: string;
   config: ScanConfig;
+  callback_url: string;
+  callback_token: string;
 };
 
 /**
- * Hands the queued job to the external AI scanner. The scanner posts the
- * finished report back to /api/public/scanner-report, which files it under the
- * requesting user automatically — no admin approval in the loop.
+ * Hands a queued job to the external AI scanner. Dispatch is triggered by an
+ * administrator from the admin panel. When the scan finishes the scanner posts
+ * the report back to `callback_url`, where it lands in the admin panel for
+ * review before it is released to the customer.
  */
-export async function dispatchToScanner(job: ScannerJob): Promise<boolean> {
-  const url = process.env["SCANNER_WEBHOOK_URL"];
-  if (!url) return false;
+export async function dispatchToScanner(job: ScannerJob): Promise<{ ok: boolean; error?: string }> {
   try {
-    const res = await fetch(url, {
+    const res = await fetch(SCANNER_ENDPOINT, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -29,8 +34,12 @@ export async function dispatchToScanner(job: ScannerJob): Promise<boolean> {
       },
       body: JSON.stringify(job),
     });
-    return res.ok;
-  } catch {
-    return false;
+    if (!res.ok) {
+      const body = (await res.text().catch(() => "")).slice(0, 300);
+      return { ok: false, error: `Scanner responded ${res.status}. ${body}` };
+    }
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Scanner unreachable" };
   }
 }
