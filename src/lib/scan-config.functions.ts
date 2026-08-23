@@ -3,7 +3,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { ScanIdInput } from "@/lib/scan-verification.schemas";
 import { SubmitScanConfigInput } from "@/lib/scan-config.schemas";
 import { loadScan, updateScan } from "@/lib/scan-verification.server";
-import { dispatchToScanner } from "@/lib/scan-config.server";
+
 
 /**
  * Loads the verified submission behind the configuration step. The target URL
@@ -59,23 +59,12 @@ export const submitScanConfiguration = createServerFn({ method: "POST" })
       throw new Error("You already have several scans in the queue. Please wait for them to finish.");
     }
 
+    // The form is queued for the admin panel, which forwards it to the AI scanner.
     await updateScan(data.scan_id, {
       scan_config: data.config,
       config_submitted_at: new Date().toISOString(),
       status: "pending",
     });
 
-    const dispatched = await dispatchToScanner({
-      scan_id: data.scan_id,
-      user_id: context.userId,
-      target_url: targetUrl,
-      plan: String(scan.plan ?? ""),
-      full_name: String(scan.full_name ?? ""),
-      company: String(scan.company ?? ""),
-      email: String(scan.email ?? ""),
-      business_email: String(scan.business_email ?? ""),
-      config: data.config,
-    });
-
-    return { ok: true as const, dispatched, credits: p?.credits ?? 0 };
+    return { ok: true as const, dispatched: false, credits: p?.credits ?? 0 };
   });

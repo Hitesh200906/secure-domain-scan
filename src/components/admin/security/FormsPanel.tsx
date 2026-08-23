@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { AdminShell, Section, Badge } from "@/components/admin/AdminShell";
 import { api } from "@/lib/api-client";
 import { toast } from "sonner";
-import { ArrowLeft, Search } from "lucide-react";
+import { ArrowLeft, Loader2, Search, Send } from "lucide-react";
 import { TECH_LABELS } from "@/lib/scan-config.schemas";
+import { adminDispatchScan } from "@/lib/admin-scans.functions";
 
 type ScanRow = {
   id: string;
@@ -18,21 +20,39 @@ type ScanRow = {
   verification_status?: string | null;
   scan_config?: Record<string, unknown> | null;
   config_submitted_at?: string | null;
+  dispatched_at?: string | null;
+  dispatch_error?: string | null;
   created_at: string;
 };
 
-/** Scan-request forms submitted by customers, queued straight to the AI scanner. */
+/** Scan-request forms submitted by customers, forwarded to the AI scanner by an admin. */
 export function FormsPanel() {
   const [rows, setRows] = useState<ScanRow[]>([]);
   const [query, setQuery] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
+  const [sendingId, setSendingId] = useState<string | null>(null);
+  const dispatchScan = useServerFn(adminDispatchScan);
 
-  useEffect(() => {
+  const load = () =>
     api.admin
       .listScans()
       .then(({ scans }) => setRows(((scans ?? []) as ScanRow[]).filter((s) => !!s.scan_config)))
       .catch((e) => toast.error(e instanceof Error ? e.message : "Failed to load"));
-  }, []);
+
+  useEffect(() => { load(); }, []);
+
+  const send = async (s: ScanRow) => {
+    setSendingId(s.id);
+    try {
+      await dispatchScan({ data: { id: s.id } });
+      toast.success("Form sent to the AI scanner");
+      await load();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not send to the scanner");
+    } finally {
+      setSendingId(null);
+    }
+  };
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -95,9 +115,25 @@ export function FormsPanel() {
               <Badge tone={open.status === "completed" ? "ok" : open.status === "failed" ? "danger" : "warn"}>
                 {open.status.replace(/_/g, " ")}
               </Badge>
+              {open.dispatched_at && (
+                <span className="text-[11px] text-muted-foreground">
+                  Sent to scanner {new Date(open.dispatched_at).toLocaleString()}
+                </span>
+              )}
+              {open.dispatch_error && <span className="text-[11px] text-rose-300">{open.dispatch_error}</span>}
+            </div>
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <button
+                disabled={sendingId === open.id}
+                onClick={() => send(open)}
+                className="inline-flex items-center gap-2 rounded-lg bg-[#2563EB] px-4 py-2 text-[12px] font-medium text-white transition hover:bg-[#1D4ED8] disabled:opacity-50"
+              >
+                {sendingId === open.id ? <Loader2 className="size-3.5 animate-spin" /> : <Send className="size-3.5" />}
+                {open.dispatched_at ? "Resend to AI scanner" : "Send to AI scanner"}
+              </button>
               <span className="text-xs text-muted-foreground">
-                Dispatched automatically to the AI scanner — no approval required. The finished report is filed in Scan and
-                delivered to the customer.
+                The scanner returns the finished report to the admin panel, where you release it to the customer from Scan
+                Management.
               </span>
             </div>
           </Section>
@@ -142,12 +178,22 @@ export function FormsPanel() {
                     {s.config_submitted_at ? new Date(s.config_submitted_at).toLocaleString() : new Date(s.created_at).toLocaleString()}
                   </td>
                   <td className="px-2 py-3 text-right">
+                    <div className="inline-flex items-center justify-end gap-2">
+                      <button
+                        disabled={sendingId === s.id}
+                        onClick={() => send(s)}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-white/12 px-3 py-1.5 text-[11px] text-neutral-200 transition hover:border-white/30 disabled:opacity-50"
+                      >
+                        {sendingId === s.id ? <Loader2 className="size-3 animate-spin" /> : <Send className="size-3" />}
+                        {s.dispatched_at ? "Resend" : "Send to scanner"}
+                      </button>
                     <button
                       onClick={() => setOpenId(s.id)}
                       className="rounded-lg bg-[#2563EB] px-3.5 py-1.5 text-[11px] font-medium text-white transition hover:bg-[#1D4ED8]"
                     >
                       View
                     </button>
+                    </div>
                   </td>
                 </tr>
               ))}
