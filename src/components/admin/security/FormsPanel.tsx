@@ -178,6 +178,15 @@ export function FormsPanel() {
                     {s.config_submitted_at ? new Date(s.config_submitted_at).toLocaleString() : new Date(s.created_at).toLocaleString()}
                   </td>
                   <td className="px-2 py-3 text-right">
+                    <div className="inline-flex items-center justify-end gap-2">
+                      <button
+                        disabled={sendingId === s.id}
+                        onClick={() => send(s)}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-white/12 px-3 py-1.5 text-[11px] text-neutral-200 transition hover:border-white/30 disabled:opacity-50"
+                      >
+                        {sendingId === s.id ? <Loader2 className="size-3 animate-spin" /> : <Send className="size-3" />}
+                        {s.dispatched_at ? "Resend" : "Send to scanner"}
+                      </button>
                     <button
                       onClick={() => setOpenId(s.id)}
                       className="rounded-lg bg-[#2563EB] px-3.5 py-1.5 text-[11px] font-medium text-white transition hover:bg-[#1D4ED8]"
