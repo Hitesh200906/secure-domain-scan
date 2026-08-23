@@ -2,9 +2,9 @@ import { motion } from "framer-motion";
 import { ArrowRight, ShieldCheck } from "lucide-react";
 import { SectionHeader } from "./Features";
 import { SectionBackdrop } from "./SectionFx";
-import bgIgAsset from "@/assets/social-bg-ig.png.asset.json";
-import bgFbAsset from "@/assets/social-bg-fb.png.asset.json";
-import bgXAsset from "@/assets/social-bg-x.png.asset.json";
+const bgIgAsset = { url: "/images/social-bg-ig.png" };
+const bgFbAsset = { url: "/images/social-bg-fb.png" };
+const bgXAsset = { url: "/images/social-bg-x.png" };
 
 const bgIg = bgIgAsset.url;
 const bgFb = bgFbAsset.url;

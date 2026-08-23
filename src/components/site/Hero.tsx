@@ -6,10 +6,10 @@ import { T, FeatureCard } from "./NexusCinematicHero";
 import { HeroPointsPanel } from "./HeroPointsPanel";
 import { ComingSoonDialog, COMING_SOON, type ComingSoonInfo } from "./ComingSoonDialog";
 import { SecurityCard } from "./SecurityCard";
-import imgMarketplace from "@/assets/card-marketplace-v7.png.asset.json";
-import imgSecurity from "@/assets/card-security-v11.png.asset.json";
-import imgRewards from "@/assets/card-rewards-v10.png.asset.json";
-import heroDesk from "@/assets/hero-bg-v6.png.asset.json";
+const imgMarketplace = { url: "/images/card-marketplace-v7.png" };
+const imgSecurity = { url: "/images/card-security-v11.png" };
+const imgRewards = { url: "/images/card-rewards-v10.png" };
+const heroDesk = { url: "/images/hero-bg-v6.png" };
 
 export function Hero() {
   const { setMode } = useAppMode();

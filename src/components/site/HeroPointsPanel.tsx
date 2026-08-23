@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 import { T } from "./NexusCinematicHero";
-import panelBg from "@/assets/points-panel-bg.png.asset.json";
+const panelBg = { url: "/images/points-panel-bg.png" };
 
 export type HeroPoint = {
   icon: LucideIcon;
