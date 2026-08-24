@@ -5,4 +5,4 @@ Disallow: /business
 Disallow: /dashboard
 Disallow: /profile
 
-Sitemap: https://secure-domain-scan.lovable.app/sitemap.xml
+Sitemap: https://nexefy.in/sitemap.xml
