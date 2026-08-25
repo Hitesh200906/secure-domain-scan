@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouterState } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Hero } from "@/components/site/Hero";
 import { Features } from "@/components/site/Features";
