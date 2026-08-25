@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouterState } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Hero } from "@/components/site/Hero";
 import { Features } from "@/components/site/Features";
@@ -45,6 +46,16 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const { mode } = useAppMode();
+  const hash = useRouterState({ select: (s) => s.location.hash });
+
+  // Scroll to a hash target (e.g. /#features after signup verification).
+  useEffect(() => {
+    if (!hash) return;
+    const t = window.setTimeout(() => {
+      document.getElementById(hash)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 500);
+    return () => window.clearTimeout(t);
+  }, [hash, mode]);
 
   return (
     <div className="relative overflow-hidden">
