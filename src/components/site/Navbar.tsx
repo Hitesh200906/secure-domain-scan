@@ -17,7 +17,7 @@ const baseLinks = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const { user, isAdmin } = useAdmin();
+  const { user, isAdmin, loading: authLoading } = useAdmin();
   const { mode } = useAppMode();
   const navigate = useNavigate();
   const links = [
@@ -85,7 +85,7 @@ export function Navbar() {
                 <Lock className="size-3.5" /> Admin Console
               </Link>
             )}
-            {user ? (
+            {authLoading ? null : user ? (
               <div className="flex items-center gap-2">
                 <Link to="/profile" search={{ tab: undefined }} aria-label="Profile" className="size-9 rounded-full glass grid place-items-center text-sm font-medium hover:border-white/20 transition">
                   {(user.email || "?")[0].toUpperCase()}
@@ -154,7 +154,7 @@ export function Navbar() {
               </>
             )}
             <div className="pt-2 mt-2 border-t border-white/10 flex flex-col gap-2">
-              {user ? (
+              {authLoading ? null : user ? (
                 <button onClick={signOut} className="text-center rounded-full glass px-4 py-2.5 text-sm flex items-center justify-center gap-2">
                   <LogOut className="size-4" /> Sign out
                 </button>
