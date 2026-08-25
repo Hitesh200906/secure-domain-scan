@@ -18,6 +18,7 @@ import { Toaster } from "sonner";
 import { AppModeProvider } from "../lib/app-mode";
 import { BanGate } from "../components/site/BanGate";
 import { PostLoginRedirect } from "../components/site/PostLoginRedirect";
+import { AuthProvider } from "../hooks/use-auth";
 
 function NotFoundComponent() {
   return (
@@ -169,18 +170,20 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AppModeProvider>
-        <div className="relative min-h-screen flex flex-col">
-          {!isApp && <Navbar />}
-          <main className="flex-1">
-            <Outlet />
-          </main>
-          {!isApp && <Footer />}
-          <Toaster theme="dark" position="top-right" />
-          <PostLoginRedirect />
-          <BanGate />
-        </div>
-      </AppModeProvider>
+      <AuthProvider>
+        <AppModeProvider>
+          <div className="relative min-h-screen flex flex-col">
+            {!isApp && <Navbar />}
+            <main className="flex-1">
+              <Outlet />
+            </main>
+            {!isApp && <Footer />}
+            <Toaster theme="dark" position="top-right" />
+            <PostLoginRedirect />
+            <BanGate />
+          </div>
+        </AppModeProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

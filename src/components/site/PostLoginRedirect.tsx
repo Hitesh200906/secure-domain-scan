@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { takePostLoginPath } from "@/lib/auth-helpers";
+import { useAuth } from "@/hooks/use-auth";
 
 /**
  * After a full-page Google OAuth redirect the user lands on the origin ("/").
@@ -9,7 +10,10 @@ import { takePostLoginPath } from "@/lib/auth-helpers";
  * section of the profile takes priority (first-time sign-up onboarding).
  */
 export function PostLoginRedirect() {
+  const { user, loading } = useAuth();
+
   useEffect(() => {
+    if (loading || !user) return;
     let done = false;
     const go = (path: string | null) => {
       if (done || !path) return;
@@ -39,18 +43,8 @@ export function PostLoginRedirect() {
       go(intended);
     };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session?.user && (event === "SIGNED_IN" || event === "INITIAL_SESSION")) {
-        void resolve(session.user.id);
-      }
-    });
-
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session?.user) void resolve(data.session.user.id);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+    void resolve(user.id);
+  }, [loading, user]);
 
   return null;
 }
