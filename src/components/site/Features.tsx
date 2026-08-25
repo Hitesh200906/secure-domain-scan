@@ -83,7 +83,7 @@ function Tilt3DCard({
 
 export function Features() {
   return (
-    <section className="relative py-16 sm:py-32 overflow-hidden">
+    <section id="features" className="relative py-16 sm:py-32 overflow-hidden">
 
 
 
