@@ -56,7 +56,7 @@ export function Hero() {
                   filter: "drop-shadow(0 8px 40px rgba(79,107,255,0.35))",
                 }}
               >
-                Nexefy Security
+                Nexefy
               </motion.h1>
 
               <motion.p
@@ -120,7 +120,7 @@ export function Hero() {
                   filter: "drop-shadow(0 8px 40px rgba(79,107,255,0.35))",
                 }}
               >
-                NEXEFY SECURITY
+                NEXEFY
               </motion.h1>
 
               <motion.p
