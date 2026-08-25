@@ -24,10 +24,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let authEventVersion = 0;
     let latestEventSession: Session | null = null;
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+    // ── TEMPORARY OAUTH CALLBACK DIAGNOSTICS (remove after debugging) ──
+    const dbg = (label: string, payload: Record<string, unknown>) => {
+      try {
+        console.log(`[auth-debug] ${label}`, payload);
+      } catch { /* ignore */ }
+    };
+    if (typeof window !== "undefined") {
+      const { href, search, hash } = window.location;
+      const callbackKind = search.includes("code=")
+        ? "?code= (PKCE-style authorization code in query)"
+        : hash.includes("access_token=")
+          ? "#access_token= (implicit tokens in hash)"
+          : "neither (no code or token in URL)";
+      dbg("location after return from provider", {
+        href,
+        search,
+        hash,
+        callbackKind,
+      });
+    }
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, s) => {
       if (!active) return;
       authEventVersion += 1;
       latestEventSession = s;
+      // ── TEMPORARY OAUTH CALLBACK DIAGNOSTICS ──
+      dbg("onAuthStateChange event", {
+        event,
+        sessionNull: s === null,
+        userId: s?.user?.id ?? null,
+        provider: s?.user?.app_metadata?.provider ?? null,
+        expiresAt: s?.expires_at ?? null,
+      });
       setSession(s);
     });
 
@@ -36,6 +65,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .then(({ data, error }) => {
         if (!active) return;
         if (error) console.error("[auth] Initial session restoration failed", error);
+        // ── TEMPORARY OAUTH CALLBACK DIAGNOSTICS ──
+        dbg("getSession() result", {
+          error: error ? String(error.message ?? error) : null,
+          sessionNull: data.session === null,
+          userId: data.session?.user?.id ?? null,
+          provider: data.session?.user?.app_metadata?.provider ?? null,
+          expiresAt: data.session?.expires_at ?? null,
+          storageKeys: (() => {
+            try {
+              return Object.keys(window.localStorage).filter((k) => k.includes("auth") || k.startsWith("sb-"));
+            } catch {
+              return [];
+            }
+          })(),
+        });
 
         // An auth callback may complete while getSession() is resolving. In
         // that case the newer auth event is authoritative and must not be
