@@ -98,6 +98,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Detect vulnerabilities before attackers do. AI-powered security audits for modern teams.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Nexefy" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Nexefy Security — AI-Powered Security Analysis" },
       { name: "description", content: "Nexefy Security Suite offers AI-powered website security analysis and vulnerability detection." },

@@ -17,11 +17,26 @@ import { useAuth } from "@/hooks/use-auth";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Nexefy — The home of internet business" },
+      { title: "Nexefy" },
+      { property: "og:title", content: "Nexefy" },
+      { property: "og:site_name", content: "Nexefy" },
+      { name: "twitter:title", content: "Nexefy" },
       {
         name: "description",
         content:
-          "Discover thousands of communities, courses, and digital products — or launch your own store in minutes on Nexefy.",
+          "Detect vulnerabilities before attackers do. AI-powered security audits, pen test reports, and continuous monitoring for modern teams.",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Nexefy",
+          alternateName: "Nexefy",
+          url: "https://nexefy.in/",
+        }),
       },
     ],
   }),
