@@ -20,6 +20,7 @@ export const Route = createFileRoute("/")({
       { title: "Nexefy" },
       { property: "og:title", content: "Nexefy" },
       { property: "og:site_name", content: "Nexefy" },
+      { name: "twitter:title", content: "Nexefy" },
       {
         name: "description",
         content:
