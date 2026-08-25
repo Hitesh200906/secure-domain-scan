@@ -124,6 +124,11 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="dark">
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.addEventListener("vite:preloadError",function(event){event.preventDefault();try{var key="nexefy_chunk_recovery";var last=Number(sessionStorage.getItem(key)||"0");if(Date.now()-last<30000)return;sessionStorage.setItem(key,String(Date.now()))}catch(error){}window.location.reload()});`,
+          }}
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
