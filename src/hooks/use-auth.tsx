@@ -21,21 +21,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let active = true;
-    let authEventReceived = false;
+    let authEventVersion = 0;
+    let latestEventSession: Session | null = null;
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
       if (!active) return;
-      authEventReceived = true;
+      authEventVersion += 1;
+      latestEventSession = s;
       setSession(s);
-      setLoading(false);
     });
 
-    void supabase.auth.getSession().then(({ data, error }) => {
-      if (!active || authEventReceived) return;
-      if (error) console.error("[auth] Initial session restoration failed", error);
-      setSession(data.session);
-      setLoading(false);
-    });
+    const versionAtStart = authEventVersion;
+    void supabase.auth.getSession()
+      .then(({ data, error }) => {
+        if (!active) return;
+        if (error) console.error("[auth] Initial session restoration failed", error);
+
+        // An auth callback may complete while getSession() is resolving. In
+        // that case the newer auth event is authoritative and must not be
+        // overwritten by an older getSession() result.
+        setSession(authEventVersion === versionAtStart ? data.session : latestEventSession);
+      })
+      .catch((error: unknown) => {
+        if (active) console.error("[auth] Initial session restoration failed", error);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
 
     return () => {
       active = false;
