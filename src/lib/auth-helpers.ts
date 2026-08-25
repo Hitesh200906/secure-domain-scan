@@ -1,6 +1,5 @@
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 
 /**
  * Admin authorization is sourced from the `user_roles` table via the
@@ -52,8 +51,7 @@ export function verifyAdminPasscode(code: string): boolean {
 }
 
 /**
- * Google sign-in through the managed OAuth broker. It supports the editor
- * preview popup as well as full-page redirects on deployed domains.
+ * Google sign-in through the project's Supabase OAuth provider.
  *
  * `redirect_uri` must be a public same-origin URL — we always send the user
  * back to the origin and remember the intended path separately.
@@ -82,17 +80,16 @@ export async function signInWithGoogle(
   const prompt = opts.forceAccountChooser ? "select_account" : undefined;
 
   try {
-    const res = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-      ...(prompt ? { extraParams: { prompt } } : {}),
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.origin,
+        ...(prompt ? { queryParams: { prompt } } : {}),
+      },
     });
-    if (res.error) {
-      const err = res.error instanceof Error ? res.error : new Error(String(res.error));
-      console.error("[auth] Google sign-in failed", err);
-      return { error: err };
-    }
-    if (!res.redirected) {
-      window.location.assign(redirectPath);
+    if (error) {
+      console.error("[auth] Google sign-in failed", error);
+      return { error };
     }
     return {};
   } catch (e) {
