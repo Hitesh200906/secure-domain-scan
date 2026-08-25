@@ -143,6 +143,31 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  useEffect(() => {
+    const recoveryKey = "nexefy_chunk_recovery";
+    const recoverFromStaleChunk = (event: Event) => {
+      event.preventDefault();
+
+      try {
+        const lastRecovery = Number(sessionStorage.getItem(recoveryKey) ?? "0");
+        if (Date.now() - lastRecovery < 30_000) return;
+        sessionStorage.setItem(recoveryKey, String(Date.now()));
+      } catch {
+        // Storage can be unavailable in hardened browser modes; reloading is
+        // still the safest recovery from a stale deployment manifest.
+      }
+
+      window.location.reload();
+    };
+
+    // Vite emits this before a rejected route-level dynamic import. An open
+    // tab can otherwise keep an old hashed route chunk after a new Vercel
+    // deployment moves the custom domain to the latest immutable build.
+    window.addEventListener("vite:preloadError", recoverFromStaleChunk);
+    return () => window.removeEventListener("vite:preloadError", recoverFromStaleChunk);
+  }, []);
+
   const KNOWN_TOP_ROUTES = new Set([
     "", "contact", "discover", "pricing", "login", "signup", "reset-password",
     "dashboard", "profile", "admin", "business", "legal",
