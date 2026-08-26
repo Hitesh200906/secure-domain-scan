@@ -91,7 +91,7 @@ export function NexusCinematicHero() {
                 filter: "drop-shadow(0 8px 40px rgba(79,107,255,0.35))",
               }}
             >
-              NEXEFY
+              NEXEFY SECURITY
             </motion.h1>
 
             <motion.p
