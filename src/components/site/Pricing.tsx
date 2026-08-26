@@ -34,6 +34,7 @@ const FALLBACK_PLANS: Plan[] = [
 export function Pricing({ compact = false }: { compact?: boolean }) {
   const { user } = useAuth();
   const [plans, setPlans] = useState<Plan[]>(FALLBACK_PLANS);
+  const [usedFreeScan, setUsedFreeScan] = useState(false);
   useEffect(() => {
     api.publicPricing()
       .then(({ plans }) => {
@@ -41,6 +42,20 @@ export function Pricing({ compact = false }: { compact?: boolean }) {
       })
       .catch(() => { /* keep fallback */ });
   }, []);
+
+  useEffect(() => {
+    if (!user) { setUsedFreeScan(false); return; }
+    api.listScans()
+      .then(({ scans }) => setUsedFreeScan((scans?.length ?? 0) > 0))
+      .catch(() => { /* assume not used */ });
+  }, [user]);
+
+  const ctaFor = (slug: string, fallback: string | null) => {
+    if (slug === "starter") return usedFreeScan ? "Starter scan" : "Start free scan";
+    if (slug === "professional") return "Go professional";
+    return fallback || "Get started";
+  };
+
 
   return (
     <section className={`relative ${compact ? "py-12 sm:py-16" : "py-16 sm:py-32"}`}>
@@ -65,10 +80,20 @@ export function Pricing({ compact = false }: { compact?: boolean }) {
                   <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{t.name}</div>
                   <div className="mt-4 sm:mt-5 flex items-baseline gap-2">
                     <span className="text-4xl sm:text-5xl font-semibold tracking-tight">
-                      {t.price_monthly > 0 ? t.price_monthly.toLocaleString() : (t.price_label || "Custom")}
+                      {t.slug === "starter" && !usedFreeScan
+                        ? "Free"
+                        : t.price_monthly > 0
+                          ? t.price_monthly.toLocaleString()
+                          : (t.price_label || "Custom")}
                     </span>
-                    {t.price_monthly > 0 && <span className="text-sm text-muted-foreground">credits</span>}
+                    {t.price_monthly > 0 && !(t.slug === "starter" && !usedFreeScan) && (
+                      <span className="text-sm text-muted-foreground">credits</span>
+                    )}
+                    {t.slug === "starter" && !usedFreeScan && (
+                      <span className="text-sm text-muted-foreground">first scan</span>
+                    )}
                   </div>
+
 
                   <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{t.description || t.headline}</p>
                 </div>
@@ -88,7 +113,7 @@ export function Pricing({ compact = false }: { compact?: boolean }) {
                     : { to: "/login" as const })}
                   className={`group relative mt-8 inline-flex items-center justify-center overflow-hidden rounded-full px-5 py-3 text-sm font-medium transition-transform duration-300 hover:scale-[1.03] ${t.popular ? "bg-white text-black" : "glass text-white hover:border-white/20"}`}
                 >
-                  <span className="relative">{t.cta_label || "Get started"}</span>
+                  <span className="relative">{ctaFor(t.slug, t.cta_label)}</span>
 
                 </Link>
               </div>

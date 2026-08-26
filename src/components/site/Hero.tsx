@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { ArrowUpRight, Sparkles, ShieldCheck, Zap, Globe as GlobeIcon, ScanSearch, Bug, FileCheck } from "lucide-react";
+import { ArrowUpRight, ShieldCheck, Zap, Globe as GlobeIcon, ScanSearch, Bug, FileCheck } from "lucide-react";
 import { useAppMode } from "@/lib/app-mode";
 import { T, FeatureCard } from "./NexusCinematicHero";
 import { HeroPointsPanel } from "./HeroPointsPanel";
@@ -12,7 +12,7 @@ const imgRewards = { url: "/images/card-rewards-v10.png" };
 const heroDesk = { url: "/images/hero-bg-v6.png" };
 
 export function Hero() {
-  const { setMode } = useAppMode();
+  useAppMode();
   const [comingSoon, setComingSoon] = useState<ComingSoonInfo | null>(null);
 
   return (
@@ -141,8 +141,8 @@ export function Hero() {
               transition={{ duration: 0.7, delay: 0.32 }}
               className="mt-6 sm:mt-9 hidden sm:flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-3"
             >
-              <button
-                onClick={() => setMode("security")}
+              <a
+                href="/pricing"
                 className="group relative inline-flex items-center justify-center gap-1.5 sm:gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-3 py-2 sm:px-6 sm:py-3.5 text-[12px] sm:text-[14px] font-medium backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-white/25"
                 style={{
                   background: "linear-gradient(180deg,rgba(22,24,32,0.85) 0%,rgba(0,0,0,0.85) 100%)",
@@ -153,24 +153,10 @@ export function Hero() {
               >
                 <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                 <ShieldCheck className="size-3.5 sm:size-4 shrink-0" />
-                Switch to Nexefy Security
+                Start free scan
                 <ArrowUpRight className="size-3.5 sm:size-4 shrink-0 opacity-80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </button>
+              </a>
 
-              <button
-                onClick={() => setComingSoon(COMING_SOON.nexefy)}
-                className="group relative inline-flex items-center justify-center gap-1.5 sm:gap-2 overflow-hidden rounded-xl sm:rounded-2xl px-3 py-2 sm:px-6 sm:py-3.5 text-[12px] sm:text-[14px] font-medium text-white transition-all duration-300 hover:-translate-y-0.5"
-                style={{
-                  background: `linear-gradient(180deg, color-mix(in oklab, ${T.navy} 82%, white) 0%, ${T.navy} 55%, color-mix(in oklab, ${T.navy} 78%, black) 100%)`,
-                  border: "none",
-                  boxShadow: `inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.35), 0 10px 30px -16px ${T.navy}`,
-                }}
-              >
-                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                <Sparkles className="size-3.5 sm:size-4 shrink-0" />
-                Switch to Nexefy
-                <ArrowUpRight className="size-3.5 sm:size-4 shrink-0 opacity-90 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </button>
             </motion.div>
           </div>
 
