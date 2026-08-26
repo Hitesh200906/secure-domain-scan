@@ -92,6 +92,7 @@ function UsersPage() {
                     <div className="inline-flex gap-1">
                       <IconBtn title="+1 credit" onClick={() => act(r, { credits: r.credits + 1 }, "credits.add")}><Plus className="size-3" /></IconBtn>
                       <IconBtn title="-1 credit" onClick={() => act(r, { credits: Math.max(0, r.credits - 1) }, "credits.remove")}><Minus className="size-3" /></IconBtn>
+                      <IconBtn title="Add credits manually" onClick={() => setCreditTarget(r)}><Coins className="size-3" /></IconBtn>
                       {r.status !== "banned" ? (
                         <IconBtn title="Ban" tone="danger" onClick={() => setBanTarget(r)}><Ban className="size-3" /></IconBtn>
                       ) : (
