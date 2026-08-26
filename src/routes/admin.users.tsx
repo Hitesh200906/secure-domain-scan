@@ -4,7 +4,7 @@ import { AdminShell, Section, Badge } from "@/components/admin/AdminShell";
 import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 import { logAudit } from "@/lib/audit";
-import { Search, Plus, Minus, Ban, Check, X } from "lucide-react";
+import { Search, Plus, Minus, Ban, Check, X, Coins } from "lucide-react";
 
 export const Route = createFileRoute("/admin/users")({ component: UsersPage });
 
