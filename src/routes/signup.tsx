@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { signInWithGoogle } from "@/lib/auth-helpers";
 import { Input, GoogleIcon } from "./login";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
 export const Route = createFileRoute("/signup")({
   head: () => ({ meta: [{ title: "Sign up — Nexefy Security" }] }),
@@ -26,7 +25,6 @@ function SignupPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<"details" | "verify">("details");
-  const [code, setCode] = useState("");
 
   const goToFeatures = () => {
     try {
@@ -88,21 +86,7 @@ function SignupPage() {
       /* ignore */
     }
     setStep("verify");
-    toast.success(`Verification code sent to ${email}`);
-  };
-
-  const handleVerify = async () => {
-    if (code.length !== 6) return toast.error("Enter the 6-digit code from your email.");
-    setLoading(true);
-    const { error } = await supabase.auth.verifyOtp({
-      email,
-      token: code,
-      type: "signup",
-    });
-    setLoading(false);
-    if (error) return toast.error(error.message);
-    toast.success("Email verified — welcome to Nexefy");
-    goToFeatures();
+    toast.success(`Confirmation link sent to ${email}`);
   };
 
   const handleResend = async () => {
@@ -110,7 +94,7 @@ function SignupPage() {
     const { error } = await supabase.auth.resend({ type: "signup", email });
     setLoading(false);
     if (error) return toast.error(error.message);
-    toast.success("Verification code re-sent");
+    toast.success("Confirmation link re-sent");
   };
 
   const handleGoogle = async () => {
@@ -130,7 +114,6 @@ function SignupPage() {
         onClick={() => {
           if (step === "verify") {
             setStep("details");
-            setCode("");
             return;
           }
           if (window.history.length > 1) window.history.back();
@@ -192,38 +175,21 @@ function SignupPage() {
             <div className="flex size-12 items-center justify-center rounded-2xl glass">
               <MailCheck className="size-5 text-white" />
             </div>
-            <h1 className="mt-5 text-2xl sm:text-3xl font-semibold tracking-tight text-gradient">Verify your email</h1>
+            <h1 className="mt-5 text-2xl sm:text-3xl font-semibold tracking-tight text-gradient">Confirm your email</h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              We sent a 6-digit verification code to <span className="text-white">{email}</span>.
-              Enter it below — or click the confirmation link in the email.
+              We&apos;ve sent a confirmation link to <span className="text-white">{email}</span>.
+              Open your inbox and click the link — your account will be created and signed in
+              automatically.
             </p>
-
-            <div className="mt-7 flex justify-center" dir="ltr">
-              <InputOTP maxLength={6} value={code} onChange={setCode} autoFocus>
-                <InputOTPGroup>
-                  <InputOTPSlot index={0} />
-                  <InputOTPSlot index={1} />
-                  <InputOTPSlot index={2} />
-                  <InputOTPSlot index={3} />
-                  <InputOTPSlot index={4} />
-                  <InputOTPSlot index={5} />
-                </InputOTPGroup>
-              </InputOTP>
-            </div>
-
-            <button
-              onClick={handleVerify}
-              disabled={loading || code.length !== 6}
-              className="mt-6 w-full rounded-full bg-white text-black px-4 py-3 text-sm font-medium hover:shadow-[0_0_40px_-4px_oklch(0.86_0.16_200_/0.7)] transition disabled:opacity-60 inline-flex items-center justify-center gap-2"
-            >
-              {loading && <Loader2 className="size-4 animate-spin" />} Verify & create account
-            </button>
+            <p className="mt-4 rounded-2xl glass px-4 py-3 text-xs text-muted-foreground">
+              Can&apos;t find it? Check your spam or promotions folder.
+            </p>
 
             <div className="mt-5 flex items-center justify-between text-xs text-muted-foreground">
               <button onClick={handleResend} disabled={loading} className="hover:text-white disabled:opacity-50">
-                Resend code
+                Resend link
               </button>
-              <button onClick={() => { setStep("details"); setCode(""); }} className="hover:text-white">
+              <button onClick={() => setStep("details")} className="hover:text-white">
                 Use a different email
               </button>
             </div>

@@ -1,12 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { ScanIdInput, ScanOtpInput } from "@/lib/scan-verification.schemas";
+import { ScanIdInput, ScanStartEmailInput } from "@/lib/scan-verification.schemas";
 import {
   aiCodePresent,
   businessEmailOnSite,
   fetchSiteHtml,
   loadScan,
-  sha256,
   sixDigits,
   updateScan,
 } from "@/lib/scan-verification.server";
@@ -18,7 +17,7 @@ import {
  */
 export const startEmailVerification = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => ScanIdInput.parse(d))
+  .inputValidator((d: unknown) => ScanStartEmailInput.parse(d))
   .handler(async ({ data, context }) => {
     const { scan } = await loadScan(data.scan_id, context.userId);
     const businessEmail = String(scan.business_email || scan.email || "").trim();
@@ -52,38 +51,67 @@ export const startEmailVerification = createServerFn({ method: "POST" })
       };
     }
 
-    const code = sixDigits();
+    const origin = String(data.origin ?? "").replace(/\/$/, "");
+    const redirectTo = `${origin || "https://nexefy.in"}/scan/verify?id=${data.scan_id}`;
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    // Supabase (project SMTP) delivers the confirmation link to the business email.
+    const { error } = await supabaseAdmin.auth.signInWithOtp({
+      email: businessEmail,
+      options: { emailRedirectTo: redirectTo, shouldCreateUser: true },
+    });
+
     await updateScan(data.scan_id, {
-      otp_code: await sha256(code),
+      otp_code: null,
       otp_attempts: 0,
       verification_status: "otp_sent",
-      verification_expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
-      verification_notes: "Business email found on the target website",
+      verification_expires_at: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+      verification_notes: error
+        ? `Business email found; link delivery failed: ${error.message}`
+        : "Verification link sent to the business email",
     });
-    // Email delivery needs a verified sender domain for this project; until one
-    // is configured the code is returned to the signed-in owner of the request.
-    return {
-      ok: true as const,
-      sent_to: businessEmail,
-      delivered: false as const,
-      code,
-    };
+
+    if (error) {
+      return {
+        ok: false as const,
+        message: `We couldn't send the verification link to ${businessEmail}. Please try again in a moment.`,
+      };
+    }
+
+    return { ok: true as const, sent_to: businessEmail };
   });
 
-/** Email verification — confirm the code and send the request to the admin console. */
-export const confirmEmailVerification = createServerFn({ method: "POST" })
+/** Poll from the requester's tab: has the emailed link been confirmed yet? */
+export const checkEmailVerification = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => ScanOtpInput.parse(d))
+  .inputValidator((d: unknown) => ScanIdInput.parse(d))
   .handler(async ({ data, context }) => {
     const { scan } = await loadScan(data.scan_id, context.userId);
-    const attempts = Number(scan.otp_attempts ?? 0);
-    if (attempts >= 6) throw new Error("Too many attempts. Request a new code.");
-    const expires = scan.verification_expires_at ? new Date(String(scan.verification_expires_at)) : null;
-    if (!expires || expires.getTime() < Date.now()) throw new Error("Code expired. Request a new code.");
+    return { verified: String(scan.verification_status ?? "") === "verified" };
+  });
 
-    if ((await sha256(data.code)) !== String(scan.otp_code ?? "")) {
-      await updateScan(data.scan_id, { otp_attempts: attempts + 1 });
-      throw new Error("Incorrect code");
+/**
+ * Called from /scan/verify after the recipient clicks the emailed link. The
+ * signed-in identity must be the business email on the scan request.
+ */
+export const confirmEmailVerificationLink = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => ScanIdInput.parse(d))
+  .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: row, error } = await supabaseAdmin
+      .from("scan_requests")
+      .select("id, business_email, email, verification_expires_at")
+      .eq("id", data.scan_id)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!row) throw new Error("Scan not found");
+
+    const scan = row as unknown as Record<string, unknown>;
+    const target = String(scan.business_email || scan.email || "").toLowerCase();
+    const signedIn = String((context.claims as { email?: string } | undefined)?.email ?? "").toLowerCase();
+    if (!target || target !== signedIn) {
+      throw new Error("This link was issued for a different email address.");
     }
 
     await updateScan(data.scan_id, {
@@ -91,10 +119,11 @@ export const confirmEmailVerification = createServerFn({ method: "POST" })
       verified_at: new Date().toISOString(),
       otp_code: null,
       status: "awaiting_config",
-      verification_notes: "Verified by email one-time code",
+      verification_notes: "Verified by emailed confirmation link",
     });
     return { ok: true as const };
   });
+
 
 /** Manual verification — issue the code the user must place on their site. */
 export const startManualVerification = createServerFn({ method: "POST" })

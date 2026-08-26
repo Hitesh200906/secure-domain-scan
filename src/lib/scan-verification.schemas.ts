@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const ScanIdInput = z.object({ scan_id: z.string().uuid() });
-export const ScanOtpInput = z.object({
+export const ScanStartEmailInput = z.object({
   scan_id: z.string().uuid(),
-  code: z.string().trim().regex(/^\d{6}$/),
+  origin: z.string().url().optional(),
 });
