@@ -1,7 +1,7 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Users, ShieldCheck, LifeBuoy,
-  ScrollText, ChevronLeft, Menu, Loader2, Radar, ArrowUpRight,
+  ScrollText, ChevronLeft, Menu, Loader2, Radar, ArrowUpRight, Tag,
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { useAdmin } from "@/hooks/use-admin";
@@ -11,10 +11,12 @@ type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?
 const nav: NavItem[] = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
   { to: "/admin/users", label: "Users", icon: Users },
+  { to: "/admin/pricing", label: "Plans & Pricing", icon: Tag, superOnly: true },
   { to: "/admin/admins", label: "Admins", icon: ShieldCheck, superOnly: true },
   { to: "/admin/tickets", label: "Support", icon: LifeBuoy },
   { to: "/admin/logs", label: "Audit Logs", icon: ScrollText, superOnly: true },
 ];
+
 
 /** Wrap superadmin-only pages: redirects normal admins back to /admin. */
 export function SuperAdminGate({ children }: { children: ReactNode }) {
