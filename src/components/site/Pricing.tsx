@@ -34,6 +34,7 @@ const FALLBACK_PLANS: Plan[] = [
 export function Pricing({ compact = false }: { compact?: boolean }) {
   const { user } = useAuth();
   const [plans, setPlans] = useState<Plan[]>(FALLBACK_PLANS);
+  const [usedFreeScan, setUsedFreeScan] = useState(false);
   useEffect(() => {
     api.publicPricing()
       .then(({ plans }) => {
@@ -41,6 +42,20 @@ export function Pricing({ compact = false }: { compact?: boolean }) {
       })
       .catch(() => { /* keep fallback */ });
   }, []);
+
+  useEffect(() => {
+    if (!user) { setUsedFreeScan(false); return; }
+    api.listScans()
+      .then(({ scans }) => setUsedFreeScan((scans?.length ?? 0) > 0))
+      .catch(() => { /* assume not used */ });
+  }, [user]);
+
+  const ctaFor = (slug: string, fallback: string | null) => {
+    if (slug === "starter") return usedFreeScan ? "Starter scan" : "Start free scan";
+    if (slug === "professional") return "Go professional";
+    return fallback || "Get started";
+  };
+
 
   return (
     <section className={`relative ${compact ? "py-12 sm:py-16" : "py-16 sm:py-32"}`}>
