@@ -113,7 +113,7 @@ export function Pricing({ compact = false }: { compact?: boolean }) {
                     : { to: "/login" as const })}
                   className={`group relative mt-8 inline-flex items-center justify-center overflow-hidden rounded-full px-5 py-3 text-sm font-medium transition-transform duration-300 hover:scale-[1.03] ${t.popular ? "bg-white text-black" : "glass text-white hover:border-white/20"}`}
                 >
-                  <span className="relative">{t.cta_label || "Get started"}</span>
+                  <span className="relative">{ctaFor(t.slug, t.cta_label)}</span>
 
                 </Link>
               </div>
