@@ -15,7 +15,7 @@ import icShield from "@/assets/scanform-icon-shield.png";
 const scanConfigBg = { url: "/images/scan-config-bg.png" };
 import {
   startEmailVerification,
-  confirmEmailVerification,
+  checkEmailVerification,
   startManualVerification,
   confirmManualVerification,
 } from "@/lib/scan-verification.functions";
@@ -94,7 +94,7 @@ function ScanNewPage() {
   const [flow, setFlow] = useState<Flow>(null);
 
   const startEmail = useServerFn(startEmailVerification);
-  const confirmEmail = useServerFn(confirmEmailVerification);
+  const checkEmail = useServerFn(checkEmailVerification);
   const startManual = useServerFn(startManualVerification);
   const confirmManual = useServerFn(confirmManualVerification);
 
@@ -130,12 +130,12 @@ function ScanNewPage() {
       const scanId = (scan as { id: string }).id;
 
       if (verification === "email") {
-        const res = await startEmail({ data: { scan_id: scanId } });
+        const res = await startEmail({ data: { scan_id: scanId, origin: window.location.origin } });
         if (!res.ok) {
           toast.error(res.message);
           return;
         }
-        setFlow({ kind: "email", scanId, sentTo: res.sent_to, hint: res.delivered ? null : res.code });
+        setFlow({ kind: "email", scanId, sentTo: res.sent_to, hint: null });
       } else {
         const res = await startManual({ data: { scan_id: scanId } });
         setFlow({ kind: "manual", scanId, code: res.code, token: res.token });
@@ -285,21 +285,23 @@ function ScanNewPage() {
       </div>
 
       {flow?.kind === "email" && (
-        <EmailOtpDialog
+        <EmailLinkDialog
           sentTo={flow.sentTo}
-          hint={flow.hint}
           onClose={() => setFlow(null)}
           onResend={async () => {
-            const res = await startEmail({ data: { scan_id: flow.scanId } });
+            const res = await startEmail({ data: { scan_id: flow.scanId, origin: window.location.origin } });
             if (!res.ok) {
               toast.error(res.message);
               return;
             }
-            setFlow({ ...flow, hint: res.delivered ? null : res.code });
-            toast.success("New code generated");
+            toast.success("Verification link sent again");
           }}
-          onSubmit={async (code) => {
-            await confirmEmail({ data: { scan_id: flow.scanId, code } });
+          onContinue={async () => {
+            const res = await checkEmail({ data: { scan_id: flow.scanId } });
+            if (!res.verified) {
+              toast.error("Not confirmed yet — open the link we emailed you.");
+              return;
+            }
             setFlow(null);
             toast.success("Verification completed — continue to scan configuration");
             navigate({ to: "/scan/configure", search: { id: flow.scanId } });
@@ -499,23 +501,20 @@ function Dialog({ title, subtitle, onClose, children }: { title: string; subtitl
   );
 }
 
-function EmailOtpDialog({
-  sentTo, hint, onClose, onResend, onSubmit,
+function EmailLinkDialog({
+  sentTo, onClose, onResend, onContinue,
 }: {
   sentTo: string;
-  hint: string | null;
   onClose: () => void;
   onResend: () => Promise<void>;
-  onSubmit: (code: string) => Promise<void>;
+  onContinue: () => Promise<void>;
 }) {
-  const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
 
   const go = async () => {
-    if (code.trim().length !== 6) return toast.error("Enter the 6-digit code");
     setBusy(true);
     try {
-      await onSubmit(code.trim());
+      await onContinue();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Verification failed");
     } finally {
@@ -524,29 +523,29 @@ function EmailOtpDialog({
   };
 
   return (
-    <Dialog title="Enter verification code" subtitle={`We sent a 6-digit code to ${sentTo}. Enter it below to submit your scan request.`} onClose={onClose}>
-      <input
-        value={code}
-        onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-        inputMode="numeric"
-        placeholder="••••••"
-        className="mt-5 w-full rounded-xl bg-[#0a0a0c] px-4 py-3 text-center text-2xl tracking-[0.5em] text-white outline-none placeholder:text-white/20"
-      />
-      {hint && (
-        <p className="mt-2 text-center text-[11px] text-amber-300/80">
-          Email sending isn’t configured yet — your code is <span className="font-mono text-white">{hint}</span>
-        </p>
-      )}
+    <Dialog
+      title="Check your inbox"
+      subtitle={`We sent a confirmation link to ${sentTo}. Open the email and click the link to verify ownership of this business email.`}
+      onClose={onClose}
+    >
+      <div className="mt-5 rounded-xl bg-[#0a0a0c] p-4 text-[13px] text-muted-foreground">
+        The link opens a confirmation page and completes verification automatically. Once done, come
+        back here and continue.
+      </div>
       <button
         type="button"
         onClick={go}
         disabled={busy}
         className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#0000DD] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#0000b8] disabled:opacity-60"
       >
-        {busy ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />} Continue
+        {busy ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />} I've confirmed — continue
       </button>
-      <button type="button" onClick={() => onResend().catch(() => toast.error("Could not resend"))} className="mt-3 w-full text-[11px] text-muted-foreground hover:text-white">
-        Resend code
+      <button
+        type="button"
+        onClick={() => onResend().catch(() => toast.error("Could not resend"))}
+        className="mt-3 w-full text-[11px] text-muted-foreground hover:text-white"
+      >
+        Resend verification link
       </button>
     </Dialog>
   );
