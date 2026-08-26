@@ -12,7 +12,7 @@ const imgRewards = { url: "/images/card-rewards-v10.png" };
 const heroDesk = { url: "/images/hero-bg-v6.png" };
 
 export function Hero() {
-  const { setMode } = useAppMode();
+  useAppMode();
   const [comingSoon, setComingSoon] = useState<ComingSoonInfo | null>(null);
 
   return (
