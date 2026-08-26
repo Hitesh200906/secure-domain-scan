@@ -51,10 +51,10 @@ export function Pricing({ compact = false }: { compact?: boolean }) {
   }, [user]);
 
   const ctaFor = (slug: string, fallback: string | null) => {
-    if (slug === "starter") return usedFreeScan ? "Starter scan" : "Start free scan";
-    if (slug === "professional") return "Go professional";
+    if (slug === "starter" && !usedFreeScan) return "Start free scan";
     return fallback || "Get started";
   };
+
 
 
   return (
