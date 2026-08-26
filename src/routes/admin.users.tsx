@@ -4,7 +4,7 @@ import { AdminShell, Section, Badge } from "@/components/admin/AdminShell";
 import { api } from "@/lib/api-client";
 import { toast } from "sonner";
 import { logAudit } from "@/lib/audit";
-import { Search, Plus, Minus, Ban, Check, X } from "lucide-react";
+import { Search, Plus, Minus, Ban, Check, X, Coins } from "lucide-react";
 
 export const Route = createFileRoute("/admin/users")({ component: UsersPage });
 
@@ -20,6 +20,7 @@ function UsersPage() {
   const [filter, setFilter] = useState<string>("all");
   const [selected, setSelected] = useState<Profile | null>(null);
   const [banTarget, setBanTarget] = useState<Profile | null>(null);
+  const [creditTarget, setCreditTarget] = useState<Profile | null>(null);
 
   const load = async () => {
     try {
@@ -91,6 +92,7 @@ function UsersPage() {
                     <div className="inline-flex gap-1">
                       <IconBtn title="+1 credit" onClick={() => act(r, { credits: r.credits + 1 }, "credits.add")}><Plus className="size-3" /></IconBtn>
                       <IconBtn title="-1 credit" onClick={() => act(r, { credits: Math.max(0, r.credits - 1) }, "credits.remove")}><Minus className="size-3" /></IconBtn>
+                      <IconBtn title="Add credits manually" onClick={() => setCreditTarget(r)}><Coins className="size-3" /></IconBtn>
                       {r.status !== "banned" ? (
                         <IconBtn title="Ban" tone="danger" onClick={() => setBanTarget(r)}><Ban className="size-3" /></IconBtn>
                       ) : (
@@ -119,8 +121,70 @@ function UsersPage() {
         />
       )}
 
+      {creditTarget && (
+        <CreditsDialog
+          user={creditTarget}
+          onClose={() => setCreditTarget(null)}
+          onConfirm={async (mode, amount) => {
+            const next = mode === "set" ? amount : Math.max(0, creditTarget.credits + amount);
+            await act(creditTarget, { credits: next }, mode === "set" ? "credits.set" : "credits.add");
+            setCreditTarget(null);
+          }}
+        />
+      )}
+
       {selected && <UserDrawer user={selected} onClose={() => setSelected(null)} onChange={(u) => { setSelected(u); load(); }} />}
     </AdminShell>
+  );
+}
+
+function CreditsDialog({ user, onClose, onConfirm }: { user: Profile; onClose: () => void; onConfirm: (mode: "add" | "set", amount: number) => Promise<void> }) {
+  const [mode, setMode] = useState<"add" | "set">("add");
+  const [value, setValue] = useState("");
+  const [busy, setBusy] = useState(false);
+  const amount = Number(value);
+  const valid = value.trim() !== "" && Number.isFinite(amount) && (mode === "set" ? amount >= 0 : amount !== 0);
+  const preview = mode === "set" ? Math.max(0, amount || 0) : Math.max(0, user.credits + (amount || 0));
+
+  return (
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 backdrop-blur-sm px-4" onClick={onClose}>
+      <div className="w-full max-w-sm glass-strong rounded-2xl border border-white/10 p-6" onClick={(e) => e.stopPropagation()}>
+        <h3 className="text-lg font-medium">Manage credits</h3>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {user.full_name || user.email} currently has <span className="text-foreground">{user.credits}</span> credits.
+        </p>
+
+        <div className="mt-4 flex gap-2">
+          {(["add", "set"] as const).map((m) => (
+            <button key={m} onClick={() => setMode(m)}
+              className={`flex-1 text-xs py-2 rounded-lg border ${mode === m ? "bg-primary text-primary-foreground border-primary" : "glass"}`}>
+              {m === "add" ? "Add / remove" : "Set exact"}
+            </button>
+          ))}
+        </div>
+
+        <input
+          value={value}
+          inputMode="numeric"
+          autoFocus
+          onChange={(e) => setValue(e.target.value.replace(mode === "set" ? /[^0-9]/g : /[^0-9-]/g, ""))}
+          placeholder={mode === "add" ? "e.g. 250 (or -50)" : "e.g. 1000"}
+          className="mt-3 w-full text-sm bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2"
+        />
+        <div className="mt-2 text-xs text-muted-foreground">New balance: <span className="text-foreground tabular-nums">{preview}</span> credits</div>
+
+        <div className="mt-4 flex gap-2">
+          <button onClick={onClose} className="flex-1 text-xs py-2 rounded-lg glass">Cancel</button>
+          <button
+            disabled={busy || !valid}
+            onClick={async () => { setBusy(true); await onConfirm(mode, amount); setBusy(false); }}
+            className="flex-1 text-xs py-2 rounded-lg bg-primary text-primary-foreground disabled:opacity-40"
+          >
+            {busy ? "Saving…" : "Apply"}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
