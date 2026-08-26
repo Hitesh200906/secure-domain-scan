@@ -1,12 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { ScanIdInput, ScanOtpInput } from "@/lib/scan-verification.schemas";
+import { ScanIdInput, ScanStartEmailInput } from "@/lib/scan-verification.schemas";
 import {
   aiCodePresent,
   businessEmailOnSite,
   fetchSiteHtml,
   loadScan,
-  sha256,
   sixDigits,
   updateScan,
 } from "@/lib/scan-verification.server";
@@ -18,7 +17,7 @@ import {
  */
 export const startEmailVerification = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => ScanIdInput.parse(d))
+  .inputValidator((d: unknown) => ScanStartEmailInput.parse(d))
   .handler(async ({ data, context }) => {
     const { scan } = await loadScan(data.scan_id, context.userId);
     const businessEmail = String(scan.business_email || scan.email || "").trim();
