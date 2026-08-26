@@ -20,6 +20,7 @@ function UsersPage() {
   const [filter, setFilter] = useState<string>("all");
   const [selected, setSelected] = useState<Profile | null>(null);
   const [banTarget, setBanTarget] = useState<Profile | null>(null);
+  const [creditTarget, setCreditTarget] = useState<Profile | null>(null);
 
   const load = async () => {
     try {
