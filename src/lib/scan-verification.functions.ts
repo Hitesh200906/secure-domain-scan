@@ -1,9 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { ScanIdInput, ScanStartEmailInput } from "@/lib/scan-verification.schemas";
+import { ScanConfirmLinkInput, ScanIdInput, ScanStartEmailInput } from "@/lib/scan-verification.schemas";
 import {
   aiCodePresent,
   businessEmailOnSite,
+  confirmedEmailFromLink,
   fetchSiteHtml,
   loadScan,
   sixDigits,
