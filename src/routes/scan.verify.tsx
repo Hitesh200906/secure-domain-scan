@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Loader2, CheckCircle2, XCircle } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import { supabase } from "@/integrations/supabase/client";
+import { readCapturedVerifyTokens } from "@/lib/scan-verify-capture";
 import { confirmEmailVerificationLink } from "@/lib/scan-verification.functions";
 import nexefyLogo from "@/assets/nexefy-logo.png";
 
@@ -34,14 +34,11 @@ function VerifyPage() {
         setMessage("This confirmation link is incomplete.");
         return;
       }
-      // Give the Supabase client a moment to pick the session out of the URL.
-      for (let i = 0; i < 20; i++) {
-        const { data } = await supabase.auth.getSession();
-        if (data.session) break;
-        await new Promise((r) => setTimeout(r, 250));
-      }
+      // Tokens were lifted out of the URL before the Supabase client could
+      // consume them, so the requester stays signed in as themselves.
+      const tokens = readCapturedVerifyTokens();
       try {
-        await confirm({ data: { scan_id: id } });
+        await confirm({ data: { scan_id: id, ...tokens } });
         if (cancelled) return;
         setState("done");
         setMessage("Email confirmed. You can close this tab and continue your scan request.");

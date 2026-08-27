@@ -127,3 +127,39 @@ async function aiEmailPresent(html: string, email: string) {
     return false;
   }
 }
+
+/**
+ * Resolves the email address proven by an emailed confirmation link, without
+ * ever creating a browser session for it.
+ */
+export async function confirmedEmailFromLink(input: {
+  access_token?: string;
+  token_hash?: string;
+  type?: string;
+}) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+  if (input.access_token) {
+    const { data, error } = await supabaseAdmin.auth.getUser(input.access_token);
+    if (error || !data.user?.email) return "";
+    return data.user.email;
+  }
+
+  if (input.token_hash) {
+    const { createClient } = await import("@supabase/supabase-js");
+    const client = createClient(
+      process.env["SUPABASE_URL"]!,
+      process.env["SUPABASE_PUBLISHABLE_KEY"]!,
+      { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } },
+    );
+    const type = (input.type === "signup" ? "signup" : input.type === "recovery" ? "recovery" : "magiclink") as
+      | "signup"
+      | "recovery"
+      | "magiclink";
+    const { data, error } = await client.auth.verifyOtp({ token_hash: input.token_hash, type });
+    if (error || !data.user?.email) return "";
+    return data.user.email;
+  }
+
+  return "";
+}

@@ -1,9 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { ScanIdInput, ScanStartEmailInput } from "@/lib/scan-verification.schemas";
+import { ScanConfirmLinkInput, ScanIdInput, ScanStartEmailInput } from "@/lib/scan-verification.schemas";
 import {
   aiCodePresent,
   businessEmailOnSite,
+  confirmedEmailFromLink,
   fetchSiteHtml,
   loadScan,
   sixDigits,
@@ -91,13 +92,17 @@ export const checkEmailVerification = createServerFn({ method: "POST" })
   });
 
 /**
- * Called from /scan/verify after the recipient clicks the emailed link. The
- * signed-in identity must be the business email on the scan request.
+ * Called from /scan/verify after the recipient clicks the emailed link.
+ *
+ * The link's auth tokens are captured by the page and verified here instead of
+ * being consumed by the browser's Supabase client — otherwise clicking the
+ * link would swap the requester's own session for one belonging to the
+ * business email address. This function is intentionally unauthenticated: the
+ * emailed token itself is the proof of email ownership.
  */
 export const confirmEmailVerificationLink = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => ScanIdInput.parse(d))
-  .handler(async ({ data, context }) => {
+  .inputValidator((d: unknown) => ScanConfirmLinkInput.parse(d))
+  .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row, error } = await supabaseAdmin
       .from("scan_requests")
@@ -109,8 +114,11 @@ export const confirmEmailVerificationLink = createServerFn({ method: "POST" })
 
     const scan = row as unknown as Record<string, unknown>;
     const target = String(scan.business_email || scan.email || "").toLowerCase();
-    const signedIn = String((context.claims as { email?: string } | undefined)?.email ?? "").toLowerCase();
-    if (!target || target !== signedIn) {
+    const confirmed = (await confirmedEmailFromLink(data)).toLowerCase();
+    if (!confirmed) {
+      throw new Error("This confirmation link is invalid or has already been used.");
+    }
+    if (!target || target !== confirmed) {
       throw new Error("This link was issued for a different email address.");
     }
 
