@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight, Check, Crown, Gift, Lock, Rocket, ShieldCheck, Star, Zap } from "lucide-react";
+import { ArrowRight, Check, Coins, Crown, Gift, Lock, Rocket, ShieldCheck, Star, Zap } from "lucide-react";
 const cardAsset = { url: "/images/power-card.png" };
 const c1 = { url: "/images/crystal-1.png" };
 const c2 = { url: "/images/crystal-2.png" };
@@ -15,17 +15,71 @@ const PACKS = [
 
 const MARKS = [100, 500, 1000, 2500, 5000];
 
+/** Price of one credit in USD. Kept in sync with razorpay.server.ts. */
+const USD_PER_CREDIT = 1;
+
+/** Approximate conversion rates from USD. */
+const RATES: Record<string, number> = {
+  USD: 1,
+  EUR: 0.92,
+  INR: 84,
+  GBP: 0.79,
+  JPY: 157,
+  AUD: 1.51,
+  CAD: 1.37,
+  SGD: 1.35,
+  AED: 3.67,
+  CHF: 0.9,
+  BRL: 5.4,
+};
+
+const ZERO_DECIMAL = new Set(["JPY"]);
+
+const SYMBOLS: Record<string, string> = {
+  USD: "$",
+  EUR: "€",
+  INR: "₹",
+  GBP: "£",
+  JPY: "¥",
+  AUD: "A$",
+  CAD: "C$",
+  SGD: "S$",
+  AED: "د.إ",
+  CHF: "Fr",
+  BRL: "R$",
+};
+
+function normalizeCurrency(code: string) {
+  const c = (code || "USD").toUpperCase();
+  return RATES[c] ? c : "USD";
+}
+
+function formatPayAmount(credits: number, currency: string) {
+  const cur = normalizeCurrency(currency);
+  const major = credits * USD_PER_CREDIT * RATES[cur];
+  const decimals = ZERO_DECIMAL.has(cur) ? 0 : 2;
+  const symbol = SYMBOLS[cur] ?? cur;
+  const value = major.toLocaleString("en-US", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+  return { text: `${symbol}${value}`, currency: cur };
+}
+
 export default function CreditsAmount({
   onContinue,
   onClose,
+  currency = "USD",
 }: {
   onContinue?: (credits: number) => void;
   onClose?: () => void;
+  currency?: string;
 }) {
   const [credits, setCredits] = useState(1250);
   const [manual, setManual] = useState("");
 
   const bonus = Math.floor(credits * 0.1);
+  const pay = formatPayAmount(credits, currency);
 
   const setValue = (v: number) => {
     setCredits(v);
@@ -208,7 +262,7 @@ export default function CreditsAmount({
             </div>
 
             {/* Summary */}
-            <div className="grid grid-cols-3 items-center gap-2 rounded-[12px] border border-white/[0.08] bg-white/[0.015] px-2.5 py-2 sm:gap-4 sm:rounded-[20px] sm:px-6 sm:py-5">
+            <div className="grid grid-cols-2 items-center gap-2 rounded-[12px] border border-white/[0.08] bg-white/[0.015] px-2.5 py-2 sm:grid-cols-4 sm:gap-4 sm:rounded-[20px] sm:px-6 sm:py-5">
               <div className="flex items-center gap-1.5 sm:gap-4">
                 <span className="hidden h-11 w-11 items-center justify-center rounded-full bg-white/[0.05] sm:flex">
                   <Zap className="h-5 w-5 text-[#D1D5DB]" />
@@ -218,16 +272,28 @@ export default function CreditsAmount({
                   <div className="text-[10px] font-medium text-white sm:text-[17px]">{credits} Power Credits</div>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 border-l border-white/[0.08] pl-2 sm:gap-4 sm:pl-6">
+              <div className="flex items-center gap-1.5 sm:border-l sm:border-white/[0.08] sm:pl-6">
                 <Gift className="hidden h-7 w-7 text-[#C7B9FF] sm:block" strokeWidth={1.5} />
                 <div className="min-w-0">
                   <div className="text-[8px] text-[#9CA3AF] sm:text-[13px]">Bonus</div>
                   <div className="text-[9px] text-[#34D399] sm:text-[15px]">+{bonus} (10%)</div>
                 </div>
               </div>
-              <div className="text-right">
-                <div className="text-[8px] text-[#9CA3AF] sm:text-[13px]">Total Power Credits</div>
-                <div className="text-[14px] font-semibold tabular-nums text-white sm:text-[26px]">{credits + bonus}</div>
+              <div className="flex items-center gap-1.5 sm:border-l sm:border-white/[0.08] sm:pl-6">
+                <span className="hidden h-11 w-11 items-center justify-center rounded-full bg-white/[0.05] sm:flex">
+                  <Zap className="h-5 w-5 text-[#D1D5DB]" />
+                </span>
+                <div className="min-w-0">
+                  <div className="text-[8px] text-[#9CA3AF] sm:text-[13px]">Total Power Credits</div>
+                  <div className="text-[10px] font-semibold tabular-nums text-white sm:text-[17px]">{credits + bonus}</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 sm:border-l sm:border-white/[0.08] sm:pl-6">
+                <Coins className="hidden h-7 w-7 text-[#93A5FF] sm:block" strokeWidth={1.5} />
+                <div className="min-w-0">
+                  <div className="text-[8px] text-[#9CA3AF] sm:text-[13px]">Amount to pay</div>
+                  <div className="text-[10px] font-semibold tabular-nums text-white sm:text-[17px]">{pay.text}</div>
+                </div>
               </div>
             </div>
 

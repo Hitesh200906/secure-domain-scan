@@ -1247,6 +1247,7 @@ function CreditsSection({ balance }: { balance: number }) {
       )}
       {open && step === 2 && (
         <CreditsAmount
+          currency={currency}
           onClose={() => {
             setOpen(false);
             setStep(1);
