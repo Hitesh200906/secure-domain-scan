@@ -262,7 +262,7 @@ export default function CreditsAmount({
             </div>
 
             {/* Summary */}
-            <div className="grid grid-cols-3 items-center gap-2 rounded-[12px] border border-white/[0.08] bg-white/[0.015] px-2.5 py-2 sm:gap-4 sm:rounded-[20px] sm:px-6 sm:py-5">
+            <div className="grid grid-cols-2 items-center gap-2 rounded-[12px] border border-white/[0.08] bg-white/[0.015] px-2.5 py-2 sm:grid-cols-4 sm:gap-4 sm:rounded-[20px] sm:px-6 sm:py-5">
               <div className="flex items-center gap-1.5 sm:gap-4">
                 <span className="hidden h-11 w-11 items-center justify-center rounded-full bg-white/[0.05] sm:flex">
                   <Zap className="h-5 w-5 text-[#D1D5DB]" />
@@ -272,16 +272,28 @@ export default function CreditsAmount({
                   <div className="text-[10px] font-medium text-white sm:text-[17px]">{credits} Power Credits</div>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 border-l border-white/[0.08] pl-2 sm:gap-4 sm:pl-6">
+              <div className="flex items-center gap-1.5 sm:border-l sm:border-white/[0.08] sm:pl-6">
                 <Gift className="hidden h-7 w-7 text-[#C7B9FF] sm:block" strokeWidth={1.5} />
                 <div className="min-w-0">
                   <div className="text-[8px] text-[#9CA3AF] sm:text-[13px]">Bonus</div>
                   <div className="text-[9px] text-[#34D399] sm:text-[15px]">+{bonus} (10%)</div>
                 </div>
               </div>
-              <div className="text-right">
-                <div className="text-[8px] text-[#9CA3AF] sm:text-[13px]">Total Power Credits</div>
-                <div className="text-[14px] font-semibold tabular-nums text-white sm:text-[26px]">{credits + bonus}</div>
+              <div className="flex items-center gap-1.5 sm:border-l sm:border-white/[0.08] sm:pl-6">
+                <span className="hidden h-11 w-11 items-center justify-center rounded-full bg-white/[0.05] sm:flex">
+                  <Zap className="h-5 w-5 text-[#D1D5DB]" />
+                </span>
+                <div className="min-w-0">
+                  <div className="text-[8px] text-[#9CA3AF] sm:text-[13px]">Total Power Credits</div>
+                  <div className="text-[10px] font-semibold tabular-nums text-white sm:text-[17px]">{credits + bonus}</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 sm:border-l sm:border-white/[0.08] sm:pl-6">
+                <Coins className="hidden h-7 w-7 text-[#93A5FF] sm:block" strokeWidth={1.5} />
+                <div className="min-w-0">
+                  <div className="text-[8px] text-[#9CA3AF] sm:text-[13px]">Amount to pay</div>
+                  <div className="text-[10px] font-semibold tabular-nums text-white sm:text-[17px]">{pay.text}</div>
+                </div>
               </div>
             </div>
 
