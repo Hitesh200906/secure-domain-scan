@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight, Check, Crown, Gift, Lock, Rocket, ShieldCheck, Star, Zap } from "lucide-react";
+import { ArrowRight, Check, Coins, Crown, Gift, Lock, Rocket, ShieldCheck, Star, Zap } from "lucide-react";
 const cardAsset = { url: "/images/power-card.png" };
 const c1 = { url: "/images/crystal-1.png" };
 const c2 = { url: "/images/crystal-2.png" };
@@ -14,6 +14,57 @@ const PACKS = [
 ];
 
 const MARKS = [100, 500, 1000, 2500, 5000];
+
+/** Price of one credit in USD. Kept in sync with razorpay.server.ts. */
+const USD_PER_CREDIT = 1;
+
+/** Approximate conversion rates from USD. */
+const RATES: Record<string, number> = {
+  USD: 1,
+  EUR: 0.92,
+  INR: 84,
+  GBP: 0.79,
+  JPY: 157,
+  AUD: 1.51,
+  CAD: 1.37,
+  SGD: 1.35,
+  AED: 3.67,
+  CHF: 0.9,
+  BRL: 5.4,
+};
+
+const ZERO_DECIMAL = new Set(["JPY"]);
+
+const SYMBOLS: Record<string, string> = {
+  USD: "$",
+  EUR: "€",
+  INR: "₹",
+  GBP: "£",
+  JPY: "¥",
+  AUD: "A$",
+  CAD: "C$",
+  SGD: "S$",
+  AED: "د.إ",
+  CHF: "Fr",
+  BRL: "R$",
+};
+
+function normalizeCurrency(code: string) {
+  const c = (code || "USD").toUpperCase();
+  return RATES[c] ? c : "USD";
+}
+
+function formatPayAmount(credits: number, currency: string) {
+  const cur = normalizeCurrency(currency);
+  const major = credits * USD_PER_CREDIT * RATES[cur];
+  const decimals = ZERO_DECIMAL.has(cur) ? 0 : 2;
+  const symbol = SYMBOLS[cur] ?? cur;
+  const value = major.toLocaleString("en-US", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+  return { text: `${symbol}${value}`, currency: cur };
+}
 
 export default function CreditsAmount({
   onContinue,
