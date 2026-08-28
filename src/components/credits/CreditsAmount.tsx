@@ -69,14 +69,17 @@ function formatPayAmount(credits: number, currency: string) {
 export default function CreditsAmount({
   onContinue,
   onClose,
+  currency = "USD",
 }: {
   onContinue?: (credits: number) => void;
   onClose?: () => void;
+  currency?: string;
 }) {
   const [credits, setCredits] = useState(1250);
   const [manual, setManual] = useState("");
 
   const bonus = Math.floor(credits * 0.1);
+  const pay = formatPayAmount(credits, currency);
 
   const setValue = (v: number) => {
     setCredits(v);
