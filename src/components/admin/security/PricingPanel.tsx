@@ -30,13 +30,18 @@ export function PricingPanel() {
       await api.admin.updatePricing(p.id, {
         name: p.name, headline: p.headline, description: p.description, price_monthly: p.price_monthly,
         price_label: p.price_label, credits: p.credits, features: p.features, popular: p.popular,
-        cta_label: p.cta_label, active: p.active,
+        cta_label: p.cta_label, active: p.active, sort_order: p.sort_order,
       });
       await logAudit("pricing.update", { type: "plan", id: p.slug });
-      toast.success(`${p.name} saved`);
+      toast.success(`${p.name} saved — live on the website`);
+      await load();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed");
     }
+  };
+
+  const saveAll = async () => {
+    for (const p of plans) await save(p);
   };
 
   const togglePopular = async (p: Plan) => {
