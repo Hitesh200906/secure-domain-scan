@@ -40,6 +40,7 @@ type AdminPricingPatch = {
   popular?: boolean;
   cta_label?: string | null;
   active?: boolean;
+  sort_order?: number;
 };
 type AdminCreateAdmin = { email: string; full_name?: string; role?: "admin" | "super_admin" };
 type TicketInput = {
