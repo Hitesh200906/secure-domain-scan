@@ -110,9 +110,9 @@ function ScanConfigurePage() {
   if (loadError) {
     return (
       <div className="min-h-screen bg-black px-5 py-24">
-        <div className="mx-auto max-w-md rounded-2xl border border-white/10 bg-[#0a0a0c] p-8 text-center">
+        <div className="mx-auto max-w-md rounded-2xl border border-white/10 bg-card p-8 text-center">
           <p className="text-sm text-white/70">{loadError}</p>
-          <button onClick={() => navigate({ to: "/dashboard" })} className="mt-5 rounded-xl bg-[#2563EB] px-5 py-2.5 text-sm text-white transition hover:bg-[#1D4ED8]">
+          <button onClick={() => navigate({ to: "/dashboard" })} className="mt-5 rounded-xl bg-primary px-5 py-2.5 text-sm text-primary-foreground transition hover:opacity-90">
             Back to dashboard
           </button>
         </div>
@@ -145,12 +145,14 @@ function ScanConfigurePage() {
 
         {step === "config" ? (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
-            <h1 className="mt-8 text-[26px] font-normal tracking-tight text-white sm:text-[32px]">Configure Your Security Scan</h1>
-            <p className="mt-2 max-w-2xl text-[13.5px] leading-relaxed text-muted-foreground">
-              Help our AI understand your website so we can perform a more accurate and controlled security assessment.
-            </p>
+            <div className="mt-8">
+              <h1 className="text-[26px] font-normal tracking-tight text-white sm:text-[32px]">Configure Your Security Scan</h1>
+              <p className="mt-2 max-w-2xl text-[13.5px] leading-relaxed text-muted-foreground">
+                Help our AI understand your website so we can perform a more accurate and controlled security assessment.
+              </p>
+            </div>
 
-            <div className="mt-10 space-y-12">
+            <div className="mt-10 space-y-10">
               {/* 1 — Authentication */}
               <Section title="Does your website require login?" desc="Tell us whether some areas of your website are only accessible to authenticated users.">
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -175,7 +177,7 @@ function ScanConfigurePage() {
                         setCfg({ ...cfg, secure_session_requested: true });
                         toast.success("Our team will contact you to set up a secure test session.");
                       }}
-                      className="mt-3 inline-flex items-center gap-2 rounded-xl bg-[#2563EB] px-4 py-2.5 text-[13px] font-medium text-white transition-colors hover:bg-[#1D4ED8]"
+                      className="mt-3 inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-[13px] font-medium text-primary-foreground transition-colors hover:opacity-90"
                     >
                       {cfg.secure_session_requested ? <Check className="size-3.5" /> : null}
                       Set Up Secure Test Session
@@ -225,7 +227,7 @@ function ScanConfigurePage() {
 
               {/* 5 — AI validation */}
               <Section title="AI Finding Validation" desc="Our AI reviews discovered findings and helps identify false positives, prioritize risks, and provide clearer explanations.">
-                <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#08080a] px-5 py-4">
+                <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-card px-5 py-4">
                   <div>
                     <div className="text-[14px] text-white">Enable AI Validation</div>
                     <p className="mt-1 text-[12px] text-muted-foreground">AI validation may increase processing time but provides an additional analysis layer.</p>
@@ -235,8 +237,8 @@ function ScanConfigurePage() {
               </Section>
 
               {/* 6 — Advanced */}
-              <div className="rounded-2xl border border-white/10 bg-[#08080a]">
-                <button type="button" onClick={() => setAdvancedOpen((v) => !v)} className="flex w-full items-center justify-between px-5 py-4 text-left">
+              <div className="rounded-2xl border border-white/10 bg-card overflow-hidden">
+                <button type="button" onClick={() => setAdvancedOpen((v) => !v)} className="flex w-full items-center justify-between px-5 py-4 text-left transition hover:bg-white/[0.02]">
                   <span className="text-[14px] text-white">Advanced Settings</span>
                   <ChevronDown className={`size-4 text-white/50 transition ${advancedOpen ? "rotate-180" : ""}`} />
                 </button>
@@ -256,7 +258,7 @@ function ScanConfigurePage() {
                         value={cfg.advanced.excluded_urls}
                         onChange={(e) => setAdv({ excluded_urls: e.target.value.slice(0, 2000) })}
                         placeholder="/admin&#10;/checkout"
-                        className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 text-[13px] text-white placeholder:text-white/30 focus:outline-none"
+                        className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 text-[13px] text-white placeholder:text-white/30 focus:outline-none focus:border-white/25"
                       />
                     </label>
                   </div>
@@ -264,8 +266,11 @@ function ScanConfigurePage() {
               </div>
 
               {/* Summary */}
-              <div className="rounded-2xl border border-white/10 bg-[#08080a] p-5">
-                <div className="text-[14px] text-white">Scan Configuration</div>
+              <div className="rounded-2xl border border-white/10 bg-card p-5">
+                <div className="flex items-center gap-2 text-[14px] text-white">
+                  <ShieldCheck className="size-4 text-primary" />
+                  Scan Configuration
+                </div>
                 <dl className="mt-4 grid gap-x-8 gap-y-3 sm:grid-cols-2">
                   {summaryRows.map(([k, v]) => (
                     <div key={k} className="flex items-center justify-between border-b border-white/5 pb-2">
@@ -280,7 +285,7 @@ function ScanConfigurePage() {
                 <button type="button" onClick={() => navigate({ to: "/dashboard" })} className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/12 px-6 py-3.5 text-[14px] text-white/80 transition hover:text-white sm:w-40">
                   <ArrowLeft className="size-4" /> Back
                 </button>
-                <button type="button" onClick={() => setStep("review")} className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-[#2563EB] px-6 py-3.5 text-[14px] font-medium text-white transition-colors hover:bg-[#1D4ED8]">
+                <button type="button" onClick={() => setStep("review")} className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-3.5 text-[14px] font-medium text-primary-foreground transition-colors hover:opacity-90">
                   Continue to Review <ArrowRight className="size-4" />
                 </button>
               </div>
@@ -288,10 +293,12 @@ function ScanConfigurePage() {
           </motion.div>
         ) : (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
-            <h1 className="mt-8 text-[26px] font-normal tracking-tight text-white sm:text-[32px]">Review Your Scan</h1>
-            <p className="mt-2 text-[13.5px] text-muted-foreground">Review your scan configuration before starting the security assessment.</p>
+            <div className="mt-8">
+              <h1 className="text-[26px] font-normal tracking-tight text-white sm:text-[32px]">Review Your Scan</h1>
+              <p className="mt-2 text-[13.5px] text-muted-foreground">Review your scan configuration before starting the security assessment.</p>
+            </div>
 
-            <div className="mt-8 rounded-2xl border border-white/10 bg-[#08080a] p-6">
+            <div className="mt-8 rounded-2xl border border-white/10 bg-card p-6">
               <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
                 {[...summaryRows, ["Plan", scan?.plan ? cap(scan.plan) : "—"] as [string, string]].map(([k, v]) => (
                   <div key={k} className="flex items-center justify-between border-b border-white/5 pb-2.5">
@@ -302,14 +309,14 @@ function ScanConfigurePage() {
               </dl>
             </div>
 
-            <div className="mt-6 rounded-2xl border border-white/10 bg-[#08080a] p-6">
+            <div className="mt-6 rounded-2xl border border-white/10 bg-card p-6">
               <div className="text-[14px] text-white">Authorization Confirmation</div>
               <label className="mt-3 flex cursor-pointer items-start gap-3">
                 <input
                   type="checkbox"
                   checked={confirmed}
                   onChange={(e) => setConfirmed(e.target.checked)}
-                  className="mt-0.5 size-4 accent-[#2563EB]"
+                  className="mt-0.5 size-4 accent-primary"
                 />
                 <span className="text-[12.5px] leading-relaxed text-muted-foreground">
                   I confirm that I am authorized to request a security scan of this website and understand that the scan will
@@ -326,7 +333,7 @@ function ScanConfigurePage() {
                 type="button"
                 disabled={!confirmed || busy}
                 onClick={start}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-[#2563EB] px-6 py-3.5 text-[14px] font-medium text-white transition-colors hover:bg-[#1D4ED8] disabled:opacity-50"
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-3.5 text-[14px] font-medium text-primary-foreground transition-colors hover:opacity-90 disabled:opacity-50"
               >
                 {busy ? <Loader2 className="size-4 animate-spin" /> : <ShieldCheck className="size-4" />} Start Security Scan
               </button>
@@ -356,7 +363,6 @@ function cap(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-
 function ProgressBar({ current }: { current: number }) {
   return (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
@@ -378,8 +384,8 @@ function ProgressBar({ current }: { current: number }) {
 
 function Section({ title, desc, children }: { title: string; desc: string; children: React.ReactNode }) {
   return (
-    <section>
-      <h2 className="text-[17px] text-white">{title}</h2>
+    <section className="rounded-2xl border border-white/8 bg-card/40 p-5 sm:p-6">
+      <h2 className="text-[17px] font-medium tracking-tight text-white">{title}</h2>
       <p className="mt-1.5 max-w-2xl text-[12.5px] leading-relaxed text-muted-foreground">{desc}</p>
       <div className="mt-5">{children}</div>
     </section>
@@ -394,22 +400,32 @@ function Choice({
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      className={`rounded-2xl border p-4 text-left transition ${
-        selected ? "border-[#2563EB] bg-[#2563EB]/10" : "border-white/10 bg-[#08080a] hover:border-white/20"
+      className={`group relative rounded-2xl border p-4 text-left transition-all duration-200 ${
+        selected
+          ? "border-white bg-white shadow-[0_0_0_1px_rgba(255,255,255,0.15)]"
+          : "border-white/10 bg-card hover:border-white/20 hover:bg-surface"
       }`}
     >
       <div className="flex items-center justify-between gap-3">
-        <span className="text-[14px] text-white">{title}</span>
-        {selected && <Check className="size-4 shrink-0 text-[#60A5FA]" />}
+        <span className={`text-[14px] font-medium ${selected ? "text-black" : "text-white"}`}>{title}</span>
+        <span
+          className={`flex size-5 shrink-0 items-center justify-center rounded-full border transition ${
+            selected ? "border-black bg-black" : "border-white/20 bg-transparent group-hover:border-white/40"
+          }`}
+        >
+          {selected && <Check className="size-3 text-white" />}
+        </span>
       </div>
-      <p className={`mt-1.5 text-[12px] leading-relaxed text-muted-foreground ${compact ? "line-clamp-2" : ""}`}>{desc}</p>
+      <p className={`mt-1.5 text-[12px] leading-relaxed ${selected ? "text-black/60" : "text-muted-foreground"} ${compact ? "line-clamp-2" : ""}`}>
+        {desc}
+      </p>
     </button>
   );
 }
 
 function Notice({ title, desc, children }: { title: string; desc: string; children?: React.ReactNode }) {
   return (
-    <div className="mt-4 rounded-2xl border border-white/10 bg-[#08080a] p-5">
+    <div className="mt-4 rounded-2xl border border-white/10 bg-card p-5">
       <div className="text-[13.5px] text-white">{title}</div>
       <p className="mt-1.5 text-[12px] leading-relaxed text-muted-foreground">{desc}</p>
       {children}
@@ -427,8 +443,10 @@ function Pills<T extends string>({ label, options, value, onChange }: { label: s
             key={o}
             type="button"
             onClick={() => onChange(o)}
-            className={`flex-1 rounded-xl border px-3 py-2.5 text-[12.5px] transition ${
-              value === o ? "border-[#2563EB] bg-[#2563EB]/10 text-white" : "border-white/10 text-white/60 hover:text-white"
+            className={`flex-1 rounded-xl border px-3 py-2.5 text-[12.5px] font-medium transition-all duration-200 ${
+              value === o
+                ? "border-white bg-white text-black shadow-[0_0_0_1px_rgba(255,255,255,0.12)]"
+                : "border-white/10 text-white/60 hover:border-white/25 hover:text-white"
             }`}
           >
             {cap(o)}
@@ -446,7 +464,7 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
       role="switch"
       aria-checked={on}
       onClick={() => onChange(!on)}
-      className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${on ? "bg-[#2563EB]" : "bg-white/15"}`}
+      className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${on ? "bg-primary" : "bg-white/15"}`}
     >
       <span className={`absolute top-0.5 size-5 rounded-full bg-white transition-all ${on ? "left-[22px]" : "left-0.5"}`} />
     </button>
@@ -455,7 +473,7 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
 
 function Switch({ label, on, onChange }: { label: string; on: boolean; onChange: (v: boolean) => void }) {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between rounded-xl border border-white/8 bg-black/20 px-4 py-3">
       <span className="text-[13px] text-white/85">{label}</span>
       <Toggle on={on} onChange={onChange} />
     </div>
@@ -472,7 +490,7 @@ function NumberField({ label, value, min, max, onChange }: { label: string; valu
         max={max}
         value={value}
         onChange={(e) => onChange(Math.min(max, Math.max(min, Number(e.target.value) || min)))}
-        className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-2.5 text-[13px] text-white focus:outline-none"
+        className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-2.5 text-[13px] text-white focus:outline-none focus:border-white/25"
       />
     </label>
   );
