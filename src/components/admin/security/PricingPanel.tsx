@@ -77,7 +77,10 @@ export function PricingPanel() {
                 <Field label="Price (credits)" v={String(p.price_monthly)} on={(v) => setPlans((c) => c.map((x) => x.id === p.id ? { ...x, price_monthly: Number(v) || 0 } : x))} />
                 <Field label="Price label" v={p.price_label || ""} on={(v) => setPlans((c) => c.map((x) => x.id === p.id ? { ...x, price_label: v } : x))} />
               </div>
-              <Field label="Credits / month" v={String(p.credits)} on={(v) => setPlans((c) => c.map((x) => x.id === p.id ? { ...x, credits: Number(v) || 0 } : x))} />
+              <div className="grid grid-cols-2 gap-2">
+                <Field label="Credits / month" v={String(p.credits)} on={(v) => setPlans((c) => c.map((x) => x.id === p.id ? { ...x, credits: Number(v) || 0 } : x))} />
+                <Field label="Display order" v={String(p.sort_order)} on={(v) => setPlans((c) => c.map((x) => x.id === p.id ? { ...x, sort_order: Number(v) || 0 } : x))} />
+              </div>
               <Field label="CTA label" v={p.cta_label || ""} on={(v) => setPlans((c) => c.map((x) => x.id === p.id ? { ...x, cta_label: v } : x))} />
               <div>
                 <label className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Features (one per line)</label>
