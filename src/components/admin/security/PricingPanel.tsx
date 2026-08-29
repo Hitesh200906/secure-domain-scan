@@ -51,7 +51,12 @@ export function PricingPanel() {
   };
 
   return (
-    <AdminShell title="Pricing Management" description="Edits push instantly to the public pricing page.">
+    <AdminShell title="Plans" description="Edit plan names, pricing, copy and features. Changes go live across the whole website instantly.">
+      <div className="mb-4 flex justify-end">
+        <button onClick={saveAll} className="glass rounded-full px-4 py-2 text-xs inline-flex items-center gap-2">
+          <Save className="size-3.5" /> Save all plans
+        </button>
+      </div>
       <div className="grid lg:grid-cols-3 gap-4">
         {plans.map((p) => (
           <Section key={p.id} title={p.name} action={
