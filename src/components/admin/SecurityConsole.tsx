@@ -8,7 +8,7 @@ import { FormsPanel } from "@/components/admin/security/FormsPanel";
 const items: { id: SecuritySection; label: string; icon: typeof ScanLine; superOnly?: boolean }[] = [
   { id: "forms", label: "Forms", icon: ClipboardList },
   { id: "scan", label: "Scan", icon: ScanLine },
-  { id: "pricing", label: "Pricing", icon: Tags, superOnly: true },
+  { id: "pricing", label: "Plans", icon: Tags, superOnly: true },
 ];
 
 /** Full-screen Nexefy Security workspace layered over the admin console. */

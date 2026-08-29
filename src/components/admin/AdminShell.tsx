@@ -98,7 +98,7 @@ export function AdminShell({ title, description, actions, children }: { title: s
               </span>
               <span className="flex-1">
                 <span className="block text-[13px] font-medium text-white">Nexefy Security</span>
-                <span className="block text-[10px] text-muted-foreground">Scan · Pricing</span>
+                <span className="block text-[10px] text-muted-foreground">Scan · Plans</span>
               </span>
               <ArrowUpRight className="size-3.5 text-primary/70 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </button>
