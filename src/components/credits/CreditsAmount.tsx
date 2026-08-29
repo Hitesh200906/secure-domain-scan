@@ -86,6 +86,8 @@ export default function CreditsAmount({
     setManual("");
   };
 
+  const isPackSelected = PACKS.some((p) => p.amount === credits);
+
   return (
     <div className="fixed inset-0 z-[90] overflow-y-auto bg-[#050505]">
       <div className="mx-auto flex min-h-full w-full max-w-[1320px] flex-col px-3 py-4 sm:px-12 sm:py-9">
@@ -154,20 +156,20 @@ export default function CreditsAmount({
                     onClick={() => setValue(p.amount)}
                     className={`relative flex flex-col items-center rounded-[10px] border px-1 pb-1.5 pt-1 transition sm:rounded-[18px] sm:px-3 sm:pb-4 sm:pt-3 ${
                       active
-                        ? "border-transparent bg-[#DCE3FF]"
-                        : "border-white/[0.08] bg-white/[0.02] hover:border-white/20"
+                        ? "border-white bg-white text-black"
+                        : "border-white/[0.08] bg-white/[0.02] text-white hover:border-white/20"
                     }`}
                   >
                     <div className="flex w-full items-center justify-center">
                       <span
                         className={`rounded-full px-1.5 py-0.5 text-[6px] font-semibold tracking-wide sm:px-3 sm:py-1 sm:text-[10px] ${
-                          active ? "bg-[#0A0A0A] text-white" : "bg-white/[0.06] text-[#D1D5DB]"
+                          active ? "bg-black text-white" : "bg-white/[0.06] text-[#D1D5DB]"
                         }`}
                       >
                         {p.tag}
                       </span>
                       {active && (
-                        <span className="absolute right-1 top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#0A0A0A] sm:right-3 sm:top-3 sm:h-6 sm:w-6">
+                        <span className="absolute right-1 top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-black sm:right-3 sm:top-3 sm:h-6 sm:w-6">
                           <Check className="h-2 w-2 text-white sm:h-3.5 sm:w-3.5" strokeWidth={3} />
                         </span>
                       )}
@@ -180,15 +182,11 @@ export default function CreditsAmount({
                       loading="lazy"
                       className="mt-1 h-[26px] w-[26px] select-none object-contain sm:mt-3 sm:h-[86px] sm:w-[86px]"
                     />
-                    <div
-                      className={`mt-1 text-[13px] font-semibold tabular-nums sm:mt-2 sm:text-[26px] ${active ? "text-[#0A0A0A]" : "text-white"}`}
-                    >
-                      {p.amount}
-                    </div>
-                    <div className={`text-[7px] sm:text-[13px] ${active ? "text-[#374151]" : "text-[#9CA3AF]"}`}>Power Credits</div>
+                    <div className="mt-1 text-[13px] font-semibold tabular-nums sm:mt-2 sm:text-[26px]">{p.amount}</div>
+                    <div className={`text-[7px] sm:text-[13px] ${active ? "text-black/60" : "text-[#9CA3AF]"}`}>Power Credits</div>
                     <span
                       className={`mt-1.5 flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[7px] sm:mt-3 sm:gap-2 sm:px-4 sm:py-1.5 sm:text-[13px] ${
-                        active ? "bg-white text-[#0A0A0A]" : "bg-white/[0.05] text-[#E5E7EB]"
+                        active ? "bg-black/10 text-black" : "bg-white/[0.05] text-[#E5E7EB]"
                       }`}
                     >
                       <Icon className="h-2 w-2 sm:h-3.5 sm:w-3.5" /> {p.label}
@@ -198,42 +196,62 @@ export default function CreditsAmount({
               })}
             </div>
 
-            {/* Custom */}
-            <div className="grid grid-cols-2 rounded-[12px] border border-white/[0.08] bg-white/[0.015] sm:rounded-[20px]">
-              <div className="border-r border-white/[0.08] p-2 sm:p-6">
+            {/* Custom amount form */}
+            <div className="rounded-[12px] border border-white/[0.08] bg-white/[0.015] p-2 sm:rounded-[20px] sm:p-6">
+              <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5 text-[8px] uppercase tracking-[0.14em] text-[#9CA3AF] sm:gap-2 sm:text-[12px] sm:tracking-[0.18em]">
                   Custom amount <Zap className="h-2.5 w-2.5 text-[#93A5FF] sm:h-3.5 sm:w-3.5" />
                 </div>
-                <div className="mt-2 sm:mt-8">
-                  <div className="flex justify-between px-0.5 text-[8px] tabular-nums text-[#8A8F98] sm:px-1 sm:text-[12px]">
-                    {MARKS.map((m) => (
-                      <button key={m} type="button" onClick={() => setValue(m)} className="transition hover:text-white">
-                        {m}
-                      </button>
-                    ))}
-                  </div>
-                  <input
-                    type="range"
-                    min={1}
-                    max={5000}
-                    step={1}
-                    value={credits}
-                    aria-label="Power Credits amount"
-                    onChange={(e) => setValue(Number(e.target.value))}
-                    className="mt-2 h-1.5 w-full cursor-pointer appearance-none rounded-full bg-white/15 accent-white sm:mt-3 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white sm:[&::-webkit-slider-thumb]:h-5 sm:[&::-webkit-slider-thumb]:w-5"
-                  />
-                </div>
-                <div className="mt-2 text-center sm:mt-6">
-                  <div className="text-[16px] font-semibold leading-none tabular-nums text-white sm:text-[38px]">{credits}</div>
-                  <div className="mt-1 text-[9px] text-[#9CA3AF] sm:text-[14px]">Power Credits</div>
+                {!isPackSelected && (
+                  <span className="rounded-full bg-white px-2 py-0.5 text-[7px] font-semibold text-black sm:px-3 sm:py-1 sm:text-[10px]">
+                    Selected
+                  </span>
+                )}
+              </div>
+
+              {/* Preset chips */}
+              <div className="mt-2 flex flex-wrap gap-1.5 sm:mt-4 sm:gap-3">
+                {MARKS.map((m) => {
+                  const active = credits === m;
+                  return (
+                    <button
+                      key={m}
+                      type="button"
+                      onClick={() => setValue(m)}
+                      className={`rounded-full border px-2 py-1 text-[9px] font-medium tabular-nums transition sm:px-4 sm:py-1.5 sm:text-[13px] ${
+                        active
+                          ? "border-white bg-white text-black"
+                          : "border-white/[0.08] bg-white/[0.03] text-[#D1D5DB] hover:border-white/20 hover:text-white"
+                      }`}
+                    >
+                      {m}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Slider */}
+              <div className="mt-2 sm:mt-4">
+                <input
+                  type="range"
+                  min={1}
+                  max={5000}
+                  step={1}
+                  value={credits}
+                  aria-label="Power Credits amount"
+                  onChange={(e) => setValue(Number(e.target.value))}
+                  className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-white/15 accent-white sm:h-2 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white sm:[&::-webkit-slider-thumb]:h-5 sm:[&::-webkit-slider-thumb]:w-5"
+                />
+                <div className="mt-1.5 flex justify-between px-0.5 text-[7px] tabular-nums text-[#8A8F98] sm:text-[11px]">
+                  <span>1</span>
+                  <span>2500</span>
+                  <span>5000</span>
                 </div>
               </div>
 
-              <div className="p-2 sm:p-6">
-                <div className="flex items-center gap-1.5 text-[8px] uppercase tracking-[0.14em] text-[#9CA3AF] sm:gap-2 sm:text-[12px] sm:tracking-[0.18em]">
-                  Enter manually <Zap className="h-2.5 w-2.5 text-[#93A5FF] sm:h-3.5 sm:w-3.5" />
-                </div>
-                <div className="mt-2 flex items-center gap-1.5 rounded-[10px] border border-white/[0.08] bg-white/[0.03] px-2 py-2 sm:mt-4 sm:gap-3 sm:rounded-[14px] sm:px-5 sm:py-4">
+              {/* Manual input row */}
+              <div className="mt-2 grid grid-cols-1 gap-2 sm:mt-5 sm:grid-cols-[1fr_auto] sm:gap-4">
+                <div className="flex items-center gap-1.5 rounded-[10px] border border-white/[0.08] bg-white/[0.03] px-2 py-2 sm:gap-3 sm:rounded-[14px] sm:px-4 sm:py-3">
                   <input
                     value={manual}
                     inputMode="numeric"
@@ -244,21 +262,20 @@ export default function CreditsAmount({
                       if (raw) setCredits(Math.min(100000, Math.max(1, Number(raw))));
                     }}
                     placeholder="e.g. 1500"
-                    className="w-full min-w-0 bg-transparent text-[10px] text-white placeholder:text-[#6B7280] outline-none sm:text-[16px]"
+                    className="w-full min-w-0 bg-transparent text-[10px] text-white placeholder:text-[#6B7280] outline-none sm:text-[15px]"
                   />
-                  <span className="hidden whitespace-nowrap text-[14px] text-[#9CA3AF] sm:inline">Power Credits</span>
+                  <span className="hidden whitespace-nowrap text-[13px] text-[#9CA3AF] sm:inline">Power Credits</span>
                   <Zap className="h-3 w-3 shrink-0 text-[#93A5FF] sm:h-4 sm:w-4" />
                 </div>
-                <p className="mt-2 text-[8px] text-[#9CA3AF] sm:mt-3 sm:text-[13px]">Minimum 1 Power Credit</p>
-                <div className="mt-2 flex gap-2 rounded-[10px] border border-white/[0.08] bg-white/[0.02] p-2 sm:mt-4 sm:gap-3 sm:rounded-[14px] sm:p-4">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-[7px] bg-white/[0.05] sm:h-9 sm:w-9 sm:rounded-[10px]">
-                    <Zap className="h-2.5 w-2.5 text-[#93A5FF] sm:h-4 sm:w-4" />
-                  </span>
-                  <p className="text-[8px] leading-snug text-[#D1D5DB] sm:text-[13px]">
-                    Power Credits unlock premium features, advanced scans, and exclusive tools.
-                  </p>
+                <div className="flex items-center justify-between rounded-[10px] border border-white/[0.08] bg-white/[0.03] px-3 py-2 sm:rounded-[14px] sm:px-5 sm:py-3">
+                  <div>
+                    <div className="text-[8px] uppercase tracking-wider text-[#9CA3AF] sm:text-[11px]">You pay</div>
+                    <div className="text-[13px] font-semibold tabular-nums text-white sm:text-[18px]">{pay.text}</div>
+                  </div>
                 </div>
               </div>
+
+              <p className="mt-2 text-[8px] text-[#9CA3AF] sm:mt-3 sm:text-[12px]">Minimum 1 Power Credit</p>
             </div>
 
             {/* Summary */}
