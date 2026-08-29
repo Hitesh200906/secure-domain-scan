@@ -30,13 +30,18 @@ export function PricingPanel() {
       await api.admin.updatePricing(p.id, {
         name: p.name, headline: p.headline, description: p.description, price_monthly: p.price_monthly,
         price_label: p.price_label, credits: p.credits, features: p.features, popular: p.popular,
-        cta_label: p.cta_label, active: p.active,
+        cta_label: p.cta_label, active: p.active, sort_order: p.sort_order,
       });
       await logAudit("pricing.update", { type: "plan", id: p.slug });
-      toast.success(`${p.name} saved`);
+      toast.success(`${p.name} saved — live on the website`);
+      await load();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed");
     }
+  };
+
+  const saveAll = async () => {
+    for (const p of plans) await save(p);
   };
 
   const togglePopular = async (p: Plan) => {
@@ -46,7 +51,12 @@ export function PricingPanel() {
   };
 
   return (
-    <AdminShell title="Pricing Management" description="Edits push instantly to the public pricing page.">
+    <AdminShell title="Plans" description="Edit plan names, pricing, copy and features. Changes go live across the whole website instantly.">
+      <div className="mb-4 flex justify-end">
+        <button onClick={saveAll} className="glass rounded-full px-4 py-2 text-xs inline-flex items-center gap-2">
+          <Save className="size-3.5" /> Save all plans
+        </button>
+      </div>
       <div className="grid lg:grid-cols-3 gap-4">
         {plans.map((p) => (
           <Section key={p.id} title={p.name} action={
@@ -67,7 +77,10 @@ export function PricingPanel() {
                 <Field label="Price (credits)" v={String(p.price_monthly)} on={(v) => setPlans((c) => c.map((x) => x.id === p.id ? { ...x, price_monthly: Number(v) || 0 } : x))} />
                 <Field label="Price label" v={p.price_label || ""} on={(v) => setPlans((c) => c.map((x) => x.id === p.id ? { ...x, price_label: v } : x))} />
               </div>
-              <Field label="Credits / month" v={String(p.credits)} on={(v) => setPlans((c) => c.map((x) => x.id === p.id ? { ...x, credits: Number(v) || 0 } : x))} />
+              <div className="grid grid-cols-2 gap-2">
+                <Field label="Credits / month" v={String(p.credits)} on={(v) => setPlans((c) => c.map((x) => x.id === p.id ? { ...x, credits: Number(v) || 0 } : x))} />
+                <Field label="Display order" v={String(p.sort_order)} on={(v) => setPlans((c) => c.map((x) => x.id === p.id ? { ...x, sort_order: Number(v) || 0 } : x))} />
+              </div>
               <Field label="CTA label" v={p.cta_label || ""} on={(v) => setPlans((c) => c.map((x) => x.id === p.id ? { ...x, cta_label: v } : x))} />
               <div>
                 <label className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Features (one per line)</label>
