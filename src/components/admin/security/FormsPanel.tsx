@@ -3,9 +3,9 @@ import { useServerFn } from "@tanstack/react-start";
 import { AdminShell, Section, Badge } from "@/components/admin/AdminShell";
 import { api } from "@/lib/api-client";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, Search, Send } from "lucide-react";
+import { ArrowLeft, Loader2, RefreshCw, Search, Send } from "lucide-react";
 import { TECH_LABELS } from "@/lib/scan-config.schemas";
-import { adminDispatchScan } from "@/lib/admin-scans.functions";
+import { adminDispatchScan, adminFetchScanResults } from "@/lib/admin-scans.functions";
 
 type ScanRow = {
   id: string;
@@ -31,7 +31,9 @@ export function FormsPanel() {
   const [query, setQuery] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
   const [sendingId, setSendingId] = useState<string | null>(null);
+  const [fetchingId, setFetchingId] = useState<string | null>(null);
   const dispatchScan = useServerFn(adminDispatchScan);
+  const fetchResults = useServerFn(adminFetchScanResults);
 
   const load = () =>
     api.admin
@@ -51,6 +53,20 @@ export function FormsPanel() {
       toast.error(e instanceof Error ? e.message : "Could not send to the scanner");
     } finally {
       setSendingId(null);
+    }
+  };
+
+  const pull = async (s: ScanRow) => {
+    setFetchingId(s.id);
+    try {
+      const r = await fetchResults({ data: { id: s.id } });
+      if (r.ready) toast.success(r.already ? "Report already filed" : "Report received from the scanner");
+      else toast.info(`Scan still running (${r.status})`);
+      await load();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not fetch results");
+    } finally {
+      setFetchingId(null);
     }
   };
 
@@ -131,11 +147,20 @@ export function FormsPanel() {
                 {sendingId === open.id ? <Loader2 className="size-3.5 animate-spin" /> : <Send className="size-3.5" />}
                 {open.dispatched_at ? "Resend to AI scanner" : "Send to AI scanner"}
               </button>
+              <button
+                disabled={!open.dispatched_at || fetchingId === open.id}
+                onClick={() => pull(open)}
+                className="inline-flex items-center gap-2 rounded-lg border border-white/12 px-4 py-2 text-[12px] text-neutral-200 transition hover:border-white/30 disabled:opacity-40"
+              >
+                {fetchingId === open.id ? <Loader2 className="size-3.5 animate-spin" /> : <RefreshCw className="size-3.5" />}
+                Fetch results
+              </button>
               <span className="text-xs text-muted-foreground">
-                The scanner returns the finished report to the admin panel, where you release it to the customer from Scan
-                Management.
+                The scanner runs the job and the report is pulled into the admin panel, where you release it to the
+                customer from Scan Management.
               </span>
             </div>
+
           </Section>
         </div>
       </AdminShell>

@@ -532,6 +532,7 @@ export type Database = {
           dispatch_error: string | null
           dispatched_at: string | null
           email: string
+          external_scan_id: string | null
           findings_count: number | null
           full_name: string
           id: string
@@ -560,6 +561,7 @@ export type Database = {
           dispatch_error?: string | null
           dispatched_at?: string | null
           email: string
+          external_scan_id?: string | null
           findings_count?: number | null
           full_name: string
           id?: string
@@ -588,6 +590,7 @@ export type Database = {
           dispatch_error?: string | null
           dispatched_at?: string | null
           email?: string
+          external_scan_id?: string | null
           findings_count?: number | null
           full_name?: string
           id?: string

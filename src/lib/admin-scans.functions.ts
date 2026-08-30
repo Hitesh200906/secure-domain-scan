@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { assertAdmin, randomToken } from "@/lib/admin-scans.server";
-import { dispatchToScanner } from "@/lib/scan-config.server";
+import { dispatchToScanner, fetchScannerResults } from "@/lib/scan-config.server";
 
 const IdInput = z.object({ id: z.string().uuid() });
 
@@ -53,6 +53,7 @@ export const adminDispatchScan = createServerFn({ method: "POST" })
       .from("scan_requests")
       .update({
         callback_token: token,
+        external_scan_id: result.externalId ?? null,
         dispatched_at: new Date().toISOString(),
         dispatch_error: result.ok ? null : (result.error ?? "Dispatch failed"),
         status: result.ok ? "in_progress" : String(scan["status"] ?? "pending"),
@@ -60,8 +61,74 @@ export const adminDispatchScan = createServerFn({ method: "POST" })
       .eq("id", data.id);
 
     if (!result.ok) throw new Error(result.error ?? "Could not reach the scanner.");
-    return { ok: true as const };
+    return { ok: true as const, external_scan_id: result.externalId ?? null };
   });
+
+/**
+ * Admin action — polls the AI scanner for a dispatched job. Once the scanner
+ * reports the job finished, the results are filed as a report in the panel,
+ * ready to be released to the customer.
+ */
+export const adminFetchScanResults = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => IdInput.parse(d))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: row } = await supabaseAdmin
+      .from("scan_requests")
+      .select("id, user_id, target_url, external_scan_id")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (!row) throw new Error("Scan request not found.");
+    const scan = row as unknown as {
+      id: string; user_id: string; target_url: string; external_scan_id: string | null;
+    };
+    if (!scan.external_scan_id) throw new Error("This request has not been sent to the scanner yet.");
+
+    const res = await fetchScannerResults(scan.external_scan_id);
+    if (!res.ok) throw new Error(res.error ?? "Could not reach the scanner.");
+    if (res.status !== "completed") {
+      return { ok: true as const, ready: false, status: res.status ?? "pending" };
+    }
+
+    // Don't file the same report twice.
+    const { data: existing } = await supabaseAdmin
+      .from("reports")
+      .select("id")
+      .eq("scan_id", scan.id)
+      .limit(1);
+    if ((existing ?? []).length > 0) {
+      return { ok: true as const, ready: true, already: true, status: "completed" };
+    }
+
+    const payload = (res.results ?? {}) as Record<string, unknown>;
+    const inner = (payload["results"] ?? payload) as Record<string, unknown>;
+    const rawFindings = (inner["findings"] ?? inner["vulnerabilities"] ?? []) as unknown;
+    const findings = Array.isArray(rawFindings) ? rawFindings : [];
+    const score = typeof inner["score"] === "number" ? (inner["score"] as number) : null;
+    const severity = typeof inner["severity"] === "string" ? (inner["severity"] as string) : null;
+    const summary = typeof inner["summary"] === "string" ? (inner["summary"] as string) : null;
+
+    await supabaseAdmin.from("reports").insert({
+      scan_id: scan.id,
+      user_id: scan.user_id,
+      title: `Security report — ${scan.target_url}`,
+      summary,
+      severity,
+      findings: findings as never,
+      delivered_at: null,
+    } as never);
+
+    await supabaseAdmin
+      .from("scan_requests")
+      .update({ status: "completed", score, findings_count: findings.length } as never)
+      .eq("id", scan.id);
+
+    return { ok: true as const, ready: true, already: false, status: "completed" };
+  });
+
 
 /** Admin action — releases a received report to the customer. */
 export const adminReleaseReport = createServerFn({ method: "POST" })
