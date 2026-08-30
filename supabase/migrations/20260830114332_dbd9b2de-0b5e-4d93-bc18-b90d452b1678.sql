@@ -1,0 +1,1 @@
+alter table public.scan_requests add column if not exists external_scan_id text;
