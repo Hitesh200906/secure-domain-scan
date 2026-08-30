@@ -131,11 +131,20 @@ export function FormsPanel() {
                 {sendingId === open.id ? <Loader2 className="size-3.5 animate-spin" /> : <Send className="size-3.5" />}
                 {open.dispatched_at ? "Resend to AI scanner" : "Send to AI scanner"}
               </button>
+              <button
+                disabled={!open.dispatched_at || fetchingId === open.id}
+                onClick={() => pull(open)}
+                className="inline-flex items-center gap-2 rounded-lg border border-white/12 px-4 py-2 text-[12px] text-neutral-200 transition hover:border-white/30 disabled:opacity-40"
+              >
+                {fetchingId === open.id ? <Loader2 className="size-3.5 animate-spin" /> : <RefreshCw className="size-3.5" />}
+                Fetch results
+              </button>
               <span className="text-xs text-muted-foreground">
-                The scanner returns the finished report to the admin panel, where you release it to the customer from Scan
-                Management.
+                The scanner runs the job and the report is pulled into the admin panel, where you release it to the
+                customer from Scan Management.
               </span>
             </div>
+
           </Section>
         </div>
       </AdminShell>
