@@ -3,9 +3,9 @@ import { useServerFn } from "@tanstack/react-start";
 import { AdminShell, Section, Badge } from "@/components/admin/AdminShell";
 import { api } from "@/lib/api-client";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, Search, Send } from "lucide-react";
+import { ArrowLeft, Loader2, RefreshCw, Search, Send } from "lucide-react";
 import { TECH_LABELS } from "@/lib/scan-config.schemas";
-import { adminDispatchScan } from "@/lib/admin-scans.functions";
+import { adminDispatchScan, adminFetchScanResults } from "@/lib/admin-scans.functions";
 
 type ScanRow = {
   id: string;
