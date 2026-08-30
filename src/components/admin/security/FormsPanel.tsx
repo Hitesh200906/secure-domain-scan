@@ -56,6 +56,20 @@ export function FormsPanel() {
     }
   };
 
+  const pull = async (s: ScanRow) => {
+    setFetchingId(s.id);
+    try {
+      const r = await fetchResults({ data: { id: s.id } });
+      if (r.ready) toast.success(r.already ? "Report already filed" : "Report received from the scanner");
+      else toast.info(`Scan still running (${r.status})`);
+      await load();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not fetch results");
+    } finally {
+      setFetchingId(null);
+    }
+  };
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return rows;
