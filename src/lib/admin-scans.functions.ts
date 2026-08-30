@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { assertAdmin, randomToken } from "@/lib/admin-scans.server";
-import { dispatchToScanner } from "@/lib/scan-config.server";
+import { dispatchToScanner, fetchScannerResults } from "@/lib/scan-config.server";
 
 const IdInput = z.object({ id: z.string().uuid() });
 
