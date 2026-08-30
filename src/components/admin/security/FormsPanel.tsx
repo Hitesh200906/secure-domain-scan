@@ -31,7 +31,9 @@ export function FormsPanel() {
   const [query, setQuery] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
   const [sendingId, setSendingId] = useState<string | null>(null);
+  const [fetchingId, setFetchingId] = useState<string | null>(null);
   const dispatchScan = useServerFn(adminDispatchScan);
+  const fetchResults = useServerFn(adminFetchScanResults);
 
   const load = () =>
     api.admin
