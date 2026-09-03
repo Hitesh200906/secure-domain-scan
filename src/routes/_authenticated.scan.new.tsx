@@ -87,16 +87,8 @@ function ScanNewPage() {
     company: "",
     email: "",
     target_url: "",
-    business_email: "",
   });
-  const [verification, setVerification] = useState<"email" | "manual">("email");
   const [loading, setLoading] = useState(false);
-  const [flow, setFlow] = useState<Flow>(null);
-
-  const startEmail = useServerFn(startEmailVerification);
-  const checkEmail = useServerFn(checkEmailVerification);
-  const startManual = useServerFn(startManualVerification);
-  const confirmManual = useServerFn(confirmManualVerification);
 
   useEffect(() => {
     if (user?.email) setForm((f) => ({ ...f, email: f.email || user.email! }));
@@ -234,49 +226,6 @@ function ScanNewPage() {
         </form>
       </div>
 
-      {flow?.kind === "email" && (
-        <EmailLinkDialog
-          sentTo={flow.sentTo}
-          onClose={() => setFlow(null)}
-          onResend={async () => {
-            const res = await startEmail({ data: { scan_id: flow.scanId, origin: window.location.origin } });
-            if (!res.ok) {
-              toast.error(res.message);
-              return;
-            }
-            toast.success("Verification link sent again");
-          }}
-          onContinue={async () => {
-            const res = await checkEmail({ data: { scan_id: flow.scanId } });
-            if (!res.verified) {
-              toast.error("Not confirmed yet — open the link we emailed you.");
-              return;
-            }
-            setFlow(null);
-            toast.success("Verification completed — continue to scan configuration");
-            navigate({ to: "/scan/configure", search: { id: flow.scanId } });
-          }}
-        />
-      )}
-
-      {flow?.kind === "manual" && (
-        <ManualCodeDialog
-          code={flow.code}
-          token={flow.token}
-          onClose={() => setFlow(null)}
-          onVerify={async () => {
-            const res = await confirmManual({ data: { scan_id: flow.scanId } });
-            if (!res.verified) {
-              toast.error(res.message);
-              return false;
-            }
-            setFlow(null);
-            toast.success("Verification completed — continue to scan configuration");
-            navigate({ to: "/scan/configure", search: { id: flow.scanId } });
-            return true;
-          }}
-        />
-      )}
     </div>
   );
 }
