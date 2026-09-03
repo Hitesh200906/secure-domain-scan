@@ -287,7 +287,12 @@ export function ScansPanel() {
         </div>
       </div>
 
+      <div className="mb-4">
+        <DeliverReportPanel onDelivered={load} />
+      </div>
+
       <Section title={`Reports · ${filtered.length}`}>
+
         <div className="overflow-x-auto">
           <table className="w-full min-w-[860px] text-sm">
             <thead>
