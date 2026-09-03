@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { logAudit } from "@/lib/audit";
 import { TECH_LABELS } from "@/lib/scan-config.schemas";
 import { adminListScanReports, adminReleaseReport } from "@/lib/admin-scans.functions";
+import { DeliverReportPanel } from "@/components/admin/security/DeliverReportPanel";
+
 import { ArrowLeft, CheckCircle2, Loader2, Search, Send, Trash2, XCircle } from "lucide-react";
 
 type ScanReport = {
