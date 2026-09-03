@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -13,17 +12,7 @@ import icIdCard from "@/assets/scanform-icon-idcard.png";
 import icGlobe from "@/assets/scanform-icon-globe.png";
 import icShield from "@/assets/scanform-icon-shield.png";
 const scanConfigBg = { url: "/images/scan-config-bg.png" };
-import {
-  startEmailVerification,
-  checkEmailVerification,
-  startManualVerification,
-  confirmManualVerification,
-} from "@/lib/scan-verification.functions";
 
-type Flow =
-  | null
-  | { kind: "email"; scanId: string; sentTo: string; hint: string | null }
-  | { kind: "manual"; scanId: string; code: string; token: string };
 
 type Plan = "starter" | "professional" | "enterprise";
 
