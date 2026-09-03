@@ -185,16 +185,18 @@ function ScanNewPage() {
                 onChange={update("role_title")} options={ROLES} />
               <Field label="Company Name" icon={<Building2 className="size-[18px]" />} value={form.company}
                 onChange={update("company")} placeholder="Enter company name" />
-              <Field label="Your Email" type="email" icon={<Mail className="size-[18px]" />} value={form.email}
-                onChange={update("email")} placeholder="Enter your email" required />
-              <div className="sm:col-span-2">
-                <Field label="Business Email" type="email" icon={<AtSign className="size-[18px]" />}
-                  value={form.business_email} onChange={update("business_email")} placeholder="Enter your business email" />
-                <p className="mt-2 text-[11.5px] text-white/45">
-                  This address must be published on your website — on the contact page or in the footer — so our AI can confirm it before sending your code.
-                </p>
-              </div>
+              <Field
+                label="Your Email"
+                type="email"
+                icon={<Mail className="size-[18px]" />}
+                value={form.email}
+                onChange={() => { /* locked to the signed-in account */ }}
+                readOnly
+                required
+                hint="This is the email your Nexefy account was created with. Your report is delivered to this account."
+              />
             </div>
+
           </motion.section>
 
           {/* Scan Configuration */}
