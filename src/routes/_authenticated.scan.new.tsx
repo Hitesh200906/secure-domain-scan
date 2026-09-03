@@ -2,15 +2,14 @@ import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router"
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  ArrowRight, Check, Loader2, Lock, Crosshair, ChevronDown, ChevronRight, Copy, ShieldCheck, X,
-  User, Briefcase, Building2, Mail, AtSign, Link2, Info,
+  ArrowRight, Loader2, Lock, Crosshair, ChevronDown,
+  User, Briefcase, Building2, Mail, Link2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
 import icIdCard from "@/assets/scanform-icon-idcard.png";
 import icGlobe from "@/assets/scanform-icon-globe.png";
-import icShield from "@/assets/scanform-icon-shield.png";
 const scanConfigBg = { url: "/images/scan-config-bg.png" };
 
 
