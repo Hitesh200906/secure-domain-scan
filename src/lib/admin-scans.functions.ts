@@ -187,3 +187,103 @@ export const adminListScanReports = createServerFn({ method: "POST" })
       }>,
     };
   });
+
+const DeliverInput = z.object({
+  email: z.string().trim().email().max(255),
+  title: z.string().trim().min(1).max(200),
+  summary: z.string().trim().max(5000).optional(),
+  severity: z.enum(["low", "medium", "high", "critical"]).optional(),
+  file_url: z.string().trim().url().max(2000).optional(),
+  findings: z.string().max(200000).optional(),
+  scan_id: z.string().uuid().optional(),
+});
+
+/** Admin — look up the account for an email address before delivering a report. */
+export const adminLookupAccount = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ email: z.string().trim().email().max(255) }).parse(d))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const email = data.email.toLowerCase();
+    const { data: row } = await supabaseAdmin
+      .from("profiles")
+      .select("id, full_name, email, company")
+      .ilike("email", email)
+      .maybeSingle();
+    if (!row) return { found: false as const };
+    const p = row as unknown as { id: string; full_name: string | null; email: string | null; company: string | null };
+    const { data: scans } = await supabaseAdmin
+      .from("scan_requests")
+      .select("id, target_url, plan, status, created_at")
+      .eq("user_id", p.id)
+      .order("created_at", { ascending: false })
+      .limit(10);
+    return {
+      found: true as const,
+      account: p,
+      scans: (scans ?? []) as unknown as Array<{ id: string; target_url: string; plan: string; status: string; created_at: string }>,
+    };
+  });
+
+/**
+ * Admin — files a report received from the scanning team against the account
+ * registered with that email address and delivers it immediately.
+ */
+export const adminDeliverReportByEmail = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => DeliverInput.parse(d))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const email = data.email.toLowerCase();
+
+    const { data: row } = await supabaseAdmin
+      .from("profiles")
+      .select("id, email")
+      .ilike("email", email)
+      .maybeSingle();
+    if (!row) throw new Error(`No Nexefy account exists for ${data.email}.`);
+    const account = row as unknown as { id: string; email: string | null };
+
+    let findings: unknown = [];
+    if (data.findings?.trim()) {
+      try {
+        findings = JSON.parse(data.findings);
+      } catch {
+        findings = [{ note: data.findings }];
+      }
+    }
+
+    const { data: inserted, error } = await supabaseAdmin
+      .from("reports")
+      .insert({
+        scan_id: data.scan_id ?? null,
+        user_id: account.id,
+        title: data.title,
+        summary: data.summary ?? null,
+        severity: data.severity ?? null,
+        file_url: data.file_url ?? null,
+        findings: findings as never,
+        delivered_at: new Date().toISOString(),
+      } as never)
+      .select("id")
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+
+    if (data.scan_id) {
+      await supabaseAdmin
+        .from("scan_requests")
+        .update({ status: "completed" } as never)
+        .eq("id", data.scan_id);
+    }
+
+    await supabaseAdmin.from("notifications").insert({
+      user_id: account.id,
+      title: "Your security report is ready",
+      body: "Your scan report has been reviewed and released. Open your dashboard to read it.",
+      link: "/dashboard",
+    } as never);
+
+    return { ok: true as const, report_id: (inserted as { id: string } | null)?.id ?? null, user_id: account.id };
+  });
