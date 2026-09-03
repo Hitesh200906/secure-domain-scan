@@ -347,7 +347,7 @@ const inputShell =
   "group flex items-center gap-3 rounded-xl bg-transparent border border-white/[0.10] px-4 py-3.5 transition focus-within:bg-white/[0.02]";
 
 function Field({
-  label, icon, value, onChange, type = "text", placeholder, required,
+  label, icon, value, onChange, type = "text", placeholder, required, readOnly, hint,
 }: {
   label: string;
   icon: React.ReactNode;
@@ -356,11 +356,13 @@ function Field({
   type?: string;
   placeholder?: string;
   required?: boolean;
+  readOnly?: boolean;
+  hint?: string;
 }) {
   return (
     <label className="block">
       {label ? <span className="mb-2 block text-[14px] text-white/90">{label}</span> : null}
-      <div className={inputShell}>
+      <div className={`${inputShell} ${readOnly ? "bg-white/[0.04] opacity-90" : ""}`}>
         <span className="text-white/45 transition group-focus-within:text-white">{icon}</span>
         <input
           type={type}
@@ -368,12 +370,17 @@ function Field({
           onChange={onChange}
           placeholder={placeholder}
           required={required}
-          className="flex-1 bg-transparent text-[14px] text-white placeholder:text-white/35 focus:outline-none"
+          readOnly={readOnly}
+          aria-readonly={readOnly}
+          className={`flex-1 bg-transparent text-[14px] text-white placeholder:text-white/35 focus:outline-none ${readOnly ? "cursor-not-allowed text-white/70" : ""}`}
         />
+        {readOnly ? <Lock className="size-3.5 text-white/35" /> : null}
       </div>
+      {hint ? <span className="mt-2 block text-[11.5px] text-white/45">{hint}</span> : null}
     </label>
   );
 }
+
 
 function SelectField({
   label, icon, value, onChange, options,
