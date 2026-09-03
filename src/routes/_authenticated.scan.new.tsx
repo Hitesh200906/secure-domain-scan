@@ -231,43 +231,6 @@ function ScanNewPage() {
 
 
 
-          {/* Domain Ownership Verification */}
-          <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
-            <SectionHead
-              img={icShield}
-              alt="Shield with padlock icon"
-              title="Domain Ownership Verification"
-              desc="Choose a method to verify that you own the domain."
-            />
-            <div className="mt-6 grid sm:grid-cols-2 gap-5">
-              <VerifCard
-                selected={verification === "email"}
-                onClick={() => setVerification("email")}
-                badge="Recommended"
-                title="Email Verification"
-                desc="Our AI scans your website for your business email. If it is published there, we send a six-digit code to it."
-                steps={[
-                  "AI reads your site for the business email",
-                  "Six-digit code sent to that address",
-                  "Enter the code to launch the scan",
-                ]}
-                note="Your business email must be present on your website's contact page or in the footer."
-              />
-              <VerifCard
-                selected={verification === "manual"}
-                onClick={() => setVerification("manual")}
-                badge="No email needed"
-                title="Manual Verification"
-                desc="We issue a unique verification code that you place anywhere on your website."
-                steps={[
-                  "Copy your unique verification code",
-                  "Paste it in your site's HTML or footer",
-                  "Our AI confirms it is live",
-                ]}
-                note="A meta tag, comment or hidden element all work — visible placement is not required."
-              />
-            </div>
-          </motion.section>
 
           <div>
             <button
