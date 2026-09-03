@@ -110,42 +110,27 @@ function ScanNewPage() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
-    if (verification === "email" && !form.business_email.trim()) {
-      toast.error("Enter your business email to receive the verification code");
-      return;
-    }
     setLoading(true);
     try {
       const { scan } = await api.createScan({
         full_name: form.full_name,
         role_title: form.role_title,
         company: form.company,
-        email: form.email,
+        email: user.email ?? form.email,
         target_url: form.target_url,
-        business_email: form.business_email,
         plan,
-        verification_method: verification,
-        status: "awaiting_verification",
+        status: "awaiting_config",
       } as never);
       const scanId = (scan as { id: string }).id;
-
-      if (verification === "email") {
-        const res = await startEmail({ data: { scan_id: scanId, origin: window.location.origin } });
-        if (!res.ok) {
-          toast.error(res.message);
-          return;
-        }
-        setFlow({ kind: "email", scanId, sentTo: res.sent_to, hint: null });
-      } else {
-        const res = await startManual({ data: { scan_id: scanId } });
-        setFlow({ kind: "manual", scanId, code: res.code, token: res.token });
-      }
+      toast.success("Details saved — continue to scan configuration");
+      navigate({ to: "/scan/configure", search: { id: scanId } });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to submit scan");
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-black">
