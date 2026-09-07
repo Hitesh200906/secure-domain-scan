@@ -69,6 +69,8 @@ function ScanNewPage() {
   const navigate = useNavigate();
   const [livePlan, setLivePlan] = useState<{ name: string; credits: number } | null>(null);
   const info = livePlan ?? PLAN_INFO[plan];
+  const { freeScanAvailable } = useFreeScan();
+  const isFree = plan === "starter" && freeScanAvailable;
 
   useEffect(() => {
     api.publicPricing()
@@ -161,7 +163,11 @@ function ScanNewPage() {
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-white/80">
             <span>{info.name}</span>
             <span className="text-white/25">·</span>
-            <span className="text-white">{info.credits.toLocaleString()} credits</span>
+            {isFree ? (
+              <span className="rounded-full bg-white px-2 py-0.5 text-black">Free</span>
+            ) : (
+              <span className="text-white">{info.credits.toLocaleString()} credits</span>
+            )}
           </div>
 
         </div>
