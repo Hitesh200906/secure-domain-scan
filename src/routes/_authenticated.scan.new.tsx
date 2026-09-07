@@ -110,19 +110,16 @@ function ScanNewPage() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
-    if (verification === "email" && !form.business_email.trim()) {
-      toast.error("Enter your business email to receive the verification code");
-      return;
-    }
+    const accountEmail = user.email ?? form.email;
     setLoading(true);
     try {
       const { scan } = await api.createScan({
         full_name: form.full_name,
         role_title: form.role_title,
         company: form.company,
-        email: form.email,
+        email: accountEmail,
         target_url: form.target_url,
-        business_email: form.business_email,
+        business_email: form.business_email.trim() || accountEmail,
         plan,
         verification_method: verification,
         status: "awaiting_verification",
