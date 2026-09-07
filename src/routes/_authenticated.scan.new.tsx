@@ -69,6 +69,8 @@ function ScanNewPage() {
   const navigate = useNavigate();
   const [livePlan, setLivePlan] = useState<{ name: string; credits: number } | null>(null);
   const info = livePlan ?? PLAN_INFO[plan];
+  const { freeScanAvailable } = useFreeScan();
+  const isFree = plan === "starter" && freeScanAvailable;
 
   useEffect(() => {
     api.publicPricing()
