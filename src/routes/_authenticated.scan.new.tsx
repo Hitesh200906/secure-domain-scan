@@ -9,6 +9,7 @@ import {
 import { toast } from "sonner";
 import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
+import { useFreeScan } from "@/hooks/use-free-scan";
 import icIdCard from "@/assets/scanform-icon-idcard.png";
 import icGlobe from "@/assets/scanform-icon-globe.png";
 import icShield from "@/assets/scanform-icon-shield.png";
