@@ -155,7 +155,7 @@ export function Hero() {
               >
                 <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                 <ShieldCheck className="size-3.5 sm:size-4 shrink-0" />
-                Start free scan
+                {freeScanAvailable ? "Start free basic scan" : "Start a scan"}
                 <ArrowUpRight className="size-3.5 sm:size-4 shrink-0 opacity-80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </a>
 
