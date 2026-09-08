@@ -4,6 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api-client";
 import { useAuth } from "@/hooks/use-auth";
+import { useFreeScan } from "@/hooks/use-free-scan";
 
 type Plan = {
   id: string; slug: string; name: string; headline: string | null; description: string | null;
@@ -32,6 +33,7 @@ const FALLBACK_PLANS: Plan[] = [
 ];
 
 export function Pricing({ compact = false }: { compact?: boolean }) {
+  const { user } = useAuth();
   const [plans, setPlans] = useState<Plan[]>(FALLBACK_PLANS);
   const { freeScanAvailable } = useFreeScan();
   const usedFreeScan = !freeScanAvailable;
