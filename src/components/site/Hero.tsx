@@ -6,6 +6,7 @@ import { T, FeatureCard } from "./NexusCinematicHero";
 import { HeroPointsPanel } from "./HeroPointsPanel";
 import { ComingSoonDialog, COMING_SOON, type ComingSoonInfo } from "./ComingSoonDialog";
 import { SecurityCard } from "./SecurityCard";
+import { useFreeScan } from "@/hooks/use-free-scan";
 const imgMarketplace = { url: "/images/card-marketplace-v7.png" };
 const imgSecurity = { url: "/images/card-security-v11.png" };
 const imgRewards = { url: "/images/card-rewards-v10.png" };
@@ -14,6 +15,7 @@ const heroDesk = { url: "/images/hero-bg-v6.png" };
 export function Hero() {
   useAppMode();
   const [comingSoon, setComingSoon] = useState<ComingSoonInfo | null>(null);
+  const { freeScanAvailable } = useFreeScan();
 
   return (
     <section className="relative w-full overflow-hidden" style={{ background: T.bg }}>
@@ -153,7 +155,7 @@ export function Hero() {
               >
                 <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                 <ShieldCheck className="size-3.5 sm:size-4 shrink-0" />
-                Start free scan
+                {freeScanAvailable ? "Start free basic scan" : "Start a scan"}
                 <ArrowUpRight className="size-3.5 sm:size-4 shrink-0 opacity-80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </a>
 
