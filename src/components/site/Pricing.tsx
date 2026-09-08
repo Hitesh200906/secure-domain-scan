@@ -32,9 +32,9 @@ const FALLBACK_PLANS: Plan[] = [
 ];
 
 export function Pricing({ compact = false }: { compact?: boolean }) {
-  const { user } = useAuth();
   const [plans, setPlans] = useState<Plan[]>(FALLBACK_PLANS);
-  const [usedFreeScan, setUsedFreeScan] = useState(false);
+  const { freeScanAvailable } = useFreeScan();
+  const usedFreeScan = !freeScanAvailable;
   useEffect(() => {
     api.publicPricing()
       .then(({ plans }) => {
@@ -43,15 +43,8 @@ export function Pricing({ compact = false }: { compact?: boolean }) {
       .catch(() => { /* keep fallback */ });
   }, []);
 
-  useEffect(() => {
-    if (!user) { setUsedFreeScan(false); return; }
-    api.listScans()
-      .then(({ scans }) => setUsedFreeScan((scans?.length ?? 0) > 0))
-      .catch(() => { /* assume not used */ });
-  }, [user]);
-
   const ctaFor = (slug: string, fallback: string | null) => {
-    if (slug === "starter" && !usedFreeScan) return "Start free scan";
+    if (slug === "starter" && !usedFreeScan) return "Start free basic scan";
     return fallback || "Get started";
   };
 
