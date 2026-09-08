@@ -6,6 +6,7 @@ import { T, FeatureCard } from "./NexusCinematicHero";
 import { HeroPointsPanel } from "./HeroPointsPanel";
 import { ComingSoonDialog, COMING_SOON, type ComingSoonInfo } from "./ComingSoonDialog";
 import { SecurityCard } from "./SecurityCard";
+import { useFreeScan } from "@/hooks/use-free-scan";
 const imgMarketplace = { url: "/images/card-marketplace-v7.png" };
 const imgSecurity = { url: "/images/card-security-v11.png" };
 const imgRewards = { url: "/images/card-rewards-v10.png" };
