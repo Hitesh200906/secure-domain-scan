@@ -20,6 +20,33 @@ const Payload = z.object({
 export const Route = createFileRoute("/api/public/scanner-report")({
   server: {
     handlers: {
+      GET: async () =>
+        Response.json({
+          ok: true,
+          endpoint: "/api/public/scanner-report",
+          method: "POST",
+          content_type: "application/json",
+          auth: "callback_token in body, or x-scanner-token header",
+          body: {
+            scan_id: "uuid",
+            status: "completed | failed",
+            title: "string (optional)",
+            summary: "string (optional)",
+            severity: "low | medium | high | critical (optional)",
+            score: "0-100 (optional)",
+            findings: "array (optional)",
+          },
+        }),
+      OPTIONS: async () =>
+        new Response(null, {
+          status: 204,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, x-scanner-token, x-scanner-secret",
+            "Access-Control-Max-Age": "86400",
+          },
+        }),
       POST: async ({ request }) => {
         const parsed = Payload.safeParse(await request.json().catch(() => null));
         if (!parsed.success) return new Response("Invalid payload", { status: 400 });
