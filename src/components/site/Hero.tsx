@@ -14,6 +14,7 @@ const heroDesk = { url: "/images/hero-bg-v6.png" };
 export function Hero() {
   useAppMode();
   const [comingSoon, setComingSoon] = useState<ComingSoonInfo | null>(null);
+  const { freeScanAvailable } = useFreeScan();
 
   return (
     <section className="relative w-full overflow-hidden" style={{ background: T.bg }}>
